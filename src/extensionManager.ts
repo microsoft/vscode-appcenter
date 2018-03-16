@@ -3,15 +3,19 @@
 import { Disposable, workspace } from "vscode";
 import { VsCodeUtils } from "./helpers/vsCodeUtils";
 import { AppCenterCommandHandler } from "./appCenterCommandHandler";
+import { ILogger } from "./log/logHelper";
+import { ConsoleLogger } from "./log/consoleLogger";
 
 export class ExtensionManager implements Disposable {
     private _appCenterCommandHandler: AppCenterCommandHandler;
+    private _logger: ILogger;
 
     public get AppCenterCommandHandler(): AppCenterCommandHandler {
         return this._appCenterCommandHandler;
     }
 
-    public async Initialize(): Promise<void> {
+    public async Initialize(logger: ILogger = new ConsoleLogger()): Promise<void> {
+        this._logger = logger;
         await this.initializeExtension();
     }
 
