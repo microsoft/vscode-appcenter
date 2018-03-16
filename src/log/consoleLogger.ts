@@ -1,6 +1,6 @@
 "use strict";
 
-import {ILogger, LogLevel, LogHelper} from "./logHelper";
+import {ILogger, LogHelper, LogLevel} from "./logHelper";
 
 export class ConsoleLogger implements ILogger {
     public log(message: string, level: LogLevel): void {
@@ -18,7 +18,7 @@ export class ConsoleLogger implements ILogger {
         this.log(message, LogLevel.Info);
     }
 
-    public warning(message: string, logStack = false): void {
+    public warning(message: string, _logStack = false): void {
         this.log(message, LogLevel.Warning);
     }
 

@@ -3,10 +3,10 @@
 import { ILogger, LogLevel } from "./logHelper";
 
 export class NullLogger implements ILogger {
-    public log (message: string, level: LogLevel | undefined) {}
-    public info (message: string) {}
-    public warning (message: string) {}
-    public error (errorMessage: string, error?: Error | undefined, stack?: boolean | undefined) {}
-    public debug (message: string) {}
-    public logStream (data: String | Buffer, stream?: NodeJS.WritableStream | undefined) {}
+    public log (_message: string, _level: LogLevel | undefined) {}
+    public info (_message: string) {}
+    public warning (_message: string) {}
+    public error (_errorMessage: string, _error?: Error | undefined, _stack?: boolean | undefined) {}
+    public debug (_message: string) {}
+    public logStream (_data: String | Buffer, _stream?: NodeJS.WritableStream | undefined) {}
 }

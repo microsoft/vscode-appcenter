@@ -1,4 +1,5 @@
 'use strict';
+
 import * as vscode from 'vscode';
 import { ExtensionManager } from './extensionManager';
 import { CommandNames } from './helpers/constants';
@@ -19,6 +20,6 @@ export function deactivate() {
 }
 
 function registerAppCenterCommands(context: vscode.ExtensionContext): void {
-    context.subscriptions.push(vscode.commands.registerCommand(CommandNames.WhoAmI, 
+    context.subscriptions.push(vscode.commands.registerCommand(CommandNames.WhoAmI,
         () => _extensionManager.RunCommand(() => _extensionManager.AppCenterCommandHandler.WhoAmI())));
 }

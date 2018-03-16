@@ -1,10 +1,10 @@
 import { ExtensionManager } from "./extensionManager";
-import { ILogger } from "./log/logHelper";
 import { ConsoleLogger } from "./log/consoleLogger";
+import { ILogger, LogLevel } from "./log/logHelper";
 
 "use strict";
 
-export class AppCenterCommandHandler  {
+export class AppCenterCommandHandler {
     private _manager: ExtensionManager;
 
     constructor(manager: ExtensionManager, private logger: ILogger = new ConsoleLogger()) {
@@ -12,6 +12,7 @@ export class AppCenterCommandHandler  {
     }
 
     public WhoAmI(): void {
-        this._manager.DisplayInfoMessage("Hello World!");
+        this.logger.log("Call whoami", LogLevel.Info);
+        this._manager.DisplayInfoMessage('Hello World!');
     }
 }

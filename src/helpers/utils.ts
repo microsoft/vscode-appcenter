@@ -1,7 +1,5 @@
 "use strict";
 
-import * as fs from "fs";
-import * as path from "path";
 import * as open from "open";
 import * as opener from "opener";
 

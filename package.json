@@ -14,13 +14,13 @@
         "app-center"
     ],
     "activationEvents": [
-        "onCommand:appcenter.WhoAmI"
+        "onCommand:appcenter.whoami"
     ],
-    "main": "./out/extension",
+    "main": "./src/extension",
     "contributes": {
         "commands": [
             {
-                "command": "appcenter.WhoAmI",
+                "command": "appcenter.whoami",
                 "title": "WhoAmI",
                 "category": "AppCenter"
             }
@@ -30,6 +30,7 @@
         "vscode:prepublish": "npm run compile",
         "compile": "tsc -p ./",
         "watch": "tsc -watch -p ./",
+        "lint": "tslint --project tsconfig.json -e src/*.d.ts -t verbose",
         "postinstall": "node ./node_modules/vscode/bin/install",
         "test": "npm run compile && node ./node_modules/vscode/bin/test"
     },
@@ -40,7 +41,15 @@
         "@types/mocha": "^2.2.42"
     },
     "dependencies": {
+        "del": "^3.0.0",
+        "gulp": "^3.9.1",
+        "gulp-sourcemaps": "^2.6.4",
+        "gulp-tslint": "^8.1.3",
+        "gulp-typescript": "^4.0.1",
         "open": "0.0.5",
-        "opener": "^1.4.3"
+        "opener": "^1.4.3",
+        "run-sequence": "^2.2.1",
+        "tslint": "^5.9.1",
+        "tslint-microsoft-contrib": "^5.0.3"
     }
 }

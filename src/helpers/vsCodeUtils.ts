@@ -1,25 +1,25 @@
+import { commands, MessageItem, QuickPickItem, window } from "vscode";
+import { Constants, MessageTypes } from "./constants";
 import { Utils } from "./utils";
-import { commands, MessageItem, QuickPickItem, Range, window } from "vscode";
-import { MessageTypes, Constants } from "./constants";
 
 "use strict";
 
 export class BaseQuickPickItem implements QuickPickItem {
-    label: string;
-    description: string;
-    id: string;
+    public label: string;
+    public description: string;
+    public id: string;
 }
 
 export class WorkItemQueryQuickPickItem extends BaseQuickPickItem {
-    wiql: string;
+    public wiql: string;
 }
 
 //Any changes to ButtonMessageItem must be reflected in IButtonMessageItem
 export class ButtonMessageItem implements MessageItem, IButtonMessageItem {
-    title: string;
-    url?: string;
-    command?: string;
-    telemetryId?: string;
+    public title: string;
+    public url?: string;
+    public command?: string;
+    public telemetryId?: string;
 }
 
 export class VsCodeUtils {
@@ -43,7 +43,7 @@ export class VsCodeUtils {
         const messageToDisplay: string = `(${Constants.ExtensionName}) ${Utils.FormatMessage(message)}`;
 
         //Use the typescript spread operator to pass the rest parameter to showErrorMessage
-        let chosenItem: IButtonMessageItem;
+        let chosenItem: IButtonMessageItem | undefined;
         switch (type) {
             case MessageTypes.Error:
                 chosenItem = await window.showErrorMessage(messageToDisplay, ...messageItems);
@@ -66,7 +66,7 @@ export class VsCodeUtils {
                 commands.executeCommand<void>(chosenItem.command);
             }
         }
-        return chosenItem;
+        return <IButtonMessageItem>chosenItem;
     }
 }
 

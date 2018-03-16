@@ -1,7 +1,7 @@
 "use strict";
 
 import * as vscode from "vscode";
-import { ILogger, LogLevel, LogHelper } from "./logHelper";
+import { ILogger, LogHelper, LogLevel } from "./logHelper";
 
 const channels: { [channelName: string]: OutputChannelLogger } = {};
 
@@ -50,7 +50,7 @@ export class OutputChannelLogger implements ILogger {
         this.log(message, LogLevel.Info);
     }
 
-    public warning(message: string | Error, logStack = false): void {
+    public warning(message: string | Error, _logStack = false): void {
         this.log(message.toString(), LogLevel.Warning);
     }
 

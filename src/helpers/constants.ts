@@ -1,12 +1,12 @@
 "use strict";
 
 export class Constants {
-    static ExtensionName: string = "appcenter";
+    public static ExtensionName: string = "appcenter";
 }
 
 export class CommandNames {
-    static CommandPrefix: string = Constants.ExtensionName + ".";
-    static WhoAmI: string = CommandNames.CommandPrefix + "WhoAmI";
+    public static CommandPrefix: string = Constants.ExtensionName + ".";
+    public static WhoAmI: string = CommandNames.CommandPrefix + "whoami";
 }
 
 export enum MessageTypes {

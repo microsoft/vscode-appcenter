@@ -1,10 +1,10 @@
 "use strict";
 
-import { Disposable, workspace } from "vscode";
-import { VsCodeUtils } from "./helpers/vsCodeUtils";
+import { Disposable } from "vscode";
 import { AppCenterCommandHandler } from "./appCenterCommandHandler";
-import { ILogger } from "./log/logHelper";
+import { VsCodeUtils } from "./helpers/vsCodeUtils";
 import { ConsoleLogger } from "./log/consoleLogger";
+import { ILogger, LogLevel } from "./log/logHelper";
 
 export class ExtensionManager implements Disposable {
     private _appCenterCommandHandler: AppCenterCommandHandler;
@@ -16,9 +16,11 @@ export class ExtensionManager implements Disposable {
 
     public async Initialize(logger: ILogger = new ConsoleLogger()): Promise<void> {
         this._logger = logger;
+        this._logger.log("Init Extension Manager", LogLevel.Info);
         await this.initializeExtension();
     }
 
+    // tslint:disable-next-line:typedef
     public RunCommand(funcToTry: (args) => void, ...args: string[]): void {
         funcToTry(args);
     }
@@ -48,6 +50,7 @@ export class ExtensionManager implements Disposable {
         this._appCenterCommandHandler = new AppCenterCommandHandler(this);
     }
 
-    private cleanup(preserveTeamExtension: boolean = false): void {
+    private cleanup(): void {
+        this._logger.log("Called cleanup", LogLevel.Info);
     }
 }

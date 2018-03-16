@@ -2,3 +2,12 @@ out
 node_modules
 .vscode-test/
 .vsix
+coverage/
+.idea
+out
+src/**/nodeDebugLocation.json
+
+# Compiled files
+src/**/*.js
+test/**/*.js
+**/*.js.map

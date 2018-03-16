@@ -6,16 +6,16 @@ export enum LogLevel {
     Info = 2,
     Warning = 3,
     Error = 4,
-    None = 5,
+    None = 5
 }
 
 export interface ILogger {
-    log: (message: string, level: LogLevel) => void;
-    info: (message: string) => void;
-    warning: (message: string) => void;
-    error: (errorMessage: string, error?: Error, stack?: boolean) => void;
-    debug: (message: string) => void;
-    logStream: (data: Buffer | String, stream?: NodeJS.WritableStream) => void;
+    log(message: string, level: LogLevel): void;
+    info(message: string): void;
+    warning(message: string): void;
+    error(errorMessage: string, error?: Error, stack?: boolean): void;
+    debug(message: string): void;
+    logStream(data: Buffer | String, stream?: NodeJS.WritableStream): void;
 }
 
 export class LogHelper {
