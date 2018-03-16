@@ -1,16 +1,24 @@
 'use strict';
 import * as vscode from 'vscode';
+import { ExtensionManager } from './extensionManager';
+import { CommandNames } from './helpers/constants';
 
-export function activate(context: vscode.ExtensionContext) {
+let _extensionManager: ExtensionManager;
 
-    console.log('Congratulations, your extension "vscode-appcenter" is now active!');
+export async function activate(context: vscode.ExtensionContext) {
+    // Construct the extension manager that handles AppCenter commands
+    _extensionManager = new ExtensionManager();
+    await _extensionManager.Initialize();
 
-    let disposable = vscode.commands.registerCommand('extension.sayHello', () => {
-        vscode.window.showInformationMessage('Hello World!');
-    });
-
-    context.subscriptions.push(disposable);
+    // Register the ext manager for disposal
+    context.subscriptions.push(_extensionManager);
+    registerAppCenterCommands(context);
 }
 
 export function deactivate() {
+}
+
+function registerAppCenterCommands(context: vscode.ExtensionContext): void {
+    context.subscriptions.push(vscode.commands.registerCommand(CommandNames.WhoAmI, 
+        () => _extensionManager.RunCommand(() => _extensionManager.AppCenterCommandHandler.WhoAmI())));
 }

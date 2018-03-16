@@ -14,14 +14,15 @@
         "app-center"
     ],
     "activationEvents": [
-        "onCommand:extension.sayHello"
+        "onCommand:appcenter.WhoAmI"
     ],
     "main": "./out/extension",
     "contributes": {
         "commands": [
             {
-                "command": "extension.sayHello",
-                "title": "Hello World"
+                "command": "appcenter.WhoAmI",
+                "title": "WhoAmI",
+                "category": "AppCenter"
             }
         ]
     },
@@ -37,5 +38,9 @@
         "vscode": "^1.1.6",
         "@types/node": "^7.0.43",
         "@types/mocha": "^2.2.42"
+    },
+    "dependencies": {
+        "open": "0.0.5",
+        "opener": "^1.4.3"
     }
 }
