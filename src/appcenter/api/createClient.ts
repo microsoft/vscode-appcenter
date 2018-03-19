@@ -2,7 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for details.
 
 import { Profile } from "../auth/profile/profile";
-import AppCenterClient from "../lib/appCenterNodeClient/index";
+import AppCenterClient from "../lib/app-center-node-client/index";
 import { AppCenterClientCredentials } from "./appCenterClientCredentials";
 
 // tslint:disable-next-line:interface-name
@@ -13,14 +13,15 @@ export interface AppCenterClientFactory {
 
 export function createAppCenterClient(): AppCenterClientFactory {
     return {
-      fromToken(token: string, endpoint: string): AppCenterClient {
-        return new AppCenterClient(new AppCenterClientCredentials(Promise.resolve(<any>token)), endpoint);
+      fromToken(token: string): AppCenterClient {
+
+        return new AppCenterClient(new AppCenterClientCredentials(Promise.resolve(<any>token)));
       },
-      fromProfile(user: Profile, endpoint): AppCenterClient | null {
+      fromProfile(user: Profile): AppCenterClient | null {
         if (!user) {
           return null;
         }
-        return new AppCenterClient(new AppCenterClientCredentials(Promise.resolve(user.accessToken)), endpoint);
+        return new AppCenterClient(new AppCenterClientCredentials(Promise.resolve(user.accessToken)));
       }
     };
 }
