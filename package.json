@@ -22,11 +22,7 @@
         "app-center"
     ],
     "activationEvents": [
-        "onCommand:appcenter.whoami",
-        "onCommand:appcenter.login",
-        "onCommand:appcenter.logout",
-        "onCommand:appcenter.menu",
-        "onCommand:appcenter.start"
+        "*"
     ],
     "main": "./src/extension",
     "contributes": {

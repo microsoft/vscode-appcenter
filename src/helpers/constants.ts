@@ -4,6 +4,7 @@ export class Constants {
     public static ExtensionName: string = "appcenter";
     public static DefaulAPIEndPoint: string = "https://api.appcenter.ms";
     public static DefaultLoginEndPoint: string = "https://appcenter.ms/cli-login";
+    public static AppCenterCodePushStatusBarColor: string = "#F3F3B2";
 }
 
 export class CommandNames {

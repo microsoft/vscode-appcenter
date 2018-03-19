@@ -1,8 +1,11 @@
 "use strict";
 
 import { Disposable, StatusBarItem } from "vscode";
+import Auth from "./appcenter/auth/auth";
 import { AppCenterCommandHandler } from "./appCenterCommandHandler";
+import { CommandNames } from "./helpers/constants";
 import { Profile } from "./helpers/interfaces";
+import { Strings } from "./helpers/strings";
 import { VsCodeUtils } from "./helpers/vsCodeUtils";
 import { ConsoleLogger } from "./log/consoleLogger";
 import { ILogger, LogLevel } from "./log/logHelper";
@@ -50,8 +53,20 @@ export class ExtensionManager implements Disposable {
         VsCodeUtils.ShowInfoMessage(message);
     }
 
-    public setupAppCenterStatusBar(_profile: Profile | null): Promise<void> {
-        // no op
+    public setupAppCenterStatusBar(profile: Profile | null): Promise<void> {
+        if (profile && profile.userName) {
+            return VsCodeUtils.setStatusBar(this._appCenterStatusBarItem,
+                `$(icon octicon-person) ${profile.userName}`,
+                Strings.YouAreLoggedInMsg(profile.userName),
+                `${CommandNames.ShowMenu}`
+            );
+        } else {
+            VsCodeUtils.setStatusBar(this._appCenterStatusBarItem,
+                `$(icon octicon-sign-in) ${Strings.LoginToAppCenterButton}`,
+                Strings.UserMustSignIn,
+                `${CommandNames.Login}`
+            );
+        }
         return Promise.resolve(void 0);
     }
 
@@ -61,6 +76,14 @@ export class ExtensionManager implements Disposable {
 
     private async initializeExtension(): Promise<void> {
         this._appCenterCommandHandler = new AppCenterCommandHandler(this);
+        this._appCenterStatusBarItem = VsCodeUtils.getStatusBarItem();
+        if (this._projectRootPath) {
+            Auth.getProfile(this._projectRootPath).then((profile: Profile | null) => {
+                return this.setupAppCenterStatusBar(profile);
+            });
+        } else {
+            this._logger.log('No project root path defined', LogLevel.Error);
+        }
     }
 
     private cleanup(): void {

@@ -1,4 +1,4 @@
-import { commands, MessageItem, QuickPickItem, window } from "vscode";
+import { commands, MessageItem, QuickPickItem, StatusBarAlignment, StatusBarItem, window } from "vscode";
 import { Constants, MessageTypes } from "./constants";
 import { Utils } from "./utils";
 
@@ -23,6 +23,22 @@ export class ButtonMessageItem implements MessageItem, IButtonMessageItem {
 }
 
 export class VsCodeUtils {
+
+    public static getStatusBarItem(): StatusBarItem {
+        return window.createStatusBarItem(StatusBarAlignment.Left, 12);
+    }
+
+    public static async setStatusBar(statusBar: StatusBarItem, text: string, tooltip: string, commandOnClick?: string): Promise<void> {
+        if (statusBar !== undefined) {
+            statusBar.command = commandOnClick; // undefined clears the command
+            statusBar.text = text;
+            statusBar.tooltip = tooltip;
+            statusBar.color = Constants.AppCenterCodePushStatusBarColor;
+            statusBar.show();
+        }
+        return Promise.resolve(void 0);
+    }
+
     public static async ShowErrorMessage(message: string, ...urlMessageItem: IButtonMessageItem[]): Promise<IButtonMessageItem> {
         return this.showMessage(message, MessageTypes.Error, ...urlMessageItem);
     }

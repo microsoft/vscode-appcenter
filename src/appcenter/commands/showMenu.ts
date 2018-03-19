@@ -2,7 +2,7 @@ import * as vscode from "vscode";
 import { ExtensionManager } from "../../extensionManager";
 import { CommandNames } from "../../helpers/constants";
 import { Strings } from "../../helpers/strings";
-import { ILogger, LogLevel } from "../../log/logHelper";
+import { ILogger } from "../../log/logHelper";
 import { Command } from "./command";
 import Logout from "./logout";
 import Start from "./start";

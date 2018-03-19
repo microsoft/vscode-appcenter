@@ -10,6 +10,7 @@ export class Strings {
     public static MenuTitlePlaceholder: string = "Please select action";
     public static LogoutMenuLabel: string = "Logout";
     public static StartAnIdeaMenuLabel: string = "Start An Idea";
+    public static LoginToAppCenterButton: string = "Login to App Center";
 
     public static YouAreLoggedInMsg: (name: string) => string = (name: string) => {
         return `You are logged into App Center as '${name}'`;
