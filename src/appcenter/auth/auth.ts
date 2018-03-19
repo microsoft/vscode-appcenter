@@ -16,6 +16,7 @@ export default class Auth {
         if (!token) {
             return Promise.resolve(null);
         }
+
         return this.removeLoggedInUser(projectRootPath).then(() => {
             return Auth.fetchUserInfoByTokenAndSave(token, projectRootPath).then((profile: Profile) => {
                 return Promise.resolve(profile);

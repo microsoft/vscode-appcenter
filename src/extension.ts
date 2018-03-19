@@ -9,17 +9,21 @@ let _extensionManager: ExtensionManager;
 export async function activate(context: vscode.ExtensionContext) {
     // Construct the extension manager that handles AppCenter commands
     _extensionManager = new ExtensionManager();
-    await _extensionManager.Initialize();
+    const rootPath = vscode.workspace.rootPath;
+    await _extensionManager.Initialize(rootPath);
 
     // Register the ext manager for disposal
     context.subscriptions.push(_extensionManager);
     registerAppCenterCommands(context);
 }
 
-export function deactivate() {
-}
+export function deactivate() {}
 
 function registerAppCenterCommands(context: vscode.ExtensionContext): void {
     context.subscriptions.push(vscode.commands.registerCommand(CommandNames.WhoAmI,
         () => _extensionManager.RunCommand(() => _extensionManager.AppCenterCommandHandler.WhoAmI())));
+    context.subscriptions.push(vscode.commands.registerCommand(CommandNames.Login,
+        () => _extensionManager.RunCommand(() => _extensionManager.AppCenterCommandHandler.Login())));
+    context.subscriptions.push(vscode.commands.registerCommand(CommandNames.Logout,
+        () => _extensionManager.RunCommand(() => _extensionManager.AppCenterCommandHandler.Logout())));
 }

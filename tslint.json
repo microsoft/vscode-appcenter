@@ -302,7 +302,7 @@
             }
         ],
         "object-literal-shorthand": false,
-        "prefer-type-cast": true,
+        "prefer-type-cast": false,
         "space-before-function-paren": false,
         "missing-optional-annotation": false,
         "no-duplicate-parameter-names": false,

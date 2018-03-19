@@ -1,18 +1,25 @@
+import Login from "./appcenter/commands/login";
+import Logout from "./appcenter/commands/logout";
+import WhoAmI from "./appcenter/commands/whoami";
 import { ExtensionManager } from "./extensionManager";
 import { ConsoleLogger } from "./log/consoleLogger";
-import { ILogger, LogLevel } from "./log/logHelper";
+import { ILogger } from "./log/logHelper";
 
 "use strict";
 
 export class AppCenterCommandHandler {
-    private _manager: ExtensionManager;
 
-    constructor(manager: ExtensionManager, private logger: ILogger = new ConsoleLogger()) {
-        this._manager = manager;
+    constructor(private manager: ExtensionManager, private logger: ILogger = new ConsoleLogger()) {}
+
+    public async WhoAmI(): Promise<void> {
+        await new WhoAmI(this.manager, this.logger).runNoClient();
     }
 
-    public WhoAmI(): void {
-        this.logger.log("Call WhoamI", LogLevel.Info);
-        this._manager.DisplayInfoMessage('Hello World!');
+    public async Login(): Promise<void> {
+        await new Login(this.manager, this.logger).runNoClient();
+    }
+
+    public async Logout(): Promise<void> {
+        await new Logout(this.manager, this.logger).runNoClient();
     }
 }

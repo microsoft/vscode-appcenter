@@ -1,21 +1,29 @@
 "use strict";
 
-import { Disposable } from "vscode";
+import { Disposable, StatusBarItem } from "vscode";
 import { AppCenterCommandHandler } from "./appCenterCommandHandler";
+import { Profile } from "./helpers/interfaces";
 import { VsCodeUtils } from "./helpers/vsCodeUtils";
 import { ConsoleLogger } from "./log/consoleLogger";
 import { ILogger, LogLevel } from "./log/logHelper";
 
 export class ExtensionManager implements Disposable {
     private _appCenterCommandHandler: AppCenterCommandHandler;
+    private _appCenterStatusBarItem: StatusBarItem;
+    private _projectRootPath: string | undefined;
     private _logger: ILogger;
 
     public get AppCenterCommandHandler(): AppCenterCommandHandler {
         return this._appCenterCommandHandler;
     }
 
-    public async Initialize(logger: ILogger = new ConsoleLogger()): Promise<void> {
+    public get projectRootPath(): string | undefined {
+        return this._projectRootPath;
+    }
+
+    public async Initialize(projectRootPath: string | undefined, logger: ILogger = new ConsoleLogger()): Promise<void> {
         this._logger = logger;
+        this._projectRootPath = projectRootPath;
         this._logger.log("Init Extension Manager", LogLevel.Info);
         await this.initializeExtension();
     }
@@ -42,6 +50,11 @@ export class ExtensionManager implements Disposable {
         VsCodeUtils.ShowInfoMessage(message);
     }
 
+    public setupAppCenterStatusBar(_profile: Profile | null): Promise<void> {
+        // no op
+        return Promise.resolve(void 0);
+    }
+
     public async dispose(): Promise<void>  {
         this.cleanup();
     }
@@ -52,5 +65,8 @@ export class ExtensionManager implements Disposable {
 
     private cleanup(): void {
         this._logger.log("Called cleanup", LogLevel.Info);
+        if (this._appCenterStatusBarItem) {
+            this._appCenterStatusBarItem.dispose();
+        }
     }
 }

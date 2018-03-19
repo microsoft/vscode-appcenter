@@ -22,7 +22,9 @@
         "app-center"
     ],
     "activationEvents": [
-        "onCommand:appcenter.whoami"
+        "onCommand:appcenter.whoami",
+        "onCommand:appcenter.login",
+		"onCommand:appcenter.logout"
     ],
     "main": "./src/extension",
     "contributes": {
@@ -30,6 +32,16 @@
             {
                 "command": "appcenter.whoami",
                 "title": "WhoAmI",
+                "category": "AppCenter"
+            },
+            {
+                "command": "appcenter.login",
+                "title": "Login",
+                "category": "AppCenter"
+            },
+            {
+                "command": "appcenter.logout",
+                "title": "Logout",
                 "category": "AppCenter"
             }
         ]
