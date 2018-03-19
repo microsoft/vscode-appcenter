@@ -1,0 +1,88 @@
+export class ConfigurationReader {
+    public static readString(value: any): string {
+        if (this.isString(value)) {
+            return value;
+        } else {
+            const errorMessage: string = `Configuration Reader: Failed to parse value ${value}`;
+            throw new Error(errorMessage);
+        }
+    }
+
+    public static readBoolean(value: any): boolean {
+        if (this.isBoolean(value)) {
+            return value;
+        } else if (value === "true" || value === "false") {
+            return value === "true";
+        } else {
+            const errorMessage: string = `Configuration Reader: Failed to parse value ${value}`;
+            throw new Error(errorMessage);
+        }
+    }
+
+    public static readArray(value: any): any[] {
+        if (this.isArray(value)) {
+            return value;
+        } else {
+            const errorMessage: string = `Configuration Reader: Failed to parse value ${value}`;
+            throw new Error(errorMessage);
+        }
+    }
+
+    public static readObject(value: any): Object {
+        if (this.isObject(value)) {
+            return value;
+        } else {
+            const errorMessage: string = `Configuration Reader: Failed to parse value ${value}`;
+            throw new Error(errorMessage);
+        }
+    }
+
+    /* We try to read an integer. It can be either an integer, or a string that can be parsed as an integer */
+    public static readInt(value: any): number {
+        if (this.isInt(value)) {
+            return value;
+        } else if (this.isString(value)) {
+            return parseInt(value, 10);
+        } else {
+            const errorMessage: string = `Configuration Reader: Failed to parse value ${value}`;
+            throw new Error(errorMessage);
+        }
+    }
+
+    /* We try to read an integer. If it's a falsable value we return the default value, if not we behave like this.readInt(value)
+      If the value is provided but it can't be parsed we'll throw an exception so the user knows that we didn't understand
+      the value that was provided */
+    public static readIntWithDefaultSync(value: any, defaultValue: number): number {
+        return value ? this.readInt(value) : defaultValue;
+    }
+
+    public static readIntWithDefaultAsync(value: any, defaultValuePromise: Promise<number>): Promise<number> {
+        return defaultValuePromise.then(defaultValue => {
+            return this.readIntWithDefaultSync(value, defaultValue);
+        });
+    }
+
+    private static isArray(value: any): boolean {
+        return Array.isArray(value);
+    }
+
+    private static isObject(value: any): boolean {
+        return typeof value === "object" || !ConfigurationReader.isArray(value);
+    }
+
+    private static isString(value: any): boolean {
+        return typeof value === "string";
+    }
+
+    private static isBoolean(value: any): boolean {
+        return typeof value === "boolean";
+    }
+
+    private static isInt(value: any): boolean {
+        return this.isNumber(value) && value % 1 === 0;
+    }
+
+    private static isNumber(value: any): boolean {
+        return typeof value === "number";
+    }
+}

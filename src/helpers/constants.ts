@@ -2,6 +2,8 @@
 
 export class Constants {
     public static ExtensionName: string = "appcenter";
+    public static DefaulAPIEndPoint: string = "https://api.appcenter.ms";
+    public static DefaultLoginEndPoint: string = "https://appcenter.ms/cli-login";
 }
 
 export class CommandNames {

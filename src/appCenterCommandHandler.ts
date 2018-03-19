@@ -12,7 +12,7 @@ export class AppCenterCommandHandler {
     }
 
     public WhoAmI(): void {
-        this.logger.log("Call whoami", LogLevel.Info);
+        this.logger.log("Call WhoamI", LogLevel.Info);
         this._manager.DisplayInfoMessage('Hello World!');
     }
 }
