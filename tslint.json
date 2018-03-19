@@ -1,4 +1,9 @@
 {
+    "linterOptions": {
+        "exclude": [
+            "src/extension/appcenter/lib"
+        ]
+    },
     "rules": {
         "insecure-random": true,
         "no-banned-terms": true,
