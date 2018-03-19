@@ -11,6 +11,9 @@ export class Strings {
     public static LogoutMenuLabel: string = "Logout";
     public static StartAnIdeaMenuLabel: string = "Start An Idea";
     public static LoginToAppCenterButton: string = "Login to App Center";
+    public static PleaseEnterIdeaName: string = "Please enter idea name";
+    public static LoadingStatusBarMessage: string = "Loading some information for you...";
+    public static PleaseSelectCurrentAppOrgMsg: string = "Please select organization where to create an App";
 
     public static YouAreLoggedInMsg: (name: string) => string = (name: string) => {
         return `You are logged into App Center as '${name}'`;

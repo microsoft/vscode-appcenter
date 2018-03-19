@@ -13,7 +13,27 @@ export class SettingsHelper {
     /**
      * Get appcenter api endpoint setting
      */
-   public static getAppCenterAPIEndpoint(): string {
+    public static getAppCenterAPIEndpoint(): string {
        return Constants.DefaulAPIEndPoint;
-   }
+    }
+
+    public static createIOSAppInAppCenter(): boolean {
+       return true;
+    }
+
+    public static createAndroidAppInAppCenter(): boolean {
+        return true;
+    }
+
+    public static createTestersDistributionGroupInAppCenter(): boolean {
+        return true;
+    }
+
+    public static connectRepoToBuildService(): boolean {
+        return true;
+    }
+
+    public static configureBranchAndStartNewBuild(): boolean {
+        return true;
+    }
 }

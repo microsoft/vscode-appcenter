@@ -10,10 +10,25 @@ import Auth from "../auth/auth";
 export class Command {
 
     protected clientFactory: AppCenterClientFactory;
-    private client: AppCenterClient;
+    protected client: AppCenterClient;
+    protected profile: Profile;
 
     constructor(protected manager: ExtensionManager, protected logger: ILogger) {
         this.clientFactory = createAppCenterClient();
+    }
+
+    public get Profile(): Profile | null {
+        if (!this.profile) {
+            Auth.getProfile(<string>this.manager.projectRootPath).then((profile: Profile) => {
+                if (!profile) {
+                    this.logger.log('No profile found', LogLevel.Info);
+                    return null;
+                }
+                this.profile = profile;
+                return this.profile;
+            });
+        }
+        return this.profile;
     }
 
     public runNoClient(): Promise<void> {
@@ -29,7 +44,7 @@ export class Command {
         const rootPath: string | undefined = this.manager.projectRootPath;
         if (!rootPath) {
             this.logger.log('No project root path found', LogLevel.Error);
-            return Promise.resolve(void 0);
+            throw new Error("No project root path found");
         }
 
         return Auth.getProfile(<string>this.manager.projectRootPath).then((profile: Profile) => {
@@ -37,11 +52,13 @@ export class Command {
                 VsCodeUtils.ShowWarningMessage(Strings.UserIsNotLoggedInMsg);
                 return Promise.resolve(void 0);
             } else {
+                this.profile = profile;
                 const clientOrNull: AppCenterClient | null  = this.resolveAppCenterClient(profile);
                 if (clientOrNull) {
                     this.client = clientOrNull;
                 } else {
                     this.logger.log("Failed to get App Center client", LogLevel.Error);
+                    throw new Error("Failed to get App Center client");
                 }
                 return Promise.resolve(void 0);
             }
