@@ -11,6 +11,8 @@ export class CommandNames {
     public static WhoAmI: string = CommandNames.CommandPrefix + "whoami";
     public static Login: string = CommandNames.CommandPrefix + "login";
     public static Logout: string = CommandNames.CommandPrefix + "logout";
+    public static ShowMenu: string = CommandNames.CommandPrefix + "menu";
+    public static Start: string = CommandNames.CommandPrefix + "start";
 }
 
 export enum MessageTypes {

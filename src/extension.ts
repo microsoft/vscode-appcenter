@@ -26,4 +26,8 @@ function registerAppCenterCommands(context: vscode.ExtensionContext): void {
         () => _extensionManager.RunCommand(() => _extensionManager.AppCenterCommandHandler.Login())));
     context.subscriptions.push(vscode.commands.registerCommand(CommandNames.Logout,
         () => _extensionManager.RunCommand(() => _extensionManager.AppCenterCommandHandler.Logout())));
+    context.subscriptions.push(vscode.commands.registerCommand(CommandNames.ShowMenu,
+        () => _extensionManager.RunCommand(() => _extensionManager.AppCenterCommandHandler.ShowMenu())));
+    context.subscriptions.push(vscode.commands.registerCommand(CommandNames.Start,
+        () => _extensionManager.RunCommand(() => _extensionManager.AppCenterCommandHandler.Start())));
 }

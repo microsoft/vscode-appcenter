@@ -7,6 +7,9 @@ export class Strings {
     public static FailedToExecuteLoginMsg: string = "Failed to execute login to App Center";
     public static UserIsNotLoggedInMsg: string = "You are not logged into App Center";
     public static UserLoggedOutMsg: string = "Successfully logged out of App Center";
+    public static MenuTitlePlaceholder: string = "Please select action";
+    public static LogoutMenuLabel: string = "Logout";
+    public static StartAnIdeaMenuLabel: string = "Start An Idea";
 
     public static YouAreLoggedInMsg: (name: string) => string = (name: string) => {
         return `You are logged into App Center as '${name}'`;
