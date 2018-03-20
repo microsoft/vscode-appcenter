@@ -1,132 +1,188 @@
-import { AppCenterClient, models } from "./appcenter/api";
-import { AppCenterOS, AppCenterPlatform, Constants } from "./helpers/constants";
+import * as vscode from "vscode";
+import { AppCenterClient } from "./appcenter/api";
+import { AppCenterOS, AppCenterPlatform } from "./helpers/constants";
+import { SettingsHelper } from "./helpers/settingsHelper";
+import { Strings } from "./helpers/strings";
 import { ILogger, LogLevel } from "./log/logHelper";
 
 export default class AppCenterAppCreator {
-    private _createIOSApp: boolean = false;
-    private _createAndroidApp: boolean = false;
-    private _createBetaTestersDistributionGroup: boolean = false;
-    private _connectRepositoryToBuildService: boolean = false;
-    private _withBranchConfigurationCreatedAndBuildKickOff: boolean = false;
 
-    constructor(private ideaName: string, private userOrOrg: models.ListOKResponseItem, private client: AppCenterClient, private logger: ILogger) {
-        this.logger.log('Initiazlied AppCenterAppCreator', LogLevel.Info);
+    protected appDisplayAppName: string;
+    protected appName: string;
+    protected isCreatedForOrganization: boolean;
+    protected ownerName: string;
+    protected repoUrl: string;
+    protected defaultBranchName: string;
+    protected _createBetaTestersDistributionGroup: boolean;
+    protected _connectRepositoryToBuildService: boolean;
+    protected _withBranchConfigurationCreatedAndBuildKickOff: boolean;
+    protected platform: AppCenterPlatform = AppCenterPlatform.ReactNative;
+    protected os: AppCenterOS;
+
+    constructor(private client: AppCenterClient, private logger: ILogger) {
+        this.logger.log('Initiazlied AppCenter Creator', LogLevel.Info);
     }
 
-    public withIOSApp(ok: boolean): AppCenterAppCreator {
-        this._createIOSApp = ok;
-        return this;
-    }
+    public async configureApp(
+         displayAppName: string,
+         appName: string,
+         isCreatedForOrganization: boolean,
+         ownerName: string,
+         repoUrl: string,
+         defaultBranchName: string,
+         createBetaTestersDistributionGroup: boolean,
+         connectRepositoryToBuildService: boolean,
+         withBranchConfigurationCreatedAndBuildKickOff: boolean
+        ): Promise<boolean> {
 
-    public withAndroidApp(ok: boolean): AppCenterAppCreator {
-        this._createAndroidApp = ok;
-        return this;
-    }
+        this.appDisplayAppName = displayAppName;
+        this.appName = appName;
+        this.isCreatedForOrganization = isCreatedForOrganization;
+        this.ownerName = ownerName;
+        this.repoUrl = repoUrl;
+        this.defaultBranchName = defaultBranchName;
 
-    public withBetaTestersDistributionGroup(ok: boolean): AppCenterAppCreator {
-        this._createBetaTestersDistributionGroup = ok;
-        return this;
-    }
+        this._createBetaTestersDistributionGroup = createBetaTestersDistributionGroup;
+        this._connectRepositoryToBuildService = connectRepositoryToBuildService;
+        this._withBranchConfigurationCreatedAndBuildKickOff = withBranchConfigurationCreatedAndBuildKickOff;
 
-    public withConnectedRepositoryToBuildService(ok: boolean): AppCenterAppCreator {
-        this._connectRepositoryToBuildService = ok;
-        return this;
-    }
-
-    public withBranchConfigurationCreatedAndBuildKickOff(ok: boolean): AppCenterAppCreator {
-        this._withBranchConfigurationCreatedAndBuildKickOff = ok;
-        return this;
-    }
-
-    public async create(): Promise<boolean> {
-        if (this.userOrOrg.name === undefined || this.userOrOrg.displayName === undefined || this.ideaName === undefined) {
-            this.logger.error("Name for idea is undefined!");
-            return false;
-        }
-
-        // Ok, probably there is a better way to determine it ;)
-        const isCreatedForOrganization = this.userOrOrg.origin !== undefined;
-
-        const androidAppName = `${this.ideaName}${Constants.AndroidAppSuffix}`;
-        const androidDisplayName = `${this.ideaName}${Constants.AndroidAppSuffix}`;
-
-        const iOSAppName = `${this.ideaName}${Constants.iOSAppSuffix}`;
-        const iOSDisplayAppName = `${this.ideaName}${Constants.iOSAppSuffix}`;
-
-        // TODO: Looks like we can run some of this tasks in parallel, so check it on 2nd iteration!
-
-        if (this._createIOSApp) {
-            if (isCreatedForOrganization) {
-                try {
-                    await this.client.account.apps.createForOrg( {
-                        displayName: iOSDisplayAppName,
-                        name: iOSAppName,
-                        os: AppCenterOS.iOS,
-                        platform: AppCenterPlatform.ReactNative
-                    }, <string>this.userOrOrg.name);
-                } catch (err) {
-                    const errMessage: string = err.response ? err.response.body : err;
-                    this.logger.error(errMessage);
-                    return false; // OK, here we need to return meaning result so we can determine what goes wrong!
-                }
-            } else {
-                try {
-                    await this.client.account.apps.create( {
-                        displayName: iOSDisplayAppName,
-                        name: iOSAppName,
-                        os: AppCenterOS.iOS,
-                        platform: AppCenterPlatform.ReactNative
+        if (isCreatedForOrganization) {
+            await vscode.window.withProgress({ location: vscode.ProgressLocation.Window, title: Strings.VSCodeProgressLoadingTitle}, p => {
+                return new Promise((resolve) => {
+                    p.report({message: Strings.CreatingAppStatusBarMessage });
+                        this.createAppForOrg().then((created: boolean) => {
+                        resolve(created);
                     });
-                } catch (err) {
-                    const errMessage: string = err.response ? err.response.body : err;
-                    this.logger.error(errMessage);
-                    return false; // OK, here we need to return meaning result so we can determine what goes wrong!
-                }
-            }
-        }
-
-        if (this._createAndroidApp) {
-            if (isCreatedForOrganization) {
-                try {
-                    await this.client.account.apps.createForOrg( {
-                        displayName: androidDisplayName,
-                        name: androidAppName,
-                        os: AppCenterOS.Android,
-                        platform: AppCenterPlatform.ReactNative
-                    }, <string>this.userOrOrg.name);
-                } catch (err) {
-                    const errMessage: string = err.response ? err.response.body : err;
-                    this.logger.error(errMessage);
-                    return false; // OK, here we need to return meaning result so we can determine what goes wrong!
-                }
-            } else {
-                try {
-                    await this.client.account.apps.create( {
-                        displayName: androidDisplayName,
-                        name: androidAppName,
-                        os: AppCenterOS.Android,
-                        platform: AppCenterPlatform.ReactNative
+                });
+            });
+        } else {
+            await vscode.window.withProgress({ location: vscode.ProgressLocation.Window, title: Strings.VSCodeProgressLoadingTitle}, p => {
+                return new Promise((resolve) => {
+                    p.report({message: Strings.CreatingAppStatusBarMessage });
+                    this.createApp().then((created: boolean) => {
+                        resolve(created);
                     });
-                } catch (err) {
-                    const errMessage: string = err.response ? err.response.body : err;
-                    this.logger.error(errMessage);
-                    return false; // OK, here we need to return meaning result so we can determine what goes wrong!
-                }
-            }
+                });
+            });
         }
 
         if (this._createBetaTestersDistributionGroup) {
-            console.log('1');
+            await vscode.window.withProgress({ location: vscode.ProgressLocation.Window, title: Strings.VSCodeProgressLoadingTitle}, p => {
+                return new Promise((resolve) => {
+                    p.report({message: Strings.CreatingDistributionStatusBarMessage });
+                        this.createBetaTestersDistributionGroup().then((created: boolean) => {
+                            resolve(created);
+                        });
+                });
+            });
         }
 
         if (this._connectRepositoryToBuildService) {
-            console.log('2');
+            await vscode.window.withProgress({ location: vscode.ProgressLocation.Window, title: Strings.VSCodeProgressLoadingTitle}, p => {
+                return new Promise((resolve) => {
+                    p.report({message: Strings.ConnectingRepoToBuildServiceStatusBarMessage });
+                        this.connectRepositoryToBuildService().then((created: boolean) => {
+                            resolve(created);
+                        });
+                });
+            });
         }
 
         if (this._withBranchConfigurationCreatedAndBuildKickOff) {
-            console.log('3');
+            await vscode.window.withProgress({ location: vscode.ProgressLocation.Window, title: Strings.VSCodeProgressLoadingTitle}, p => {
+                return new Promise((resolve) => {
+                    p.report({message: Strings.CreateBranchConfigAndKickOffBuildStatusBarMessage });
+                        this.withBranchConfigurationCreatedAndBuildKickOff().then((created: boolean) => {
+                            resolve(created);
+                        });
+                });
+            });
         }
 
         return true;
+    }
+
+    private async withBranchConfigurationCreatedAndBuildKickOff(): Promise<boolean> {
+        try {
+            await this.client.build.branchConfigurations.create(this.appName, this.defaultBranchName, this.ownerName);
+            await this.client.build.builds.create(this.appName, this.defaultBranchName, this.ownerName);
+        } catch (err) {
+            return this.proceedErrorResponse(err);
+        }
+        return true;
+    }
+
+    private async connectRepositoryToBuildService(): Promise<boolean> {
+        try {
+            await this.client.build.repositoryConfigurations.createOrUpdate(
+                this.appName,
+                this.ownerName,
+                {
+                    repoUrl: this.repoUrl
+                }
+            );
+        } catch (err) {
+            return this.proceedErrorResponse(err);
+        }
+        return true;
+    }
+
+    private async createBetaTestersDistributionGroup(): Promise<boolean> {
+        try {
+            await this.client.account.distributionGroups.create(this.appName, {
+                name: SettingsHelper.distribroupTestersName()
+            }, this.ownerName);
+        } catch (err) {
+            return this.proceedErrorResponse(err);
+        }
+        return true;
+    }
+
+    private async createAppForOrg(): Promise<boolean> {
+        try {
+            await this.client.account.apps.createForOrg( {
+                displayName: this.appDisplayAppName,
+                name: this.appName,
+                os: this.os,
+                platform: this.platform
+            }, this.ownerName);
+        } catch (err) {
+            return this.proceedErrorResponse(err);
+        }
+        return true;
+    }
+
+    private async createApp(): Promise<boolean> {
+        try {
+            await this.client.account.apps.create( {
+                displayName: this.appDisplayAppName,
+                name: this.appName,
+                os: this.os,
+                platform: this.platform
+            });
+        } catch (err) {
+            return this.proceedErrorResponse(err);
+        }
+        return true;
+    }
+
+    private proceedErrorResponse(error: any): boolean {
+        const errMessage: string = error.response ? error.response.body : error;
+        this.logger.error(errMessage);
+        return false; // OK, here we need to return meaning result so we can determine what goes wrong!
+    }
+}
+
+export class IOSAppCenterAppCreator extends AppCenterAppCreator {
+    constructor(client: AppCenterClient, logger: ILogger) {
+        super(client, logger);
+        this.os = AppCenterOS.iOS;
+    }
+}
+
+export class AndroidAppCenterAppCreator extends AppCenterAppCreator {
+    constructor(client: AppCenterClient, logger: ILogger) {
+        super(client, logger);
+        this.os = AppCenterOS.Android;
     }
 }

@@ -36,4 +36,12 @@ export class SettingsHelper {
     public static configureBranchAndStartNewBuild(): boolean {
         return true;
     }
+
+    public static distribroupTestersName(): string {
+        return "Beta Testers";
+    }
+
+    public static defaultBranchName(): string {
+        return "master";
+    }
 }

@@ -1,5 +1,5 @@
 import * as vscode from "vscode";
-import AppCenterAppCreator from "../../appCenterAppCreator";
+import AppCenterAppBuilder from "../../appCenterAppBuilder";
 import { ExtensionManager } from "../../extensionManager";
 import { SettingsHelper } from "../../helpers/settingsHelper";
 import { Strings } from "../../helpers/strings";
@@ -23,7 +23,7 @@ export default class Start extends Command {
             if (ideaName) {
                 //TODO: Validate if name is unique! Or probably if already created do nothing?
 
-                vscode.window.withProgress({ location: vscode.ProgressLocation.Window, title: "Loading..."}, p => {
+                vscode.window.withProgress({ location: vscode.ProgressLocation.Window, title: Strings.VSCodeProgressLoadingTitle}, p => {
                     return new Promise((resolve) => {
                         p.report({message: Strings.LoadingStatusBarMessage });
                         this.client.account.organizations.list().then((orgList: models.ListOKResponseItem[]) => {
@@ -65,8 +65,11 @@ export default class Start extends Command {
                                 };
                             }
 
-                            const appCenterAppCreator = new AppCenterAppCreator(ideaName, selectedUserOrOrg, this.client, this.logger);
-                            appCenterAppCreator
+                            const repoUrl: string = 'https://github.com/max-mironov/rntestextension.git'; // TODO: ok for now hardcoded, later take it from earlier created
+                            const defaultBranchName: string = SettingsHelper.defaultBranchName();
+
+                            const appCenterAppBuilder = new AppCenterAppBuilder(ideaName, selectedUserOrOrg, repoUrl, defaultBranchName, this.client, this.logger);
+                            appCenterAppBuilder
                                 .withIOSApp(SettingsHelper.createIOSAppInAppCenter())
                                 .withAndroidApp(SettingsHelper.createAndroidAppInAppCenter())
                                 .withBetaTestersDistributionGroup(SettingsHelper.createTestersDistributionGroupInAppCenter())
