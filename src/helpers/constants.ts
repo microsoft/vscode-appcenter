@@ -5,6 +5,8 @@ export class Constants {
     public static DefaulAPIEndPoint: string = "https://api.appcenter.ms";
     public static DefaultLoginEndPoint: string = "https://appcenter.ms/cli-login";
     public static AppCenterCodePushStatusBarColor: string = "#F3F3B2";
+    public static iOSAppSuffix: string = "-ios";
+    public static AndroidAppSuffix: string = "-android";
 }
 
 export class CommandNames {
@@ -25,4 +27,21 @@ export enum MessageTypes {
 export enum AppCenterLoginType {
     Interactive,
     Token
+}
+
+export enum AppCenterOS {
+    iOS = "iOS",
+    Android = "Android",
+    macOS = "macOS",
+    Tizen = "Tizen",
+    tvOS = "tvOS",
+    Windows = "Windows"
+}
+
+export enum AppCenterPlatform {
+    ReactNative = "React-Native",
+    Cordova = "Cordova",
+    UWP = "UWP",
+    Xamarin = "Xamarin",
+    Java = "Java"
 }

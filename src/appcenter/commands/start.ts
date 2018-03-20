@@ -1,5 +1,7 @@
 import * as vscode from "vscode";
+import AppCenterAppCreator from "../../appCenterAppCreator";
 import { ExtensionManager } from "../../extensionManager";
+import { SettingsHelper } from "../../helpers/settingsHelper";
 import { Strings } from "../../helpers/strings";
 import { VsCodeUtils } from "../../helpers/vsCodeUtils";
 import { ILogger } from "../../log/logHelper";
@@ -19,6 +21,8 @@ export default class Start extends Command {
         vscode.window.showInputBox({ prompt: Strings.PleaseEnterIdeaName, ignoreFocusOut: true })
         .then(ideaName => {
             if (ideaName) {
+                //TODO: Validate if name is unique! Or probably if already created do nothing?
+
                 vscode.window.withProgress({ location: vscode.ProgressLocation.Window, title: "Loading..."}, p => {
                     return new Promise((resolve) => {
                         p.report({message: Strings.LoadingStatusBarMessage });
@@ -43,15 +47,34 @@ export default class Start extends Command {
                             description: Strings.UserMenuDescriptionLabel,
                             target: myself.userName
                         });
+                    } else {
+                        throw new Error("Profile is undefined!");
                     }
                     vscode.window.showQuickPick(options, { placeHolder: Strings.PleaseSelectCurrentAppOrgMsg })
                     .then((selected: {label: string, description: string, target: string}) => {
                         if (selected) {
-                            const selectedOrgs: models.ListOKResponseItem[] = orgList.filter(item => item.name === selected.target);
-                            if (selectedOrgs && selectedOrgs.length === 1) {
-                                const selectedOrg: models.ListOKResponseItem = selectedOrgs[0];
-                                VsCodeUtils.ShowInfoMessage(`You selected ${selectedOrg.displayName}`);
+                            const selectedUserOrOrgs: models.ListOKResponseItem[] = orgList.filter(item => item.name === selected.target);
+                            let selectedUserOrOrg: models.ListOKResponseItem;
+                            if (selectedUserOrOrgs && selectedUserOrOrgs.length === 1) {
+                                selectedUserOrOrg = selectedUserOrOrgs[0];
+                            } else {
+                                selectedUserOrOrg = {
+                                    displayName: myself.displayName,
+                                    name: myself.userName,
+                                    origin: undefined
+                                };
                             }
+
+                            const appCenterAppCreator = new AppCenterAppCreator(ideaName, selectedUserOrOrg, this.client, this.logger);
+                            appCenterAppCreator
+                                .withIOSApp(SettingsHelper.createIOSAppInAppCenter())
+                                .withAndroidApp(SettingsHelper.createAndroidAppInAppCenter())
+                                .withBetaTestersDistributionGroup(SettingsHelper.createTestersDistributionGroupInAppCenter())
+                                .withConnectedRepositoryToBuildService(SettingsHelper.connectRepoToBuildService())
+                                .withBranchConfigurationCreatedAndBuildKickOff(SettingsHelper.configureBranchAndStartNewBuild())
+                                .create();
+
+                            VsCodeUtils.ShowInfoMessage(`You selected ${selectedUserOrOrg.displayName}`);
                         }
                     });
                 });
