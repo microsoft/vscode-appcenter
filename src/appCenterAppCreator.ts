@@ -1,6 +1,6 @@
 import * as vscode from "vscode";
 import { AppCenterClient } from "./appcenter/api";
-import { AppCenterOS, AppCenterPlatform } from "./helpers/constants";
+import { AppCenterOS, AppCenterPlatform, Constants } from "./helpers/constants";
 import { SettingsHelper } from "./helpers/settingsHelper";
 import { Strings } from "./helpers/strings";
 import { ILogger, LogLevel } from "./log/logHelper";
@@ -49,7 +49,7 @@ export default class AppCenterAppCreator {
         if (isCreatedForOrganization) {
             await vscode.window.withProgress({ location: vscode.ProgressLocation.Window, title: Strings.VSCodeProgressLoadingTitle}, p => {
                 return new Promise((resolve) => {
-                    p.report({message: Strings.CreatingAppStatusBarMessage });
+                    p.report({message: Strings.CreatingAppStatusBarMessage(this.os.toString()) });
                         this.createAppForOrg().then((created: boolean) => {
                         resolve(created);
                     });
@@ -58,7 +58,7 @@ export default class AppCenterAppCreator {
         } else {
             await vscode.window.withProgress({ location: vscode.ProgressLocation.Window, title: Strings.VSCodeProgressLoadingTitle}, p => {
                 return new Promise((resolve) => {
-                    p.report({message: Strings.CreatingAppStatusBarMessage });
+                    p.report({message: Strings.CreatingAppStatusBarMessage(this.os.toString()) });
                     this.createApp().then((created: boolean) => {
                         resolve(created);
                     });
@@ -103,37 +103,10 @@ export default class AppCenterAppCreator {
     }
 
     private async withBranchConfigurationCreatedAndBuildKickOff(): Promise<boolean> {
-        // TODO: get out what to do with this magic!
+        // TODO: get out what to do with this magic with not working of method to create default config!
         try {
-            const configJson = `{
-                "branch": {
-                    "name": "master"
-                },
-                "id": 1,
-                "trigger": "continuous",
-                "environmentVariables": [],
-                "signed": false,
-                "testsEnabled": false,
-                "badgeIsEnabled": false,
-                "toolsets": {
-                    "buildscripts": {},
-                    "javascript": {
-                        "packageJsonPath": "package.json",
-                        "runTests": false
-                    },
-                    "xcode": {
-                        "projectOrWorkspacePath": "ios/rntestextension.xcodeproj",
-                        "scheme": "rntestextension",
-                        "xcodeVersion": "9.2",
-                        "automaticSigning": false
-                    }
-                }
-            }`;
+            const configJson = Constants.defaultBuildConfigJSON;
             const configObj = JSON.parse(configJson);
-            configObj.branch.name = this.defaultBranchName;
-            configObj.toolsets.distribution = {};
-            configObj.trigger = 'continuous';
-            configObj.signed = false;
 
             await this.client.build.branchConfigurations.create(this.appName, this.defaultBranchName, this.ownerName, configObj);
             await this.client.build.builds.create(this.appName, this.defaultBranchName, this.ownerName);

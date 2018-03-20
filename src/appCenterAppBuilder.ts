@@ -1,6 +1,8 @@
 import { AppCenterClient, models } from "./appcenter/api";
 import { AndroidAppCenterAppCreator, IOSAppCenterAppCreator } from "./appCenterAppCreator";
 import { Constants } from "./helpers/constants";
+import { Strings } from "./helpers/strings";
+import { VsCodeUtils } from "./helpers/vsCodeUtils";
 import { ILogger, LogLevel } from "./log/logHelper";
 
 export default class AppCenterAppBuilder {
@@ -85,6 +87,7 @@ export default class AppCenterAppBuilder {
                     this._withBranchConfigurationCreatedAndBuildKickOff
                 );
         }
+        VsCodeUtils.ShowInfoMessage(Strings.FinishedConfigMsg);
         return true;
     }
 }

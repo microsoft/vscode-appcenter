@@ -7,6 +7,31 @@ export class Constants {
     public static AppCenterCodePushStatusBarColor: string = "#F3F3B2";
     public static iOSAppSuffix: string = "-ios";
     public static AndroidAppSuffix: string = "-android";
+
+    public static defaultBuildConfigJSON: string = `{
+        "branch": {
+            "name": "master"
+        },
+        "id": 1,
+        "trigger": "continuous",
+        "environmentVariables": [],
+        "signed": false,
+        "testsEnabled": false,
+        "badgeIsEnabled": false,
+        "toolsets": {
+            "buildscripts": {},
+            "javascript": {
+                "packageJsonPath": "package.json",
+                "runTests": false
+            },
+            "xcode": {
+                "projectOrWorkspacePath": "ios/rntestextension.xcodeproj",
+                "scheme": "rntestextension",
+                "xcodeVersion": "9.2",
+                "automaticSigning": false
+            }
+        }
+    }`;
 }
 
 export class CommandNames {
