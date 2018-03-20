@@ -103,8 +103,39 @@ export default class AppCenterAppCreator {
     }
 
     private async withBranchConfigurationCreatedAndBuildKickOff(): Promise<boolean> {
+        // TODO: get out what to do with this magic!
         try {
-            await this.client.build.branchConfigurations.create(this.appName, this.defaultBranchName, this.ownerName);
+            const configJson = `{
+                "branch": {
+                    "name": "master"
+                },
+                "id": 1,
+                "trigger": "continuous",
+                "environmentVariables": [],
+                "signed": false,
+                "testsEnabled": false,
+                "badgeIsEnabled": false,
+                "toolsets": {
+                    "buildscripts": {},
+                    "javascript": {
+                        "packageJsonPath": "package.json",
+                        "runTests": false
+                    },
+                    "xcode": {
+                        "projectOrWorkspacePath": "ios/rntestextension.xcodeproj",
+                        "scheme": "rntestextension",
+                        "xcodeVersion": "9.2",
+                        "automaticSigning": false
+                    }
+                }
+            }`;
+            const configObj = JSON.parse(configJson);
+            configObj.branch.name = this.defaultBranchName;
+            configObj.toolsets.distribution = {};
+            configObj.trigger = 'continuous';
+            configObj.signed = false;
+
+            await this.client.build.branchConfigurations.create(this.appName, this.defaultBranchName, this.ownerName, configObj);
             await this.client.build.builds.create(this.appName, this.defaultBranchName, this.ownerName);
         } catch (err) {
             return this.proceedErrorResponse(err);

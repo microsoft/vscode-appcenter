@@ -209,7 +209,7 @@ function _create(appName, branch, ownerName, options, callback) {
       }
     }
   }
-  httpRequest.body = null;
+  httpRequest.body = JSON.stringify(options);
   // Send Request
   return client.pipeline(httpRequest, (err, response, responseBody) => {
     if (err) {

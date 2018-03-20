@@ -76,8 +76,6 @@ export default class Start extends Command {
                                 .withConnectedRepositoryToBuildService(SettingsHelper.connectRepoToBuildService())
                                 .withBranchConfigurationCreatedAndBuildKickOff(SettingsHelper.configureBranchAndStartNewBuild())
                                 .create();
-
-                            VsCodeUtils.ShowInfoMessage(`You selected ${selectedUserOrOrg.displayName}`);
                         }
                     });
                 });
