@@ -3,6 +3,7 @@ import { AppCenterClient } from "./appcenter/api";
 import { AppCenterOS, AppCenterPlatform, Constants } from "./helpers/constants";
 import { SettingsHelper } from "./helpers/settingsHelper";
 import { Strings } from "./helpers/strings";
+import { VsCodeUtils } from "./helpers/vsCodeUtils";
 import { ILogger, LogLevel } from "./log/logHelper";
 
 export default class AppCenterAppCreator {
@@ -46,60 +47,79 @@ export default class AppCenterAppCreator {
         this._connectRepositoryToBuildService = connectRepositoryToBuildService;
         this._withBranchConfigurationCreatedAndBuildKickOff = withBranchConfigurationCreatedAndBuildKickOff;
 
-        if (isCreatedForOrganization) {
-            await vscode.window.withProgress({ location: vscode.ProgressLocation.Window, title: Strings.VSCodeProgressLoadingTitle}, p => {
-                return new Promise((resolve) => {
-                    p.report({message: Strings.CreatingAppStatusBarMessage(this.os.toString()) });
-                        this.createAppForOrg().then((created: boolean) => {
+        let configured: boolean = false;
+
+        await vscode.window.withProgress({ location: vscode.ProgressLocation.Window, title: Strings.VSCodeProgressLoadingTitle}, p => {
+            return new Promise((resolve) => {
+                p.report({message: Strings.CreatingAppStatusBarMessage(this.os.toString()) });
+                if (isCreatedForOrganization) {
+                    this.createAppForOrg().then((created: boolean) => {
                         resolve(created);
                     });
-                });
-            });
-        } else {
-            await vscode.window.withProgress({ location: vscode.ProgressLocation.Window, title: Strings.VSCodeProgressLoadingTitle}, p => {
-                return new Promise((resolve) => {
-                    p.report({message: Strings.CreatingAppStatusBarMessage(this.os.toString()) });
+                } else {
                     this.createApp().then((created: boolean) => {
                         resolve(created);
                     });
-                });
+                }
             });
-        }
+        }).then(async appCreated => {
+            if (appCreated) {
+                // We consider that configured is true because app is created, if other things goes wrong
+                // Just show the error message
+                configured = true;
 
-        if (this._createBetaTestersDistributionGroup) {
-            await vscode.window.withProgress({ location: vscode.ProgressLocation.Window, title: Strings.VSCodeProgressLoadingTitle}, p => {
-                return new Promise((resolve) => {
-                    p.report({message: Strings.CreatingDistributionStatusBarMessage });
-                        this.createBetaTestersDistributionGroup().then((created: boolean) => {
-                            resolve(created);
+                // this step is optional, so if we skip it or failed we can go further
+                if (this._createBetaTestersDistributionGroup) {
+                    await vscode.window.withProgress({ location: vscode.ProgressLocation.Window, title: Strings.VSCodeProgressLoadingTitle}, p => {
+                        return new Promise((resolve) => {
+                            p.report({message: Strings.CreatingDistributionStatusBarMessage });
+                                this.createBetaTestersDistributionGroup().then((created: boolean) => {
+                                    resolve(created);
+                                });
                         });
-                });
-            });
-        }
+                    }).then(async distributionGroupCreated => {
+                        if (!distributionGroupCreated) {
+                            VsCodeUtils.ShowErrorMessage(Strings.FailedToCreateDistributionGroup);
+                        }
+                    });
+                }
 
-        if (this._connectRepositoryToBuildService) {
-            await vscode.window.withProgress({ location: vscode.ProgressLocation.Window, title: Strings.VSCodeProgressLoadingTitle}, p => {
-                return new Promise((resolve) => {
-                    p.report({message: Strings.ConnectingRepoToBuildServiceStatusBarMessage });
-                        this.connectRepositoryToBuildService().then((created: boolean) => {
-                            resolve(created);
+                if (this._connectRepositoryToBuildService) {
+                    await vscode.window.withProgress({ location: vscode.ProgressLocation.Window, title: Strings.VSCodeProgressLoadingTitle}, p => {
+                        return new Promise((resolve) => {
+                            p.report({message: Strings.ConnectingRepoToBuildServiceStatusBarMessage });
+                                this.connectRepositoryToBuildService().then((created: boolean) => {
+                                    resolve(created);
+                                });
                         });
-                });
-            });
-        }
+                    }).then(async repoConnectedToBuildService => {
+                        if (repoConnectedToBuildService) {
+                            if (this._withBranchConfigurationCreatedAndBuildKickOff) {
+                                await vscode.window.withProgress({ location: vscode.ProgressLocation.Window, title: Strings.VSCodeProgressLoadingTitle}, p => {
+                                    return new Promise((resolve) => {
+                                        p.report({message: Strings.CreateBranchConfigAndKickOffBuildStatusBarMessage });
+                                            this.withBranchConfigurationCreatedAndBuildKickOff().then((created: boolean) => {
+                                                resolve(created);
+                                            });
+                                    });
+                                }).then(async branchConfiguredAndBuildStarted => {
+                                    if (!branchConfiguredAndBuildStarted) {
+                                        VsCodeUtils.ShowErrorMessage(Strings.FailedToConfigureBranchAndStartNewBuild);
+                                    }
+                                });
+                            }
+                        } else {
+                            VsCodeUtils.ShowErrorMessage(Strings.FailedToConnectRepoToBuildService);
+                        }
+                    });
+                }
+            } else {
+                // This is the only case when we haven't done anything in appcenter, for other cases just show error message
+                VsCodeUtils.ShowErrorMessage(Strings.FailedToCreateAppInAppCenter(this.os));
+            }
+        });
 
-        if (this._withBranchConfigurationCreatedAndBuildKickOff) {
-            await vscode.window.withProgress({ location: vscode.ProgressLocation.Window, title: Strings.VSCodeProgressLoadingTitle}, p => {
-                return new Promise((resolve) => {
-                    p.report({message: Strings.CreateBranchConfigAndKickOffBuildStatusBarMessage });
-                        this.withBranchConfigurationCreatedAndBuildKickOff().then((created: boolean) => {
-                            resolve(created);
-                        });
-                });
-            });
-        }
-
-        return true;
+        return configured;
     }
 
     private async withBranchConfigurationCreatedAndBuildKickOff(): Promise<boolean> {
@@ -173,7 +193,7 @@ export default class AppCenterAppCreator {
     private proceedErrorResponse(error: any): boolean {
         const errMessage: string = error.response ? error.response.body : error;
         this.logger.error(errMessage);
-        return false; // OK, here we need to return meaning result so we can determine what goes wrong!
+        return false;
     }
 }
 

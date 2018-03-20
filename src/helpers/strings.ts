@@ -18,11 +18,15 @@ export class Strings {
     public static NoIdeaNameSelectedMsg: string = "Please select an idea name!";
     public static VSCodeProgressLoadingTitle: string = "Loading...";
     public static LoadingStatusBarMessage: string = "Loading some information for you...";
-    public static FinishedConfigMsg: string = "Ace, you've done!";
+    public static FinishedConfigMsg: string = "Ace, you're done!";
 
     public static CreatingDistributionStatusBarMessage: string = "Creating distribution group for you...";
     public static ConnectingRepoToBuildServiceStatusBarMessage: string = "Connecting repository for you...";
     public static CreateBranchConfigAndKickOffBuildStatusBarMessage: string = "Starting new build for you...";
+
+    public static FailedToConnectRepoToBuildService: string = "Sorry, failed to connect repository to build service";
+    public static FailedToConfigureBranchAndStartNewBuild: string = "Sorry, failed to configure branch and start new build";
+    public static FailedToCreateDistributionGroup: string = "Sorry, failed to create distribution group";
 
     public static YouAreLoggedInMsg: (name: string) => string = (name: string) => {
         return `You are logged into App Center as '${name}'`;
@@ -30,5 +34,9 @@ export class Strings {
 
     public static CreatingAppStatusBarMessage: (osName: string) => string = (osName: string) => {
         return `Creating ${osName} app for you...`;
+    }
+
+    public static FailedToCreateAppInAppCenter: (osName: string) => string = (osName: string) => {
+        return `Sorry, failed to create ${osName} app in app center`;
     }
 }

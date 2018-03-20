@@ -58,8 +58,12 @@ export default class AppCenterAppBuilder {
 
         // TODO: Looks like we can run some of this tasks in parallel, so check it on 2nd iteration!
 
+        // If no need to create than set this var to true by default
+        let IOSAppCreated: boolean = !this._createIOSApp;
+        let AndroidAppCretead: boolean = !this._createAndroidApp;
+
         if (this._createIOSApp) {
-            await new IOSAppCenterAppCreator(this.client, this.logger)
+            IOSAppCreated = await new IOSAppCenterAppCreator(this.client, this.logger)
                 .configureApp(
                     iOSDisplayAppName,
                     iOSAppName,
@@ -74,7 +78,7 @@ export default class AppCenterAppBuilder {
         }
 
         if (this._createAndroidApp) {
-            await new AndroidAppCenterAppCreator(this.client, this.logger)
+            AndroidAppCretead = await new AndroidAppCenterAppCreator(this.client, this.logger)
                 .configureApp(
                     androidDisplayName,
                     androidAppName,
@@ -87,7 +91,10 @@ export default class AppCenterAppBuilder {
                     this._withBranchConfigurationCreatedAndBuildKickOff
                 );
         }
-        VsCodeUtils.ShowInfoMessage(Strings.FinishedConfigMsg);
+
+        if (IOSAppCreated && AndroidAppCretead) {
+            VsCodeUtils.ShowInfoMessage(Strings.FinishedConfigMsg);
+        }
         return true;
     }
 }
