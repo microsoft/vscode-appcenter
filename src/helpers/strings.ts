@@ -13,7 +13,10 @@ export class Strings {
     public static LoginToAppCenterButton: string = "Login to App Center";
     public static PleaseEnterIdeaName: string = "Please enter idea name";
     public static LoadingStatusBarMessage: string = "Loading some information for you...";
-    public static PleaseSelectCurrentAppOrgMsg: string = "Please select organization where to create an App";
+    public static PleaseSelectCurrentAppOrgMsg: string = "Please select user/organization where to create an App";
+    public static OrganizationMenuDescriptionLabel: string = "Organization";
+    public static UserMenuDescriptionLabel: string = "User";
+    public static NoIdeaNameSelectedMsg: string = "Please select an idea name!";
 
     public static YouAreLoggedInMsg: (name: string) => string = (name: string) => {
         return `You are logged into App Center as '${name}'`;

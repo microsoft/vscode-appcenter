@@ -27,19 +27,20 @@ export default class Start extends Command {
                             resolve(organizations);
                         });
                     });
-                }).then(async (orgList: models.ListOKResponseItem[]) => {
+                  }).then(async (orgList: models.ListOKResponseItem[]) => {
                     const options = orgList.map(item => {
                         return {
                             label: `${item.displayName} (${item.name})`,
-                            description: "",
+                            description: Strings.OrganizationMenuDescriptionLabel,
                             target: item.name
                         };
                     });
                     const myself: Profile | null = await this.Profile;
                     if (myself) {
-                        options.splice( orgList.length, 0, {
+                        // Insert user at the very 1st position
+                        options.splice( 0, 0, {
                             label: `${myself.displayName}`,
-                            description: "",
+                            description: Strings.UserMenuDescriptionLabel,
                             target: myself.userName
                         });
                     }
@@ -55,7 +56,7 @@ export default class Start extends Command {
                     });
                 });
             } else {
-                VsCodeUtils.ShowInfoMessage("Please select an idea NAME!");
+                VsCodeUtils.ShowInfoMessage(Strings.NoIdeaNameSelectedMsg);
             }
         });
         return Promise.resolve(void 0);
