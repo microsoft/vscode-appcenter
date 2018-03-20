@@ -27,7 +27,7 @@ export default class Start extends Command {
                             resolve(organizations);
                         });
                     });
-                }).then((orgList: models.ListOKResponseItem[]) => {
+                }).then(async (orgList: models.ListOKResponseItem[]) => {
                     const options = orgList.map(item => {
                         return {
                             label: `${item.displayName} (${item.name})`,
@@ -35,7 +35,7 @@ export default class Start extends Command {
                             target: item.name
                         };
                     });
-                    const myself: Profile | null = this.Profile;
+                    const myself: Profile | null = await this.Profile;
                     if (myself) {
                         options.splice( orgList.length, 0, {
                             label: `${myself.displayName}`,
