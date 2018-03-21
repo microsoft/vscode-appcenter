@@ -44,6 +44,14 @@ export class CommandNames {
     public static Logout: string = CommandNames.CommandPrefix + "logout";
     public static ShowMenu: string = CommandNames.CommandPrefix + "menu";
     public static Start: string = CommandNames.CommandPrefix + "start";
+
+    public static CodePush = class {
+        public static SetCurrentDeployment: string = CommandNames.CommandPrefix + "codepush.setCurrentDeployment";
+        public static ReleaseReact: string = CommandNames.CommandPrefix + "codepush.releaseReact";
+        public static SwitchMandatoryPropForRelease: string = CommandNames.CommandPrefix + "codepush.switchMandatoryPropForRelease";
+        public static SetTargetBinaryVersion: string = CommandNames.CommandPrefix + "codepush.setTargetBinaryVersion";
+        public static ShowMenu: string = CommandNames.CommandPrefix + "codepush.showMenu";
+    }
 }
 
 export enum MessageTypes {

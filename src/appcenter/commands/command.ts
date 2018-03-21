@@ -1,5 +1,5 @@
 import { ExtensionManager } from "../../extensionManager";
-import { Profile } from "../../helpers/interfaces";
+import { Profile, DefaultApp } from "../../helpers/interfaces";
 import { SettingsHelper } from "../../helpers/settingsHelper";
 import { Strings } from "../../helpers/strings";
 import { VsCodeUtils } from "../../helpers/vsCodeUtils";
@@ -68,5 +68,14 @@ export class Command {
             }
         }
         return this.client;
+    }
+
+    protected restoreCurrentApp(): Promise<DefaultApp | null> {
+        return this.Profile.then((profile: Profile | null) => {
+            if (profile && profile.defaultApp) {
+                return profile.defaultApp;
+            }
+            return null;
+        });
     }
 }

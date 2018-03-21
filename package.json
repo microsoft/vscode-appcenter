@@ -51,66 +51,101 @@
                 "command": "appcenter.start",
                 "title": "Start An Idea",
                 "category": "AppCenter"
-            }
+            },
+			{
+				"command": "appcenter.setCurrentApp",
+				"title": "Set Current App",
+				"category": "AppCenter"
+			},
+			{
+				"command": "appcenter.getCurrentApp",
+				"title": "Get Current App",
+				"category": "AppCenter"
+			},
+			{
+				"command": "appcenter.codepush.setCurrentDeployment",
+				"title": "Set Current Deployment",
+				"category": "AppCenter Code Push"
+			},
+			{
+				"command": "appcenter.codepush.releaseReact",
+				"title": "Release React",
+				"category": "AppCenter Code Push"
+			},
+			{
+				"command": "appcenter.codepush.switchMandatoryPropForRelease",
+				"title": "Switch Code Push release mandatory property",
+				"category": "AppCenter Code Push"
+			},
+			{
+				"command": "appcenter.codepush.setTargetBinaryVersion",
+				"title": "Set Code Push release target binary verison",
+				"category": "AppCenter Code Push"
+			},
+			{
+				"command": "appcenter.codepush.showMenu",
+				"title": "Show Menu",
+				"category": "AppCenter Code Push"
+			}
         ],
         "configuration": {
             "type": "object",
             "title": "AppCenter configuration",
             "properties": {
                 "appcenter.loginendpoint": {
-                "description": "Endpoint to login to appcenter",
+                    "description": "Endpoint to login to appcenter",
                     "type": "string",
                     "default": "https://appcenter.ms/cli-login",
                     "scope": "resource"
                 },
                 "appcenter.api.endpoint": {
                     "description": "API Endpoint to appcenter",
-					"type": "string",
-					"default": "https://api.appcenter.ms",
-					"scope": "resource"
+                    "type": "string",
+                    "default": "https://api.appcenter.ms",
+                    "scope": "resource"
                 },
                 "appcenter.api.distribitiongrouptestersname": {
                     "description": "AppCenter Distribution Group Testers Name",
-					"type": "string",
-					"default": "Beta Testers",
-					"scope": "resource"
+                    "type": "string",
+                    "default": "Beta Testers",
+                    "scope": "resource"
                 },
                 "appcenter.api.createtestersdistibutiongroup": {
                     "description": "Configure if we should create new testers distribution group",
-					"type": "boolean",
-					"default": "true",
-					"scope": "resource"
+                    "type": "boolean",
+                    "default": "true",
+                    "scope": "resource"
                 },
                 "appcenter.api.connectrepotobuildservice": {
                     "description": "Configure if we should connect repo to build service",
-					"type": "boolean",
-					"default": "true",
-					"scope": "resource"
+                    "type": "boolean",
+                    "default": "true",
+                    "scope": "resource"
                 },
                 "appcenter.api.configurebranchandstartnewbuild": {
                     "description": "Configure branch and start new build",
-					"type": "boolean",
-					"default": "true",
-					"scope": "resource"
+                    "type": "boolean",
+                    "default": "true",
+                    "scope": "resource"
                 },
                 "appcenter.api.defaultbranchname": {
                     "description": "AppCenter Default Branch Name",
-					"type": "string",
-					"default": "master",
-					"scope": "resource"
+                    "type": "string",
+                    "default": "master",
+                    "scope": "resource"
                 },
                 "appcenter.api.createiosapp": {
                     "description": "Create iOS App In AppCenter",
-					"type": "boolean",
-					"default": "true",
-					"scope": "resource"
+                    "type": "boolean",
+                    "default": "true",
+                    "scope": "resource"
                 },
                 "appcenter.api.createandroidapp": {
                     "description": "Create Android App In AppCenter",
-					"type": "boolean",
-					"default": "true",
-					"scope": "resource"
-				}
+                    "type": "boolean",
+                    "default": "true",
+                    "scope": "resource"
+                }
             }
         }
     },

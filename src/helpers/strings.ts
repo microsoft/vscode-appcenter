@@ -28,6 +28,8 @@ export class Strings {
     public static FailedToConfigureBranchAndStartNewBuild: string = "Sorry, failed to configure branch and start new build";
     public static FailedToCreateDistributionGroup: string = "Sorry, failed to create distribution group";
 
+    public static NoCurrentAppSetMsg: string = "No current app specified";
+
     public static YouAreLoggedInMsg: (name: string) => string = (name: string) => {
         return `You are logged into App Center as '${name}'`;
     }
@@ -39,4 +41,10 @@ export class Strings {
     public static FailedToCreateAppInAppCenter: (osName: string) => string = (osName: string) => {
         return `Sorry, failed to create ${osName} app in app center`;
     }
+
+    public static YourCurrentAppMsg: (appName: string) => string = (appName: string) => {
+        return `Your current app is '${appName}'`;
+    }
+
+    
 }
