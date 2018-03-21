@@ -26,3 +26,19 @@ export interface Profile {
     save(projectRootPath: string): Profile;
     logout(projectRootPath: string): Promise<void>;
 }
+
+export interface IDefaultCommandParams {
+    app: DefaultApp;
+}
+export interface ICodePushReleaseParams extends IDefaultCommandParams {
+  deploymentName: string;
+  updatedContentZipPath: string;
+  appVersion?: string;
+  description?: string;
+  isDisabled?: boolean;
+  isMandatory?: boolean;
+  label?: string;
+  packageHash?: string;
+  rollout?: number;
+  token?: string;
+}

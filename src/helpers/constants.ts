@@ -3,6 +3,7 @@
 export class Constants {
     public static ExtensionName: string = "appcenter";
     public static DefaultAPIEndPoint: string = "https://api.appcenter.ms";
+    public static DefaultLegacyCodePushService: string = "https://codepush-management.azurewebsites.net/";
     public static DefaultDistributionGroupTestersName: string = "Beta Testers";
     public static DefaultBranchName: string = "master";
     public static DefaultLoginEndPoint: string = "https://appcenter.ms/cli-login";

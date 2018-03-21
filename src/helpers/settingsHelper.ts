@@ -83,4 +83,12 @@ export class SettingsHelper {
         }
         return Constants.DefaultBranchName;
     }
+
+    public static getLegacyCodePushServiceEnabled(): boolean {
+        return true;
+    }
+
+    public static getLegacyCodePushEndpoint(): string {
+        return Constants.DefaultLegacyCodePushService;
+    }
 }
