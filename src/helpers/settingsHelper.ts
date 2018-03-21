@@ -1,47 +1,86 @@
-// import * as vscode from "vscode";
-// import { ConfigurationReader } from "./configurationReader";
+import * as vscode from "vscode";
+import { ConfigurationReader } from "./configurationReader";
 import { Constants } from "./constants";
 
 export class SettingsHelper {
-    /**
-     * Get appcenter login endpoint setting
-     */
     public static getAppCenterLoginEndpoint(): string {
+        const workspaceConfiguration = vscode.workspace.getConfiguration();
+        if (workspaceConfiguration.has("appcenter.api.loginendpoint")) {
+            const loginEndpoint: string = ConfigurationReader.readString(workspaceConfiguration.get("appcenter.api.loginendpoint"));
+            return loginEndpoint;
+        }
         return Constants.DefaultLoginEndPoint;
     }
 
-    /**
-     * Get appcenter api endpoint setting
-     */
     public static getAppCenterAPIEndpoint(): string {
-       return Constants.DefaulAPIEndPoint;
+        const workspaceConfiguration = vscode.workspace.getConfiguration();
+        if (workspaceConfiguration.has("appcenter.api.endpoint")) {
+            const apiEndpoint: string = ConfigurationReader.readString(workspaceConfiguration.get("appcenter.api.endpoint"));
+            return apiEndpoint;
+        }
+        return Constants.DefaultAPIEndPoint;
     }
 
     public static createIOSAppInAppCenter(): boolean {
-       return true;
+        const workspaceConfiguration = vscode.workspace.getConfiguration();
+        if (workspaceConfiguration.has("appcenter.createiosapp")) {
+            const createIOSAppInAppCenter: boolean = ConfigurationReader.readBoolean(workspaceConfiguration.get("appcenter.createiosapp"));
+            return createIOSAppInAppCenter;
+        }
+        return true;
     }
 
     public static createAndroidAppInAppCenter(): boolean {
+        const workspaceConfiguration = vscode.workspace.getConfiguration();
+        if (workspaceConfiguration.has("appcenter.createandroidapp")) {
+            const createAndroidAppInAppCenter: boolean = ConfigurationReader.readBoolean(workspaceConfiguration.get("appcenter.createandroidapp"));
+            return createAndroidAppInAppCenter;
+        }
         return true;
     }
 
     public static createTestersDistributionGroupInAppCenter(): boolean {
+        const workspaceConfiguration = vscode.workspace.getConfiguration();
+        if (workspaceConfiguration.has("appcenter.createtestersdistibutiongroup")) {
+            const createTestersDistributionGroupInAppCenter: boolean = ConfigurationReader.readBoolean(workspaceConfiguration.get("appcenter.createtestersdistibutiongroup"));
+            return createTestersDistributionGroupInAppCenter;
+        }
         return true;
     }
 
     public static connectRepoToBuildService(): boolean {
+        const workspaceConfiguration = vscode.workspace.getConfiguration();
+        if (workspaceConfiguration.has("appcenter.connectrepotobuildservice")) {
+            const createTestersDistributionGroupInAppCenter: boolean = ConfigurationReader.readBoolean(workspaceConfiguration.get("appcenter.connectrepotobuildservice"));
+            return createTestersDistributionGroupInAppCenter;
+        }
         return true;
     }
 
     public static configureBranchAndStartNewBuild(): boolean {
+        const workspaceConfiguration = vscode.workspace.getConfiguration();
+        if (workspaceConfiguration.has("appcenter.configurebranchandstartnewbuild")) {
+            const createTestersDistributionGroupInAppCenter: boolean = ConfigurationReader.readBoolean(workspaceConfiguration.get("appcenter.configurebranchandstartnewbuild"));
+            return createTestersDistributionGroupInAppCenter;
+        }
         return true;
     }
 
-    public static distribroupTestersName(): string {
-        return "Beta Testers";
+    public static distribitionGroupTestersName(): string {
+        const workspaceConfiguration = vscode.workspace.getConfiguration();
+        if (workspaceConfiguration.has("appcenter.distribitiongrouptestersname")) {
+            const distribitionGroupTestersName: string = ConfigurationReader.readString(workspaceConfiguration.get("appcenter.distribitiongrouptestersname"));
+            return distribitionGroupTestersName;
+        }
+        return Constants.DefaultDistributionGroupTestersName;
     }
 
     public static defaultBranchName(): string {
-        return "master";
+        const workspaceConfiguration = vscode.workspace.getConfiguration();
+        if (workspaceConfiguration.has("appcenter.defaultbranchname")) {
+            const branchName: string = ConfigurationReader.readString(workspaceConfiguration.get("appcenter.defaultbranchname"));
+            return branchName;
+        }
+        return Constants.DefaultBranchName;
     }
 }

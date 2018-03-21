@@ -24,12 +24,10 @@ export default class Start extends Command {
                 //TODO: Validate if name is unique! Or probably if already created do nothing?
 
                 vscode.window.withProgress({ location: vscode.ProgressLocation.Window, title: Strings.VSCodeProgressLoadingTitle}, p => {
-                    return new Promise((resolve) => {
-                        p.report({message: Strings.LoadingStatusBarMessage });
-                        this.client.account.organizations.list().then((orgList: models.ListOKResponseItem[]) => {
-                            const organizations: models.ListOKResponseItem[] = orgList;
-                            resolve(organizations);
-                        });
+                    p.report({message: Strings.LoadingStatusBarMessage });
+                    return this.client.account.organizations.list().then((orgList: models.ListOKResponseItem[]) => {
+                        const organizations: models.ListOKResponseItem[] = orgList;
+                        return organizations;
                     });
                   }).then(async (orgList: models.ListOKResponseItem[]) => {
                     const options = orgList.map(item => {
@@ -65,7 +63,8 @@ export default class Start extends Command {
                                 };
                             }
 
-                            const repoUrl: string = 'https://github.com/max-mironov/rntestextension.git'; // TODO: ok for now hardcoded, later take it from earlier created
+                            // const repoUrl: string = 'https://github.com/max-mironov/rntestextension.git'; // TODO: ok for now hardcoded, later take it from earlier created
+                            const repoUrl: string = 'https://github.com/max-mironov/RNCPIssue637.git'; // TODO: ok for now hardcoded, later take it from earlier created
                             const defaultBranchName: string = SettingsHelper.defaultBranchName();
 
                             const appCenterAppBuilder = new AppCenterAppBuilder(ideaName, selectedUserOrOrg, repoUrl, defaultBranchName, this.client, this.logger);

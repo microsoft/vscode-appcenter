@@ -50,18 +50,12 @@ export default class AppCenterAppCreator {
         let configured: boolean = false;
 
         await vscode.window.withProgress({ location: vscode.ProgressLocation.Window, title: Strings.VSCodeProgressLoadingTitle}, p => {
-            return new Promise((resolve) => {
-                p.report({message: Strings.CreatingAppStatusBarMessage(this.os.toString()) });
-                if (isCreatedForOrganization) {
-                    this.createAppForOrg().then((created: boolean) => {
-                        resolve(created);
-                    });
-                } else {
-                    this.createApp().then((created: boolean) => {
-                        resolve(created);
-                    });
-                }
-            });
+            p.report({message: Strings.CreatingAppStatusBarMessage(this.os.toString()) });
+            if (isCreatedForOrganization) {
+                return this.createAppForOrg();
+            } else {
+                return this.createApp();
+            }
         }).then(async appCreated => {
             if (appCreated) {
                 // We consider that configured is true because app is created, if other things goes wrong
@@ -71,13 +65,9 @@ export default class AppCenterAppCreator {
                 // this step is optional, so if we skip it or failed we can go further
                 if (this._createBetaTestersDistributionGroup) {
                     await vscode.window.withProgress({ location: vscode.ProgressLocation.Window, title: Strings.VSCodeProgressLoadingTitle}, p => {
-                        return new Promise((resolve) => {
-                            p.report({message: Strings.CreatingDistributionStatusBarMessage });
-                                this.createBetaTestersDistributionGroup().then((created: boolean) => {
-                                    resolve(created);
-                                });
-                        });
-                    }).then(async distributionGroupCreated => {
+                        p.report({message: Strings.CreatingDistributionStatusBarMessage });
+                        return this.createBetaTestersDistributionGroup();
+                    }).then(distributionGroupCreated => {
                         if (!distributionGroupCreated) {
                             VsCodeUtils.ShowErrorMessage(Strings.FailedToCreateDistributionGroup);
                         }
@@ -86,23 +76,15 @@ export default class AppCenterAppCreator {
 
                 if (this._connectRepositoryToBuildService) {
                     await vscode.window.withProgress({ location: vscode.ProgressLocation.Window, title: Strings.VSCodeProgressLoadingTitle}, p => {
-                        return new Promise((resolve) => {
-                            p.report({message: Strings.ConnectingRepoToBuildServiceStatusBarMessage });
-                                this.connectRepositoryToBuildService().then((created: boolean) => {
-                                    resolve(created);
-                                });
-                        });
+                        p.report({message: Strings.ConnectingRepoToBuildServiceStatusBarMessage });
+                        return this.connectRepositoryToBuildService();
                     }).then(async repoConnectedToBuildService => {
                         if (repoConnectedToBuildService) {
                             if (this._withBranchConfigurationCreatedAndBuildKickOff) {
                                 await vscode.window.withProgress({ location: vscode.ProgressLocation.Window, title: Strings.VSCodeProgressLoadingTitle}, p => {
-                                    return new Promise((resolve) => {
-                                        p.report({message: Strings.CreateBranchConfigAndKickOffBuildStatusBarMessage });
-                                            this.withBranchConfigurationCreatedAndBuildKickOff().then((created: boolean) => {
-                                                resolve(created);
-                                            });
-                                    });
-                                }).then(async branchConfiguredAndBuildStarted => {
+                                    p.report({message: Strings.CreateBranchConfigAndKickOffBuildStatusBarMessage });
+                                    return this.withBranchConfigurationCreatedAndBuildKickOff();
+                                }).then(branchConfiguredAndBuildStarted => {
                                     if (!branchConfiguredAndBuildStarted) {
                                         VsCodeUtils.ShowErrorMessage(Strings.FailedToConfigureBranchAndStartNewBuild);
                                     }
@@ -154,7 +136,7 @@ export default class AppCenterAppCreator {
     private async createBetaTestersDistributionGroup(): Promise<boolean> {
         try {
             await this.client.account.distributionGroups.create(this.appName, {
-                name: SettingsHelper.distribroupTestersName()
+                name: SettingsHelper.distribitionGroupTestersName()
             }, this.ownerName);
         } catch (err) {
             return this.proceedErrorResponse(err);

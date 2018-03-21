@@ -2,7 +2,9 @@
 
 export class Constants {
     public static ExtensionName: string = "appcenter";
-    public static DefaulAPIEndPoint: string = "https://api.appcenter.ms";
+    public static DefaultAPIEndPoint: string = "https://api.appcenter.ms";
+    public static DefaultDistributionGroupTestersName: string = "Beta Testers";
+    public static DefaultBranchName: string = "master";
     public static DefaultLoginEndPoint: string = "https://appcenter.ms/cli-login";
     public static AppCenterCodePushStatusBarColor: string = "#F3F3B2";
     public static iOSAppSuffix: string = "-ios";
