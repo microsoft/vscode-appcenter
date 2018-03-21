@@ -24,7 +24,7 @@ export default class AppCenterAppCreator {
         this.logger.log('Initiazlied AppCenter Creator', LogLevel.Info);
     }
 
-    public async configureApp(
+    public async configureApp (
          displayAppName: string,
          appName: string,
          isCreatedForOrganization: boolean,

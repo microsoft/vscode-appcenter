@@ -18,7 +18,11 @@ export class Strings {
     public static NoIdeaNameSelectedMsg: string = "Please select an idea name!";
     public static VSCodeProgressLoadingTitle: string = "Loading...";
     public static LoadingStatusBarMessage: string = "Loading some information for you...";
+    public static CreateRNProjectStatusBarMessage: string = "Creating RN project for you...";
     public static FinishedConfigMsg: string = "Ace, you're done!";
+    public static GitIsNotInstalledMsg: string = "Sorry, git is not installed!";
+    public static FailedToCreateRNProjectMsg: string = "Failed to create RN project!";
+    public static NotRNProjectMsg: string = "Sorry, this is not an RN project!";
 
     public static CreatingDistributionStatusBarMessage: string = "Creating distribution group for you...";
     public static ConnectingRepoToBuildServiceStatusBarMessage: string = "Connecting repository for you...";

@@ -110,6 +110,20 @@
 					"type": "boolean",
 					"default": "true",
 					"scope": "resource"
+                },
+                "appcenter.logLevel": {
+					"description": "Logging level in extension",
+					"type": "enum",
+					"enum": [
+						"Trace",
+						"Debug",
+						"Info",
+						"Warning",
+						"Error",
+						"None"
+					],
+					"default": "Info",
+					"scope": "resource"
 				}
             }
         }
