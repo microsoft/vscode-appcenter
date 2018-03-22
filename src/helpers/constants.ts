@@ -44,6 +44,8 @@ export class CommandNames {
     public static Logout: string = CommandNames.CommandPrefix + "logout";
     public static ShowMenu: string = CommandNames.CommandPrefix + "menu";
     public static Start: string = CommandNames.CommandPrefix + "start";
+    public static GetCurrentApp: string = CommandNames.CommandPrefix + "getCurrentApp";
+    public static SetCurrentApp: string = CommandNames.CommandPrefix + "setCurrentApp";
 
     public static CodePush = class {
         public static SetCurrentDeployment: string = CommandNames.CommandPrefix + "codepush.setCurrentDeployment";

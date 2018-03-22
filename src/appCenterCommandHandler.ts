@@ -37,11 +37,11 @@ export class AppCenterCommandHandler {
     }
 
     public async GetCurrentApp(): Promise<void> {
-        await new GetCurrentApp(this.manager, this.logger).run();
+        await new GetCurrentApp(this.manager, this.logger).runNoClient();
     }
 
     public async SetCurrentApp(): Promise<void> {
-        await new SetCurrentApp(this.manager, this.logger).run();
+        await new SetCurrentApp(this.manager, this.logger).runNoClient();
     }
 
     public async SetCurrentDeployment(): Promise<void> {

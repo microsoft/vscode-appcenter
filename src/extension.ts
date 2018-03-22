@@ -31,6 +31,10 @@ function registerAppCenterCommands(context: vscode.ExtensionContext): void {
         () => _extensionManager.RunCommand(() => _extensionManager.AppCenterCommandHandler.ShowMenu())));
     context.subscriptions.push(vscode.commands.registerCommand(CommandNames.Start,
         () => _extensionManager.RunCommand(() => _extensionManager.AppCenterCommandHandler.Start())));
+    context.subscriptions.push(vscode.commands.registerCommand(CommandNames.GetCurrentApp,
+        () => _extensionManager.RunCommand(() => _extensionManager.AppCenterCommandHandler.GetCurrentApp())));
+    context.subscriptions.push(vscode.commands.registerCommand(CommandNames.SetCurrentApp,
+        () => _extensionManager.RunCommand(() => _extensionManager.AppCenterCommandHandler.SetCurrentApp())));
 
     // CodePush commands
     context.subscriptions.push(vscode.commands.registerCommand(CommandNames.CodePush.SetCurrentDeployment,
