@@ -1,6 +1,7 @@
 import * as vscode from "vscode";
 import { ExtensionManager } from "../../extensionManager";
 import { CommandNames } from "../../helpers/constants";
+import { FSUtils } from "../../helpers/fsUtils";
 import { Strings } from "../../helpers/strings";
 import { ILogger } from "../../log/logHelper";
 import { Command } from "./command";
@@ -19,17 +20,22 @@ export default class ShowMenu extends Command {
         const menuPlaceHolederTitle = Strings.MenuTitlePlaceholder;
         const appCenterMenuOptions = [
             {
-                label: Strings.StartAnIdeaMenuLabel,
-                description: "",
-                target: CommandNames.Start
-            },
-            {
                 label: Strings.LogoutMenuLabel,
                 description: "",
                 target: CommandNames.Logout
             }
-         ];
-         return vscode.window.showQuickPick(appCenterMenuOptions, { placeHolder: menuPlaceHolederTitle })
+        ];
+
+        // For Empty Directory show only `Start New Idea`
+        if (FSUtils.IsNewDirectoryForProject(<string>this.manager.projectRootPath)) {
+            appCenterMenuOptions.splice( 0, 0,             {
+                label: Strings.StartAnIdeaMenuLabel,
+                description: "",
+                target: CommandNames.Start
+            });
+        }
+
+        return vscode.window.showQuickPick(appCenterMenuOptions, { placeHolder: menuPlaceHolederTitle })
             .then((selected: {label: string, description: string, target: string}) => {
             if (!selected) {
                 // user cancel selection
