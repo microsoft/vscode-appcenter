@@ -1,4 +1,5 @@
 import * as vscode from "vscode";
+import { LogLevel } from "../log/logHelper";
 import { ConfigurationReader } from "./configurationReader";
 import { Constants } from "./constants";
 
@@ -90,5 +91,14 @@ export class SettingsHelper {
 
     public static getLegacyCodePushEndpoint(): string {
         return Constants.DefaultLegacyCodePushService;
+    }
+
+    public static getLogLevel(): LogLevel {
+        const workspaceConfiguration = vscode.workspace.getConfiguration();
+        if (workspaceConfiguration.has("appcenter.logLevel")) {
+            const logLevelString: string = ConfigurationReader.readString(workspaceConfiguration.get("appcenter.logLevel"));
+            return <LogLevel>parseInt(LogLevel[<any>logLevelString], 10);
+        }
+        return LogLevel.Info;
     }
 }
