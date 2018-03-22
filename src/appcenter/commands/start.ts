@@ -6,7 +6,7 @@ import { GitUtils } from "../../helpers/gitUtils";
 import ReactNativeProjectCreator from "../../helpers/reactNativeProjectCreator";
 import { SettingsHelper } from "../../helpers/settingsHelper";
 import { Strings } from "../../helpers/strings";
-import { Utils } from "../../helpers/utils";
+import { Validators } from "../../helpers/validators";
 import { VsCodeUtils } from "../../helpers/vsCodeUtils";
 import { ILogger } from "../../log/logHelper";
 import { models } from "../api";
@@ -22,10 +22,27 @@ export default class Start extends Command {
     public async run(): Promise<void> {
         super.run();
 
+        const rootPath = <string>this.manager.projectRootPath;
+        if (!FSUtils.IsNewDirectoryForProject(rootPath)) {
+            VsCodeUtils.ShowErrorMessage(Strings.DirectoryIsNotEmptyForNewIdea);
+            this.logger.error(Strings.DirectoryIsNotEmptyForNewIdea);
+            return;
+        }
         vscode.window.showInputBox({ prompt: Strings.PleaseEnterIdeaName, ignoreFocusOut: true })
-        .then(ideaName => {
+        .then(async ideaName => {
             if (ideaName) {
                 //TODO: Validate if name is unique! Or probably if already created do nothing?
+                if (!Validators.ValidateProjectName(ideaName)) {
+                    VsCodeUtils.ShowInfoMessage(Strings.IdeaNameIsNotValidMsg);
+                    return;
+                }
+
+                if (!await this.createRNProject(ideaName, rootPath)) {
+                    VsCodeUtils.ShowErrorMessage(Strings.FailedToCreateRNProjectMsg);
+                    return;
+                } else {
+                    VsCodeUtils.ShowInfoMessage("RN proj was created!");
+                }
 
                 vscode.window.withProgress({ location: vscode.ProgressLocation.Window, title: Strings.VSCodeProgressLoadingTitle}, p => {
                     p.report({message: Strings.LoadingStatusBarMessage });
@@ -66,51 +83,8 @@ export default class Start extends Command {
                                     origin: undefined
                                 };
                             }
-                            const rootPath = <string>this.manager.projectRootPath;
-                            let dirContent: string[] | null = null;
-                            let rnProjectIsCreatedAndLinked: boolean = false;
 
-                            try {
-                                dirContent = FSUtils.GetDirectoryContent(rootPath);
-                            } catch (e) {
-                                this.logger.error(e.message);
-                            }
-
-                            const ignoredItems = [".vscode, .git"];
-                            const filteredDir = dirContent && dirContent.filter(item => {
-                                ignoredItems.indexOf(item) === -1;
-                            });
-                            const dirExistAndEmpty = filteredDir && filteredDir.length === 0;
-
-                            if (dirExistAndEmpty) {
-                                if (await GitUtils.IsGitInstalled(rootPath)) {
-                                    await GitUtils.GitInit(this.logger, rootPath);
-
-                                    return await vscode.window.withProgress({ location: vscode.ProgressLocation.Window, title: Strings.VSCodeProgressLoadingTitle}, p => {
-                                        p.report({message: Strings.CreateRNProjectStatusBarMessage });
-                                        return new ReactNativeProjectCreator(this.logger).createProject(ideaName, rootPath);
-                                      })
-                                      .then((rnAppCreated: boolean) => {
-                                        if (!rnAppCreated) {
-                                            VsCodeUtils.ShowErrorMessage(Strings.FailedToCreateRNProjectMsg);
-                                        } else {
-                                            // Wooo Hoo if we are here than project was created and linked!
-                                            rnProjectIsCreatedAndLinked = true;
-                                            VsCodeUtils.ShowInfoMessage("RN project was created!");
-                                        }
-                                      });
-                                } else {
-                                    VsCodeUtils.ShowErrorMessage(Strings.GitIsNotInstalledMsg);
-                                }
-                            } else if (Utils.isReactNativeProject(rootPath)) {
-                                // TODO: Do magic with linking AppCenter and CodePush if we have already RN Project!
-                                // and finally consider we are good :)
-                                rnProjectIsCreatedAndLinked = true;
-                            } else {
-                                VsCodeUtils.ShowErrorMessage(Strings.NotRNProjectMsg);
-                            }
-
-                            rnProjectIsCreatedAndLinked = false; // For now false and do not go any further while I'm testing
+                            const rnProjectIsCreatedAndLinked: boolean = false;
                             if (rnProjectIsCreatedAndLinked) {
                                 // TODO: Get repo name here and push changes!
                                 // 1. Get repo name
@@ -132,9 +106,25 @@ export default class Start extends Command {
                     });
                 });
             } else {
-                VsCodeUtils.ShowInfoMessage(Strings.NoIdeaNameSelectedMsg);
+                VsCodeUtils.ShowErrorMessage(Strings.NoIdeaNameSelectedMsg);
             }
         });
-        return Promise.resolve(void 0);
+        return;
+    }
+
+    private async createRNProject(ideaName: string, rootPath: string): Promise<boolean> {
+        let created: boolean = false;
+        if (!await GitUtils.IsGitInstalled(rootPath)) {
+            VsCodeUtils.ShowErrorMessage(Strings.GitIsNotInstalledMsg);
+            return created;
+        }
+        await GitUtils.GitInit(this.logger, rootPath);
+        await vscode.window.withProgress({ location: vscode.ProgressLocation.Window, title: Strings.VSCodeProgressLoadingTitle}, p => {
+            p.report({message: Strings.CreateRNProjectStatusBarMessage });
+            return new ReactNativeProjectCreator(this.logger).createProject(ideaName, rootPath);
+            }).then((rnAppCreated: boolean) => {
+                created = rnAppCreated;
+            });
+        return created;
     }
 }

@@ -23,6 +23,8 @@ export class Strings {
     public static GitIsNotInstalledMsg: string = "Sorry, git is not installed!";
     public static FailedToCreateRNProjectMsg: string = "Failed to create RN project!";
     public static NotRNProjectMsg: string = "Sorry, this is not an RN project!";
+    public static IdeaNameIsNotValidMsg: string = "Sorry, idea name is not valid!";
+    public static DirectoryIsNotEmptyForNewIdea: string = "Start New Idea should work only for empty directory!";
 
     public static CreatingDistributionStatusBarMessage: string = "Creating distribution group for you...";
     public static ConnectingRepoToBuildServiceStatusBarMessage: string = "Connecting repository for you...";
