@@ -17,7 +17,6 @@ export default class SetTargetBinaryVersion extends AppCommand {
         if (!await super.runNoClient()) {
             return;
         }
-
         vscode.window.showInputBox({ prompt: Strings.PleaseProvideTargetBinaryVersion, ignoreFocusOut: true })
             .then(appVersion => {
                 if (!appVersion) {

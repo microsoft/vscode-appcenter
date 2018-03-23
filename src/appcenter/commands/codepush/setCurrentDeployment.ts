@@ -16,7 +16,6 @@ export default class SetCurrentDeployment extends AppCommand {
         if (!await super.runNoClient()) {
             return;
         }
-
         this.getCurrentApp().then((currentApp: CurrentApp) => {
             if (!currentApp || !currentApp.currentAppDeployments || !currentApp.currentAppDeployments.codePushDeployments) {
                 VsCodeUtils.ShowInfoMessage(Strings.NoCurrentAppSetMsg);
