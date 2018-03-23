@@ -13,7 +13,6 @@ export default class SetCurrentDeployment extends AppCommand {
     }
 
     public async runNoClient(): Promise<boolean | void> {
-
         if (!await super.runNoClient()) {
             return;
         }

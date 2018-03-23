@@ -52,36 +52,36 @@
                 "title": "Start An Idea",
                 "category": "AppCenter"
             },
-			{
-				"command": "appcenter.setCurrentApp",
-				"title": "Set Current App",
-				"category": "AppCenter"
-			},
-			{
-				"command": "appcenter.getCurrentApp",
-				"title": "Get Current App",
-				"category": "AppCenter"
-			},
-			{
-				"command": "appcenter.codepush.setCurrentDeployment",
-				"title": "Set Current Deployment",
-				"category": "AppCenter Code Push"
-			},
-			{
-				"command": "appcenter.codepush.releaseReact",
-				"title": "Release React",
-				"category": "AppCenter Code Push"
-			},
-			{
-				"command": "appcenter.codepush.switchMandatoryPropForRelease",
-				"title": "Switch Code Push release mandatory property",
-				"category": "AppCenter Code Push"
-			},
-			{
-				"command": "appcenter.codepush.setTargetBinaryVersion",
-				"title": "Set Code Push release target binary verison",
-				"category": "AppCenter Code Push"
-			}
+            {
+                "command": "appcenter.setCurrentApp",
+                "title": "Set Current App",
+                "category": "AppCenter"
+            },
+            {
+                "command": "appcenter.getCurrentApp",
+                "title": "Get Current App",
+                "category": "AppCenter"
+            },
+            {
+                "command": "appcenter.codepush.setCurrentDeployment",
+                "title": "Set Current Deployment",
+                "category": "AppCenter Code Push"
+            },
+            {
+                "command": "appcenter.codepush.releaseReact",
+                "title": "Release React",
+                "category": "AppCenter Code Push"
+            },
+            {
+                "command": "appcenter.codepush.switchMandatoryPropForRelease",
+                "title": "Switch Code Push release mandatory property",
+                "category": "AppCenter Code Push"
+            },
+            {
+                "command": "appcenter.codepush.setTargetBinaryVersion",
+                "title": "Set Code Push release target binary verison",
+                "category": "AppCenter Code Push"
+            }
         ],
         "configuration": {
             "type": "object",
