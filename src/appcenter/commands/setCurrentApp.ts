@@ -1,4 +1,4 @@
-import { Command } from "./command";
+import { AppCommand } from './appCommand';
 import { ExtensionManager } from "../../extensionManager";
 import { ILogger } from "../../log/logHelper";
 import { Strings } from "../../helpers/strings";
@@ -16,7 +16,7 @@ interface QuickPickAppItem {
     target: string
 }
 
-export default class SetCurrentApp extends Command {
+export default class SetCurrentApp extends AppCommand {
 
     constructor(manager: ExtensionManager, logger: ILogger) {
         super(manager, logger);

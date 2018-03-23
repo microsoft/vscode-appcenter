@@ -1,13 +1,11 @@
 import { ExtensionManager } from "../../extensionManager";
-import { Profile, DefaultApp, CurrentAppDeployments } from "../../helpers/interfaces";
+import { Profile } from "../../helpers/interfaces";
 import { SettingsHelper } from "../../helpers/settingsHelper";
 import { Strings } from "../../helpers/strings";
 import { VsCodeUtils } from "../../helpers/vsCodeUtils";
 import { ILogger, LogLevel } from "../../log/logHelper";
 import { AppCenterClient, AppCenterClientFactory, createAppCenterClient } from "../api";
 import Auth from "../auth/auth";
-import { AppCenterOS } from "../../helpers/constants";
-import { Utils } from "../../helpers/utils";
 import { ProjectRootNotFoundError } from '../../helpers/errors';
 
 export class Command {
@@ -72,40 +70,5 @@ export class Command {
             }
         }
         return this.client;
-    }
-
-    protected getDefaultApp(): Promise<DefaultApp | null> {
-        return this.Profile.then((profile: Profile | null) => {
-            if (profile && profile.defaultApp) {
-                return profile.defaultApp;
-            }
-            return null;
-        });
-    }
-
-    protected saveCurrentApp(
-        projectRootPath: string,
-        currentAppName: string,
-        appOS: AppCenterOS,
-        currentAppDeployments: CurrentAppDeployments | null,
-        targetBinaryVersion: string,
-        isMandatory: boolean): Promise<DefaultApp | null> {
-        const defaultApp = Utils.toDefaultApp(currentAppName, appOS, currentAppDeployments, targetBinaryVersion, isMandatory);
-        if (!defaultApp) {
-            VsCodeUtils.ShowWarningMessage(Strings.InvalidCurrentAppNameMsg);
-            return Promise.resolve(null);
-        }
-
-        return this.Profile.then((profile: Profile | null) => {
-            if (profile) {
-                profile.defaultApp = defaultApp;
-                profile.save(projectRootPath);
-                return Promise.resolve(defaultApp);
-            } else {
-                // No profile - not logged in?
-                VsCodeUtils.ShowWarningMessage(Strings.UserIsNotLoggedInMsg);
-                return Promise.resolve(null);
-            }
-        });
     }
 }

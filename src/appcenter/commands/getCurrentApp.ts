@@ -1,11 +1,11 @@
-import { Command } from "./command";
+import { AppCommand } from './appCommand';
 import { ExtensionManager } from "../../extensionManager";
 import { ILogger } from "../../log/logHelper";
 import { DefaultApp } from "../../helpers/interfaces";
 import { VsCodeUtils } from "../../helpers/vsCodeUtils";
 import { Strings } from "../../helpers/strings";
 
-export default class GetCurrentApp extends Command {
+export default class GetCurrentApp extends AppCommand {
 
     constructor(manager: ExtensionManager, logger: ILogger) {
         super(manager, logger);
