@@ -1,11 +1,14 @@
 import { ExtensionManager } from "../../extensionManager";
-import { Profile, DefaultApp } from "../../helpers/interfaces";
+import { Profile, DefaultApp, CurrentAppDeployments } from "../../helpers/interfaces";
 import { SettingsHelper } from "../../helpers/settingsHelper";
 import { Strings } from "../../helpers/strings";
 import { VsCodeUtils } from "../../helpers/vsCodeUtils";
 import { ILogger, LogLevel } from "../../log/logHelper";
 import { AppCenterClient, AppCenterClientFactory, createAppCenterClient } from "../api";
 import Auth from "../auth/auth";
+import { AppCenterOS } from "../../helpers/constants";
+import { Utils } from "../../helpers/utils";
+import { ProjectRootNotFoundError } from '../../helpers/errors';
 
 export class Command {
 
@@ -29,8 +32,9 @@ export class Command {
     public runNoClient(): Promise<void> {
         const rootPath: string | undefined = this.manager.projectRootPath;
         if (!rootPath) {
-            this.logger.log('No project root path found', LogLevel.Error);
-            return Promise.resolve(void 0);
+            const error = new ProjectRootNotFoundError();
+            this.logger.log(error.message, LogLevel.Error);
+            return Promise.reject(error);
         }
         return Promise.resolve(void 0);
     }
@@ -38,8 +42,9 @@ export class Command {
     public async run(): Promise<void> {
         const rootPath: string | undefined = this.manager.projectRootPath;
         if (!rootPath) {
-            this.logger.log('No project root path found', LogLevel.Error);
-            throw new Error("No project root path found");
+            const error = new ProjectRootNotFoundError();
+            this.logger.log(error.message, LogLevel.Error);
+            throw error;
         }
 
         const profile = await this.Profile;
@@ -47,7 +52,7 @@ export class Command {
             VsCodeUtils.ShowWarningMessage(Strings.UserIsNotLoggedInMsg);
             return Promise.resolve(void 0);
         } else {
-            const clientOrNull: AppCenterClient | null  = this.resolveAppCenterClient(profile);
+            const clientOrNull: AppCenterClient | null = this.resolveAppCenterClient(profile);
             if (clientOrNull) {
                 this.client = clientOrNull;
             } else {
@@ -77,5 +82,41 @@ export class Command {
             }
             return null;
         });
+    }
+
+    protected saveCurrentApp(
+        projectRootPath: string,
+        currentAppName: string,
+        appOS: AppCenterOS,
+        currentAppDeployments: CurrentAppDeployments | null,
+        targetBinaryVersion: string,
+        isMandatory: boolean): Promise<DefaultApp | null> {
+        const defaultApp = Utils.toDefaultApp(currentAppName, appOS, currentAppDeployments, targetBinaryVersion, isMandatory);
+        if (!defaultApp) {
+            VsCodeUtils.ShowWarningMessage(Strings.InvalidCurrentAppNameMsg);
+            return Promise.resolve(null);
+        }
+
+        return Auth.getProfile(projectRootPath).then((profile: Profile | null) => {
+            if (profile) {
+                profile.defaultApp = defaultApp;
+                profile.save(projectRootPath);
+                return Promise.resolve(defaultApp);
+            } else {
+                // No profile - not logged in?
+                VsCodeUtils.ShowWarningMessage(Strings.UserIsNotLoggedInMsg);
+                return Promise.resolve(null);
+            }
+        });
+    }
+
+    protected handleRunError(e): Promise<void> {
+        if (e instanceof ProjectRootNotFoundError) {
+            VsCodeUtils.ShowErrorMessage(Strings.NoProjectRootFolderFound);
+            return Promise.resolve(void 0);
+        } else {
+            VsCodeUtils.ShowErrorMessage(Strings.UnknownError);
+            return Promise.resolve(void 0);
+        }
     }
 }

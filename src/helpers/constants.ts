@@ -10,7 +10,8 @@ export class Constants {
     public static AppCenterCodePushStatusBarColor: string = "#F3F3B2";
     public static iOSAppSuffix: string = "-ios";
     public static AndroidAppSuffix: string = "-android";
-
+    public static AppCenterDefaultTargetBinaryVersion: string = "";
+    public static AppCenterDefaultIsMandatoryParam: boolean = false;
     public static defaultBuildConfigJSON: string = `{
         "branch": {
             "name": "master"
@@ -35,6 +36,8 @@ export class Constants {
             }
         }
     }`;
+
+    public static AppCenterReactNativePlatformName: string = "React-Native";
 }
 
 export class CommandNames {

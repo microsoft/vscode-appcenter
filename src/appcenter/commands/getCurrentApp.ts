@@ -12,7 +12,11 @@ export default class GetCurrentApp extends Command {
     }
 
     public async runNoClient(): Promise<void> {
-        super.runNoClient();
+        try {
+            await super.runNoClient();
+        } catch (e) {
+            return this.handleRunError(e);
+        }
 
         return this.restoreCurrentApp().then((app: DefaultApp | null) => {
             if (app) {
