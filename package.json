@@ -28,7 +28,7 @@
     "contributes": {
         "commands": [
             {
-                "command": "appcenter.whoami",
+                "command": "appcenter.whoAmI",
                 "title": "Who Am I",
                 "category": "AppCenter"
             },

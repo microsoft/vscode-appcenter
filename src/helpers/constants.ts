@@ -42,7 +42,7 @@ export class Constants {
 
 export class CommandNames {
     public static CommandPrefix: string = Constants.ExtensionName + ".";
-    public static WhoAmI: string = CommandNames.CommandPrefix + "whoami";
+    public static WhoAmI: string = CommandNames.CommandPrefix + "whoAmI";
     public static Login: string = CommandNames.CommandPrefix + "login";
     public static Logout: string = CommandNames.CommandPrefix + "logout";
     public static ShowMenu: string = CommandNames.CommandPrefix + "menu";
