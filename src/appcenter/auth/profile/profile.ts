@@ -1,7 +1,7 @@
 import * as fs from "fs";
 import * as mkdirp from "mkdirp";
 import * as path from "path";
-import { DefaultApp, Profile } from "../../../helpers/interfaces";
+import { CurrentApp, Profile } from "../../../helpers/interfaces";
 import { tokenStore, TokenValueType } from "../tokenStore/index";
 import { getProfileDir, profileFile } from "./getProfileDir";
 
@@ -12,7 +12,7 @@ class ProfileImpl implements Profile {
     public userName: string;
     public displayName: string;
     public email: string;
-    public defaultApp?: DefaultApp;
+    public currentApp?: CurrentApp;
 
     // tslint:disable-next-line:no-any
     constructor(fileContents: any) {
@@ -20,7 +20,7 @@ class ProfileImpl implements Profile {
         this.userName = fileContents.userName || fileContents.name;
         this.displayName = fileContents.displayName;
         this.email = fileContents.email;
-        this.defaultApp = fileContents.defaultApp;
+        this.currentApp = fileContents.defaultApp;
     }
 
     get accessToken(): Promise<string> {
@@ -47,7 +47,7 @@ class ProfileImpl implements Profile {
             userName: this.userName,
             displayName: this.displayName,
             email: this.email,
-            defaultApp: this.defaultApp
+            defaultApp: this.currentApp
           };
 
         mkdirp.sync(getProfileDir(projectRootPath));

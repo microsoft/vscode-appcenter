@@ -22,7 +22,7 @@ export default class Login extends Command {
         const appCenterLoginOptions: string[] = Object.keys(AppCenterLoginType)
         .filter(k => typeof AppCenterLoginType[k as any] === "number");
 
-        vscode.window.showQuickPick(appCenterLoginOptions, { placeHolder: Strings.SelectLoginTypeMsg })
+        return vscode.window.showQuickPick(appCenterLoginOptions, { placeHolder: Strings.SelectLoginTypeMsg })
         .then((loginType) => {
             switch (loginType) {
                 case (AppCenterLoginType[AppCenterLoginType.Interactive]):

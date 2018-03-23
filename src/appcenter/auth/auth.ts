@@ -4,6 +4,9 @@ import { deleteUser, getUser, Profile, saveUser } from "./profile/profile";
 
 export default class Auth {
     public static getProfile(projectRootPath: string): Promise<Profile | null> {
+        if (!projectRootPath) {
+            return Promise.resolve(null);
+        }
         const profile: Profile | null = getUser(projectRootPath);
         if (profile) {
             return Promise.resolve(profile);
@@ -21,7 +24,7 @@ export default class Auth {
             return Auth.fetchUserInfoByTokenAndSave(token, projectRootPath).then((profile: Profile) => {
                 return Promise.resolve(profile);
             }).catch(() => {
-                    return Promise.resolve(null);
+                return Promise.resolve(null);
             });
         });
     }
@@ -31,12 +34,12 @@ export default class Auth {
         return this.removeLoggedInUser(projectRootPath);
     }
 
-    private static fetchUserInfoByTokenAndSave(token: string, projectRootPath: string): Promise<Profile>  {
+    private static fetchUserInfoByTokenAndSave(token: string, projectRootPath: string): Promise<Profile> {
         return Auth.getUserInfo(token).then(userResponse => {
             return saveUser(userResponse, { token: token }, projectRootPath).then((profile: Profile) => {
                 return Promise.resolve(profile);
             });
-        // tslint:disable-next-line:no-any
+            // tslint:disable-next-line:no-any
         }).catch((e: any) => {
             throw e;
         });

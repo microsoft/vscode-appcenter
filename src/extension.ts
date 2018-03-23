@@ -17,9 +17,10 @@ export async function activate(context: vscode.ExtensionContext) {
     registerAppCenterCommands(context);
 }
 
-export function deactivate() {}
+export function deactivate() { }
 
 function registerAppCenterCommands(context: vscode.ExtensionContext): void {
+    // General AppCenter commands
     context.subscriptions.push(vscode.commands.registerCommand(CommandNames.WhoAmI,
         () => _extensionManager.RunCommand(() => _extensionManager.AppCenterCommandHandler.WhoAmI())));
     context.subscriptions.push(vscode.commands.registerCommand(CommandNames.Login,
@@ -30,4 +31,18 @@ function registerAppCenterCommands(context: vscode.ExtensionContext): void {
         () => _extensionManager.RunCommand(() => _extensionManager.AppCenterCommandHandler.ShowMenu())));
     context.subscriptions.push(vscode.commands.registerCommand(CommandNames.Start,
         () => _extensionManager.RunCommand(() => _extensionManager.AppCenterCommandHandler.Start())));
+    context.subscriptions.push(vscode.commands.registerCommand(CommandNames.GetCurrentApp,
+        () => _extensionManager.RunCommand(() => _extensionManager.AppCenterCommandHandler.GetCurrentApp())));
+    context.subscriptions.push(vscode.commands.registerCommand(CommandNames.SetCurrentApp,
+        () => _extensionManager.RunCommand(() => _extensionManager.AppCenterCommandHandler.SetCurrentApp())));
+
+    // CodePush commands
+    context.subscriptions.push(vscode.commands.registerCommand(CommandNames.CodePush.SetCurrentDeployment,
+        () => _extensionManager.RunCommand(() => _extensionManager.AppCenterCommandHandler.SetCurrentDeployment())));
+    context.subscriptions.push(vscode.commands.registerCommand(CommandNames.CodePush.ReleaseReact,
+        () => _extensionManager.RunCommand(() => _extensionManager.AppCenterCommandHandler.ReleaseReact())));
+    context.subscriptions.push(vscode.commands.registerCommand(CommandNames.CodePush.SwitchMandatoryPropForRelease,
+        () => _extensionManager.RunCommand(() => _extensionManager.AppCenterCommandHandler.SwitchMandatoryPropForRelease())));
+    context.subscriptions.push(vscode.commands.registerCommand(CommandNames.CodePush.SetTargetBinaryVersion,
+        () => _extensionManager.RunCommand(() => _extensionManager.AppCenterCommandHandler.SetTargetBinaryVersion())));
 }

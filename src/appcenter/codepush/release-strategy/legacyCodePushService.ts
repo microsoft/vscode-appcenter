@@ -1,6 +1,6 @@
 import * as fs from "fs";
 import * as request from "request";
-import { DefaultApp } from "../../../helpers/interfaces";
+import { CurrentApp } from "../../../helpers/interfaces";
 import { models } from "../../api/index";
 
 export interface PackageInfo {
@@ -38,7 +38,7 @@ export type Headers = { [headerName: string]: string };
 export default class LegacyCodePushServiceClient {
     private static API_VERSION: number = 2;
 
-    constructor(private accessKey: string, private app: DefaultApp, private serverUrl: string) {
+    constructor(private accessKey: string, private app: CurrentApp, private serverUrl: string) {
         if (!accessKey) { throw new Error("A token must be specified to execute server calls."); }
         if (!serverUrl) { throw new Error("A server url must be specified to execute server calls."); }
     }

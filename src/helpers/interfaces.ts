@@ -6,7 +6,8 @@ export interface CurrentAppDeployments {
     currentDeploymentName: string;
     codePushDeployments: Deployment[];
 }
-export interface DefaultApp {
+
+export interface CurrentApp {
     ownerName: string;
     appName: string;
     identifier: string;
@@ -22,13 +23,13 @@ export interface Profile {
     displayName: string;
     email: string;
     readonly accessToken: Promise<string>;
-    defaultApp?: DefaultApp;
+    currentApp?: CurrentApp;
     save(projectRootPath: string): Profile;
     logout(projectRootPath: string): Promise<void>;
 }
 
 export interface IDefaultCommandParams {
-    app: DefaultApp;
+    app: CurrentApp;
 }
 export interface ICodePushReleaseParams extends IDefaultCommandParams {
   deploymentName: string;

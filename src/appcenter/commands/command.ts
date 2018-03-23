@@ -26,35 +26,35 @@ export class Command {
         });
     }
 
-    public runNoClient(): Promise<void> {
+    public runNoClient(): Promise<boolean | void> {
         const rootPath: string | undefined = this.manager.projectRootPath;
         if (!rootPath) {
-            this.logger.log('No project root path found', LogLevel.Error);
-            return Promise.resolve(void 0);
+            this.logger.log('No project root folder found', LogLevel.Error);
+            return Promise.resolve(false);
         }
-        return Promise.resolve(void 0);
+        return Promise.resolve(true);
     }
 
-    public async run(): Promise<void> {
+    public async run(): Promise<boolean | void> {
         const rootPath: string | undefined = this.manager.projectRootPath;
         if (!rootPath) {
-            this.logger.log('No project root path found', LogLevel.Error);
-            throw new Error("No project root path found");
+            this.logger.log('No project root path found.', LogLevel.Error);
+            return Promise.resolve(false);
         }
 
         const profile = await this.Profile;
         if (!profile) {
             VsCodeUtils.ShowWarningMessage(Strings.UserIsNotLoggedInMsg);
-            return Promise.resolve(void 0);
+            return Promise.resolve(false);
         } else {
-            const clientOrNull: AppCenterClient | null  = this.resolveAppCenterClient(profile);
+            const clientOrNull: AppCenterClient | null = this.resolveAppCenterClient(profile);
             if (clientOrNull) {
                 this.client = clientOrNull;
             } else {
                 this.logger.log("Failed to get App Center client", LogLevel.Error);
-                throw new Error("Failed to get App Center client");
+                return Promise.resolve(false);
             }
-            return Promise.resolve(void 0);
+            return Promise.resolve(true);
         }
     }
 
