@@ -7,10 +7,9 @@ import * as opener from "opener";
 import * as path from "path";
 import { AppCenterOS } from "./constants";
 import { CurrentAppDeployments, DefaultApp } from "./interfaces";
+import { Validators } from "./validators";
 
-export class Utils {
-    private static validApp = /^([a-zA-Z0-9-_.]{1,100})\/([a-zA-Z0-9-_.]{1,100})$/;
-    
+export class Utils {    
     public static FormatMessage(message: string): string {
         if (message) {
             //Replace newlines with spaces
@@ -60,7 +59,7 @@ export class Utils {
         appDeployment: CurrentAppDeployments | null,
         targetBinaryVersion: string,
         isMandatory: boolean): DefaultApp | null {
-        const matches = app.match(this.validApp);
+        const matches = app.match(Validators.ValidAppCenterAppName);
         if (matches !== null) {
             return {
                 ownerName: matches[1],

@@ -22,21 +22,9 @@ export default class SetCurrentApp extends Command {
         super(manager, logger);
     }
 
-    public getQPromisifiedClientResult<T>(action: Promise<T>): Promise<T> {
-        return new Promise((resolve, reject) => {
-            action.then((result: T) => resolve(result)).catch((e) => reject(e));
-        });
-    }
-
     public async run(): Promise<void> {
-        try {
-            await super.run();
-        } catch (e) {
-            return this.handleRunError(e);
-        }
-
-        if(!this.client){
-            return Promise.resolve(void 0);
+        if (!await super.run()) {
+            return Promise.resolve(void 0);   
         }
 
         let rnApps;
@@ -102,10 +90,10 @@ export default class SetCurrentApp extends Command {
                         } else {
                             const error = new Error("Failed to save current app");
                             this.logger.error(error.message);
-                            return Promise.resolve(void 0);                          
+                            return Promise.resolve(void 0);
                         }
                     });
-                    return Promise.resolve(void 0);   
+                    return Promise.resolve(void 0);
                 } catch (e) {
                     VsCodeUtils.ShowErrorMessage(Strings.UnknownError);
                     return Promise.reject(e);

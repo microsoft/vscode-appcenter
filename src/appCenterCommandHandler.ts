@@ -45,7 +45,7 @@ export class AppCenterCommandHandler {
     }
 
     public async SetCurrentDeployment(): Promise<void> {
-        await new CodePush.SetCurrentDeployment(this.manager, this.logger).run();
+        await new CodePush.SetCurrentDeployment(this.manager, this.logger).runNoClient();
     }
 
     public async ReleaseReact(): Promise<void> {
@@ -53,7 +53,7 @@ export class AppCenterCommandHandler {
     }
 
     public async SwitchMandatoryPropForRelease(): Promise<void> {
-        await new CodePush.SwitchMandatoryPropForRelease(this.manager, this.logger).run();
+        await new CodePush.SwitchMandatoryPropForRelease(this.manager, this.logger).runNoClient();
     }
     
     public async SetTargetBinaryVersion(): Promise<void> {

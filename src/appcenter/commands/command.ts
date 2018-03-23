@@ -29,37 +29,36 @@ export class Command {
         });
     }
 
-    public runNoClient(): Promise<void> {
+    public runNoClient(): Promise<boolean | void> {
         const rootPath: string | undefined = this.manager.projectRootPath;
         if (!rootPath) {
             const error = new ProjectRootNotFoundError();
             this.logger.log(error.message, LogLevel.Error);
-            return Promise.reject(error);
+            return Promise.resolve(false);
         }
-        return Promise.resolve(void 0);
+        return Promise.resolve(true);
     }
 
-    public async run(): Promise<void> {
+    public async run(): Promise<boolean | void> {
         const rootPath: string | undefined = this.manager.projectRootPath;
         if (!rootPath) {
-            const error = new ProjectRootNotFoundError();
-            this.logger.log(error.message, LogLevel.Error);
-            throw error;
+            this.logger.log('No project root path found.', LogLevel.Error);
+            return Promise.resolve(false);
         }
 
         const profile = await this.Profile;
         if (!profile) {
             VsCodeUtils.ShowWarningMessage(Strings.UserIsNotLoggedInMsg);
-            return Promise.resolve(void 0);
+            return Promise.resolve(false);
         } else {
             const clientOrNull: AppCenterClient | null = this.resolveAppCenterClient(profile);
             if (clientOrNull) {
                 this.client = clientOrNull;
             } else {
                 this.logger.log("Failed to get App Center client", LogLevel.Error);
-                throw new Error("Failed to get App Center client");
+                return Promise.resolve(false);
             }
-            return Promise.resolve(void 0);
+            return Promise.resolve(true);
         }
     }
 
@@ -75,7 +74,7 @@ export class Command {
         return this.client;
     }
 
-    protected restoreCurrentApp(): Promise<DefaultApp | null> {
+    protected getDefaultApp(): Promise<DefaultApp | null> {
         return this.Profile.then((profile: Profile | null) => {
             if (profile && profile.defaultApp) {
                 return profile.defaultApp;
@@ -97,7 +96,7 @@ export class Command {
             return Promise.resolve(null);
         }
 
-        return Auth.getProfile(projectRootPath).then((profile: Profile | null) => {
+        return this.Profile.then((profile: Profile | null) => {
             if (profile) {
                 profile.defaultApp = defaultApp;
                 profile.save(projectRootPath);

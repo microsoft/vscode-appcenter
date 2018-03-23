@@ -12,13 +12,11 @@ export default class GetCurrentApp extends Command {
     }
 
     public async runNoClient(): Promise<void> {
-        try {
-            await super.runNoClient();
-        } catch (e) {
-            return this.handleRunError(e);
+        if (!await super.runNoClient()) {
+            return Promise.resolve(void 0);
         }
 
-        return this.restoreCurrentApp().then((app: DefaultApp | null) => {
+        return this.getDefaultApp().then((app: DefaultApp | null) => {
             if (app) {
                 VsCodeUtils.ShowInfoMessage(Strings.YourCurrentAppMsg(app.identifier));
             } else {
