@@ -3,7 +3,7 @@ import { SettingsHelper } from "../../helpers/settingsHelper";
 import { ILogger, LogLevel } from "../../log/logHelper";
 import { AppCenterClient, models } from "../api/index";
 import { CommandResult, ErrorCodes, failure, success } from "./commandResult";
-import { appCenterCodePushRelease } from "./release-strategy/appCenterCodePushRelease";
+import { appCenterCodePushRelease } from "./release-strategy/appcenterCodePushRelease";
 import { legacyCodePushRelease } from "./release-strategy/legacyCodePushRelease";
 
 // Use old service endpoint unless we will fix issue with 1MB payload limitation for new one
