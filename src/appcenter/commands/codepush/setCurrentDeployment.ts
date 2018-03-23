@@ -1,11 +1,11 @@
-import { ExtensionManager } from "../../../extensionManager";
-import { ILogger } from "../../../log/logHelper";
-import { AppCommand } from "../appCommand";
-import { CurrentApp } from "../../../helpers/interfaces";
-import { VsCodeUtils } from "../../../helpers/vsCodeUtils";
-import { Strings } from "../../../helpers/strings";
-import * as vscode from "vscode";
-import { AppCenterOS } from "../../../helpers/constants";
+import * as vscode from 'vscode';
+import { ExtensionManager } from '../../../extensionManager';
+import { AppCenterOS } from '../../../helpers/constants';
+import { CurrentApp } from '../../../helpers/interfaces';
+import { Strings } from '../../../helpers/strings';
+import { VsCodeUtils } from '../../../helpers/vsCodeUtils';
+import { ILogger } from '../../../log/logHelper';
+import { AppCommand } from '../appCommand';
 
 export default class SetCurrentDeployment extends AppCommand {
     constructor(manager: ExtensionManager, logger: ILogger) {
@@ -33,7 +33,7 @@ export default class SetCurrentDeployment extends AppCommand {
                             currentApp.identifier,
                             AppCenterOS[currentApp.os], {
                                 currentDeploymentName: deploymentName,
-                                codePushDeployments: currentApp.currentAppDeployments.codePushDeployments,
+                                codePushDeployments: currentApp.currentAppDeployments.codePushDeployments
                             },
                             currentApp.targetBinaryVersion,
                             currentApp.isMandatory

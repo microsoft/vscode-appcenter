@@ -43,6 +43,8 @@ export class Strings {
     public static NoProjectRootFolderFound: string = "Please, open project folder before using this command";
     public static UnknownError: string = "Unknown error occured. Please, check logs for details.";
     public static SelectCurrentDeploymentMsg: string = "Please select current deployment";
+    public static PleaseProvideTargetBinaryVersion: string = "Please provide semver compliant version";
+    public static InvalidAppVersionParamMsg: string = "Sorry, provided app version is invalid";
 
     public static FailedToPushChangesToRemoteRepoMsg: (repoName: string) => string = (repoName: string) => {
         return `Failed to push changes to remote repository '${repoName}'`;
