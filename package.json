@@ -28,7 +28,7 @@
     "contributes": {
         "commands": [
             {
-                "command": "appcenter.whoami",
+                "command": "appcenter.whoAmI",
                 "title": "Who Am I",
                 "category": "AppCenter"
             },
@@ -51,14 +51,44 @@
                 "command": "appcenter.start",
                 "title": "Start An Idea",
                 "category": "AppCenter"
-            }
+            },
+			{
+				"command": "appcenter.setCurrentApp",
+				"title": "Set Current App",
+				"category": "AppCenter"
+			},
+			{
+				"command": "appcenter.getCurrentApp",
+				"title": "Get Current App",
+				"category": "AppCenter"
+			},
+			{
+				"command": "appcenter.codepush.setCurrentDeployment",
+				"title": "Set Current Deployment",
+				"category": "AppCenter Code Push"
+			},
+			{
+				"command": "appcenter.codepush.releaseReact",
+				"title": "Release React",
+				"category": "AppCenter Code Push"
+			},
+			{
+				"command": "appcenter.codepush.switchMandatoryPropForRelease",
+				"title": "Switch Code Push release mandatory property",
+				"category": "AppCenter Code Push"
+			},
+			{
+				"command": "appcenter.codepush.setTargetBinaryVersion",
+				"title": "Set Code Push release target binary verison",
+				"category": "AppCenter Code Push"
+			}
         ],
         "configuration": {
             "type": "object",
             "title": "AppCenter configuration",
             "properties": {
                 "appcenter.loginendpoint": {
-                "description": "Endpoint to login to appcenter",
+                    "description": "Endpoint to login to appcenter",
                     "type": "string",
                     "default": "https://appcenter.ms/cli-login",
                     "scope": "resource"
