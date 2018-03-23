@@ -9,7 +9,6 @@ import { Constants, AppCenterOS } from "../../helpers/constants";
 import { CurrentAppDeployments, DefaultApp } from "../../helpers/interfaces";
 import { Deployment } from "../lib/app-center-node-client/models";
 import { VsCodeUtils } from "../../helpers/vsCodeUtils";
-import { ProjectRootNotFoundError } from "../../helpers/errors";
 
 interface QuickPickAppItem {
     label: string,
@@ -106,6 +105,7 @@ export default class SetCurrentApp extends Command {
                             return Promise.resolve(void 0);                          
                         }
                     });
+                    return Promise.resolve(void 0);   
                 } catch (e) {
                     VsCodeUtils.ShowErrorMessage(Strings.UnknownError);
                     return Promise.reject(e);

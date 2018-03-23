@@ -45,6 +45,4 @@ function registerAppCenterCommands(context: vscode.ExtensionContext): void {
         () => _extensionManager.RunCommand(() => _extensionManager.AppCenterCommandHandler.SwitchMandatoryPropForRelease())));
     context.subscriptions.push(vscode.commands.registerCommand(CommandNames.CodePush.SetTargetBinaryVersion,
         () => _extensionManager.RunCommand(() => _extensionManager.AppCenterCommandHandler.SetTargetBinaryVersion())));
-    context.subscriptions.push(vscode.commands.registerCommand(CommandNames.CodePush.ShowMenu,
-        () => _extensionManager.RunCommand(() => _extensionManager.AppCenterCommandHandler.ShowCodePushMenu())));
 }

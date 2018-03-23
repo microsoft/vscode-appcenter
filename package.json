@@ -81,11 +81,6 @@
 				"command": "appcenter.codepush.setTargetBinaryVersion",
 				"title": "Set Code Push release target binary verison",
 				"category": "AppCenter Code Push"
-			},
-			{
-				"command": "appcenter.codepush.showMenu",
-				"title": "Show Menu",
-				"category": "AppCenter Code Push"
 			}
         ],
         "configuration": {
