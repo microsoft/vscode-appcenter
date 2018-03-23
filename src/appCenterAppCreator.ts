@@ -1,22 +1,9 @@
-import * as vscode from "vscode";
 import { AppCenterClient } from "./appcenter/api";
 import { AppCenterOS, AppCenterPlatform, Constants } from "./helpers/constants";
 import { SettingsHelper } from "./helpers/settingsHelper";
-import { Strings } from "./helpers/strings";
-import { VsCodeUtils } from "./helpers/vsCodeUtils";
 import { ILogger, LogLevel } from "./log/logHelper";
 
 export default class AppCenterAppCreator {
-
-    protected appDisplayAppName: string;
-    protected appName: string;
-    protected isCreatedForOrganization: boolean;
-    protected ownerName: string;
-    protected repoUrl: string;
-    protected defaultBranchName: string;
-    protected _createBetaTestersDistributionGroup: boolean;
-    protected _connectRepositoryToBuildService: boolean;
-    protected _withBranchConfigurationCreatedAndBuildKickOff: boolean;
     protected platform: AppCenterPlatform = AppCenterPlatform.ReactNative;
     protected os: AppCenterOS;
 
@@ -24,107 +11,27 @@ export default class AppCenterAppCreator {
         this.logger.log('Initiazlied AppCenter Creator', LogLevel.Info);
     }
 
-    public async configureApp (
-         displayAppName: string,
-         appName: string,
-         isCreatedForOrganization: boolean,
-         ownerName: string,
-         repoUrl: string,
-         defaultBranchName: string,
-         createBetaTestersDistributionGroup: boolean,
-         connectRepositoryToBuildService: boolean,
-         withBranchConfigurationCreatedAndBuildKickOff: boolean
-        ): Promise<boolean> {
-
-        this.appDisplayAppName = displayAppName;
-        this.appName = appName;
-        this.isCreatedForOrganization = isCreatedForOrganization;
-        this.ownerName = ownerName;
-        this.repoUrl = repoUrl;
-        this.defaultBranchName = defaultBranchName;
-
-        this._createBetaTestersDistributionGroup = createBetaTestersDistributionGroup;
-        this._connectRepositoryToBuildService = connectRepositoryToBuildService;
-        this._withBranchConfigurationCreatedAndBuildKickOff = withBranchConfigurationCreatedAndBuildKickOff;
-
-        let configured: boolean = false;
-
-        await vscode.window.withProgress({ location: vscode.ProgressLocation.Window, title: Strings.VSCodeProgressLoadingTitle}, p => {
-            p.report({message: Strings.CreatingAppStatusBarMessage(this.os.toString()) });
-            if (isCreatedForOrganization) {
-                return this.createAppForOrg();
-            } else {
-                return this.createApp();
-            }
-        }).then(async appCreated => {
-            if (appCreated) {
-                // We consider that configured is true because app is created, if other things goes wrong
-                // Just show the error message
-                configured = true;
-
-                // this step is optional, so if we skip it or failed we can go further
-                if (this._createBetaTestersDistributionGroup) {
-                    await vscode.window.withProgress({ location: vscode.ProgressLocation.Window, title: Strings.VSCodeProgressLoadingTitle}, p => {
-                        p.report({message: Strings.CreatingDistributionStatusBarMessage });
-                        return this.createBetaTestersDistributionGroup();
-                    }).then(distributionGroupCreated => {
-                        if (!distributionGroupCreated) {
-                            VsCodeUtils.ShowErrorMessage(Strings.FailedToCreateDistributionGroup);
-                        }
-                    });
-                }
-
-                if (this._connectRepositoryToBuildService) {
-                    await vscode.window.withProgress({ location: vscode.ProgressLocation.Window, title: Strings.VSCodeProgressLoadingTitle}, p => {
-                        p.report({message: Strings.ConnectingRepoToBuildServiceStatusBarMessage });
-                        return this.connectRepositoryToBuildService();
-                    }).then(async repoConnectedToBuildService => {
-                        if (repoConnectedToBuildService) {
-                            if (this._withBranchConfigurationCreatedAndBuildKickOff) {
-                                await vscode.window.withProgress({ location: vscode.ProgressLocation.Window, title: Strings.VSCodeProgressLoadingTitle}, p => {
-                                    p.report({message: Strings.CreateBranchConfigAndKickOffBuildStatusBarMessage });
-                                    return this.withBranchConfigurationCreatedAndBuildKickOff();
-                                }).then(branchConfiguredAndBuildStarted => {
-                                    if (!branchConfiguredAndBuildStarted) {
-                                        VsCodeUtils.ShowErrorMessage(Strings.FailedToConfigureBranchAndStartNewBuild);
-                                    }
-                                });
-                            }
-                        } else {
-                            VsCodeUtils.ShowErrorMessage(Strings.FailedToConnectRepoToBuildService);
-                        }
-                    });
-                }
-            } else {
-                // This is the only case when we haven't done anything in appcenter, for other cases just show error message
-                VsCodeUtils.ShowErrorMessage(Strings.FailedToCreateAppInAppCenter(this.os));
-            }
-        });
-
-        return configured;
-    }
-
-    private async withBranchConfigurationCreatedAndBuildKickOff(): Promise<boolean> {
+    public async withBranchConfigurationCreatedAndBuildKickOff(appName: string, branchName: string, ownerName: string): Promise<boolean> {
         // TODO: get out what to do with this magic with not working of method to create default config!
         try {
             const configJson = Constants.defaultBuildConfigJSON;
             const configObj = JSON.parse(configJson);
 
-            await this.client.build.branchConfigurations.create(this.appName, this.defaultBranchName, this.ownerName, configObj);
-            await this.client.build.builds.create(this.appName, this.defaultBranchName, this.ownerName);
+            await this.client.build.branchConfigurations.create(appName, branchName, ownerName, configObj);
+            await this.client.build.builds.create(appName, branchName, ownerName);
         } catch (err) {
             return this.proceedErrorResponse(err);
         }
         return true;
     }
 
-    private async connectRepositoryToBuildService(): Promise<boolean> {
+    public async connectRepositoryToBuildService(appName: string, ownerName: string, repoUrl: string): Promise<boolean> {
         try {
             await this.client.build.repositoryConfigurations.createOrUpdate(
-                this.appName,
-                this.ownerName,
+                appName,
+                ownerName,
                 {
-                    repoUrl: this.repoUrl
+                    repoUrl: repoUrl
                 }
             );
         } catch (err) {
@@ -133,36 +40,36 @@ export default class AppCenterAppCreator {
         return true;
     }
 
-    private async createBetaTestersDistributionGroup(): Promise<boolean> {
+    public async createBetaTestersDistributionGroup(appName: string, ownerName: string): Promise<boolean> {
         try {
-            await this.client.account.distributionGroups.create(this.appName, {
+            await this.client.account.distributionGroups.create(appName, {
                 name: SettingsHelper.distribitionGroupTestersName()
-            }, this.ownerName);
+            }, ownerName);
         } catch (err) {
             return this.proceedErrorResponse(err);
         }
         return true;
     }
 
-    private async createAppForOrg(): Promise<boolean> {
+    public async createAppForOrg(appName: string, displayName: string, orgName: string): Promise<boolean> {
         try {
             await this.client.account.apps.createForOrg( {
-                displayName: this.appDisplayAppName,
-                name: this.appName,
+                displayName: displayName,
+                name: appName,
                 os: this.os,
                 platform: this.platform
-            }, this.ownerName);
+            }, orgName);
         } catch (err) {
             return this.proceedErrorResponse(err);
         }
         return true;
     }
 
-    private async createApp(): Promise<boolean> {
+    public async createApp(appName: string, displayName: string): Promise<boolean> {
         try {
             await this.client.account.apps.create( {
-                displayName: this.appDisplayAppName,
-                name: this.appName,
+                displayName: displayName,
+                name: appName,
                 os: this.os,
                 platform: this.platform
             });
@@ -190,5 +97,32 @@ export class AndroidAppCenterAppCreator extends AppCenterAppCreator {
     constructor(client: AppCenterClient, logger: ILogger) {
         super(client, logger);
         this.os = AppCenterOS.Android;
+    }
+}
+
+export class NullAppCenterAppCreator extends AppCenterAppCreator {
+    constructor(client: AppCenterClient, logger: ILogger) {
+        super(client, logger);
+        this.os = AppCenterOS.Android;
+    }
+
+    public async withBranchConfigurationCreatedAndBuildKickOff(_appName: string, _branchName: string, _ownerName: string): Promise<boolean> {
+        return true;
+    }
+
+    public async connectRepositoryToBuildService(_appName: string, _ownerName: string, _repoUrl: string): Promise<boolean> {
+        return true;
+    }
+
+    public async createBetaTestersDistributionGroup(_appName: string, _ownerName: string): Promise<boolean> {
+        return true;
+    }
+
+    public async createAppForOrg(_appName: string, _displayName: string, _orgName: string): Promise<boolean> {
+        return true;
+    }
+
+    public async createApp(_appName: string, _displayName: string): Promise<boolean> {
+        return true;
     }
 }

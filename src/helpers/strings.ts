@@ -42,6 +42,8 @@ export class Strings {
     public static NoCurrentAppSetMsg: string = "No current app specified";
     public static NoProjectRootFolderFound: string = "Please, open project folder before using this command";
     public static UnknownError: string = "Unknown error occured. Please, check logs for details.";
+    public static CreatingAppStatusBarMessage: string = `Creating app for you...`;
+    public static FailedToCreateAppInAppCenter: string = `Sorry, failed to create app in app center`;
 
     public static FailedToPushChangesToRemoteRepoMsg: (repoName: string) => string = (repoName: string) => {
         return `Failed to push changes to remote repository '${repoName}'`;
@@ -49,14 +51,6 @@ export class Strings {
 
     public static YouAreLoggedInMsg: (name: string) => string = (name: string) => {
         return `You are logged into App Center as '${name}'`;
-    }
-
-    public static CreatingAppStatusBarMessage: (osName: string) => string = (osName: string) => {
-        return `Creating ${osName} app for you...`;
-    }
-
-    public static FailedToCreateAppInAppCenter: (osName: string) => string = (osName: string) => {
-        return `Sorry, failed to create ${osName} app in app center`;
     }
 
     public static YourCurrentAppMsg: (appName: string) => string = (appName: string) => {
