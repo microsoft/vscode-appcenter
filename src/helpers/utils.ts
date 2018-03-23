@@ -18,6 +18,10 @@ export class Utils {
         return message;
     }
 
+    public static Delay<T>(millis: number, value?: T): Promise<T> {
+        return new Promise((resolve) => setTimeout(() => resolve(value), millis));
+    }
+
     //Use open for Windows and Mac, opener for Linux
     public static OpenUrl(url: string): void {
         switch (process.platform) {

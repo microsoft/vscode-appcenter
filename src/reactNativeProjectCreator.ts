@@ -1,8 +1,8 @@
 import * as fs from "fs";
 import * as path from "path";
-import { ILogger } from "../log/logHelper";
-import { Utils } from "./utils";
-import { Validators } from "./validators";
+import { Utils } from "./helpers/utils";
+import { Validators } from "./helpers/validators";
+import { ILogger, LogLevel } from "./log/logHelper";
 // tslint:disable-next-line:no-var-requires
 const execSync = require('child_process').execSync;
 
@@ -14,10 +14,11 @@ export default class ReactNativeProjectCreator {
         if (!Validators.ValidateProjectName(projectName)) {
             return false;
         }
+
+        // The was an issue for me and without Delay spinner was not shown when app was creating!
+        await Utils.Delay(100);
         this.root = root;
-
         this.logger.info(`This will walk you through creating a new React Native project in ${root}`);
-
         const packageJson = {
             name: projectName,
             version: '0.0.1',
@@ -45,6 +46,7 @@ export default class ReactNativeProjectCreator {
             this.logger.info('Installing ' + this.getInstallPackage() + '...');
             installCommand = 'npm install --save --save-exact ' + this.getInstallPackage();
         }
+        this.logger.log(installCommand, LogLevel.Info);
 
         try {
             execSync(installCommand, {stdio: 'inherit'});
@@ -53,7 +55,6 @@ export default class ReactNativeProjectCreator {
             this.logger.error('Command `' + installCommand + '` failed.');
             return false;
         }
-
         const cli = require(this.getCLIModulePath());
         cli.init(root, projectName);
 
