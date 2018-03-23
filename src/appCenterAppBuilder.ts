@@ -69,15 +69,15 @@ export default class AppCenterAppBuilder {
                 if (isCreatedForOrganization) {
                     created = await Promise.all(
                         [
-                            await iosApp.createAppForOrg(iOSAppName, iOSDisplayAppName, <string>this.userOrOrg.name),
-                            await androidApp.createAppForOrg(androidAppName, androidDisplayName, <string>this.userOrOrg.name)
+                            iosApp.createAppForOrg(iOSAppName, iOSDisplayAppName, <string>this.userOrOrg.name),
+                            androidApp.createAppForOrg(androidAppName, androidDisplayName, <string>this.userOrOrg.name)
                         ]
                     );
                 } else {
                     created = await Promise.all(
                         [
-                            await iosApp.createApp(iOSAppName, iOSDisplayAppName),
-                            await androidApp.createApp(androidAppName, androidDisplayName)
+                            iosApp.createApp(iOSAppName, iOSDisplayAppName),
+                            androidApp.createApp(androidAppName, androidDisplayName)
                         ]
                     );
                 }
@@ -93,8 +93,8 @@ export default class AppCenterAppBuilder {
                     p.report({message: Strings.CreatingDistributionStatusBarMessage });
                     const createdBetaTestersGroup: boolean[] = await Promise.all(
                         [
-                            await iosApp.createBetaTestersDistributionGroup(iOSAppName, <string>this.userOrOrg.name),
-                            await androidApp.createBetaTestersDistributionGroup(androidAppName, <string>this.userOrOrg.name)
+                            iosApp.createBetaTestersDistributionGroup(iOSAppName, <string>this.userOrOrg.name),
+                            androidApp.createBetaTestersDistributionGroup(androidAppName, <string>this.userOrOrg.name)
                         ]
                     );
 
@@ -122,8 +122,8 @@ export default class AppCenterAppBuilder {
                             p.report({message: Strings.CreateBranchConfigAndKickOffBuildStatusBarMessage });
                             const branchConfiguredAndBuildStarted: boolean[] = await Promise.all(
                                 [
-                                    await iosApp.withBranchConfigurationCreatedAndBuildKickOff(iOSAppName, this.defaultBranchName, <string>this.userOrOrg.name),
-                                    await androidApp.withBranchConfigurationCreatedAndBuildKickOff(androidAppName, this.defaultBranchName, <string>this.userOrOrg.name)
+                                    iosApp.withBranchConfigurationCreatedAndBuildKickOff(iOSAppName, this.defaultBranchName, <string>this.userOrOrg.name),
+                                    androidApp.withBranchConfigurationCreatedAndBuildKickOff(androidAppName, this.defaultBranchName, <string>this.userOrOrg.name)
                                 ]
                             );
                             if (!branchConfiguredAndBuildStarted.every( (val: boolean) => {
