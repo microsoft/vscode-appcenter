@@ -2,7 +2,7 @@ import * as vscode from "vscode";
 import AppCenterAppBuilder from "../../appCenterAppBuilder";
 import { ExtensionManager } from "../../extensionManager";
 import { FSUtils } from "../../helpers/fsUtils";
-// import { GitUtils } from "../../helpers/gitUtils";
+import { GitUtils } from "../../helpers/gitUtils";
 import { SettingsHelper } from "../../helpers/settingsHelper";
 import { Strings } from "../../helpers/strings";
 import { Validators } from "../../helpers/validators";
@@ -15,6 +15,7 @@ import { Command } from "./command";
 
 export default class Start extends Command {
 
+    private repositoryURL: string;
     constructor(manager: ExtensionManager, logger: ILogger) {
         super(manager, logger);
     }
@@ -29,15 +30,35 @@ export default class Start extends Command {
         }
         vscode.window.showInputBox({ prompt: Strings.PleaseEnterIdeaName, ignoreFocusOut: true })
         .then(async ideaName => {
-            if (ideaName) {
-                //TODO: Validate if name is unique! Or probably if already created do nothing?
-                if (!Validators.ValidateProjectName(ideaName)) {
-                    VsCodeUtils.ShowInfoMessage(Strings.IdeaNameIsNotValidMsg);
+            if (!ideaName) {
+                VsCodeUtils.ShowErrorMessage(Strings.NoIdeaNameSelectedMsg);
+                return;
+            }
+
+            //TODO: Validate if name is unique! Or probably if already created do nothing?
+            if (!Validators.ValidateProjectName(ideaName)) {
+                VsCodeUtils.ShowErrorMessage(Strings.IdeaNameIsNotValidMsg);
+                return;
+            }
+
+            if (!await this.createRNProject(ideaName, rootPath)) {
+                VsCodeUtils.ShowErrorMessage(Strings.FailedToCreateRNProjectMsg);
+                return;
+            }
+
+            vscode.window.showInputBox({ prompt: Strings.PleaseEnterNewRepositoryUrl, ignoreFocusOut: true })
+            .then(async repositoryURL => {
+                if (!repositoryURL || !Validators.ValidGitName(repositoryURL)) {
+                    VsCodeUtils.ShowErrorMessage(Strings.FailedToProvideRepositoryNameMsg);
                     return;
                 }
+                this.repositoryURL = repositoryURL;
 
-                if (!await this.createRNProject(ideaName, rootPath)) {
-                    VsCodeUtils.ShowErrorMessage(Strings.FailedToCreateRNProjectMsg);
+                await this.linkProjectToAppCenter();
+                await this.linkProjectToCP();
+
+                if (!await this.ConfigureRepoAndPush()) {
+                    VsCodeUtils.ShowErrorMessage(Strings.FailedToPushChangesToRemoteRepoMsg(this.repositoryURL));
                     return;
                 }
 
@@ -47,7 +68,7 @@ export default class Start extends Command {
                         const organizations: models.ListOKResponseItem[] = orgList;
                         return organizations;
                     });
-                  }).then(async (orgList: models.ListOKResponseItem[]) => {
+                    }).then(async (orgList: models.ListOKResponseItem[]) => {
                     const options = orgList.map(item => {
                         return {
                             label: `${item.displayName} (${item.name})`,
@@ -83,14 +104,9 @@ export default class Start extends Command {
 
                             const rnProjectIsCreatedAndLinked: boolean = true;
                             if (rnProjectIsCreatedAndLinked) {
-                                // TODO: Get repo name here and push changes!
-                                // 1. Get repo name
-                                // 2. Push changes
-                                // 3. Do AppCenter Logic...
-                                const repoUrl: string = 'https://github.com/max-mironov/RNCPIssue637.git'; // TODO: ok for now hardcoded, later take it from earlier created
                                 const defaultBranchName: string = SettingsHelper.defaultBranchName();
 
-                                const appCenterAppBuilder = new AppCenterAppBuilder(ideaName, selectedUserOrOrg, repoUrl, defaultBranchName, this.client, this.logger);
+                                const appCenterAppBuilder = new AppCenterAppBuilder(ideaName, selectedUserOrOrg, this.repositoryURL, defaultBranchName, this.client, this.logger);
                                 appCenterAppBuilder
                                     .withIOSApp(SettingsHelper.createIOSAppInAppCenter())
                                     .withAndroidApp(SettingsHelper.createAndroidAppInAppCenter())
@@ -102,24 +118,33 @@ export default class Start extends Command {
                         }
                     });
                 });
-            } else {
-                VsCodeUtils.ShowErrorMessage(Strings.NoIdeaNameSelectedMsg);
-            }
+            });
         });
-        return;
+    }
+
+    private async linkProjectToCP(): Promise<boolean> {
+        return true;
+    }
+
+    private async linkProjectToAppCenter(): Promise<boolean> {
+        return true;
     }
 
     private async createRNProject(ideaName: string, rootPath: string): Promise<boolean> {
         let created: boolean = false;
-        // if (!await GitUtils.IsGitInstalled(rootPath)) {
-        //     VsCodeUtils.ShowErrorMessage(Strings.GitIsNotInstalledMsg);
-        //     return created;
-        // }
-        // await GitUtils.GitInit(this.logger, rootPath);
+        if (!await GitUtils.IsGitInstalled(rootPath)) {
+            VsCodeUtils.ShowErrorMessage(Strings.GitIsNotInstalledMsg);
+            return created;
+        }
+        await GitUtils.GitInit(this.logger, rootPath);
         await vscode.window.withProgress({ location: vscode.ProgressLocation.Window, title: Strings.VSCodeProgressLoadingTitle}, async p => {
                 p.report({message: Strings.CreateRNProjectStatusBarMessage });
                 created = await new ReactNativeProjectCreator(this.logger).createProject(ideaName, rootPath);
         });
         return created;
+    }
+
+    private async ConfigureRepoAndPush(): Promise<boolean> {
+        return GitUtils.ConfigureRepoAndPush(this.repositoryURL, SettingsHelper.defaultBranchName(), this.logger, <string>this.manager.projectRootPath);
     }
 }

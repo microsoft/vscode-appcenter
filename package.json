@@ -58,7 +58,7 @@
             "title": "AppCenter configuration",
             "properties": {
                 "appcenter.loginendpoint": {
-                "description": "Endpoint to login to appcenter",
+                    "description": "Endpoint to login to appcenter",
                     "type": "string",
                     "default": "https://appcenter.ms/cli-login",
                     "scope": "resource"
@@ -159,6 +159,7 @@
         "opener": "^1.4.3",
         "run-sequence": "^2.2.1",
         "rx-lite": "^4.0.8",
+        "simple-git": "^1.92.0",
         "temp": "^0.8.3",
         "tslint": "^5.9.1",
         "tslint-microsoft-contrib": "^5.0.3",
