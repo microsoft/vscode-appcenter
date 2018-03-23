@@ -24,7 +24,7 @@ export default class SetCurrentApp extends Command {
 
     public async run(): Promise<void> {
         if (!await super.run()) {
-            return Promise.resolve(void 0);   
+            return;   
         }
 
         let rnApps;
@@ -90,19 +90,18 @@ export default class SetCurrentApp extends Command {
                         } else {
                             const error = new Error("Failed to save current app");
                             this.logger.error(error.message);
-                            return Promise.resolve(void 0);
+                            return;
                         }
                     });
-                    return Promise.resolve(void 0);
                 } catch (e) {
                     VsCodeUtils.ShowErrorMessage(Strings.UnknownError);
-                    return Promise.reject(e);
+                    this.logger.error(e.message, e);
                 }
+                return;
             });
         } catch (e) {
             VsCodeUtils.ShowErrorMessage(Strings.UnknownError);
-            return Promise.reject(e);
+            this.logger.error(e.message, e);
         }
-        return Promise.resolve(void 0);
     }
 }
