@@ -1,16 +1,14 @@
+import * as CodePush from "./appcenter/commands/codepush";
+import GetCurrentApp from "./appcenter/commands/getCurrentApp";
 import Login from "./appcenter/commands/login";
 import Logout from "./appcenter/commands/logout";
+import SetCurrentApp from "./appcenter/commands/setCurrentApp";
 import ShowMenu from "./appcenter/commands/showMenu";
 import Start from "./appcenter/commands/start";
 import WhoAmI from "./appcenter/commands/whoami";
-import GetCurrentApp from "./appcenter/commands/getCurrentApp";
-import SetCurrentApp from "./appcenter/commands/setCurrentApp";
-import * as CodePush from "./appcenter/commands/codepush";
 import { ExtensionManager } from "./extensionManager";
 import { ConsoleLogger } from "./log/consoleLogger";
 import { ILogger } from "./log/logHelper";
-
-"use strict";
 
 export class AppCenterCommandHandler {
 
@@ -55,7 +53,7 @@ export class AppCenterCommandHandler {
     public async SwitchMandatoryPropForRelease(): Promise<void> {
         await new CodePush.SwitchMandatoryPropForRelease(this.manager, this.logger).runNoClient();
     }
-    
+
     public async SetTargetBinaryVersion(): Promise<void> {
         await new CodePush.SetTargetBinaryVersion(this.manager, this.logger).run();
     }

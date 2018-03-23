@@ -1,5 +1,3 @@
-"use strict";
-
 import { Disposable, StatusBarItem } from "vscode";
 import Auth from "./appcenter/auth/auth";
 import { AppCenterCommandHandler } from "./appCenterCommandHandler";

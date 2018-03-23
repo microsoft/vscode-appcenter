@@ -1,5 +1,3 @@
-'use strict';
-
 import * as vscode from 'vscode';
 import { ExtensionManager } from './extensionManager';
 import { CommandNames } from './helpers/constants';
