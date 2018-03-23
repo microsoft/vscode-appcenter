@@ -6,7 +6,7 @@ import * as models from '../lib/app-center-node-client/models';
 
 import * as vscode from "vscode";
 import { Constants, AppCenterOS } from "../../helpers/constants";
-import { CurrentAppDeployments, DefaultApp } from "../../helpers/interfaces";
+import { CurrentAppDeployments, CurrentApp } from "../../helpers/interfaces";
 import { Deployment } from "../lib/app-center-node-client/models";
 import { VsCodeUtils } from "../../helpers/vsCodeUtils";
 
@@ -83,7 +83,7 @@ export default class SetCurrentApp extends AppCommand {
                             Constants.AppCenterDefaultTargetBinaryVersion,
                             Constants.AppCenterDefaultIsMandatoryParam
                         );
-                    }).then((app: DefaultApp | null) => {
+                    }).then((app: CurrentApp | null) => {
                         if (app) {
                             const message = Strings.YourCurrentAppAndDeploymentMsg(selected.target, app.currentAppDeployments.currentDeploymentName);
                             return VsCodeUtils.ShowInfoMessage(message);

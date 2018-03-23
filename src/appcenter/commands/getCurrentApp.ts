@@ -1,7 +1,7 @@
 import { AppCommand } from './appCommand';
 import { ExtensionManager } from "../../extensionManager";
 import { ILogger } from "../../log/logHelper";
-import { DefaultApp } from "../../helpers/interfaces";
+import { CurrentApp } from "../../helpers/interfaces";
 import { VsCodeUtils } from "../../helpers/vsCodeUtils";
 import { Strings } from "../../helpers/strings";
 
@@ -16,7 +16,7 @@ export default class GetCurrentApp extends AppCommand {
             return;
         }
 
-        return this.getDefaultApp().then((app: DefaultApp | null) => {
+        return this.getCurrentApp().then((app: CurrentApp | null) => {
             if (app) {
                 VsCodeUtils.ShowInfoMessage(Strings.YourCurrentAppMsg(app.identifier));
             } else {

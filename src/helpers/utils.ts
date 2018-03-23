@@ -6,7 +6,7 @@ import * as open from "open";
 import * as opener from "opener";
 import * as path from "path";
 import { AppCenterOS } from "./constants";
-import { CurrentAppDeployments, DefaultApp } from "./interfaces";
+import { CurrentAppDeployments, CurrentApp } from "./interfaces";
 import { Validators } from "./validators";
 
 export class Utils {    
@@ -58,11 +58,11 @@ export class Utils {
         return Promise.resolve(false);
     }
 
-    public static toDefaultApp(app: string,
+    public static toCurrentApp(app: string,
         appOS: AppCenterOS,
         appDeployment: CurrentAppDeployments | null,
         targetBinaryVersion: string,
-        isMandatory: boolean): DefaultApp | null {
+        isMandatory: boolean): CurrentApp | null {
         const matches = app.match(Validators.ValidAppCenterAppName);
         if (matches !== null) {
             return {

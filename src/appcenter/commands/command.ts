@@ -6,7 +6,6 @@ import { VsCodeUtils } from "../../helpers/vsCodeUtils";
 import { ILogger, LogLevel } from "../../log/logHelper";
 import { AppCenterClient, AppCenterClientFactory, createAppCenterClient } from "../api";
 import Auth from "../auth/auth";
-import { ProjectRootNotFoundError } from '../../helpers/errors';
 
 export class Command {
 
@@ -30,8 +29,7 @@ export class Command {
     public runNoClient(): Promise<boolean | void> {
         const rootPath: string | undefined = this.manager.projectRootPath;
         if (!rootPath) {
-            const error = new ProjectRootNotFoundError();
-            this.logger.log(error.message, LogLevel.Error);
+            this.logger.log('No project root folder found', LogLevel.Error);
             return Promise.resolve(false);
         }
         return Promise.resolve(true);
