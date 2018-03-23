@@ -108,14 +108,4 @@ export class Command {
             }
         });
     }
-
-    protected handleRunError(e): Promise<void> {
-        if (e instanceof ProjectRootNotFoundError) {
-            VsCodeUtils.ShowErrorMessage(Strings.NoProjectRootFolderFound);
-            return Promise.resolve(void 0);
-        } else {
-            VsCodeUtils.ShowErrorMessage(Strings.UnknownError);
-            return Promise.resolve(void 0);
-        }
-    }
 }
