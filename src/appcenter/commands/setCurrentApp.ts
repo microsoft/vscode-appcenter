@@ -52,7 +52,7 @@ export default class SetCurrentApp extends AppCommand {
                 const selectedApp: models.AppResponse = selectedApps[0];
                 const selectedAppName: string = `${selectedApp.owner.name}/${selectedApp.name}`;
 
-                const OS: AppCenterOS | undefined = this.toAppCenterOS(selectedApp.os.toLowerCase());
+                const OS: AppCenterOS | undefined = this.toAppCenterOS(selectedApp.os);
                 if (!OS) {
                     this.logger.error(`Couldn't recognise os ${selectedApp.os} returned from CodePush server.`);
                     return;
@@ -108,7 +108,7 @@ export default class SetCurrentApp extends AppCommand {
     }
 
     private toAppCenterOS(codePushOs: string): AppCenterOS | undefined {
-        switch (codePushOs) {
+        switch (codePushOs.toLowerCase()) {
             case 'android':
                 return AppCenterOS.Android;
             case 'ios':
