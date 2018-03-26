@@ -54,14 +54,6 @@ export default class Start extends Command {
                 }
                 this.repositoryURL = repositoryURL;
 
-                await this.linkProjectToAppCenter();
-                await this.linkProjectToCP();
-
-                if (!await this.ConfigureRepoAndPush()) {
-                    VsCodeUtils.ShowErrorMessage(Strings.FailedToPushChangesToRemoteRepoMsg(this.repositoryURL));
-                    return;
-                }
-
                 vscode.window.withProgress({ location: vscode.ProgressLocation.Window, title: Strings.VSCodeProgressLoadingTitle}, p => {
                     p.report({message: Strings.LoadingStatusBarMessage });
                     return this.client.account.organizations.list().then((orgList: models.ListOKResponseItem[]) => {
@@ -102,18 +94,25 @@ export default class Start extends Command {
                                 };
                             }
 
-                            const rnProjectIsCreatedAndLinked: boolean = true;
-                            if (rnProjectIsCreatedAndLinked) {
-                                const defaultBranchName: string = SettingsHelper.defaultBranchName();
+                            const done = new AppCenterAppBuilder(ideaName, selectedUserOrOrg, this.repositoryURL, SettingsHelper.defaultBranchName(), this.client, this.logger)
+                                .withIOSApp(SettingsHelper.createIOSAppInAppCenter())
+                                .withAndroidApp(SettingsHelper.createAndroidAppInAppCenter())
+                                .withBetaTestersDistributionGroup(SettingsHelper.createTestersDistributionGroupInAppCenter())
+                                .withConnectedRepositoryToBuildService(SettingsHelper.connectRepoToBuildService())
+                                .withBranchConfigurationCreatedAndBuildKickOff(SettingsHelper.configureBranchAndStartNewBuild())
+                                .create();
 
-                                const appCenterAppBuilder = new AppCenterAppBuilder(ideaName, selectedUserOrOrg, this.repositoryURL, defaultBranchName, this.client, this.logger);
-                                appCenterAppBuilder
-                                    .withIOSApp(SettingsHelper.createIOSAppInAppCenter())
-                                    .withAndroidApp(SettingsHelper.createAndroidAppInAppCenter())
-                                    .withBetaTestersDistributionGroup(SettingsHelper.createTestersDistributionGroupInAppCenter())
-                                    .withConnectedRepositoryToBuildService(SettingsHelper.connectRepoToBuildService())
-                                    .withBranchConfigurationCreatedAndBuildKickOff(SettingsHelper.configureBranchAndStartNewBuild())
-                                    .create();
+                            if (!done) {
+                                this.logger.error("Failed to create App in AppCenter");
+                                return;
+                            }
+
+                            await this.linkProjectToAppCenter();
+                            await this.linkProjectToCP();
+
+                            if (!await this.ConfigureRepoAndPush()) {
+                                VsCodeUtils.ShowErrorMessage(Strings.FailedToPushChangesToRemoteRepoMsg(this.repositoryURL));
+                                return;
                             }
                         }
                     });

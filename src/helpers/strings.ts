@@ -50,21 +50,16 @@ export class Strings {
     public static RunningBundleCommandMessage: string = "Running bundle command...";
     public static ArchivingUpdateContentsMessage: string = "Archiving update contents...";
     public static ReleasingUpdateContentsMessage: string = "Releasing update contents to CodePush...";
-    
+
+    public static CreatingAppStatusBarMessage: string = `Creating app for you...`;
+    public static FailedToCreateAppInAppCenter: string = `Sorry, failed to create app in app center`;
+
     public static FailedToPushChangesToRemoteRepoMsg: (repoName: string) => string = (repoName: string) => {
         return `Failed to push changes to remote repository '${repoName}'`;
     }
 
     public static YouAreLoggedInMsg(name: string): string {
         return `You are logged into App Center as '${name}'`;
-    }
-
-    public static CreatingAppStatusBarMessage(osName: string): string {
-        return `Creating ${osName} app for you...`;
-    }
-
-    public static FailedToCreateAppInAppCenter(osName: string): string {
-        return `Sorry, failed to create ${osName} app in app center`;
     }
 
     public static YourCurrentAppMsg(appName: string): string {
