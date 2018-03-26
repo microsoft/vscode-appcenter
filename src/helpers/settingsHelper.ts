@@ -5,6 +5,11 @@ import { Constants } from "./constants";
 
 export class SettingsHelper {
     public static getAppCenterDemoAppGitRepo(): string {
+        const workspaceConfiguration = vscode.workspace.getConfiguration();
+        if (workspaceConfiguration.has("appcenter.demoAppGitRepo")) {
+            const demoAppGitRepo: string = ConfigurationReader.readString(workspaceConfiguration.get("appcenter.demoAppGitRepo"));
+            return demoAppGitRepo;
+        }
         return Constants.AppCenterDemoAppRepository;
     }
 
