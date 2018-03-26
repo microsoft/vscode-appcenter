@@ -134,8 +134,8 @@ export default class Start extends Command {
             return false;
         }
         await vscode.window.withProgress({ location: vscode.ProgressLocation.Window, title: Strings.VSCodeProgressLoadingTitle}, async p => {
-                p.report({message: Strings.CreateRNProjectStatusBarMessage });
-                created = await GitUtils.GitCloneIntoExistingDir(this.logger, rootPath, SettingsHelper.getAppCenterDemoAppGitRepo());
+            p.report({message: Strings.CreateRNProjectStatusBarMessage });
+            created = await GitUtils.GitCloneIntoExistingDir(this.logger, rootPath, SettingsHelper.getAppCenterDemoAppGitRepo());
         });
         return created;
     }

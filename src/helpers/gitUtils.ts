@@ -27,12 +27,13 @@ export class GitUtils {
 
     public static async GitCloneIntoExistingDir(logger: ILogger, workingDirectory: string, remoteRepo: string): Promise<boolean> {
         try {
-            await git(workingDirectory).init();
-            await git(workingDirectory).addRemote(this.gitDefaultRemoteName, remoteRepo);
-            await git(workingDirectory).fetch();
-            await git(workingDirectory).checkout(['-t', 'origin/master']);
+            const gitrepo = git(workingDirectory);
+            await gitrepo.init();
+            await gitrepo.addRemote(this.gitDefaultRemoteName, remoteRepo);
+            await gitrepo.fetch();
+            await gitrepo.checkout(['-t', 'origin/master']);
         } catch (e) {
-            logger.error(`failed: ${e.message}`);
+            logger.error(`Failed to clone into exiting repository: ${e.message}`);
             return false;
         }
         return true;
@@ -40,14 +41,15 @@ export class GitUtils {
 
     public static async ConfigureRepoAndPush(remoteRepo: string, branch: string, logger: ILogger, workingDirectory: string): Promise<boolean> {
         try {
-            await git(workingDirectory).add('./*');
-            await git(workingDirectory).commit(this.gitFirstCommitName);
-            await git(workingDirectory).removeRemote(this.gitDefaultRemoteName);
-            await git(workingDirectory).addRemote(this.gitDefaultRemoteName, remoteRepo);
-            await git(workingDirectory).push(this.gitDefaultRemoteName, branch);
-            logger.info(`Successfully pushed changes to repomte repo ${remoteRepo} branchname: ${branch}`);
+            const gitrepo = git(workingDirectory);
+            await gitrepo.add('./*');
+            await gitrepo.commit(this.gitFirstCommitName);
+            await gitrepo.removeRemote(this.gitDefaultRemoteName);
+            await gitrepo.addRemote(this.gitDefaultRemoteName, remoteRepo);
+            await gitrepo.push(this.gitDefaultRemoteName, branch);
+            logger.info(`Successfully pushed changes to remote repository: ${remoteRepo} branchname: ${branch}`);
         } catch (e) {
-            logger.error(`failed: ${e.message}`);
+            logger.error(`Failed to congigure/push to remote repository: ${e.message}`);
             return false;
         }
         return true;
