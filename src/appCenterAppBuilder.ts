@@ -2,10 +2,11 @@ import * as vscode from "vscode";
 import { AppCenterClient, models } from "./appcenter/api";
 import AppCenterAppCreator, { AndroidAppCenterAppCreator, IOSAppCenterAppCreator, NullAppCenterAppCreator } from "./appCenterAppCreator";
 import { Constants } from "./helpers/constants";
+import { SettingsHelper } from "./helpers/settingsHelper";
 import { Strings } from "./helpers/strings";
 import { Utils } from "./helpers/utils";
 import { VsCodeUtils } from "./helpers/vsCodeUtils";
-import { ILogger, LogLevel } from "./log/logHelper";
+import { ILogger } from "./log/logHelper";
 
 export default class AppCenterAppBuilder {
     private _createIOSApp: boolean = false;
@@ -18,59 +19,84 @@ export default class AppCenterAppBuilder {
     private androidAppCreated: boolean = false;
     private createdApps: models.AppResponse[];
 
-    constructor(private ideaName: string, private userOrOrg: models.ListOKResponseItem, private repoUrl: string, private defaultBranchName: string, private client: AppCenterClient, private logger: ILogger) {
-        this.logger.log('Initialized AppCenterAppBuilder', LogLevel.Info);
+    constructor(
+        private ideaName: string,
+        private userOrOrg: models.ListOKResponseItem,
+        private repoUrl: string,
+        private client: AppCenterClient,
+        private logger: ILogger,
+        private defaultBranchName = SettingsHelper.defaultBranchName()) {
+
+        if (this.userOrOrg.name === undefined || this.userOrOrg.displayName === undefined || this.ideaName === undefined) {
+            this.logger.error(`Sorry, IdeaName or User/Organization is not set`);
+            throw new Error(`Sorry, IdeaName or User/Organization is not set`);
+        }
+    }
+
+    public get iOSAppName(): string {
+        return `${this.ideaName}${Constants.iOSAppSuffix}`;
+    }
+
+    public get androidAppName(): string {
+        return `${this.ideaName}${Constants.AndroidAppSuffix}`;
+    }
+
+    public get androidDisplayName(): string {
+        return `${this.ideaName}${Constants.AndroidAppSuffix}`;
+    }
+
+    public get iOSDisplayName(): string {
+        return `${this.ideaName}${Constants.iOSAppSuffix}`;
+    }
+
+    public get ownerName(): string {
+        return <string>this.userOrOrg.name;
+    }
+
+    public get iOSAppCreator(): AppCenterAppCreator {
+        const iosApp: AppCenterAppCreator = this._createIOSApp ?
+            new IOSAppCenterAppCreator(this.client, this.logger)
+            : new NullAppCenterAppCreator(this.client, this.logger);
+        return iosApp;
+    }
+
+    public get androidAppCreator(): AppCenterAppCreator {
+        const androidAppCreator: AppCenterAppCreator = this._createAndroidApp ?
+            new AndroidAppCenterAppCreator(this.client, this.logger)
+            : new NullAppCenterAppCreator(this.client, this.logger);
+        return androidAppCreator;
     }
 
     public getCreatedApps() {
         return this.createdApps;
     }
 
-    public iOSAppName() {
-        return `${this.ideaName}${Constants.iOSAppSuffix}`;
-    }
-
-    public androidAppName() {
-        return `${this.ideaName}${Constants.AndroidAppSuffix}`;
-    }
-
-    public androidDisplayName() {
-        return `${this.ideaName}${Constants.AndroidAppSuffix}`;
-    }
-
-    public iOSDisplayName() {
-        return `${this.ideaName}${Constants.iOSAppSuffix}`;
-    }
-
-    public withIOSApp(ok: boolean): AppCenterAppBuilder {
+    public withIOSApp(ok: boolean = SettingsHelper.createIOSAppInAppCenter()): AppCenterAppBuilder {
         this._createIOSApp = ok;
         return this;
     }
 
-    public withAndroidApp(ok: boolean): AppCenterAppBuilder {
+    public withAndroidApp(ok: boolean = SettingsHelper.createAndroidAppInAppCenter()): AppCenterAppBuilder {
         this._createAndroidApp = ok;
         return this;
     }
 
-    public withBetaTestersDistributionGroup(ok: boolean): AppCenterAppBuilder {
+    public withBetaTestersDistributionGroup(ok: boolean = SettingsHelper.createTestersDistributionGroupInAppCenter()): AppCenterAppBuilder {
         this._createBetaTestersDistributionGroup = ok;
         return this;
     }
 
-    public withConnectedRepositoryToBuildService(ok: boolean): AppCenterAppBuilder {
+    public withConnectedRepositoryToBuildService(ok: boolean = SettingsHelper.connectRepoToBuildService()): AppCenterAppBuilder {
         this._connectRepositoryToBuildService = ok;
         return this;
     }
 
-    public withBranchConfigurationCreatedAndBuildKickOff(ok: boolean): AppCenterAppBuilder {
+    public withBranchConfigurationCreatedAndBuildKickOff(ok: boolean = SettingsHelper.configureBranchAndStartNewBuild()): AppCenterAppBuilder {
         this._withBranchConfigurationCreatedAndBuildKickOff = ok;
         return this;
     }
 
     public async createApps(): Promise<void> {
-        const iosApp: AppCenterAppCreator = this._createIOSApp ? new IOSAppCenterAppCreator(this.client, this.logger) : new NullAppCenterAppCreator(this.client, this.logger);
-        const androidApp: AppCenterAppCreator = this._createAndroidApp ? new AndroidAppCenterAppCreator(this.client, this.logger) : new NullAppCenterAppCreator(this.client, this.logger);
-
         this.iosAppCreated = this.iosAppCreated || !this._createIOSApp;
         this.androidAppCreated = this.androidAppCreated || !this._createAndroidApp;
         let created: any;
@@ -81,15 +107,15 @@ export default class AppCenterAppBuilder {
                 if (this.isCreatedForOrganization()) {
                     created = await Promise.all(
                         [
-                            iosApp.createAppForOrg(this.iOSAppName(), this.iOSDisplayName(), <string>this.userOrOrg.name),
-                            androidApp.createAppForOrg(this.androidAppName(), this.androidDisplayName(), <string>this.userOrOrg.name)
+                            this.iOSAppCreator.createAppForOrg(this.iOSAppName, this.iOSDisplayName, <string>this.userOrOrg.name),
+                            this.androidAppCreator.createAppForOrg(this.androidAppName, this.androidDisplayName, <string>this.userOrOrg.name)
                         ]
                     );
                 } else {
                     created = await Promise.all(
                         [
-                            iosApp.createApp(this.iOSAppName(), this.iOSDisplayName()),
-                            androidApp.createApp(this.androidAppName(), this.androidDisplayName())
+                            this.iOSAppCreator.createApp(this.iOSAppName, this.iOSDisplayName),
+                            this.androidAppCreator.createApp(this.androidAppName, this.androidDisplayName)
                         ]
                     );
                 }
@@ -109,15 +135,7 @@ export default class AppCenterAppBuilder {
         this.androidAppCreated = true;
     }
 
-    public async start(): Promise<boolean> {
-        if (this.userOrOrg.name === undefined || this.userOrOrg.displayName === undefined || this.ideaName === undefined) {
-            this.logger.error("Name for idea is undefined!");
-            return false;
-        }
-
-        const iosApp: AppCenterAppCreator = this._createIOSApp ? new IOSAppCenterAppCreator(this.client, this.logger) : new NullAppCenterAppCreator(this.client, this.logger);
-        const androidApp: AppCenterAppCreator = this._createAndroidApp ? new AndroidAppCenterAppCreator(this.client, this.logger) : new NullAppCenterAppCreator(this.client, this.logger);
-
+    public async startProcess(): Promise<boolean> {
         await vscode.window.withProgress({ location: vscode.ProgressLocation.Window, title: Strings.VSCodeProgressLoadingTitle}, async p => {
             // The was an issue for me and without Delay spinner was not shown when app was creating!
             await Utils.Delay(100);
@@ -128,8 +146,8 @@ export default class AppCenterAppBuilder {
                 p.report({message: Strings.CreatingDistributionStatusBarMessage });
                 const createdBetaTestersGroup: boolean[] = await Promise.all(
                     [
-                        iosApp.createBetaTestersDistributionGroup(this.iOSAppName(), <string>this.userOrOrg.name),
-                        androidApp.createBetaTestersDistributionGroup(this.androidAppName(), <string>this.userOrOrg.name)
+                        this.iOSAppCreator.createBetaTestersDistributionGroup(this.iOSAppName, this.ownerName),
+                        this.androidAppCreator.createBetaTestersDistributionGroup(this.androidAppName, this.ownerName)
                     ]
                 );
 
@@ -144,8 +162,8 @@ export default class AppCenterAppBuilder {
                 p.report({message: Strings.ConnectingRepoToBuildServiceStatusBarMessage });
                 const conected: boolean[] =  await Promise.all(
                     [
-                        iosApp.connectRepositoryToBuildService(this.iOSAppName(), <string>this.userOrOrg.name, this.repoUrl),
-                        androidApp.connectRepositoryToBuildService(this.androidAppName(), <string>this.userOrOrg.name, this.repoUrl)
+                        this.iOSAppCreator.connectRepositoryToBuildService(this.iOSAppName, this.ownerName, this.repoUrl),
+                        this.androidAppCreator.connectRepositoryToBuildService(this.androidAppName, this.ownerName, this.repoUrl)
                     ]
                 );
                 if (!conected.every( (val: boolean) => {
@@ -157,8 +175,8 @@ export default class AppCenterAppBuilder {
                         p.report({message: Strings.CreateBranchConfigAndKickOffBuildStatusBarMessage });
                         const branchConfiguredAndBuildStarted: boolean[] = await Promise.all(
                             [
-                                iosApp.withBranchConfigurationCreatedAndBuildKickOff(this.iOSAppName(), this.defaultBranchName, <string>this.userOrOrg.name),
-                                androidApp.withBranchConfigurationCreatedAndBuildKickOff(this.androidAppName(), this.defaultBranchName, <string>this.userOrOrg.name)
+                                this.iOSAppCreator.withBranchConfigurationCreatedAndBuildKickOff(this.iOSAppName, this.defaultBranchName, this.ownerName),
+                                this.androidAppCreator.withBranchConfigurationCreatedAndBuildKickOff(this.androidAppName, this.defaultBranchName, this.ownerName)
                             ]
                         );
                         if (!branchConfiguredAndBuildStarted.every( (val: boolean) => {

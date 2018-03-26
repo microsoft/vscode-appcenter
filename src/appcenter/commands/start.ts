@@ -98,20 +98,12 @@ export default class Start extends Command {
                                 return;
                             }
 
-                            const appCenterAB = new AppCenterAppBuilder(ideaName, selectedUserOrOrg, this.repositoryURL, SettingsHelper.defaultBranchName(), this.client, this.logger)
-                                                    .withIOSApp(SettingsHelper.createIOSAppInAppCenter())
-                                                    .withAndroidApp(SettingsHelper.createAndroidAppInAppCenter());
-
-                            await appCenterAB.createApps();
-
-                            const createdApps: models.AppResponse[] = appCenterAB.getCreatedApps();
+                            const appCenterAppBuilder = new AppCenterAppBuilder(ideaName, selectedUserOrOrg, this.repositoryURL, this.client, this.logger);
+                            await appCenterAppBuilder.createApps();
+                            const createdApps: models.AppResponse[] = appCenterAppBuilder.getCreatedApps();
                             console.log(createdApps[0].appSecret);
 
-                            const done = await appCenterAB
-                                .withBetaTestersDistributionGroup(SettingsHelper.createTestersDistributionGroupInAppCenter())
-                                .withConnectedRepositoryToBuildService(SettingsHelper.connectRepoToBuildService())
-                                .withBranchConfigurationCreatedAndBuildKickOff(SettingsHelper.configureBranchAndStartNewBuild())
-                                .start();
+                            const done = await appCenterAppBuilder.startProcess();
 
                             if (!done) {
                                 this.logger.error("Failed to create App in AppCenter");
