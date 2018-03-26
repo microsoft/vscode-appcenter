@@ -1,4 +1,4 @@
-import { AppCenterClient } from "./appcenter/api";
+import { AppCenterClient, models } from "./appcenter/api";
 import { AppCenterOS, AppCenterPlatform, Constants } from "./helpers/constants";
 import { SettingsHelper } from "./helpers/settingsHelper";
 import { ILogger, LogLevel } from "./log/logHelper";
@@ -51,32 +51,38 @@ export default class AppCenterAppCreator {
         return true;
     }
 
-    public async createAppForOrg(appName: string, displayName: string, orgName: string): Promise<boolean> {
+    public async createAppForOrg(appName: string, displayName: string, orgName: string): Promise<models.AppResponse | null> {
+        let httpOperationResponse: any;
         try {
-            await this.client.account.apps.createForOrg( {
+            httpOperationResponse = await this.client.account.apps.createForOrgWithHttpOperationResponse( {
                 displayName: displayName,
                 name: appName,
                 os: this.os,
                 platform: this.platform
             }, orgName);
         } catch (err) {
-            return this.proceedErrorResponse(err);
+            const errMessage: string = err.response ? err.response.body : err;
+            this.logger.error(errMessage);
+            throw new Error(errMessage);
         }
-        return true;
+        return JSON.parse(httpOperationResponse.response.body);
     }
 
-    public async createApp(appName: string, displayName: string): Promise<boolean> {
+    public async createApp(appName: string, displayName: string): Promise<models.AppResponse | null> {
+        let httpOperationResponse: any;
         try {
-            await this.client.account.apps.create( {
+            httpOperationResponse = await this.client.account.apps.createWithHttpOperationResponse( {
                 displayName: displayName,
                 name: appName,
                 os: this.os,
                 platform: this.platform
             });
         } catch (err) {
-            return this.proceedErrorResponse(err);
+            const errMessage: string = err.response ? err.response.body : err;
+            this.logger.error(errMessage);
+            throw new Error(errMessage);
         }
-        return true;
+        return JSON.parse(httpOperationResponse.response.body);
     }
 
     private proceedErrorResponse(error: any): boolean {
@@ -118,11 +124,11 @@ export class NullAppCenterAppCreator extends AppCenterAppCreator {
         return true;
     }
 
-    public async createAppForOrg(_appName: string, _displayName: string, _orgName: string): Promise<boolean> {
-        return true;
+    public async createAppForOrg(_appName: string, _displayName: string, _orgName: string): Promise<models.AppResponse | null> {
+        return null;
     }
 
-    public async createApp(_appName: string, _displayName: string): Promise<boolean> {
-        return true;
+    public async createApp(_appName: string, _displayName: string): Promise<models.AppResponse | null> {
+        return null;
     }
 }

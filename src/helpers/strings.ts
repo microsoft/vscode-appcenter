@@ -20,9 +20,10 @@ export class Strings {
     public static VSCodeProgressLoadingTitle: string = "Loading...";
     public static LoadingStatusBarMessage: string = "Loading some information for you...";
     public static CreateRNProjectStatusBarMessage: string = "Creating RN project for you...";
+    public static PushToRemoteRepoStatusBarMessage: string = "Pushing changes to remote repo...";
     public static FinishedConfigMsg: string = "Ace, you're done!";
     public static GitIsNotInstalledMsg: string = "Sorry, git is not installed!";
-    public static FailedToCreateRNProjectMsg: string = "Failed to create RN project!";
+    public static FailedToCreateRNProjectMsg: string = "Sorry, failed to create RN project!";
     public static NotRNProjectMsg: string = "Sorry, this is not an RN project!";
     public static IdeaNameIsNotValidMsg: string = "Sorry, idea name is not valid!";
     public static DirectoryIsNotEmptyForNewIdea: string = "Start New Idea should work only for empty directory!";

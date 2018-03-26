@@ -8,7 +8,6 @@ import { Strings } from "../../helpers/strings";
 import { Validators } from "../../helpers/validators";
 import { VsCodeUtils } from "../../helpers/vsCodeUtils";
 import { ILogger } from "../../log/logHelper";
-import ReactNativeProjectCreator from "../../reactNativeProjectCreator";
 import { models } from "../api";
 import { Profile } from "../auth/profile/profile";
 import { Command } from "./command";
@@ -41,7 +40,7 @@ export default class Start extends Command {
                 return;
             }
 
-            if (!await this.createRNProject(ideaName, rootPath)) {
+            if (!await this.cloneSampleRNProject(rootPath)) {
                 VsCodeUtils.ShowErrorMessage(Strings.FailedToCreateRNProjectMsg);
                 return;
             }
@@ -94,13 +93,25 @@ export default class Start extends Command {
                                 };
                             }
 
-                            const done = new AppCenterAppBuilder(ideaName, selectedUserOrOrg, this.repositoryURL, SettingsHelper.defaultBranchName(), this.client, this.logger)
-                                .withIOSApp(SettingsHelper.createIOSAppInAppCenter())
-                                .withAndroidApp(SettingsHelper.createAndroidAppInAppCenter())
+                            if (!await this.ConfigureRepoAndPush()) {
+                                VsCodeUtils.ShowErrorMessage(Strings.FailedToPushChangesToRemoteRepoMsg(this.repositoryURL));
+                                return;
+                            }
+
+                            const appCenterAB = new AppCenterAppBuilder(ideaName, selectedUserOrOrg, this.repositoryURL, SettingsHelper.defaultBranchName(), this.client, this.logger)
+                                                    .withIOSApp(SettingsHelper.createIOSAppInAppCenter())
+                                                    .withAndroidApp(SettingsHelper.createAndroidAppInAppCenter());
+
+                            await appCenterAB.createApps();
+
+                            const createdApps: models.AppResponse[] = appCenterAB.getCreatedApps();
+                            console.log(createdApps[0].appSecret);
+
+                            const done = await appCenterAB
                                 .withBetaTestersDistributionGroup(SettingsHelper.createTestersDistributionGroupInAppCenter())
                                 .withConnectedRepositoryToBuildService(SettingsHelper.connectRepoToBuildService())
                                 .withBranchConfigurationCreatedAndBuildKickOff(SettingsHelper.configureBranchAndStartNewBuild())
-                                .create();
+                                .start();
 
                             if (!done) {
                                 this.logger.error("Failed to create App in AppCenter");
@@ -109,11 +120,6 @@ export default class Start extends Command {
 
                             await this.linkProjectToAppCenter();
                             await this.linkProjectToCP();
-
-                            if (!await this.ConfigureRepoAndPush()) {
-                                VsCodeUtils.ShowErrorMessage(Strings.FailedToPushChangesToRemoteRepoMsg(this.repositoryURL));
-                                return;
-                            }
                         }
                     });
                 });
@@ -129,21 +135,25 @@ export default class Start extends Command {
         return true;
     }
 
-    private async createRNProject(ideaName: string, rootPath: string): Promise<boolean> {
+    private async cloneSampleRNProject(rootPath: string): Promise<boolean> {
         let created: boolean = false;
         if (!await GitUtils.IsGitInstalled(rootPath)) {
             VsCodeUtils.ShowErrorMessage(Strings.GitIsNotInstalledMsg);
-            return created;
+            return false;
         }
-        await GitUtils.GitInit(this.logger, rootPath);
         await vscode.window.withProgress({ location: vscode.ProgressLocation.Window, title: Strings.VSCodeProgressLoadingTitle}, async p => {
                 p.report({message: Strings.CreateRNProjectStatusBarMessage });
-                created = await new ReactNativeProjectCreator(this.logger).createProject(ideaName, rootPath);
+                created = await GitUtils.GitCloneIntoExistingDir(this.logger, rootPath, SettingsHelper.getAppCenterDemoAppGitRepo());
         });
         return created;
     }
 
     private async ConfigureRepoAndPush(): Promise<boolean> {
-        return GitUtils.ConfigureRepoAndPush(this.repositoryURL, SettingsHelper.defaultBranchName(), this.logger, <string>this.manager.projectRootPath);
+        let pushed: boolean = false;
+        await vscode.window.withProgress({ location: vscode.ProgressLocation.Window, title: Strings.VSCodeProgressLoadingTitle}, async p => {
+            p.report({message: Strings.PushToRemoteRepoStatusBarMessage });
+            pushed = await GitUtils.ConfigureRepoAndPush(this.repositoryURL, SettingsHelper.defaultBranchName(), this.logger, <string>this.manager.projectRootPath);
+         });
+         return pushed;
     }
 }

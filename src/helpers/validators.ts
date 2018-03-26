@@ -13,6 +13,9 @@ export class Validators {
     }
 
     public static ValidGitName(name: string): boolean {
+        if (!name) {
+            return false;
+        }
         const regex = /(?:git|ssh|https?|git@[-\w.]+):(\/\/)?(.*?)(\.git)(\/?|\#[-\d\w._]+?)$/;
         return regex.test(name);
     }

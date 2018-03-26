@@ -12,6 +12,7 @@ export class Constants {
     public static AndroidAppSuffix: string = "-android";
     public static AppCenterDefaultTargetBinaryVersion: string = "";
     public static AppCenterDefaultIsMandatoryParam: boolean = false;
+    public static AppCenterDemoAppRepository: string = "https://github.com/max-mironov/appcenter-demo-app-no-modules.git";
     public static defaultBuildConfigJSON: string = `{
         "branch": {
             "name": "master"

@@ -4,6 +4,10 @@ import { ConfigurationReader } from "./configurationReader";
 import { Constants } from "./constants";
 
 export class SettingsHelper {
+    public static getAppCenterDemoAppGitRepo(): string {
+        return Constants.AppCenterDemoAppRepository;
+    }
+
     public static getAppCenterLoginEndpoint(): string {
         const workspaceConfiguration = vscode.workspace.getConfiguration();
         if (workspaceConfiguration.has("appcenter.api.loginendpoint")) {
