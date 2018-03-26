@@ -43,6 +43,15 @@ export class Strings {
     public static NoCurrentAppSetMsg: string = "No current app specified";
     public static NoProjectRootFolderFound: string = "Please, open project folder before using this command";
     public static UnknownError: string = "Unknown error occured. Please, check logs for details.";
+    public static SelectCurrentDeploymentMsg: string = "Please select current deployment";
+    public static PleaseProvideTargetBinaryVersion: string = "Please provide semver compliant version";
+    public static InvalidAppVersionParamMsg: string = "Sorry, provided app version is invalid";
+    public static GettingAppInfoMessage: string = "Getting app info...";
+    public static DetectingAppVersionMessage: string = "Detecting app version...";
+    public static RunningBundleCommandMessage: string = "Running bundle command...";
+    public static ArchivingUpdateContentsMessage: string = "Archiving update contents...";
+    public static ReleasingUpdateContentsMessage: string = "Releasing update contents to CodePush...";
+
     public static CreatingAppStatusBarMessage: string = `Creating app for you...`;
     public static FailedToCreateAppInAppCenter: string = `Sorry, failed to create app in app center`;
 
@@ -50,11 +59,11 @@ export class Strings {
         return `Failed to push changes to remote repository '${repoName}'`;
     }
 
-    public static YouAreLoggedInMsg: (name: string) => string = (name: string) => {
+    public static YouAreLoggedInMsg(name: string): string {
         return `You are logged into App Center as '${name}'`;
     }
 
-    public static YourCurrentAppMsg: (appName: string) => string = (appName: string) => {
+    public static YourCurrentAppMsg(appName: string): string {
         return `Your current app is '${appName}'`;
     }
 
@@ -64,5 +73,9 @@ export class Strings {
         } else {
             return `Your current app is '${appName}', you have no deployments specified`;
         }
+    }
+
+    public static YourCurrentDeploymentMsg(deploymentName: string): string {
+        return `Your current deployment is '${deploymentName}'`;
     }
 }

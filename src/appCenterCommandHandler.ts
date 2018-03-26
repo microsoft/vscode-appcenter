@@ -55,6 +55,6 @@ export class AppCenterCommandHandler {
     }
 
     public async SetTargetBinaryVersion(): Promise<void> {
-        await new CodePush.SetTargetBinaryVersion(this.manager, this.logger).run();
+        await new CodePush.SetTargetBinaryVersion(this.manager, this.logger).runNoClient();
     }
 }

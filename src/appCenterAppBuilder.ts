@@ -19,7 +19,7 @@ export default class AppCenterAppBuilder {
     private createdApps: models.AppResponse[];
 
     constructor(private ideaName: string, private userOrOrg: models.ListOKResponseItem, private repoUrl: string, private defaultBranchName: string, private client: AppCenterClient, private logger: ILogger) {
-        this.logger.log('Initiazlied AppCenterAppBuilder', LogLevel.Info);
+        this.logger.log('Initialized AppCenterAppBuilder', LogLevel.Info);
     }
 
     public getCreatedApps() {
