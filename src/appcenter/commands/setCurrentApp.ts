@@ -51,8 +51,12 @@ export default class SetCurrentApp extends AppCommand {
                 }
                 const selectedApp: models.AppResponse = selectedApps[0];
                 const selectedAppName: string = `${selectedApp.owner.name}/${selectedApp.name}`;
-                const OS: AppCenterOS = AppCenterOS[selectedApp.os.toLowerCase()];
 
+                const OS: AppCenterOS | undefined = this.toAppCenterOS(selectedApp.os);
+                if (!OS) {
+                    this.logger.error(`Couldn't recognise os ${selectedApp.os} returned from CodePush server.`);
+                    return;
+                }
                 try {
                     vscode.window.withProgress({ location: vscode.ProgressLocation.Window, title: "Get Deployments" }, p => {
                         p.report({ message: Strings.FetchDeploymentsStatusBarMessage });
@@ -100,6 +104,19 @@ export default class SetCurrentApp extends AppCommand {
         } catch (e) {
             VsCodeUtils.ShowErrorMessage(Strings.UnknownError);
             this.logger.error(e.message, e);
+        }
+    }
+
+    private toAppCenterOS(codePushOs: string): AppCenterOS | undefined {
+        switch (codePushOs.toLowerCase()) {
+            case 'android':
+                return AppCenterOS.Android;
+            case 'ios':
+                return AppCenterOS.iOS;
+            case 'windows':
+                return AppCenterOS.Windows;
+            default:
+                return;
         }
     }
 }
