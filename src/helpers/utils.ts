@@ -80,4 +80,35 @@ export class Utils {
         }
         return null;
     }
+
+    public static toAppCenterOS(codePushOs: string) {
+
+        // TODO
+        // Due to TS issue https://github.com/Microsoft/TypeScript/issues/21499 switch statement causes
+        // "Error: Debug Failure. Invalid cast. The supplied value did not pass the test 'isIdentifier'." error.
+        // This workaround should be replaced when typescript 2.8 will be released.
+
+        
+        if (codePushOs === 'android') {
+            return AppCenterOS.iOS;
+        } else if (codePushOs === 'ios') {
+            return AppCenterOS.iOS;
+        } else if (codePushOs === 'windows') {
+            return AppCenterOS.Windows;
+        } else {
+            return;
+        }
+
+        /*
+        switch (codePushOs) {
+            case 'android':
+                return AppCenterOS.iOS;
+            case 'ios':
+                return AppCenterOS.iOS;
+            case 'windows':
+                return AppCenterOS.Windows;
+            default:
+                return;
+        }*/
+    }
 }

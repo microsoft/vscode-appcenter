@@ -45,7 +45,12 @@ export class Strings {
     public static SelectCurrentDeploymentMsg: string = "Please select current deployment";
     public static PleaseProvideTargetBinaryVersion: string = "Please provide semver compliant version";
     public static InvalidAppVersionParamMsg: string = "Sorry, provided app version is invalid";
-
+    public static GettingAppInfoMessage: string = "Getting app info...";
+    public static DetectingAppVersionMessage: string = "Detecting app version...";
+    public static RunningBundleCommandMessage: string = "Running bundle command...";
+    public static ArchivingUpdateContentsMessage: string = "Archiving update contents...";
+    public static ReleasingUpdateContentsMessage: string = "Releasing update contents to CodePush...";
+    
     public static FailedToPushChangesToRemoteRepoMsg: (repoName: string) => string = (repoName: string) => {
         return `Failed to push changes to remote repository '${repoName}'`;
     }

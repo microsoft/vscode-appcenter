@@ -51,8 +51,12 @@ export default class SetCurrentApp extends AppCommand {
                 }
                 const selectedApp: models.AppResponse = selectedApps[0];
                 const selectedAppName: string = `${selectedApp.owner.name}/${selectedApp.name}`;
-                const OS: AppCenterOS = AppCenterOS[selectedApp.os.toLowerCase()];
 
+                const OS: AppCenterOS | undefined = this.toAppCenterOS(selectedApp.os.toLowerCase());
+                if (!OS) {
+                    this.logger.error(`Couldn't recognise os ${selectedApp.os} returned from CodePush server.`);
+                    return;
+                }
                 try {
                     vscode.window.withProgress({ location: vscode.ProgressLocation.Window, title: "Get Deployments" }, p => {
                         p.report({ message: Strings.FetchDeploymentsStatusBarMessage });
@@ -101,5 +105,36 @@ export default class SetCurrentApp extends AppCommand {
             VsCodeUtils.ShowErrorMessage(Strings.UnknownError);
             this.logger.error(e.message, e);
         }
+    }
+
+    private toAppCenterOS(codePushOs: string): AppCenterOS | undefined {
+
+        // TODO
+        // Due to TS issue https://github.com/Microsoft/TypeScript/issues/21499 switch statement causes
+        // "Error: Debug Failure. Invalid cast. The supplied value did not pass the test 'isIdentifier'." error.
+        // This workaround should be replaced when typescript 2.8 will be released.
+
+        
+        if (codePushOs === 'android') {
+            return AppCenterOS.Android;
+        } else if (codePushOs === 'ios') {
+            return AppCenterOS.iOS;
+        } else if (codePushOs === 'windows') {
+            return AppCenterOS.Windows;
+        } else {
+            return;
+        }
+
+        /*
+        switch (codePushOs) {
+            case 'android':
+                return AppCenterOS.Android;
+            case 'ios':
+                return AppCenterOS.iOS;
+            case 'windows':
+                return AppCenterOS.Windows;
+            default:
+                return;
+        }*/
     }
 }
