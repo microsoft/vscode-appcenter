@@ -1,9 +1,9 @@
 import { ExtensionManager } from "../../../extensionManager";
-import { ILogger } from "../../../log/logHelper";
-import { CurrentApp } from "../../../helpers/interfaces";
 import { AppCenterOS } from "../../../helpers/constants";
-import { VsCodeUtils } from "../../../helpers/vsCodeUtils";
+import { CurrentApp } from "../../../helpers/interfaces";
 import { Strings } from "../../../helpers/strings";
+import { VsCodeUtils } from "../../../helpers/vsCodeUtils";
+import { ILogger } from "../../../log/logHelper";
 import { RNCPAppCommand } from "./rncpAppCommand";
 
 export default class SwitchMandatoryPropForRelease extends RNCPAppCommand {
@@ -28,7 +28,7 @@ export default class SwitchMandatoryPropForRelease extends RNCPAppCommand {
                 AppCenterOS[app.os],
                 {
                     currentDeploymentName: app.currentAppDeployments.currentDeploymentName,
-                    codePushDeployments: app.currentAppDeployments.codePushDeployments,
+                    codePushDeployments: app.currentAppDeployments.codePushDeployments
                 },
                 app.targetBinaryVersion,
                 newMandatoryValue

@@ -1,13 +1,13 @@
 import * as vscode from 'vscode';
 import { ExtensionManager } from "../../../extensionManager";
-import { ILogger, LogLevel } from "../../../log/logHelper";
-import { ICodePushReleaseParams, CurrentApp, Profile } from "../../../helpers/interfaces";
-import { Strings } from '../../../helpers/strings';
 import { Constants } from '../../../helpers/constants';
-import { BundleConfig } from '../../codepush/codepush-sdk/src/react-native/react-native-utils';
-import { codePushRelease } from '../../codepush';
+import { CurrentApp, ICodePushReleaseParams, Profile } from "../../../helpers/interfaces";
+import { Strings } from '../../../helpers/strings';
 import { VsCodeUtils } from '../../../helpers/vsCodeUtils';
+import { ILogger, LogLevel } from "../../../log/logHelper";
+import { codePushRelease } from '../../codepush';
 import { fileUtils, reactNative, updateContents } from '../../codepush/codepush-sdk/src';
+import { BundleConfig } from '../../codepush/codepush-sdk/src/react-native/react-native-utils';
 import { RNCPAppCommand } from './rncpAppCommand';
 
 export default class ReleaseReact extends RNCPAppCommand {
@@ -20,7 +20,7 @@ export default class ReleaseReact extends RNCPAppCommand {
             return;
         }
 
-        let codePushRelaseParams = <ICodePushReleaseParams>{};
+        const codePushRelaseParams = <ICodePushReleaseParams>{};
         return new Promise<void>((resolve) => {
             let updateContentsDirectory: string;
             let isMandatory: boolean;
@@ -57,7 +57,7 @@ export default class ReleaseReact extends RNCPAppCommand {
                     codePushRelaseParams.appVersion = appVersion;
                     return reactNative.makeUpdateContents(<BundleConfig>{
                         os: codePushRelaseParams.app.os,
-                        projectRootPath: this.manager.projectRootPath,
+                        projectRootPath: this.manager.projectRootPath
                     });
                 }).then((pathToUpdateContents: string) => {
                     p.report({ message: Strings.ArchivingUpdateContentsMessage });

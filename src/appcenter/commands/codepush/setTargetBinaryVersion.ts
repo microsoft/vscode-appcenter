@@ -1,11 +1,11 @@
+import { validRange } from 'semver';
 import * as vscode from 'vscode';
+import { ExtensionManager } from '../../../extensionManager';
 import { AppCenterOS, Constants } from '../../../helpers/constants';
 import { CurrentApp } from '../../../helpers/interfaces';
-import { ExtensionManager } from '../../../extensionManager';
-import { ILogger } from '../../../log/logHelper';
 import { Strings } from '../../../helpers/strings';
 import { VsCodeUtils } from '../../../helpers/vsCodeUtils';
-import { validRange } from 'semver';
+import { ILogger } from '../../../log/logHelper';
 import { RNCPAppCommand } from './rncpAppCommand';
 
 export default class SetTargetBinaryVersion extends RNCPAppCommand {

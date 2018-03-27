@@ -1,6 +1,6 @@
 import { Constants } from '../../helpers/constants';
-import { ReactNativeAppCommand } from './reactNativeAppCommand';
 import { Utils } from '../../helpers/utils';
+import { ReactNativeAppCommand } from './reactNativeAppCommand';
 
 export default class OpenAppCenterPortal extends ReactNativeAppCommand {
     public async runNoClient(): Promise<boolean | void> {

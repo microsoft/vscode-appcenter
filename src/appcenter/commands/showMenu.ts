@@ -3,19 +3,19 @@ import * as vscode from "vscode";
 import { ExtensionManager } from "../../extensionManager";
 import { CommandNames } from "../../helpers/constants";
 import { FSUtils } from "../../helpers/fsUtils";
-import { Strings } from "../../helpers/strings";
-import { ILogger } from "../../log/logHelper";
-import { Command } from "./command";
-import Logout from "./logout";
-import Start from "./start";
-import { Utils } from "../../helpers/utils";
-import { Profile } from "../auth/profile/profile";
 import { CurrentApp } from "../../helpers/interfaces";
-import Login from "./login";
+import { Strings } from "../../helpers/strings";
+import { Utils } from "../../helpers/utils";
+import { ILogger } from "../../log/logHelper";
+import { Profile } from "../auth/profile/profile";
 import * as CodePush from "./codepush";
-import SetCurrentApp from "./setCurrentApp";
+import { Command } from "./command";
 import GetCurrentApp from "./getCurrentApp";
+import Login from "./login";
+import Logout from "./logout";
 import OpenAppCenterPortal from "./openAppCenterPortal";
+import SetCurrentApp from "./setCurrentApp";
+import Start from "./start";
 
 export default class ShowMenu extends Command {
 
@@ -27,7 +27,7 @@ export default class ShowMenu extends Command {
         super.runNoClient();
 
         return this.Profile.then((profile: Profile | null) => {
-            let appCenterMenuOptions: vscode.QuickPickItem[] = [];
+            const appCenterMenuOptions: vscode.QuickPickItem[] = [];
             if (!profile) {
 
                 // In rare cases that might happen.
@@ -81,29 +81,29 @@ export default class ShowMenu extends Command {
         appCenterMenuOptions.push(<vscode.QuickPickItem>{
             label: Strings.setCurrentAppMenuText(currentApp),
             description: "",
-            target: CommandNames.SetCurrentApp,
+            target: CommandNames.SetCurrentApp
         });
         if (currentApp) {
             appCenterMenuOptions.push(<vscode.QuickPickItem>{
                 label: Strings.releaseReactMenuText(currentApp),
                 description: "",
-                target: CommandNames.CodePush.ReleaseReact,
+                target: CommandNames.CodePush.ReleaseReact
             });
             if (currentApp.currentAppDeployments) {
                 appCenterMenuOptions.push(<vscode.QuickPickItem>{
                     label: Strings.setCurrentAppDeploymentText(<CurrentApp>currentApp),
                     description: "",
-                    target: CommandNames.CodePush.SetCurrentDeployment,
+                    target: CommandNames.CodePush.SetCurrentDeployment
                 });
                 appCenterMenuOptions.push(<vscode.QuickPickItem>{
                     label: Strings.setCurrentAppTargetBinaryVersionText(<CurrentApp>currentApp),
                     description: "",
-                    target: CommandNames.CodePush.SetTargetBinaryVersion,
+                    target: CommandNames.CodePush.SetTargetBinaryVersion
                 });
                 appCenterMenuOptions.push(<vscode.QuickPickItem>{
                     label: Strings.setCurrentAppIsMandatoryText(<CurrentApp>currentApp),
                     description: "",
-                    target: CommandNames.CodePush.SwitchMandatoryPropForRelease,
+                    target: CommandNames.CodePush.SwitchMandatoryPropForRelease
                 });
             }
         }

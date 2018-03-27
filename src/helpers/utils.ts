@@ -7,9 +7,9 @@ import * as opener from "opener";
 import * as path from "path";
 import { AppCenterOS } from "./constants";
 import { CurrentApp, CurrentAppDeployments } from "./interfaces";
+import { Strings } from "./strings";
 import { Validators } from "./validators";
 import { VsCodeUtils } from "./vsCodeUtils";
-import { Strings } from "./strings";
 
 export class Utils {
     public static FormatMessage(message: string): string {
@@ -65,7 +65,6 @@ export class Utils {
             throw new Error(`Cannot parse "${path}": ${err.message}`);
         }
     }
-
 
     public static projectHaveNpmPackage(projectRoot: string | undefined, packageName: string, installHint: string, showMessageOnError?: boolean): boolean {
         if (!projectRoot) {
