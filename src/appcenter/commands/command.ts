@@ -29,16 +29,19 @@ export class Command {
     public runNoClient(): Promise<boolean | void> {
         const rootPath: string | undefined = this.manager.projectRootPath;
         if (!rootPath) {
-            this.logger.log('No project root folder found', LogLevel.Error);
+            this.logger.log('No project root folder found', LogLevel.Info);
+            VsCodeUtils.ShowInfoMessage(Strings.NoProjectRootFolderFound);
             return Promise.resolve(false);
         }
+
         return Promise.resolve(true);
     }
 
     public async run(): Promise<boolean | void> {
         const rootPath: string | undefined = this.manager.projectRootPath;
         if (!rootPath) {
-            this.logger.log('No project root path found.', LogLevel.Error);
+            this.logger.log('No project root path found.', LogLevel.Info);
+            VsCodeUtils.ShowInfoMessage(Strings.NoProjectRootFolderFound);
             return Promise.resolve(false);
         }
 
@@ -51,7 +54,7 @@ export class Command {
             if (clientOrNull) {
                 this.client = clientOrNull;
             } else {
-                this.logger.log("Failed to get App Center client", LogLevel.Error);
+                this.logger.log("Failed to get App Center client", LogLevel.Info);
                 return Promise.resolve(false);
             }
             return Promise.resolve(true);

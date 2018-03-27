@@ -1,4 +1,5 @@
 import * as vscode from "vscode";
+
 import { ExtensionManager } from "../../extensionManager";
 import { CommandNames } from "../../helpers/constants";
 import { FSUtils } from "../../helpers/fsUtils";
@@ -7,6 +8,13 @@ import { ILogger } from "../../log/logHelper";
 import { Command } from "./command";
 import Logout from "./logout";
 import Start from "./start";
+import { Utils } from "../../helpers/utils";
+import { Profile } from "../auth/profile/profile";
+import { CurrentApp } from "../../helpers/interfaces";
+import Login from "./login";
+import * as CodePush from "./codepush";
+import SetCurrentApp from "./setCurrentApp";
+import GetCurrentApp from "./getCurrentApp";
 
 export default class ShowMenu extends Command {
 
@@ -17,45 +25,137 @@ export default class ShowMenu extends Command {
     public async runNoClient(): Promise<void> {
         super.runNoClient();
 
-        const menuPlaceHolederTitle = Strings.MenuTitlePlaceholder;
-        const appCenterMenuOptions = [
-            {
+        return this.Profile.then((profile: Profile | null) => {
+            let appCenterMenuOptions: vscode.QuickPickItem[] = [];
+            if (!profile) {
+
+                // In rare cases that might happen.
+                appCenterMenuOptions.push(<vscode.QuickPickItem>{
+                    label: Strings.LoginMenuLabel,
+                    description: "",
+                    target: CommandNames.Login
+                });
+                return this.showQuickPick(appCenterMenuOptions);
+            }
+
+            // For empty directory show only `Start New Idea`
+            if (FSUtils.IsNewDirectoryForProject(<string>this.manager.projectRootPath)) {
+                appCenterMenuOptions.push(<vscode.QuickPickItem>{
+                    label: Strings.StartAnIdeaMenuLabel,
+                    description: "",
+                    target: CommandNames.Start
+                });
+            } else {
+                let currentApp: CurrentApp | undefined;
+                if (profile.currentApp) {
+                    currentApp = profile.currentApp;
+                }
+                const isReactNativeProject = Utils.isReactNativeProject(this.manager.projectRootPath, /* showMessageOnError */false);
+                if (isReactNativeProject) {
+                    const isReactNativeCodePushProject = Utils.isReactNativeCodePushProject(this.manager.projectRootPath, /* showMessageOnError */false);
+                    if (isReactNativeCodePushProject) {
+                        this.addCodePushMenuItems(appCenterMenuOptions, currentApp);
+                    }
+                }
+            }
+
+            // Logout should be the last option
+            appCenterMenuOptions.push(<vscode.QuickPickItem>{
                 label: Strings.LogoutMenuLabel,
                 description: "",
                 target: CommandNames.Logout
-            }
-        ];
-
-        // For Empty Directory show only `Start New Idea`
-        if (FSUtils.IsNewDirectoryForProject(<string>this.manager.projectRootPath)) {
-            appCenterMenuOptions.splice( 0, 0,             {
-                label: Strings.StartAnIdeaMenuLabel,
-                description: "",
-                target: CommandNames.Start
             });
+
+            return this.showQuickPick(appCenterMenuOptions);
+        });
+    }
+
+    private addCodePushMenuItems(appCenterMenuOptions: vscode.QuickPickItem[], currentApp?: CurrentApp): void {
+        appCenterMenuOptions.push(<vscode.QuickPickItem>{
+            label: Strings.setCurrentAppMenuText(currentApp),
+            description: "",
+            target: CommandNames.SetCurrentApp,
+        });   
+        if (currentApp) {
+            appCenterMenuOptions.push(<vscode.QuickPickItem>{
+                label: Strings.releaseReactMenuText(currentApp),
+                description: "",
+                target: CommandNames.CodePush.ReleaseReact,
+            });
+            if (currentApp.currentAppDeployments) {
+                appCenterMenuOptions.push(<vscode.QuickPickItem>{
+                    label: Strings.setCurrentAppDeploymentText(<CurrentApp>currentApp),
+                    description: "",
+                    target: CommandNames.CodePush.SetCurrentDeployment,
+                });
+                appCenterMenuOptions.push(<vscode.QuickPickItem>{
+                    label: Strings.setCurrentAppTargetBinaryVersionText(<CurrentApp>currentApp),
+                    description: "",
+                    target: CommandNames.CodePush.SetTargetBinaryVersion,
+                });
+                appCenterMenuOptions.push(<vscode.QuickPickItem>{
+                    label: Strings.setCurrentAppIsMandatoryText(<CurrentApp>currentApp),
+                    description: "",
+                    target: CommandNames.CodePush.SwitchMandatoryPropForRelease,
+                });
+            }
         }
+    }
 
-        return vscode.window.showQuickPick(appCenterMenuOptions, { placeHolder: menuPlaceHolederTitle })
-            .then((selected: {label: string, description: string, target: string}) => {
-            if (!selected) {
-                // user cancel selection
-                return Promise.resolve(void 0);
-            }
+    private showQuickPick(appCenterMenuOptions: vscode.QuickPickItem[]): Promise<void> {
+        return new Promise((resolve) => {
+            return vscode.window.showQuickPick(appCenterMenuOptions, { placeHolder: Strings.MenuTitlePlaceholder })
+                .then((selected: { label: string, description: string, target: string }) => {
+                    if (!selected) {
+                        // user cancel selection
+                        resolve();
+                        return;
+                    }
 
-            switch (selected.target) {
-                case (CommandNames.Start):
-                    new Start(this.manager, this.logger).run();
-                    return Promise.resolve(void 0);
+                    switch (selected.target) {
+                        case (CommandNames.Start):
+                            new Start(this.manager, this.logger).run();
+                            break;
 
-                case (CommandNames.Logout):
-                    new Logout(this.manager, this.logger).runNoClient();
-                    return Promise.resolve(void 0);
+                        case (CommandNames.Logout):
+                            new Logout(this.manager, this.logger).runNoClient();
+                            break;
 
-                default:
-                    // Ideally shouldn't be there :)
-                    this.logger.error("Unknown AppCenter menu command");
-                    return Promise.resolve(void 0);
-            }
+                        case (CommandNames.Login):
+                            new Login(this.manager, this.logger).run();
+                            break;
+
+                        case (CommandNames.SetCurrentApp):
+                            new SetCurrentApp(this.manager, this.logger).run();
+                            break;
+
+                        case (CommandNames.GetCurrentApp):
+                            new GetCurrentApp(this.manager, this.logger).runNoClient();
+                            break;
+
+                        case (CommandNames.CodePush.SetCurrentDeployment):
+                            new CodePush.SetCurrentDeployment(this.manager, this.logger).runNoClient();
+                            break;
+
+                        case (CommandNames.CodePush.ReleaseReact):
+                            new CodePush.ReleaseReact(this.manager, this.logger).run();
+                            break;
+
+                        case (CommandNames.CodePush.SetTargetBinaryVersion):
+                            new CodePush.SetTargetBinaryVersion(this.manager, this.logger).runNoClient();
+                            break;
+
+                        case (CommandNames.CodePush.SwitchMandatoryPropForRelease):
+                            new CodePush.SwitchMandatoryPropForRelease(this.manager, this.logger).runNoClient();
+                            break;
+
+                        default:
+                            // Ideally shouldn't be there :)
+                            this.logger.error("Unknown AppCenter menu command");
+                            break;
+                    }
+                    resolve();
+                });
         });
     }
 }

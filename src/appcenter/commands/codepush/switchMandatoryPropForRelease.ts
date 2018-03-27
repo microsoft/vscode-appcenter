@@ -1,12 +1,12 @@
 import { ExtensionManager } from "../../../extensionManager";
 import { ILogger } from "../../../log/logHelper";
 import { CurrentApp } from "../../../helpers/interfaces";
-import { AppCommand } from "../appCommand";
 import { AppCenterOS } from "../../../helpers/constants";
 import { VsCodeUtils } from "../../../helpers/vsCodeUtils";
 import { Strings } from "../../../helpers/strings";
+import { RNCodePushAppCommand } from "./rnCodePushAppCommand";
 
-export default class SwitchMandatoryPropForRelease extends AppCommand {
+export default class SwitchMandatoryPropForRelease extends RNCodePushAppCommand {
     constructor(manager: ExtensionManager, logger: ILogger) {
         super(manager, logger);
     }

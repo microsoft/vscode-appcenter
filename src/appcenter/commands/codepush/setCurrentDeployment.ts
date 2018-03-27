@@ -5,9 +5,9 @@ import { CurrentApp } from '../../../helpers/interfaces';
 import { Strings } from '../../../helpers/strings';
 import { VsCodeUtils } from '../../../helpers/vsCodeUtils';
 import { ILogger } from '../../../log/logHelper';
-import { AppCommand } from '../appCommand';
+import { RNCodePushAppCommand } from './rnCodePushAppCommand';
 
-export default class SetCurrentDeployment extends AppCommand {
+export default class SetCurrentDeployment extends RNCodePushAppCommand {
     constructor(manager: ExtensionManager, logger: ILogger) {
         super(manager, logger);
     }

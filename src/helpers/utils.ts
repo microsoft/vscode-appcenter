@@ -8,6 +8,8 @@ import * as path from "path";
 import { AppCenterOS } from "./constants";
 import { CurrentApp, CurrentAppDeployments } from "./interfaces";
 import { Validators } from "./validators";
+import { VsCodeUtils } from "./vsCodeUtils";
+import { Strings } from "./strings";
 
 export class Utils {
     public static FormatMessage(message: string): string {
@@ -50,12 +52,48 @@ export class Utils {
         return yarnVersion;
     }
 
-    public static isReactNativeProject(projectRoot: string): Promise<boolean> {
-        if (!projectRoot || !fs.existsSync(path.join(projectRoot, "package.json"))) {
-            return Promise.resolve(false);
+    public static parseJsonFile(path, installHint) {
+        let fileContents;
+        try {
+            fileContents = fs.readFileSync(path, 'utf8');
+        } catch (err) {
+            throw new Error(`Cannot find "${path}". ${installHint}`);
         }
-        // TODO: implement
-        return Promise.resolve(false);
+        try {
+            return JSON.parse(fileContents);
+        } catch (err) {
+            throw new Error(`Cannot parse "${path}": ${err.message}`);
+        }
+    }
+
+
+    public static doesProjectHaveNpmPackage(projectRoot: string | undefined, packageName: string, installHint: string, showMessageOnError?: boolean): boolean {
+        if (!projectRoot) {
+            return false;
+        }
+
+        const packageJsonPath = path.resolve(
+            projectRoot, 'node_modules', packageName, 'package.json'
+        );
+
+        try {
+            Utils.parseJsonFile(packageJsonPath, installHint);
+        } catch (e) {
+            if (showMessageOnError) {
+                VsCodeUtils.ShowWarningMessage(e.message);
+            }
+            return false;
+        }
+
+        return true;
+    }
+
+    public static isReactNativeProject(projectRoot: string | undefined, showMessageOnError?: boolean) {
+        return Utils.doesProjectHaveNpmPackage(projectRoot, 'react-native', Strings.ReactNativeInstallHint, showMessageOnError);
+    }
+
+    public static isReactNativeCodePushProject(projectRoot: string | undefined, showMessageOnError?: boolean) {
+        return Utils.doesProjectHaveNpmPackage(projectRoot, 'react-native-code-push', Strings.CodePushInstallHint, showMessageOnError);
     }
 
     public static toCurrentApp(app: string,

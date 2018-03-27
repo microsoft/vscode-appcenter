@@ -1,3 +1,5 @@
+import { CurrentApp } from "./interfaces";
+
 export class Strings {
     public static SelectLoginTypeMsg: string = "Select the way you would like to authenticate with App Center";
     public static OkBtnLabel: string = "Ok";
@@ -27,6 +29,8 @@ export class Strings {
     public static IdeaNameIsNotValidMsg: string = "Sorry, idea name is not valid!";
     public static DirectoryIsNotEmptyForNewIdea: string = "Start New Idea should work only for empty directory!";
     public static FailedToProvideRepositoryNameMsg: string = "Sorry, can't go ahead, repository name was not provided or valid!";
+    public static LoginMenuLabel: string = "Login";
+    public static GetCurrentAppMenuLabel: string = "Get current app info";
 
     public static FetchAppsStatusBarMessage: string = "Fetching current apps for you...";
     public static CreatingDistributionStatusBarMessage: string = "Creating distribution group for you...";
@@ -50,6 +54,8 @@ export class Strings {
     public static RunningBundleCommandMessage: string = "Running bundle command...";
     public static ArchivingUpdateContentsMessage: string = "Archiving update contents...";
     public static ReleasingUpdateContentsMessage: string = "Releasing update contents to CodePush...";
+    public static ReactNativeInstallHint: string = "Make sure you ran \"npm install\" and that you are inside a React Native project.";
+    public static CodePushInstallHint: string = "Make sure you ran \"npm install\" and that you are inside a React Native Code Push project.";
 
     public static CreatingAppStatusBarMessage: string = `Creating app for you...`;
     public static FailedToCreateAppInAppCenter: string = `Sorry, failed to create app in app center`;
@@ -76,5 +82,35 @@ export class Strings {
 
     public static YourCurrentDeploymentMsg(deploymentName: string): string {
         return `Your current deployment is '${deploymentName}'`;
+    }
+
+    public static setCurrentAppDeploymentText(app: CurrentApp): string {
+        return `Change '${app.currentAppDeployments.currentDeploymentName}' to a different deployment`;
+    }
+
+    public static setCurrentAppTargetBinaryVersionText(app: CurrentApp): string {
+        const targetBinaryVersionProvided = app.targetBinaryVersion !== undefined && app.targetBinaryVersion;
+        return `Change ${targetBinaryVersionProvided ? `'${app.targetBinaryVersion}'` : "automatically fetched"} target binary version`;
+    }
+
+    public static setCurrentAppIsMandatoryText(app: CurrentApp): string {
+        const isMandatory = app.isMandatory !== undefined && app.isMandatory;
+        return `Change release to ${isMandatory ? "be not Mandatory" : "be Mandatory"}`;
+    }
+
+    public static setCurrentAppMenuText(app?: CurrentApp): string {
+        if (app) {
+            return `Change '${app.appName}' to a different app`;
+        } else {
+            return `Set current app`;
+        }
+    }
+
+    public static releaseReactMenuText(app?: CurrentApp): string {
+        if (app) {
+            return `Release '${app.appName}' to '${app.currentAppDeployments.currentDeploymentName}' deployment`;
+        } else {
+            return `Release react (please specify current app first)`;
+        }
     }
 }
