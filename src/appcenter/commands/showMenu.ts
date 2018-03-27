@@ -15,6 +15,7 @@ import Login from "./login";
 import * as CodePush from "./codepush";
 import SetCurrentApp from "./setCurrentApp";
 import GetCurrentApp from "./getCurrentApp";
+import OpenAppCenterPortal from "./openAppCenterPortal";
 
 export default class ShowMenu extends Command {
 
@@ -37,6 +38,12 @@ export default class ShowMenu extends Command {
                 });
                 return this.showQuickPick(appCenterMenuOptions);
             }
+
+            appCenterMenuOptions.push(<vscode.QuickPickItem>{
+                label: Strings.OpenAppCenterPortalMenuLabel,
+                description: "",
+                target: CommandNames.OpenAppCenterPortal
+            });
 
             // For empty directory show only `Start New Idea`
             if (FSUtils.IsNewDirectoryForProject(<string>this.manager.projectRootPath)) {
@@ -75,7 +82,7 @@ export default class ShowMenu extends Command {
             label: Strings.setCurrentAppMenuText(currentApp),
             description: "",
             target: CommandNames.SetCurrentApp,
-        });   
+        });
         if (currentApp) {
             appCenterMenuOptions.push(<vscode.QuickPickItem>{
                 label: Strings.releaseReactMenuText(currentApp),
@@ -113,6 +120,10 @@ export default class ShowMenu extends Command {
                     }
 
                     switch (selected.target) {
+                        case (CommandNames.OpenAppCenterPortal):
+                            new OpenAppCenterPortal(this.manager, this.logger).runNoClient();
+                            break;
+
                         case (CommandNames.Start):
                             new Start(this.manager, this.logger).run();
                             break;

@@ -28,6 +28,11 @@
     "contributes": {
         "commands": [
             {
+                "command": "appcenter.openAppCenterPortal",
+                "title": "Open AppCenter Portal",
+                "category": "AppCenter"
+            },
+            {
                 "command": "appcenter.whoAmI",
                 "title": "Who Am I",
                 "category": "AppCenter"

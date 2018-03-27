@@ -39,6 +39,7 @@ export class Strings {
     public static ProvideCurrentAppPromptMsg: string = "Please specify an App Center app";
     public static FetchDeploymentsStatusBarMessage: string = "Fetching app deployments for you...";
     public static InvalidCurrentAppNameMsg: string = "Sorry, provided app name is invalid";
+    public static OpenAppCenterPortalMenuLabel: string = "Open AppCenter Portal";
 
     public static FailedToConnectRepoToBuildService: string = "Sorry, failed to connect repository to build service";
     public static FailedToConfigureBranchAndStartNewBuild: string = "Sorry, failed to configure branch and start new build";

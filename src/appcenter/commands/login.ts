@@ -47,7 +47,7 @@ export default class Login extends Command {
                     });
                 default:
                     // User canel login otherwise
-                    this.logger.log("User canel login", LogLevel.Info);
+                    this.logger.log("User cancel login", LogLevel.Info);
                     return Promise.resolve(void 0);
             }
         });

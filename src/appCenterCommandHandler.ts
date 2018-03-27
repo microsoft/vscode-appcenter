@@ -6,6 +6,7 @@ import SetCurrentApp from "./appcenter/commands/setCurrentApp";
 import ShowMenu from "./appcenter/commands/showMenu";
 import Start from "./appcenter/commands/start";
 import WhoAmI from "./appcenter/commands/whoami";
+import OpenAppCenterPortal from "./appcenter/commands/openAppCenterPortal";
 import { ExtensionManager } from "./extensionManager";
 import { ConsoleLogger } from "./log/consoleLogger";
 import { ILogger } from "./log/logHelper";
@@ -13,6 +14,10 @@ import { ILogger } from "./log/logHelper";
 export class AppCenterCommandHandler {
 
     constructor(private manager: ExtensionManager, private logger: ILogger = new ConsoleLogger()) {}
+
+    public async OpenAppCenterPortal(): Promise<void> {
+        await new OpenAppCenterPortal(this.manager, this.logger).runNoClient();
+    }
 
     public async WhoAmI(): Promise<void> {
         await new WhoAmI(this.manager, this.logger).runNoClient();
