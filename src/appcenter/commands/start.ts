@@ -98,7 +98,7 @@ export default class Start extends Command {
                                 return;
                             }
 
-                            const appCenterAppBuilder = new AppCenterAppBuilder(ideaName, selectedUserOrOrg, this.repositoryURL, this.client, this.logger)
+                            const appCenterAppBuilder = new AppCenterAppBuilder(ideaName, selectedUserOrOrg, this.repositoryURL, this.client, this.logger);
 
                             await appCenterAppBuilder.createApps();
                             const done = await appCenterAppBuilder.startProcess();
