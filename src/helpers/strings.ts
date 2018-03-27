@@ -25,6 +25,7 @@ export class Strings {
     public static PushToRemoteRepoStatusBarMessage: string = "Pushing changes to remote repo...";
     public static CreatingCodePushDeploymentsStatusBarMessage: string = "Creating CodePush deployments...";
     public static RunNPMInstallStatusBarMessage: string = "Installing node_modules...";
+    public static NodeModulesInstalledMessage: string = "node_modules were installed!";
     public static FinishedConfigMsg: string = "Ace, you're done!";
     public static GitIsNotInstalledMsg: string = "Sorry, git is not installed!";
     public static FailedToCreateRNProjectMsg: string = "Sorry, failed to create RN project!";
@@ -42,7 +43,7 @@ export class Strings {
     public static ProvideCurrentAppPromptMsg: string = "Please specify an App Center app";
     public static FetchDeploymentsStatusBarMessage: string = "Fetching app deployments for you...";
     public static InvalidCurrentAppNameMsg: string = "Sorry, provided app name is invalid";
-    public static OpenAppCenterPortalMenuLabel: string = "Open AppCenter Portal";
+    public static OpenAppCenterPortalMenuLabel: string = "Open appcenter portal";
 
     public static FailedToConnectRepoToBuildService: string = "Sorry, failed to connect repository to build service";
     public static FailedToConfigureBranchAndStartNewBuild: string = "Sorry, failed to configure branch and start new build";

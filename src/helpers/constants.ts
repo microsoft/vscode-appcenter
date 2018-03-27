@@ -14,6 +14,9 @@ export class Constants {
     public static AndroidAppSuffix: string = "-android";
     public static AppCenterDefaultTargetBinaryVersion: string = "";
     public static AppCenterDefaultIsMandatoryParam: boolean = false;
+
+    // IMPORTANT: this two items below should stay in sync in terms of xcode projectOrWorkspacePath/scheme values
+    // We should decide how we should handle this (e.g. create manually within AppCenter site)
     public static AppCenterDemoAppRepository: string = "https://github.com/max-mironov/appcenter-demo-app-no-modules.git";
     public static defaultBuildConfigJSON: string = `{
         "branch": {
@@ -32,8 +35,8 @@ export class Constants {
                 "runTests": false
             },
             "xcode": {
-                "projectOrWorkspacePath": "ios/rntestextension.xcodeproj",
-                "scheme": "rntestextension",
+                "projectOrWorkspacePath": "ios/AppCenterDemoAppNoNodeModules.xcodeproj",
+                "scheme": "AppCenterDemoAppNoNodeModules",
                 "xcodeVersion": "9.2",
                 "automaticSigning": false
             }

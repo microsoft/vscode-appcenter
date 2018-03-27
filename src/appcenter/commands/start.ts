@@ -126,9 +126,11 @@ export default class Start extends Command {
 
     private async runNPMInstall() {
         try {
+            const installNodeModulesCmd: string = "npm i";
             await vscode.window.withProgress({ location: vscode.ProgressLocation.Window, title: Strings.VSCodeProgressLoadingTitle}, async p => {
                 p.report({message: Strings.RunNPMInstallStatusBarMessage });
-                await cpUtils.executeCommand(this.logger, this.manager.projectRootPath, "npm i");
+                await cpUtils.executeCommand(this.logger, this.manager.projectRootPath, installNodeModulesCmd);
+                VsCodeUtils.ShowInfoMessage(Strings.NodeModulesInstalledMessage);
             });
             return true;
         } catch (error) {
