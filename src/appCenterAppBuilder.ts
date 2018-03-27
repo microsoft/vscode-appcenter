@@ -2,6 +2,7 @@ import * as vscode from "vscode";
 import { AppCenterClient, models } from "./appcenter/api";
 import AppCenterAppCreator, { AndroidAppCenterAppCreator, IOSAppCenterAppCreator, NullAppCenterAppCreator } from "./appCenterAppCreator";
 import { Constants } from "./helpers/constants";
+import { CreatedAppFromAppCenter } from "./helpers/interfaces";
 import { SettingsHelper } from "./helpers/settingsHelper";
 import { Strings } from "./helpers/strings";
 import { Utils } from "./helpers/utils";
@@ -16,7 +17,7 @@ export default class AppCenterAppBuilder {
     private _withBranchConfigurationCreatedAndBuildKickOff: boolean = false;
 
     private appsCreated: boolean = false;
-    private createdApps: models.AppResponse[];
+    private createdApps: CreatedAppFromAppCenter[];
 
     constructor(
         private ideaName: string,

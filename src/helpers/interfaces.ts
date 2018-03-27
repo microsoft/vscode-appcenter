@@ -1,5 +1,6 @@
 export interface Deployment {
     name: string;
+    key?: string;
 }
 
 export interface CurrentAppDeployments {
@@ -15,6 +16,13 @@ export interface CurrentApp {
     isMandatory: boolean;
     os: string;
     currentAppDeployments: CurrentAppDeployments;
+}
+
+export interface CreatedAppFromAppCenter {
+    appSecret: string;
+    platform: string;
+    os: string;
+    name: string;
 }
 
 export interface Profile {

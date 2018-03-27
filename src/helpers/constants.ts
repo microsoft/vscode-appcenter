@@ -9,6 +9,7 @@ export class Constants {
     public static DefaultBranchName: string = "master";
     public static DefaultLoginEndPoint: string = "https://appcenter.ms/cli-login";
     public static AppCenterCodePushStatusBarColor: string = "#F3F3B2";
+    public static CodePushStagingDeplymentName: string = "Staging";
     public static iOSAppSuffix: string = "-ios";
     public static AndroidAppSuffix: string = "-android";
     public static AppCenterDefaultTargetBinaryVersion: string = "";

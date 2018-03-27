@@ -39,12 +39,6 @@ export default class ShowMenu extends Command {
                 return this.showQuickPick(appCenterMenuOptions);
             }
 
-            appCenterMenuOptions.push(<vscode.QuickPickItem>{
-                label: Strings.OpenAppCenterPortalMenuLabel,
-                description: "",
-                target: CommandNames.OpenAppCenterPortal
-            });
-
             // For empty directory show only `Start New Idea`
             if (FSUtils.IsNewDirectoryForProject(<string>this.manager.projectRootPath)) {
                 appCenterMenuOptions.push(<vscode.QuickPickItem>{
@@ -59,6 +53,11 @@ export default class ShowMenu extends Command {
                 }
                 const isReactNativeProject = Utils.isReactNativeProject(this.manager.projectRootPath, /* showMessageOnError */false);
                 if (isReactNativeProject) {
+                    appCenterMenuOptions.push(<vscode.QuickPickItem>{
+                        label: Strings.OpenAppCenterPortalMenuLabel,
+                        description: "",
+                        target: CommandNames.OpenAppCenterPortal
+                    });
                     const isReactNativeCodePushProject = Utils.isReactNativeCodePushProject(this.manager.projectRootPath, /* showMessageOnError */false);
                     if (isReactNativeCodePushProject) {
                         this.addCodePushMenuItems(appCenterMenuOptions, currentApp);

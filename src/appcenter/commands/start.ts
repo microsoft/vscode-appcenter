@@ -1,8 +1,12 @@
 import * as vscode from "vscode";
 import AppCenterAppBuilder from "../../appCenterAppBuilder";
+import AppCenterAppCreator from "../../appCenterAppCreator";
 import { ExtensionManager } from "../../extensionManager";
+import { AppCenterOS } from "../../helpers/constants";
+import { cpUtils } from "../../helpers/cpUtils";
 import { FSUtils } from "../../helpers/fsUtils";
 import { GitUtils } from "../../helpers/gitUtils";
+import { CreatedAppFromAppCenter, Deployment } from "../../helpers/interfaces";
 import { SettingsHelper } from "../../helpers/settingsHelper";
 import { Strings } from "../../helpers/strings";
 import { Validators } from "../../helpers/validators";
@@ -47,7 +51,9 @@ export default class Start extends Command {
 
             vscode.window.showInputBox({ prompt: Strings.PleaseEnterNewRepositoryUrl, ignoreFocusOut: true })
             .then(async repositoryURL => {
-                if (!repositoryURL || !Validators.ValidGitName(repositoryURL)) {
+                if (!repositoryURL
+                     || !Validators.ValidGitName(repositoryURL)
+                ) {
                     VsCodeUtils.ShowErrorMessage(Strings.FailedToProvideRepositoryNameMsg);
                     return;
                 }
@@ -99,8 +105,8 @@ export default class Start extends Command {
                             }
 
                             const appCenterAppBuilder = new AppCenterAppBuilder(ideaName, selectedUserOrOrg, this.repositoryURL, this.client, this.logger);
-
                             await appCenterAppBuilder.createApps();
+                            const createdApps = appCenterAppBuilder.getCreatedApps();
                             const done = await appCenterAppBuilder.startProcess();
 
                             if (!done) {
@@ -108,8 +114,9 @@ export default class Start extends Command {
                                 return;
                             }
 
+                            await this.runNPMInstall();
                             await this.linkProjectToAppCenter();
-                            await this.linkProjectToCP();
+                            await this.linkProjectToCP(createdApps, <string>selectedUserOrOrg.name);
                         }
                     });
                 });
@@ -117,8 +124,48 @@ export default class Start extends Command {
         });
     }
 
-    private async linkProjectToCP(): Promise<boolean> {
-        return true;
+    private async runNPMInstall() {
+        try {
+            await vscode.window.withProgress({ location: vscode.ProgressLocation.Window, title: Strings.VSCodeProgressLoadingTitle}, async p => {
+                p.report({message: Strings.RunNPMInstallStatusBarMessage });
+                await cpUtils.executeCommand(this.logger, this.manager.projectRootPath, "npm i");
+            });
+            return true;
+        } catch (error) {
+            return false;
+        }
+    }
+
+    private async linkProjectToCP(apps: CreatedAppFromAppCenter[], ownerName: string): Promise<boolean> {
+        if (!apps || apps.length === 0) {
+            return false;
+        }
+        let iosAppDeploymentKey: string;
+        let androidAppDeploymentKey: string;
+
+        // we need to create CP deployment 1st
+        const done: boolean = false;
+        await vscode.window.withProgress({ location: vscode.ProgressLocation.Window, title: Strings.VSCodeProgressLoadingTitle}, async p => {
+            p.report({message: Strings.CreatingCodePushDeploymentsStatusBarMessage });
+            const appCenterAppCreator: AppCenterAppCreator = new AppCenterAppCreator(this.client, this.logger);
+            apps.forEach(async (val: CreatedAppFromAppCenter) => {
+                if (!val) {
+                    return;
+                }
+                if (val.os.toLowerCase() === AppCenterOS.iOS.toLowerCase()) {
+                    const deployment: Deployment = await appCenterAppCreator.createCodePushDeployment(val.name, ownerName);
+                    iosAppDeploymentKey = <string>deployment.key;
+                }
+                if (val.os.toLowerCase() === AppCenterOS.Android.toLowerCase()) {
+                    const deployment: Deployment = await appCenterAppCreator.createCodePushDeployment(val.name, ownerName);
+                    androidAppDeploymentKey = <string>deployment.key;
+                }
+
+                console.log(`ios ${iosAppDeploymentKey}`);
+                console.log(`android ${androidAppDeploymentKey}`);
+            });
+        });
+        return done;
     }
 
     private async linkProjectToAppCenter(): Promise<boolean> {

@@ -23,6 +23,8 @@ export class Strings {
     public static LoadingStatusBarMessage: string = "Loading some information for you...";
     public static CreateRNProjectStatusBarMessage: string = "Creating RN project for you...";
     public static PushToRemoteRepoStatusBarMessage: string = "Pushing changes to remote repo...";
+    public static CreatingCodePushDeploymentsStatusBarMessage: string = "Creating CodePush deployments...";
+    public static RunNPMInstallStatusBarMessage: string = "Installing node_modules...";
     public static FinishedConfigMsg: string = "Ace, you're done!";
     public static GitIsNotInstalledMsg: string = "Sorry, git is not installed!";
     public static FailedToCreateRNProjectMsg: string = "Sorry, failed to create RN project!";

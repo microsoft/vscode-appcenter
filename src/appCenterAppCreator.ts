@@ -1,5 +1,7 @@
 import { AppCenterClient } from "./appcenter/api";
+import { Deployment } from "./appcenter/lib/app-center-node-client/models";
 import { AppCenterOS, AppCenterPlatform, Constants } from "./helpers/constants";
+import { CreatedAppFromAppCenter } from "./helpers/interfaces";
 import { SettingsHelper } from "./helpers/settingsHelper";
 import { ILogger, LogLevel } from "./log/logHelper";
 
@@ -51,7 +53,7 @@ export default class AppCenterAppCreator {
         return true;
     }
 
-    public async createAppForOrg(appName: string, displayName: string, orgName: string): Promise<any> {
+    public async createAppForOrg(appName: string, displayName: string, orgName: string): Promise<CreatedAppFromAppCenter | false> {
         let httpOperationResponse: any;
         try {
             httpOperationResponse = await this.client.account.apps.createForOrgWithHttpOperationResponse( {
@@ -61,12 +63,19 @@ export default class AppCenterAppCreator {
                 platform: this.platform
             }, orgName);
         } catch (err) {
-            return this.proceedErrorResponse(err);
+            this.proceedErrorResponse(err);
+            return false;
         }
-        return JSON.parse(httpOperationResponse.response.body);
+        const result = JSON.parse(httpOperationResponse.response.body);
+        return {
+            appSecret: result.app_secret,
+            platform: result.platform,
+            os: result.os,
+            name: result.name
+        };
     }
 
-    public async createApp(appName: string, displayName: string): Promise<any> {
+    public async createApp(appName: string, displayName: string): Promise<CreatedAppFromAppCenter | false> {
         let httpOperationResponse: any;
         try {
             httpOperationResponse = await this.client.account.apps.createWithHttpOperationResponse( {
@@ -76,9 +85,24 @@ export default class AppCenterAppCreator {
                 platform: this.platform
             });
         } catch (err) {
-            return this.proceedErrorResponse(err);
+            this.proceedErrorResponse(err);
+            return false;
         }
-        return JSON.parse(httpOperationResponse.response.body);
+        const result = JSON.parse(httpOperationResponse.response.body);
+        return {
+            appSecret: result.app_secret,
+            platform: result.platform,
+            os: result.os,
+            name: result.name
+        };
+    }
+
+    public async createCodePushDeployment(appName: string, ownerName: string): Promise<Deployment> {
+        const result: any = await this.client.codepush.codePushDeployments.createWithHttpOperationResponse(appName, {
+            name: Constants.CodePushStagingDeplymentName
+        } , ownerName);
+        const codePushDeployment: Deployment = JSON.parse(result.response.body);
+        return codePushDeployment;
     }
 
     private proceedErrorResponse(error: any): boolean {
@@ -120,11 +144,11 @@ export class NullAppCenterAppCreator extends AppCenterAppCreator {
         return true;
     }
 
-    public async createAppForOrg(_appName: string, _displayName: string, _orgName: string): Promise<any> {
-        return {};
+    public async createAppForOrg(_appName: string, _displayName: string, _orgName: string): Promise<CreatedAppFromAppCenter | false> {
+        return false;
     }
 
-    public async createApp(_appName: string, _displayName: string): Promise<any> {
-        return {};
+    public async createApp(_appName: string, _displayName: string): Promise<CreatedAppFromAppCenter | false> {
+        return false;
     }
 }
