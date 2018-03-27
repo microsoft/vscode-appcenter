@@ -1,14 +1,14 @@
 import * as vscode from 'vscode';
 import { AppCenterOS, Constants } from '../../../helpers/constants';
-import { AppCommand } from '../appCommand';
 import { CurrentApp } from '../../../helpers/interfaces';
 import { ExtensionManager } from '../../../extensionManager';
 import { ILogger } from '../../../log/logHelper';
 import { Strings } from '../../../helpers/strings';
 import { VsCodeUtils } from '../../../helpers/vsCodeUtils';
 import { validRange } from 'semver';
+import { RNCPAppCommand } from './rncpAppCommand';
 
-export default class SetTargetBinaryVersion extends AppCommand {
+export default class SetTargetBinaryVersion extends RNCPAppCommand {
     constructor(manager: ExtensionManager, logger: ILogger) {
         super(manager, logger);
     }

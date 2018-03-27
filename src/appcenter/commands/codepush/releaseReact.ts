@@ -3,14 +3,14 @@ import { ExtensionManager } from "../../../extensionManager";
 import { ILogger, LogLevel } from "../../../log/logHelper";
 import { ICodePushReleaseParams, CurrentApp, Profile } from "../../../helpers/interfaces";
 import { Strings } from '../../../helpers/strings';
-import { AppCommand } from '../appCommand';
 import { Constants } from '../../../helpers/constants';
 import { BundleConfig } from '../../codepush/codepush-sdk/src/react-native/react-native-utils';
 import { codePushRelease } from '../../codepush';
 import { VsCodeUtils } from '../../../helpers/vsCodeUtils';
 import { fileUtils, reactNative, updateContents } from '../../codepush/codepush-sdk/src';
+import { RNCPAppCommand } from './rncpAppCommand';
 
-export default class ReleaseReact extends AppCommand {
+export default class ReleaseReact extends RNCPAppCommand {
     constructor(manager: ExtensionManager, logger: ILogger) {
         super(manager, logger);
     }

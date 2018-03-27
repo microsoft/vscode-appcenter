@@ -19,6 +19,8 @@ export function deactivate() { }
 
 function registerAppCenterCommands(context: vscode.ExtensionContext): void {
     // General AppCenter commands
+    context.subscriptions.push(vscode.commands.registerCommand(CommandNames.OpenAppCenterPortal,
+        () => _extensionManager.RunCommand(() => _extensionManager.AppCenterCommandHandler.OpenAppCenterPortal())));
     context.subscriptions.push(vscode.commands.registerCommand(CommandNames.WhoAmI,
         () => _extensionManager.RunCommand(() => _extensionManager.AppCenterCommandHandler.WhoAmI())));
     context.subscriptions.push(vscode.commands.registerCommand(CommandNames.Login,

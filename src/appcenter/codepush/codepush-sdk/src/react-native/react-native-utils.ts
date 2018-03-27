@@ -215,7 +215,7 @@ export async function getWindowsAppVersion(projectRoot?: string): Promise<string
 
 export function runReactNativeBundleCommand(projectRootPath: string, bundleName: string, development: boolean | undefined, entryFile: string, outputFolder: string, platform: string, sourcemapOutput: string | undefined): Promise<void> {
   const reactNativeBundleArgs: string[] = [];
-  const envNodeArgs: string | undefined  = process.env.CODE_PUSH_NODE_ARGS;
+  const envNodeArgs: string | undefined = process.env.CODE_PUSH_NODE_ARGS;
 
   if (typeof envNodeArgs !== "undefined") {
     Array.prototype.push.apply(reactNativeBundleArgs, envNodeArgs.trim().split(/\s+/));

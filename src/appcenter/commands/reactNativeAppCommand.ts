@@ -5,7 +5,28 @@ import { Utils } from "../../helpers/utils";
 import { VsCodeUtils } from "../../helpers/vsCodeUtils";
 import { Command } from "./command";
 
-export class AppCommand extends Command {
+export class ReactNativeAppCommand extends Command {
+
+    public async runNoClient(): Promise<boolean | void> {
+        if (!await super.runNoClient()) {
+            return false;
+        }
+        if (!Utils.isReactNativeProject(this.manager.projectRootPath, true)) {
+            return false;
+        }
+        return true;
+    }
+
+    public async run(): Promise<boolean | void> {
+        if (!await super.run()) {
+            return false;
+        }
+        if (!Utils.isReactNativeProject(this.manager.projectRootPath, true)) {
+            return false;
+        }
+        return true;
+    }
+
     protected getCurrentApp(): Promise<CurrentApp | null> {
         return this.Profile.then((profile: Profile | null) => {
             if (profile && profile.currentApp) {
