@@ -30,6 +30,11 @@ export default class AppCenterAppBuilder {
             this.logger.error(`Sorry, IdeaName or User/Organization is not set`);
             throw new Error(`Sorry, IdeaName or User/Organization is not set`);
         }
+        this.withIOSApp();
+        this.withAndroidApp();
+        this.withBetaTestersDistributionGroup();
+        this.withConnectedRepositoryToBuildService();
+        this.withBranchConfigurationCreatedAndBuildKickOff();
     }
 
     public get iOSAppName(): string {

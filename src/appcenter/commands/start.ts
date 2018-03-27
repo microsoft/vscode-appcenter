@@ -99,11 +99,6 @@ export default class Start extends Command {
                             }
 
                             const appCenterAppBuilder = new AppCenterAppBuilder(ideaName, selectedUserOrOrg, this.repositoryURL, this.client, this.logger)
-                                .withIOSApp()
-                                .withAndroidApp()
-                                .withBetaTestersDistributionGroup()
-                                .withConnectedRepositoryToBuildService()
-                                .withBranchConfigurationCreatedAndBuildKickOff();
 
                             await appCenterAppBuilder.createApps();
                             const done = await appCenterAppBuilder.startProcess();
