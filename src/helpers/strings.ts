@@ -54,6 +54,7 @@ export class Strings {
 
     public static CreatingAppStatusBarMessage: string = `Creating app for you...`;
     public static FailedToCreateAppInAppCenter: string = `Sorry, failed to create app in app center`;
+    public static FailedToCreateApAlreadyExistInAppCenter: string = `Sorry, apps with provided idea name already exist in AppCenter`;
 
     public static FailedToPushChangesToRemoteRepoMsg: (repoName: string) => string = (repoName: string) => {
         return `Failed to push changes to remote repository '${repoName}'`;

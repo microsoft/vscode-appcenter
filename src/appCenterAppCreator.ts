@@ -1,4 +1,4 @@
-import { AppCenterClient, models } from "./appcenter/api";
+import { AppCenterClient } from "./appcenter/api";
 import { AppCenterOS, AppCenterPlatform, Constants } from "./helpers/constants";
 import { SettingsHelper } from "./helpers/settingsHelper";
 import { ILogger, LogLevel } from "./log/logHelper";
@@ -51,7 +51,7 @@ export default class AppCenterAppCreator {
         return true;
     }
 
-    public async createAppForOrg(appName: string, displayName: string, orgName: string): Promise<models.AppResponse | null> {
+    public async createAppForOrg(appName: string, displayName: string, orgName: string): Promise<any> {
         let httpOperationResponse: any;
         try {
             httpOperationResponse = await this.client.account.apps.createForOrgWithHttpOperationResponse( {
@@ -61,14 +61,12 @@ export default class AppCenterAppCreator {
                 platform: this.platform
             }, orgName);
         } catch (err) {
-            const errMessage: string = err.response ? err.response.body : err;
-            this.logger.error(errMessage);
-            throw new Error(errMessage);
+            return this.proceedErrorResponse(err);
         }
         return JSON.parse(httpOperationResponse.response.body);
     }
 
-    public async createApp(appName: string, displayName: string): Promise<models.AppResponse | null> {
+    public async createApp(appName: string, displayName: string): Promise<any> {
         let httpOperationResponse: any;
         try {
             httpOperationResponse = await this.client.account.apps.createWithHttpOperationResponse( {
@@ -78,9 +76,7 @@ export default class AppCenterAppCreator {
                 platform: this.platform
             });
         } catch (err) {
-            const errMessage: string = err.response ? err.response.body : err;
-            this.logger.error(errMessage);
-            throw new Error(errMessage);
+            return this.proceedErrorResponse(err);
         }
         return JSON.parse(httpOperationResponse.response.body);
     }
@@ -124,11 +120,11 @@ export class NullAppCenterAppCreator extends AppCenterAppCreator {
         return true;
     }
 
-    public async createAppForOrg(_appName: string, _displayName: string, _orgName: string): Promise<models.AppResponse | null> {
-        return null;
+    public async createAppForOrg(_appName: string, _displayName: string, _orgName: string): Promise<any> {
+        return {};
     }
 
-    public async createApp(_appName: string, _displayName: string): Promise<models.AppResponse | null> {
-        return null;
+    public async createApp(_appName: string, _displayName: string): Promise<any> {
+        return {};
     }
 }

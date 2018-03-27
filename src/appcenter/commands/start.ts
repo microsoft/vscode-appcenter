@@ -98,11 +98,14 @@ export default class Start extends Command {
                                 return;
                             }
 
-                            const appCenterAppBuilder = new AppCenterAppBuilder(ideaName, selectedUserOrOrg, this.repositoryURL, this.client, this.logger);
-                            await appCenterAppBuilder.createApps();
-                            const createdApps: models.AppResponse[] = appCenterAppBuilder.getCreatedApps();
-                            console.log(createdApps[0].appSecret);
+                            const appCenterAppBuilder = new AppCenterAppBuilder(ideaName, selectedUserOrOrg, this.repositoryURL, this.client, this.logger)
+                                .withIOSApp()
+                                .withAndroidApp()
+                                .withBetaTestersDistributionGroup()
+                                .withConnectedRepositoryToBuildService()
+                                .withBranchConfigurationCreatedAndBuildKickOff();
 
+                            await appCenterAppBuilder.createApps();
                             const done = await appCenterAppBuilder.startProcess();
 
                             if (!done) {
@@ -127,15 +130,15 @@ export default class Start extends Command {
         return true;
     }
 
-    private async cloneSampleRNProject(rootPath: string): Promise<boolean> {
+    private async cloneSampleRNProject(_rootPath: string): Promise<boolean> {
         let created: boolean = false;
-        if (!await GitUtils.IsGitInstalled(rootPath)) {
+        if (!await GitUtils.IsGitInstalled(_rootPath)) {
             VsCodeUtils.ShowErrorMessage(Strings.GitIsNotInstalledMsg);
             return false;
         }
         await vscode.window.withProgress({ location: vscode.ProgressLocation.Window, title: Strings.VSCodeProgressLoadingTitle}, async p => {
             p.report({message: Strings.CreateRNProjectStatusBarMessage });
-            created = await GitUtils.GitCloneIntoExistingDir(this.logger, rootPath, SettingsHelper.getAppCenterDemoAppGitRepo());
+            created = await GitUtils.GitCloneIntoExistingDir(this.logger, _rootPath, SettingsHelper.getAppCenterDemoAppGitRepo());
         });
         return created;
     }
@@ -146,6 +149,6 @@ export default class Start extends Command {
             p.report({message: Strings.PushToRemoteRepoStatusBarMessage });
             pushed = await GitUtils.ConfigureRepoAndPush(this.repositoryURL, SettingsHelper.defaultBranchName(), this.logger, <string>this.manager.projectRootPath);
          });
-         return pushed;
+        return pushed;
     }
 }

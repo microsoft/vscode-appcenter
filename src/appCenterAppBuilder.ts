@@ -15,8 +15,7 @@ export default class AppCenterAppBuilder {
     private _connectRepositoryToBuildService: boolean = false;
     private _withBranchConfigurationCreatedAndBuildKickOff: boolean = false;
 
-    private iosAppCreated: boolean = false;
-    private androidAppCreated: boolean = false;
+    private appsCreated: boolean = false;
     private createdApps: models.AppResponse[];
 
     constructor(
@@ -97,42 +96,43 @@ export default class AppCenterAppBuilder {
     }
 
     public async createApps(): Promise<void> {
-        this.iosAppCreated = this.iosAppCreated || !this._createIOSApp;
-        this.androidAppCreated = this.androidAppCreated || !this._createAndroidApp;
         let created: any;
-
-        if (!this.iosAppCreated && !this.androidAppCreated) {
+        if (!this.appsCreated) {
             await vscode.window.withProgress({ location: vscode.ProgressLocation.Window, title: Strings.VSCodeProgressLoadingTitle}, async p => {
                 p.report({message: Strings.CreatingAppStatusBarMessage });
-                if (this.isCreatedForOrganization()) {
-                    created = await Promise.all(
-                        [
-                            this.iOSAppCreator.createAppForOrg(this.iOSAppName, this.iOSDisplayName, <string>this.userOrOrg.name),
-                            this.androidAppCreator.createAppForOrg(this.androidAppName, this.androidDisplayName, <string>this.userOrOrg.name)
-                        ]
-                    );
+                if (await this.alreadyExistInAppCenter()) {
+                    VsCodeUtils.ShowErrorMessage(Strings.FailedToCreateApAlreadyExistInAppCenter);
                 } else {
-                    created = await Promise.all(
-                        [
-                            this.iOSAppCreator.createApp(this.iOSAppName, this.iOSDisplayName),
-                            this.androidAppCreator.createApp(this.androidAppName, this.androidDisplayName)
-                        ]
-                    );
+                    if (this.isCreatedForOrganization()) {
+                        created = await Promise.all(
+                            [
+                                this.iOSAppCreator.createAppForOrg(this.iOSAppName, this.iOSDisplayName, <string>this.userOrOrg.name),
+                                this.androidAppCreator.createAppForOrg(this.androidAppName, this.androidDisplayName, <string>this.userOrOrg.name)
+                            ]
+                        );
+                    } else {
+                        created = await Promise.all(
+                            [
+                                this.iOSAppCreator.createApp(this.iOSAppName, this.iOSDisplayName),
+                                this.androidAppCreator.createApp(this.androidAppName, this.androidDisplayName)
+                            ]
+                        );
+                    }
+
+                    if (!created.every( (val) => {
+                        if (val) {
+                            return val !== null && val !== false;
+                        }
+                        return false;
+                    })) {
+                        VsCodeUtils.ShowErrorMessage(Strings.FailedToCreateAppInAppCenter);
+                    }
                 }
 
-                if (!created.every( (val) => {
-                    if (val) {
-                        return val.app_secret !== true;
-                    }
-                    return false;
-                })) {
-                    VsCodeUtils.ShowErrorMessage(Strings.FailedToCreateAppInAppCenter);
-                }
-                this.createdApps = <models.AppResponse[]>created;
+                this.createdApps = created;
+                this.appsCreated = true;
             });
         }
-        this.iosAppCreated = true;
-        this.androidAppCreated = true;
     }
 
     public async startProcess(): Promise<boolean> {
@@ -196,5 +196,17 @@ export default class AppCenterAppBuilder {
     private isCreatedForOrganization(): boolean {
         // Ok, probably there is a better way to determine it ;)
         return this.userOrOrg.origin !== undefined;
+    }
+
+    private async alreadyExistInAppCenter(): Promise<boolean> {
+        let apps: models.AppResponse[];
+        if (this.isCreatedForOrganization()) {
+            apps = await this.client.account.apps.listForOrg(this.ownerName);
+        } else {
+            apps = await this.client.account.apps.list();
+        }
+        return apps.some(item => {
+            return (item.name === this.iOSAppName || item.name === this.androidAppName);
+        });
     }
 }
