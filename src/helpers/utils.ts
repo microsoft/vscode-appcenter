@@ -67,7 +67,7 @@ export class Utils {
     }
 
 
-    public static doesProjectHaveNpmPackage(projectRoot: string | undefined, packageName: string, installHint: string, showMessageOnError?: boolean): boolean {
+    public static projectHaveNpmPackage(projectRoot: string | undefined, packageName: string, installHint: string, showMessageOnError?: boolean): boolean {
         if (!projectRoot) {
             return false;
         }
@@ -89,11 +89,11 @@ export class Utils {
     }
 
     public static isReactNativeProject(projectRoot: string | undefined, showMessageOnError?: boolean) {
-        return Utils.doesProjectHaveNpmPackage(projectRoot, 'react-native', Strings.ReactNativeInstallHint, showMessageOnError);
+        return Utils.projectHaveNpmPackage(projectRoot, 'react-native', Strings.ReactNativeInstallHint, showMessageOnError);
     }
 
     public static isReactNativeCodePushProject(projectRoot: string | undefined, showMessageOnError?: boolean) {
-        return Utils.doesProjectHaveNpmPackage(projectRoot, 'react-native-code-push', Strings.CodePushInstallHint, showMessageOnError);
+        return Utils.projectHaveNpmPackage(projectRoot, 'react-native-code-push', Strings.CodePushInstallHint, showMessageOnError);
     }
 
     public static toCurrentApp(app: string,

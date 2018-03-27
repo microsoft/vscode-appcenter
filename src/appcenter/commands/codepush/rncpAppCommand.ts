@@ -1,7 +1,7 @@
 import { ReactNativeAppCommand } from "../reactNativeAppCommand";
 import { Utils } from "../../../helpers/utils";
 
-export class RNCodePushAppCommand extends ReactNativeAppCommand {
+export class RNCPAppCommand extends ReactNativeAppCommand {
     public async runNoClient(): Promise<boolean | void> {
         if (!await super.runNoClient()) {
             return false;

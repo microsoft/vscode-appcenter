@@ -8,9 +8,9 @@ import { BundleConfig } from '../../codepush/codepush-sdk/src/react-native/react
 import { codePushRelease } from '../../codepush';
 import { VsCodeUtils } from '../../../helpers/vsCodeUtils';
 import { fileUtils, reactNative, updateContents } from '../../codepush/codepush-sdk/src';
-import { RNCodePushAppCommand } from './rnCodePushAppCommand';
+import { RNCPAppCommand } from './rncpAppCommand';
 
-export default class ReleaseReact extends RNCodePushAppCommand {
+export default class ReleaseReact extends RNCPAppCommand {
     constructor(manager: ExtensionManager, logger: ILogger) {
         super(manager, logger);
     }

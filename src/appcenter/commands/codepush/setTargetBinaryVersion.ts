@@ -6,9 +6,9 @@ import { ILogger } from '../../../log/logHelper';
 import { Strings } from '../../../helpers/strings';
 import { VsCodeUtils } from '../../../helpers/vsCodeUtils';
 import { validRange } from 'semver';
-import { RNCodePushAppCommand } from './rnCodePushAppCommand';
+import { RNCPAppCommand } from './rncpAppCommand';
 
-export default class SetTargetBinaryVersion extends RNCodePushAppCommand {
+export default class SetTargetBinaryVersion extends RNCPAppCommand {
     constructor(manager: ExtensionManager, logger: ILogger) {
         super(manager, logger);
     }
