@@ -7,7 +7,7 @@ import { VsCodeUtils } from "../../helpers/vsCodeUtils";
 import { ILogger } from "../../log/logHelper";
 import * as models from '../lib/app-center-node-client/models';
 import { Deployment } from "../lib/app-center-node-client/models";
-import { AppCommand } from './appCommand';
+import { ReactNativeAppCommand } from './reactNativeAppCommand';
 
 interface QuickPickAppItem {
     label: string;
@@ -15,7 +15,7 @@ interface QuickPickAppItem {
     target: string;
 }
 
-export default class SetCurrentApp extends AppCommand {
+export default class SetCurrentApp extends ReactNativeAppCommand {
 
     constructor(manager: ExtensionManager, logger: ILogger) {
         super(manager, logger);

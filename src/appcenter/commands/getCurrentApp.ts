@@ -3,9 +3,9 @@ import { CurrentApp } from "../../helpers/interfaces";
 import { Strings } from "../../helpers/strings";
 import { VsCodeUtils } from "../../helpers/vsCodeUtils";
 import { ILogger } from "../../log/logHelper";
-import { AppCommand } from './appCommand';
+import { ReactNativeAppCommand } from './reactNativeAppCommand';
 
-export default class GetCurrentApp extends AppCommand {
+export default class GetCurrentApp extends ReactNativeAppCommand {
 
     constructor(manager: ExtensionManager, logger: ILogger) {
         super(manager, logger);
