@@ -1,8 +1,10 @@
+import * as path from "path";
 import * as vscode from "vscode";
 import AppCenterAppBuilder from "../../appCenterAppBuilder";
 import AppCenterAppCreator from "../../appCenterAppCreator";
+import AppCenterConfig from "../../appCenterConfig";
 import { ExtensionManager } from "../../extensionManager";
-import { AppCenterOS } from "../../helpers/constants";
+import { AppCenterOS, Constants } from "../../helpers/constants";
 import { cpUtils } from "../../helpers/cpUtils";
 import { FSUtils } from "../../helpers/fsUtils";
 import { GitUtils } from "../../helpers/gitUtils";
@@ -78,18 +80,25 @@ export default class Start extends Command {
                     const appCenterAppBuilder = new AppCenterAppBuilder(<string>ideaName, userOrOrgItem, this.repositoryURL, this.client, this.logger);
                     await appCenterAppBuilder.createApps();
                     const createdApps: CreatedAppFromAppCenter[] = appCenterAppBuilder.getCreatedApps();
-                    if (!await this.updateAppSecretKeys(createdApps)) {
+
+                    const pathToAppCenterConfigPlist: string = path.join(rootPath, "ios", "AppCenterSample", "AppCenter-Config.plist");
+                    const pathToMainPlist: string = path.join(rootPath, "ios", "AppCenterSample", "Info.plist");
+                    const pathToAndroidConfig: string = path.join(rootPath, "android", "app", "src", "main", "assets", "appcenter-config.json");
+                    const pathToAndroidStringResources: string = path.join(rootPath, "android", "app", "src", "main", "res", "values", "strings.xml");
+                    const appCenterConfig = new AppCenterConfig(pathToAppCenterConfigPlist, pathToMainPlist, pathToAndroidConfig, pathToAndroidStringResources, this.logger);
+
+                    if (!this.updateAppSecretKeys(createdApps, appCenterConfig)) {
                         this.logger.error("Failed to update app secret keys!");
                     }
 
                     const codePushDeployments: Deployment[] | null = await this.createCodePushDeployments(createdApps, <string>userOrOrgItem.name);
                     if (codePushDeployments && codePushDeployments.length > 0) {
-                        if (!await this.updateCodePushDeploymentKeys(codePushDeployments)) {
+                        if (!await this.updateCodePushDeploymentKeys(codePushDeployments, appCenterConfig)) {
                             this.logger.error("Failed to update code push deployment keys!");
                         }
                     }
 
-                    // We need to push changes before we configure build in AppCenter
+                    // We need to push changes before we configure/start build in AppCenter
                     if (!await this.ConfigureRepoAndPush(rootPath)) {
                         VsCodeUtils.ShowErrorMessage(Strings.FailedToPushChangesToRemoteRepoMsg(this.repositoryURL));
                         return;
@@ -167,32 +176,56 @@ export default class Start extends Command {
         }
     }
 
-    private async updateAppSecretKeys(apps: CreatedAppFromAppCenter[]): Promise<boolean> {
+    private updateAppSecretKeys(apps: CreatedAppFromAppCenter[], appCenterConfig: AppCenterConfig): boolean {
+        let saved: boolean = false;
         if (!apps || apps.length === 0) {
-            return false;
+            return saved;
         }
-        apps.forEach(async (app: CreatedAppFromAppCenter) => {
-            if (!app) {
-                return;
+
+        apps.forEach((app: CreatedAppFromAppCenter) => {
+            if (!app || !app.appSecret) {
+                return saved;
             }
-            console.log(`App name: ${app.name}, secret: ${app.appSecret}`);
-            //TODO: UPDATE APP SECRET
+
+            this.logger.info(`App name: ${app.name}, secret: ${app.appSecret}`);
+
+            if (app.os.toLowerCase() === AppCenterOS.iOS.toLowerCase()) {
+                appCenterConfig.setConfigPlistValueByKey(Constants.IOSAppSecretKey, app.appSecret);
+                saved = appCenterConfig.saveConfigPlist();
+            }
+
+            if (app.os.toLowerCase() === AppCenterOS.Android.toLowerCase()) {
+                appCenterConfig.setAndroidAppCenterConfigValueByKey(Constants.AndroidAppSecretKey, app.appSecret);
+                saved = appCenterConfig.saveAndroidAppCenterConfig();
+            }
+            return saved;
         });
-        return true;
+        return saved;
     }
 
-    private async updateCodePushDeploymentKeys(deployments: Deployment[]): Promise<boolean> {
+    private async updateCodePushDeploymentKeys(deployments: Deployment[], appCenterConfig: AppCenterConfig): Promise<boolean> {
+        let saved: boolean = false;
         if (!deployments || deployments.length === 0) {
-            return false;
+            return saved;
         }
         deployments.forEach(async (deployment: Deployment) => {
-            if (!deployment) {
-                return;
+            if (!deployment || !deployment.os || !deployment.key) {
+                return saved;
             }
-            console.log(`Deployment name: ${deployment.name}, secret: ${deployment.key}, OS: ${deployment.os}`);
-            //TODO: UPDATE DEPLOYMENT KEY
+            this.logger.info(`Deployment name: ${deployment.name}, secret: ${deployment.key}, OS: ${deployment.os}`);
+
+            if (deployment.os.toLowerCase() === AppCenterOS.iOS.toLowerCase()) {
+                appCenterConfig.setMainPlistValueByKey(Constants.IOSCodePushDeploymentKey, deployment.key);
+                saved = appCenterConfig.saveMainPlist();
+            }
+
+            if (deployment.os.toLowerCase() === AppCenterOS.Android.toLowerCase()) {
+                appCenterConfig.setAndroidStringResourcesDeploymentKey(deployment.key);
+                saved = appCenterConfig.saveAndroidStringResources();
+            }
+            return saved;
         });
-        return true;
+        return saved;
     }
 
     private async createCodePushDeployments(apps: CreatedAppFromAppCenter[], ownerName: string): Promise<Deployment[] | null> {

@@ -14,6 +14,10 @@ export class Constants {
     public static AndroidAppSuffix: string = "-android";
     public static AppCenterDefaultTargetBinaryVersion: string = "";
     public static AppCenterDefaultIsMandatoryParam: boolean = false;
+    public static IOSAppSecretKey: string = "AppSecret";
+    public static AndroidAppSecretKey: string = "app_secret";
+    public static IOSCodePushDeploymentKey: string = "CodePushDeploymentKey";
+    public static AndroidCodePushDeploymentKey: string = "reactNativeCodePush_androidDeploymentKey";
 
     // IMPORTANT: this two items below should stay in sync in terms of xcode projectOrWorkspacePath/scheme values
     // We should decide how we should handle this (e.g. create manually within AppCenter site)
@@ -35,7 +39,7 @@ export class Constants {
                 "runTests": false
             },
             "xcode": {
-                "projectOrWorkspacePath": "ios/AppCenterSample.xcodeproj",
+                "projectOrWorkspacePath": "ios/AppCenterSample.xcworkspace",
                 "scheme": "AppCenterSample",
                 "xcodeVersion": "9.2",
                 "automaticSigning": false

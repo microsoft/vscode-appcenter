@@ -3,7 +3,7 @@ import { Deployment } from "./appcenter/lib/app-center-node-client/models";
 import { AppCenterOS, AppCenterPlatform, Constants } from "./helpers/constants";
 import { CreatedAppFromAppCenter } from "./helpers/interfaces";
 import { SettingsHelper } from "./helpers/settingsHelper";
-import { ILogger, LogLevel } from "./log/logHelper";
+import { ILogger } from "./log/logHelper";
 
 export default class AppCenterAppCreator {
     protected platform: AppCenterPlatform = AppCenterPlatform.ReactNative;
