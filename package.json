@@ -95,7 +95,7 @@
                 "appcenter.demoAppGitRepo": {
                     "description": "RN Demo App GH Repository",
                     "type": "string",
-                    "default": "https://github.com/max-mironov/appcenter-demo-app-no-modules.git",
+                    "default": "https://github.com/max-mironov/AppCenterSample.git",
                     "scope": "resource"
                 },
                 "appcenter.loginendpoint": {

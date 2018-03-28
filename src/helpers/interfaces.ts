@@ -1,11 +1,20 @@
+import { AppCenterOS } from "./constants";
+
 export interface Deployment {
     name: string;
     key?: string;
+    os?: AppCenterOS;
 }
 
 export interface CurrentAppDeployments {
     currentDeploymentName: string;
     codePushDeployments: Deployment[];
+}
+
+export interface UserOrOrganizationItem {
+    isOrganization: boolean;
+    name?: string;
+    displayName?: string;
 }
 
 export interface CurrentApp {

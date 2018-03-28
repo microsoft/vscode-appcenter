@@ -28,9 +28,11 @@ export class Strings {
     public static NodeModulesInstalledMessage: string = "node_modules were installed!";
     public static FinishedConfigMsg: string = "Ace, you're done!";
     public static GitIsNotInstalledMsg: string = "Sorry, git is not installed!";
-    public static FailedToCreateRNProjectMsg: string = "Sorry, failed to create RN project!";
+    public static FailedToCreateRNProjectMsg: string = "Sorry, failed to create sample RN project!";
     public static NotRNProjectMsg: string = "Sorry, this is not an RN project!";
     public static IdeaNameIsNotValidMsg: string = "Sorry, idea name is not valid!";
+    public static FailedToRemoveRemoteRepositoryMsg: string = "Sorry, failed to remove remote repository!";
+    public static FailedToGetSelectedUserOrOrganizationMsg: string = "Sorry, failed to get selected user or organization!";
     public static DirectoryIsNotEmptyForNewIdea: string = "Start New Idea should work only for empty directory!";
     public static FailedToProvideRepositoryNameMsg: string = "Sorry, can't go ahead, repository name was not provided or valid!";
     public static LoginMenuLabel: string = "Login";

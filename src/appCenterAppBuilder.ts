@@ -2,7 +2,7 @@ import * as vscode from "vscode";
 import { AppCenterClient, models } from "./appcenter/api";
 import AppCenterAppCreator, { AndroidAppCenterAppCreator, IOSAppCenterAppCreator, NullAppCenterAppCreator } from "./appCenterAppCreator";
 import { Constants } from "./helpers/constants";
-import { CreatedAppFromAppCenter } from "./helpers/interfaces";
+import { CreatedAppFromAppCenter, UserOrOrganizationItem } from "./helpers/interfaces";
 import { SettingsHelper } from "./helpers/settingsHelper";
 import { Strings } from "./helpers/strings";
 import { Utils } from "./helpers/utils";
@@ -21,7 +21,7 @@ export default class AppCenterAppBuilder {
 
     constructor(
         private ideaName: string,
-        private userOrOrg: models.ListOKResponseItem,
+        private userOrOrg: UserOrOrganizationItem,
         private repoUrl: string,
         private client: AppCenterClient,
         private logger: ILogger,
@@ -72,7 +72,7 @@ export default class AppCenterAppBuilder {
         return androidAppCreator;
     }
 
-    public getCreatedApps() {
+    public getCreatedApps(): CreatedAppFromAppCenter[] {
         return this.createdApps;
     }
 
@@ -200,8 +200,7 @@ export default class AppCenterAppBuilder {
     }
 
     private isCreatedForOrganization(): boolean {
-        // Ok, probably there is a better way to determine it ;)
-        return this.userOrOrg.origin !== undefined;
+        return this.userOrOrg.isOrganization;
     }
 
     private async alreadyExistInAppCenter(): Promise<boolean> {

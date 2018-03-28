@@ -25,6 +25,36 @@ export class GitUtils {
         }
     }
 
+    public static async GitRemoveRemote(remoteName: string, logger: ILogger, workingDirectory: string): Promise<boolean> {
+        try {
+            await git(workingDirectory).removeRemote(remoteName);
+            return true;
+        } catch (e) {
+            logger.error(`Failed to get remote list: ${e.message}`);
+            return false;
+        }
+    }
+
+    public static async GitGetRemoteName(logger: ILogger, workingDirectory: string): Promise<string[]> {
+        try {
+            const remote: string[] = await git(workingDirectory).getRemotes();
+            return remote;
+        } catch (e) {
+            logger.error(`Failed to get remote name: ${e.message}`);
+            return [];
+        }
+    }
+
+    public static async GitGetRemoteUrl(logger: ILogger, workingDirectory: string): Promise<string> {
+        try {
+            const remote: string = await git(workingDirectory).listRemote(['--get-url']);
+            return remote;
+        } catch (e) {
+            logger.error(`Failed to get remote list: ${e.message}`);
+            return "";
+        }
+    }
+
     public static async GitCloneIntoExistingDir(logger: ILogger, workingDirectory: string, remoteRepo: string): Promise<boolean> {
         try {
             const gitrepo = git(workingDirectory);

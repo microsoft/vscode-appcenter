@@ -10,6 +10,12 @@ export class BaseQuickPickItem implements QuickPickItem {
     public id: string;
 }
 
+export class CustomQuickPickItem {
+    public label: string;
+    public description: string;
+    public target: string | undefined;
+}
+
 export class WorkItemQueryQuickPickItem extends BaseQuickPickItem {
     public wiql: string;
 }

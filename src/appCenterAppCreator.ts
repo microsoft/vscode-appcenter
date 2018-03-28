@@ -9,9 +9,7 @@ export default class AppCenterAppCreator {
     protected platform: AppCenterPlatform = AppCenterPlatform.ReactNative;
     protected os: AppCenterOS;
 
-    constructor(private client: AppCenterClient, private logger: ILogger) {
-        this.logger.log('Initiazlied AppCenter Creator', LogLevel.Info);
-    }
+    constructor(private client: AppCenterClient, private logger: ILogger) {}
 
     public async withBranchConfigurationCreatedAndBuildKickOff(appName: string, branchName: string, ownerName: string): Promise<boolean> {
         // TODO: get out what to do with this magic with not working of method to create default config!
