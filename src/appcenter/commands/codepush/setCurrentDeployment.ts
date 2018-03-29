@@ -28,7 +28,6 @@ export default class SetCurrentDeployment extends RNCPAppCommand {
                 .then((deploymentName) => {
                     if (deploymentName) {
                         this.saveCurrentApp(
-                            this.manager.projectRootPath as string,
                             currentApp.identifier,
                             AppCenterOS[currentApp.os], {
                                 currentDeploymentName: deploymentName,

@@ -30,7 +30,6 @@ export default class SetTargetBinaryVersion extends RNCPAppCommand {
                 return this.getCurrentApp().then((app: CurrentApp) => {
                     if (app) {
                         return this.saveCurrentApp(
-                            this.manager.projectRootPath as string,
                             app.identifier,
                             AppCenterOS[app.os], {
                                 currentDeploymentName: app.currentAppDeployments.currentDeploymentName,

@@ -23,7 +23,6 @@ export default class SwitchMandatoryPropForRelease extends RNCPAppCommand {
             }
             const newMandatoryValue = !!!app.isMandatory;
             this.saveCurrentApp(
-                this.manager.projectRootPath as string,
                 app.identifier,
                 AppCenterOS[app.os],
                 {
