@@ -10,8 +10,6 @@ _NOTE: Currently it supports only React-Native based apps._
     * react-native-cli
     * git
 
-Please notice that the extension uses `.vscode` directory at the project root to store appcenter related information. 
-It uses `appcenter.json` file for it, no security-sensetive information here, please feel free to inspect/edit it if needed. 
 
 ## How does it work
 There are several possible scenarios how this extension could be used:

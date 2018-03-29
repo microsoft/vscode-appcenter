@@ -40,7 +40,7 @@ class ProfileImpl implements Profile {
             });
     }
 
-    public save(projectRootPath: string): Profile {
+    public save(): Profile {
         // tslint:disable-next-line:no-any
         const profile: any = {
             userId: this.userId,
@@ -50,15 +50,15 @@ class ProfileImpl implements Profile {
             defaultApp: this.currentApp
           };
 
-        mkdirp.sync(getProfileDir(projectRootPath));
-        fs.writeFileSync(getProfileFilename(projectRootPath), JSON.stringify(profile, null, "\t"), { encoding: "utf8" });
+        mkdirp.sync(getProfileDir());
+        fs.writeFileSync(getProfileFilename(), JSON.stringify(profile, null, "\t"), { encoding: "utf8" });
         return this;
     }
 
-    public logout(projectRootPath: string): Promise<void> {
+    public logout(): Promise<void> {
         return tokenStore.remove(this.userName).then(() => {
             try {
-                fs.unlinkSync(getProfileFilename(projectRootPath));
+                fs.unlinkSync(getProfileFilename());
             } catch (err) {
                 // File not found is ok, probably doesn't exist
             }
@@ -68,13 +68,13 @@ class ProfileImpl implements Profile {
 
 let currentProfile: Profile | null;
 
-function getProfileFilename(projectRootPath: string): string {
-    const profileDir = getProfileDir(projectRootPath);
+function getProfileFilename(): string {
+    const profileDir = getProfileDir();
     return path.join(profileDir, profileFile);
 }
 
-function loadProfile(projectRootPath: string): Profile | null {
-    const profilePath = getProfileFilename(projectRootPath);
+function loadProfile(): Profile | null {
+    const profilePath = getProfileFilename();
     if (!fs.existsSync(profilePath)) {
         return null;
     }
@@ -85,27 +85,27 @@ function loadProfile(projectRootPath: string): Profile | null {
     return new ProfileImpl(profile);
 }
 
-export function getUser(projectRootPath: string): Profile | null {
+export function getUser(): Profile | null {
     if (!currentProfile) {
-      currentProfile = loadProfile(projectRootPath);
+      currentProfile = loadProfile();
     }
     return currentProfile;
 }
 
 // tslint:disable-next-line:no-any
-export function saveUser(user: any, token: TokenValueType, projectRootPath: string): Promise<Profile> {
+export function saveUser(user: any, token: TokenValueType): Promise<Profile> {
     return tokenStore.set(user.name, token).then(() => {
         const profile = new ProfileImpl(user);
-        profile.save(projectRootPath);
+        profile.save();
         return profile;
     });
 }
 
-export function deleteUser(projectRootPath: string): Promise<void> {
-    const profile = getUser(projectRootPath);
+export function deleteUser(): Promise<void> {
+    const profile = getUser();
     if (profile) {
       currentProfile = null;
-      return profile.logout(projectRootPath);
+      return profile.logout();
     }
     return Promise.resolve(void 0);
 }

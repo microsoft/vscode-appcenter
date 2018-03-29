@@ -3,7 +3,7 @@ import { Profile } from "../../helpers/interfaces";
 import { SettingsHelper } from "../../helpers/settingsHelper";
 import { Strings } from "../../helpers/strings";
 import { VsCodeUtils } from "../../helpers/vsCodeUtils";
-import { ILogger, LogLevel } from "../../log/logHelper";
+import { ILogger } from "../../log/logHelper";
 import { AppCenterClient, AppCenterClientFactory, createAppCenterClient } from "../api";
 import Auth from "../auth/auth";
 
@@ -17,9 +17,9 @@ export class Command {
     }
 
     public get Profile(): Promise<Profile | null> {
-        return Auth.getProfile(<string>this.manager.projectRootPath).then((profile: Profile) => {
+        return Auth.getProfile().then((profile: Profile) => {
             if (!profile) {
-                this.logger.log(`No profile found within "${this.manager.projectRootPath}" path`, LogLevel.Info);
+                this.logger.info(`No profile file found`);
                 return null;
             }
             return profile;
@@ -29,7 +29,7 @@ export class Command {
     public runNoClient(): Promise<boolean | void> {
         const rootPath: string | undefined = this.manager.projectRootPath;
         if (!rootPath) {
-            this.logger.log('No project root folder found', LogLevel.Info);
+            this.logger.error('No project root folder found');
             VsCodeUtils.ShowInfoMessage(Strings.NoProjectRootFolderFound);
             return Promise.resolve(false);
         }
@@ -40,7 +40,7 @@ export class Command {
     public async run(): Promise<boolean | void> {
         const rootPath: string | undefined = this.manager.projectRootPath;
         if (!rootPath) {
-            this.logger.log('No project root path found.', LogLevel.Info);
+            this.logger.error('No project root folder found');
             VsCodeUtils.ShowInfoMessage(Strings.NoProjectRootFolderFound);
             return Promise.resolve(false);
         }
@@ -54,7 +54,7 @@ export class Command {
             if (clientOrNull) {
                 this.client = clientOrNull;
             } else {
-                this.logger.log("Failed to get App Center client", LogLevel.Info);
+                this.logger.error("Failed to get App Center client");
                 return Promise.resolve(false);
             }
             return Promise.resolve(true);
@@ -66,7 +66,7 @@ export class Command {
             if (profile) {
                 return this.clientFactory.fromProfile(profile, SettingsHelper.getAppCenterAPIEndpoint());
             } else {
-                this.logger.log('No App Center user specified!', LogLevel.Error);
+                this.logger.error('No App Center user specified!');
                 return null;
             }
         }

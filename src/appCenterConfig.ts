@@ -65,7 +65,7 @@ export default class AppCenterConfig {
             this.logger.error(`Unable to save ${this.pathToAndroidStringResources}`);
             return false;
         }
-        this.logger.info(`Saved new data to${this.pathToAndroidStringResources}`);
+        this.logger.info(`Saved CodePush deployemnt key to ${this.pathToAndroidStringResources}`);
         return true;
     }
 
@@ -95,7 +95,7 @@ export default class AppCenterConfig {
     public saveMainPlist(): boolean {
         const plistContents = plist.build(this.parsedInfoMainPlist);
         fs.writeFileSync(this.mainPlistPath, plistContents);
-        this.logger.info(`Saved deployemnt key in ${this.mainPlistPath}`);
+        this.logger.info(`Saved CodePush deployemnt key in ${this.mainPlistPath}`);
         return true;
     }
 

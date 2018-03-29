@@ -79,7 +79,6 @@ export default class SetCurrentApp extends ReactNativeAppCommand {
                             };
                         }
                         return this.saveCurrentApp(
-                            this.manager.projectRootPath as string,
                             selectedAppName,
                             OS,
                             currentDeployments,

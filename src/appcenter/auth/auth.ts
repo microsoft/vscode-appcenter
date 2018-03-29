@@ -3,11 +3,8 @@ import { createAppCenterClient, models } from "../api";
 import { deleteUser, getUser, Profile, saveUser } from "./profile/profile";
 
 export default class Auth {
-    public static getProfile(projectRootPath: string): Promise<Profile | null> {
-        if (!projectRootPath) {
-            return Promise.resolve(null);
-        }
-        const profile: Profile | null = getUser(projectRootPath);
+    public static getProfile(): Promise<Profile | null> {
+        const profile: Profile | null = getUser();
         if (profile) {
             return Promise.resolve(profile);
         } else {
@@ -15,13 +12,13 @@ export default class Auth {
         }
     }
 
-    public static doTokenLogin(token: string, projectRootPath: string): Promise<Profile | null> {
+    public static doTokenLogin(token: string): Promise<Profile | null> {
         if (!token) {
             return Promise.resolve(null);
         }
 
-        return this.removeLoggedInUser(projectRootPath).then(() => {
-            return Auth.fetchUserInfoByTokenAndSave(token, projectRootPath).then((profile: Profile) => {
+        return this.removeLoggedInUser().then(() => {
+            return Auth.fetchUserInfoByTokenAndSave(token).then((profile: Profile) => {
                 return Promise.resolve(profile);
             }).catch(() => {
                 return Promise.resolve(null);
@@ -29,14 +26,14 @@ export default class Auth {
         });
     }
 
-    public static doLogout(projectRootPath: string): Promise<void> {
+    public static doLogout(): Promise<void> {
         // TODO: Probably we need to delete token from server also?
-        return this.removeLoggedInUser(projectRootPath);
+        return this.removeLoggedInUser();
     }
 
-    private static fetchUserInfoByTokenAndSave(token: string, projectRootPath: string): Promise<Profile> {
+    private static fetchUserInfoByTokenAndSave(token: string): Promise<Profile> {
         return Auth.getUserInfo(token).then(userResponse => {
-            return saveUser(userResponse, { token: token }, projectRootPath).then((profile: Profile) => {
+            return saveUser(userResponse, { token: token }).then((profile: Profile) => {
                 return Promise.resolve(profile);
             });
             // tslint:disable-next-line:no-any
@@ -50,8 +47,8 @@ export default class Auth {
         return client.account.users.get();
     }
 
-    private static removeLoggedInUser(projectRootPath: string): Promise<void> {
-        return deleteUser(projectRootPath).then(() => {
+    private static removeLoggedInUser(): Promise<void> {
+        return deleteUser().then(() => {
             return Promise.resolve(void 0);
         }).catch(() => { }); // Noop, it's ok if deletion fails
     }

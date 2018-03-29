@@ -37,7 +37,6 @@ export class ReactNativeAppCommand extends Command {
     }
 
     protected saveCurrentApp(
-        projectRootPath: string,
         currentAppName: string,
         appOS: AppCenterOS,
         currentAppDeployments: CurrentAppDeployments | null,
@@ -52,7 +51,7 @@ export class ReactNativeAppCommand extends Command {
         return this.Profile.then((profile: Profile | null) => {
             if (profile) {
                 profile.currentApp = defaultApp;
-                profile.save(projectRootPath);
+                profile.save();
                 return Promise.resolve(defaultApp);
             } else {
                 // No profile - not logged in?

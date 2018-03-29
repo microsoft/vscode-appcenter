@@ -41,8 +41,8 @@ export interface Profile {
     email: string;
     readonly accessToken: Promise<string>;
     currentApp?: CurrentApp;
-    save(projectRootPath: string): Profile;
-    logout(projectRootPath: string): Promise<void>;
+    save(): Profile;
+    logout(): Promise<void>;
 }
 
 export interface IDefaultCommandParams {

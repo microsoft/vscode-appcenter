@@ -1,7 +1,7 @@
 import { ExtensionManager } from "../../extensionManager";
 import { Strings } from "../../helpers/strings";
 import { VsCodeUtils } from "../../helpers/vsCodeUtils";
-import { ILogger, LogLevel } from "../../log/logHelper";
+import { ILogger } from "../../log/logHelper";
 import Auth from "../auth/auth";
 import { Command } from "./command";
 
@@ -14,11 +14,11 @@ export default class Logout extends Command {
     public async runNoClient(): Promise<void> {
         await super.runNoClient();
 
-        return Auth.doLogout(<string>this.manager.projectRootPath).then(() => {
+        return Auth.doLogout().then(() => {
             VsCodeUtils.ShowInfoMessage(Strings.UserLoggedOutMsg);
             return this.manager.setupAppCenterStatusBar(null);
         }).catch(() => {
-            this.logger.log("An error occured on logout", LogLevel.Error);
+            this.logger.error("Sorry, An error occured on logout");
         });
     }
 }

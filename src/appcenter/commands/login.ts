@@ -7,7 +7,7 @@ import { Profile } from "../../helpers/interfaces";
 import { SettingsHelper } from "../../helpers/settingsHelper";
 import { Strings } from "../../helpers/strings";
 import { IButtonMessageItem, VsCodeUtils } from "../../helpers/vsCodeUtils";
-import { ILogger, LogLevel } from "../../log/logHelper";
+import { ILogger } from "../../log/logHelper";
 import Auth from "../auth/auth";
 import { Command } from "./command";
 
@@ -47,7 +47,7 @@ export default class Login extends Command {
                     });
                 default:
                     // User canel login otherwise
-                    this.logger.log("User cancel login", LogLevel.Info);
+                    this.logger.info("User cancel login");
                     return Promise.resolve(void 0);
             }
         });
@@ -55,13 +55,13 @@ export default class Login extends Command {
 
     private loginWithToken(token: string | undefined) {
         if (!token) {
-            this.logger.log("No token detected on login", LogLevel.Error);
+            this.logger.error("No token provided on login");
             return;
         }
 
-        return Auth.doTokenLogin(token, <string>this.manager.projectRootPath).then((profile: Profile) => {
+        return Auth.doTokenLogin(token).then((profile: Profile) => {
             if (!profile) {
-                this.logger.log("Failed to fetch user info from server", LogLevel.Error);
+                this.logger.error("Failed to fetch user info from server");
                 VsCodeUtils.ShowWarningMessage(Strings.FailedToExecuteLoginMsg);
                 return;
             }

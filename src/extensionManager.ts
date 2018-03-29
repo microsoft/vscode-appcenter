@@ -75,13 +75,9 @@ export class ExtensionManager implements Disposable {
     private async initializeExtension(): Promise<void> {
         this._appCenterCommandHandler = new AppCenterCommandHandler(this, this._logger);
         this._appCenterStatusBarItem = VsCodeUtils.getStatusBarItem();
-        if (this._projectRootPath) {
-            Auth.getProfile(this._projectRootPath).then((profile: Profile | null) => {
-                return this.setupAppCenterStatusBar(profile);
-            });
-        } else {
-            this._logger.error('Extension Manager: No project root path defined');
-        }
+        Auth.getProfile().then((profile: Profile | null) => {
+            return this.setupAppCenterStatusBar(profile);
+        });
     }
 
     private cleanup(): void {
