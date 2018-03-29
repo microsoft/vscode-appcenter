@@ -53,6 +53,7 @@ export default class AppCenterAppCreator {
 
     public async createAppForOrg(appName: string, displayName: string, orgName: string): Promise<CreatedAppFromAppCenter | false> {
         let httpOperationResponse: any;
+        let result: any;
         try {
             httpOperationResponse = await this.client.account.apps.createForOrgWithHttpOperationResponse( {
                 displayName: displayName,
@@ -61,10 +62,22 @@ export default class AppCenterAppCreator {
                 platform: this.platform
             }, orgName);
         } catch (err) {
-            this.proceedErrorResponse(err);
-            return false;
+            // TODO: investigate this strange issue
+            // I dont know why client falls into catch block here, so apply quick fix just to overcome this
+            if (err.statusCode > 400) {
+                this.proceedErrorResponse(err);
+                return false;
+            } else {
+                result = JSON.parse(err.response.body);
+                return {
+                    appSecret: result.app_secret,
+                    platform: result.platform,
+                    os: result.os,
+                    name: result.name
+                };
+            }
         }
-        const result = JSON.parse(httpOperationResponse.response.body);
+        result = JSON.parse(httpOperationResponse.response.body);
         return {
             appSecret: result.app_secret,
             platform: result.platform,

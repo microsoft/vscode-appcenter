@@ -82,6 +82,10 @@ export default class Start extends Command {
                     await appCenterAppBuilder.createApps();
                     const createdApps: CreatedAppFromAppCenter[] = appCenterAppBuilder.getCreatedApps();
 
+                    if (!this.appsCreated(createdApps)) {
+                        return;
+                    }
+
                     const pathToAppCenterConfigPlist: string = path.join(rootPath, "ios", "AppCenterSample", "AppCenter-Config.plist");
                     const pathToMainPlist: string = path.join(rootPath, "ios", "AppCenterSample", "Info.plist");
                     const pathToAndroidConfig: string = path.join(rootPath, "android", "app", "src", "main", "assets", "appcenter-config.json");
@@ -177,6 +181,21 @@ export default class Start extends Command {
             this.logger.error("Failed to run npm install");
             return false;
         }
+    }
+
+    private appsCreated(apps: CreatedAppFromAppCenter[]): boolean {
+        if (!apps || apps.length === 0) {
+            return false;
+        }
+        if (apps.length === 2) { // iOS and Android apps
+            if (typeof apps[0] === "boolean" && <boolean>!apps[0]) {
+                return false;
+            }
+            if (typeof apps[1] === "boolean" && <boolean>!apps[1]) {
+                return false;
+            }
+        }
+        return true;
     }
 
     private updateAppSecretKeys(apps: CreatedAppFromAppCenter[], appCenterConfig: AppCenterConfig): boolean {

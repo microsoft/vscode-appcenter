@@ -205,6 +205,7 @@ export default class AppCenterAppBuilder {
 
     private async alreadyExistInAppCenter(): Promise<boolean> {
         let apps: models.AppResponse[];
+        this.logger.info("Checkig if idea name is not already used before...");
         if (this.isCreatedForOrganization()) {
             apps = await this.client.account.apps.listForOrg(this.ownerName);
         } else {
