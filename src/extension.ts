@@ -1,14 +1,16 @@
 import * as vscode from 'vscode';
 import { ExtensionManager } from './extensionManager';
 import { CommandNames } from './helpers/constants';
+import { OutputChannelLogger } from './log/outputChannelLogger';
 
 let _extensionManager: ExtensionManager;
+const outputChannelLogger = OutputChannelLogger.getMainChannel();
 
 export async function activate(context: vscode.ExtensionContext) {
     // Construct the extension manager that handles AppCenter commands
     _extensionManager = new ExtensionManager();
     const rootPath = vscode.workspace.rootPath;
-    await _extensionManager.Initialize(rootPath);
+    await _extensionManager.Initialize(rootPath, outputChannelLogger);
 
     // Register the ext manager for disposal
     context.subscriptions.push(_extensionManager);

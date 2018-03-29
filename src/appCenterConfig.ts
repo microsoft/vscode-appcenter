@@ -16,33 +16,34 @@ export default class AppCenterConfig {
 
     constructor(private configPlistPath: string, private mainPlistPath: string, private pathToAndroidConfig: string, private pathToAndroidStringResources: string, private logger: ILogger) {
         try {
+            this.logger.debug(`Read contents of ${configPlistPath}`);
             const plistContents = fs.readFileSync(configPlistPath, 'utf8');
             this.parsedInfoConfigPlist = plist.parse(plistContents);
-            this.logger.info(`Read contents of ${configPlistPath}`);
         } catch (e) {
             this.logger.error(`Could not read contents of AppCenter-Config.plist - ${e.message}`);
             this.parsedInfoConfigPlist = plist.parse(plist.build({}));
         }
 
         try {
+            this.logger.debug(`Read contents of ${mainPlistPath}`);
             const plistContents = fs.readFileSync(mainPlistPath, 'utf8');
             this.parsedInfoMainPlist = plist.parse(plistContents);
-            this.logger.info(`Read contents of ${mainPlistPath}`);
         } catch (e) {
             this.logger.error(`Could not read contents plist - ${e.message}`);
             this.parsedInfoMainPlist = plist.parse(plist.build({}));
         }
 
         try {
+            this.logger.debug(`Read contents of ${pathToAndroidConfig}`);
             this.androidAppCenterConfig = {};
             const fileContent: string | Buffer = fs.readFileSync(pathToAndroidConfig, 'utf-8');
             this.androidAppCenterConfig = JSON.parse(fileContent);
-            this.logger.info(`Read contents of ${pathToAndroidConfig}`);
         } catch (e) {
             this.logger.error(`Could not find - ${e.message}`);
         }
 
         try {
+            this.logger.debug(`Read contents of ${pathToAndroidStringResources}`);
             const data = fs.readFileSync(pathToAndroidStringResources, { encoding: "utf8" });
             const xml = new jsxml.XML(data);
             this.androidStringResources = xml;

@@ -28,6 +28,7 @@ export default class Start extends Command {
 
     public async run(): Promise<void> {
         super.run();
+        this.logger.info("Running AppCenter Start New Idea command...");
         const rootPath = <string>this.manager.projectRootPath;
         if (!FSUtils.IsNewDirectoryForProject(rootPath)) {
             VsCodeUtils.ShowErrorMessage(Strings.DirectoryIsNotEmptyForNewIdea);
@@ -133,6 +134,7 @@ export default class Start extends Command {
 
     private async getUserOrOrganizationItems(): Promise<CustomQuickPickItem[]> {
         let items: CustomQuickPickItem[] = [];
+        this.logger.info("Getting user/organization items...");
         await vscode.window.withProgress({ location: vscode.ProgressLocation.Window, title: Strings.VSCodeProgressLoadingTitle}, p => {
             p.report({message: Strings.LoadingStatusBarMessage });
             return this.client.account.organizations.list().then((orgList: ListOKResponseItem[]) => {
@@ -164,6 +166,7 @@ export default class Start extends Command {
     private async runNPMInstall() {
         try {
             const installNodeModulesCmd: string = "npm i";
+            this.logger.info("Running npm install...");
             await vscode.window.withProgress({ location: vscode.ProgressLocation.Window, title: Strings.VSCodeProgressLoadingTitle}, async p => {
                 p.report({message: Strings.RunNPMInstallStatusBarMessage });
                 await cpUtils.executeCommand(this.logger, this.manager.projectRootPath, installNodeModulesCmd);
@@ -181,7 +184,7 @@ export default class Start extends Command {
         if (!apps || apps.length === 0) {
             return saved;
         }
-
+        this.logger.info("Updating app secrets...");
         apps.forEach((app: CreatedAppFromAppCenter) => {
             if (!app || !app.appSecret) {
                 return saved;
@@ -208,6 +211,7 @@ export default class Start extends Command {
         if (!deployments || deployments.length === 0) {
             return saved;
         }
+        this.logger.info("Updating CodePush Deployment Keys...");
         deployments.forEach(async (deployment: Deployment) => {
             if (!deployment || !deployment.os || !deployment.key) {
                 return saved;
@@ -232,7 +236,7 @@ export default class Start extends Command {
         if (!apps || apps.length === 0) {
             return null;
         }
-
+        this.logger.info("Creating CodePush deployments...");
         const deployments: Deployment[] = [];
         await vscode.window.withProgress({ location: vscode.ProgressLocation.Window, title: Strings.VSCodeProgressLoadingTitle}, async p => {
             p.report({message: Strings.CreatingCodePushDeploymentsStatusBarMessage });
@@ -248,6 +252,7 @@ export default class Start extends Command {
     }
 
     private async isGitInstalled(_rootPath: string): Promise<boolean> {
+        this.logger.info("Checking if git is installed...");
         return await GitUtils.IsGitInstalled(_rootPath);
     }
 
@@ -284,6 +289,7 @@ export default class Start extends Command {
 
     private async cloneSampleRNProject(_rootPath: string): Promise<boolean> {
         let created: boolean = false;
+        this.logger.info("Cloning AppCenter sample app into current directory...");
         await vscode.window.withProgress({ location: vscode.ProgressLocation.Window, title: Strings.VSCodeProgressLoadingTitle}, async p => {
             p.report({message: Strings.CreateRNProjectStatusBarMessage });
             created = await GitUtils.GitCloneIntoExistingDir(this.logger, _rootPath, SettingsHelper.getAppCenterDemoAppGitRepo());
@@ -293,6 +299,7 @@ export default class Start extends Command {
 
     private async ConfigureRepoAndPush(_rootPath: string): Promise<boolean> {
         let pushed: boolean = false;
+        this.logger.info(`Pushing changes to ${this.repositoryURL}...`);
         await vscode.window.withProgress({ location: vscode.ProgressLocation.Window, title: Strings.VSCodeProgressLoadingTitle}, async p => {
             p.report({message: Strings.PushToRemoteRepoStatusBarMessage });
             pushed = await GitUtils.ConfigureRepoAndPush(this.repositoryURL, SettingsHelper.defaultBranchName(), this.logger, _rootPath);

@@ -6,7 +6,7 @@ import { Profile } from "./helpers/interfaces";
 import { Strings } from "./helpers/strings";
 import { VsCodeUtils } from "./helpers/vsCodeUtils";
 import { ConsoleLogger } from "./log/consoleLogger";
-import { ILogger, LogLevel } from "./log/logHelper";
+import { ILogger } from "./log/logHelper";
 
 export class ExtensionManager implements Disposable {
     private _appCenterCommandHandler: AppCenterCommandHandler;
@@ -25,7 +25,7 @@ export class ExtensionManager implements Disposable {
     public async Initialize(projectRootPath: string | undefined, logger: ILogger = new ConsoleLogger()): Promise<void> {
         this._logger = logger;
         this._projectRootPath = projectRootPath;
-        this._logger.log("Init Extension Manager", LogLevel.Info);
+        this._logger.info("Init Extension Manager");
         await this.initializeExtension();
     }
 
@@ -73,19 +73,19 @@ export class ExtensionManager implements Disposable {
     }
 
     private async initializeExtension(): Promise<void> {
-        this._appCenterCommandHandler = new AppCenterCommandHandler(this);
+        this._appCenterCommandHandler = new AppCenterCommandHandler(this, this._logger);
         this._appCenterStatusBarItem = VsCodeUtils.getStatusBarItem();
         if (this._projectRootPath) {
             Auth.getProfile(this._projectRootPath).then((profile: Profile | null) => {
                 return this.setupAppCenterStatusBar(profile);
             });
         } else {
-            this._logger.log('No project root path defined', LogLevel.Error);
+            this._logger.error('Extension Manager: No project root path defined');
         }
     }
 
     private cleanup(): void {
-        this._logger.log("Called cleanup", LogLevel.Info);
+        this._logger.info("Extension Manager: Called cleanup");
         if (this._appCenterStatusBarItem) {
             this._appCenterStatusBarItem.dispose();
         }
