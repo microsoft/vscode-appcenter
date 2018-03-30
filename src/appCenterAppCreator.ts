@@ -14,6 +14,7 @@ export default class AppCenterAppCreator {
     public async withBranchConfigurationCreatedAndBuildKickOff(appName: string, branchName: string, ownerName: string): Promise<boolean> {
         // TODO: get out what to do with this magic with not working of method to create default config!
         try {
+            this.logger.info(`Start creating new branch configuration for branch ${branchName} and starting new build for ${appName}...`);
             const configJson = Constants.defaultBuildConfigJSON;
             const configObj = JSON.parse(configJson);
 
@@ -27,6 +28,7 @@ export default class AppCenterAppCreator {
 
     public async connectRepositoryToBuildService(appName: string, ownerName: string, repoUrl: string): Promise<boolean> {
         try {
+            this.logger.info(`Start connecting repository to build service for ${appName}...`);
             await this.client.build.repositoryConfigurations.createOrUpdate(
                 appName,
                 ownerName,
@@ -42,6 +44,7 @@ export default class AppCenterAppCreator {
 
     public async createBetaTestersDistributionGroup(appName: string, ownerName: string): Promise<boolean> {
         try {
+            this.logger.info(`Start creating BetaTesters distribution group for ${appName}...`);
             await this.client.account.distributionGroups.create(appName, {
                 name: SettingsHelper.distribitionGroupTestersName()
             }, ownerName);
@@ -55,6 +58,7 @@ export default class AppCenterAppCreator {
         let httpOperationResponse: any;
         let result: any;
         try {
+            this.logger.info(`Start creating new app ${appName} for org ${orgName}`);
             httpOperationResponse = await this.client.account.apps.createForOrgWithHttpOperationResponse( {
                 displayName: displayName,
                 name: appName,
@@ -89,6 +93,7 @@ export default class AppCenterAppCreator {
     public async createApp(appName: string, displayName: string): Promise<CreatedAppFromAppCenter | false> {
         let httpOperationResponse: any;
         try {
+            this.logger.info(`Start creating new app ${appName}...`);
             httpOperationResponse = await this.client.account.apps.createWithHttpOperationResponse( {
                 displayName: displayName,
                 name: appName,
@@ -109,6 +114,7 @@ export default class AppCenterAppCreator {
     }
 
     public async createCodePushDeployment(appName: string, ownerName: string): Promise<Deployment> {
+        this.logger.info(`Start creating codepush deployment for ${appName}...`);
         const result: any = await this.client.codepush.codePushDeployments.createWithHttpOperationResponse(appName, {
             name: Constants.CodePushStagingDeplymentName
         } , ownerName);

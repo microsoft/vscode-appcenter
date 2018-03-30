@@ -38,7 +38,7 @@ export default class Login extends Command {
                             .then(token => {
                                 this.loginWithToken(token);
                             });
-                        } else { return Promise.resolve(void 0); }
+                        } else { return; }
                     });
                 case (AppCenterLoginType[AppCenterLoginType.Token]):
                     return vscode.window.showInputBox({ prompt: Strings.PleaseProvideToken , ignoreFocusOut: true})
@@ -48,7 +48,7 @@ export default class Login extends Command {
                 default:
                     // User canel login otherwise
                     this.logger.info("User cancel login");
-                    return Promise.resolve(void 0);
+                    return;
             }
         });
     }
