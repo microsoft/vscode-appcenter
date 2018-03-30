@@ -18,6 +18,8 @@ import { ILogger } from "../../log/logHelper";
 import { Profile } from "../auth/profile/profile";
 import { ListOKResponseItem } from "../lib/app-center-node-client/models";
 import { Command } from "./command";
+// tslint:disable-next-line:no-var-requires
+const GitUrlParse = require("git-url-parse");
 
 export default class Start extends Command {
 
@@ -296,12 +298,12 @@ export default class Start extends Command {
                     VsCodeUtils.ShowErrorMessage(Strings.FailedToProvideRepositoryNameMsg);
                     return false;
                 }
-                this.repositoryURL = Utils.removeNewLinesFromString(repositoryURL);
+                this.repositoryURL = GitUrlParse(Utils.removeNewLinesFromString(repositoryURL)).toString("https");
                 return true;
             });
             return true;
         } else {
-            this.repositoryURL = Utils.removeNewLinesFromString(remoteUrl);
+            this.repositoryURL = GitUrlParse(Utils.removeNewLinesFromString(remoteUrl)).toString("https");
             return true;
         }
     }
@@ -311,7 +313,7 @@ export default class Start extends Command {
         this.logger.info("Cloning AppCenter sample app into current directory...");
         await vscode.window.withProgress({ location: vscode.ProgressLocation.Window, title: Strings.VSCodeProgressLoadingTitle}, async p => {
             p.report({message: Strings.CreateRNProjectStatusBarMessage });
-            created = await GitUtils.GitCloneIntoExistingDir(this.logger, _rootPath, SettingsHelper.getAppCenterDemoAppGitRepo());
+            created = await GitUtils.GitCloneIntoExistingDir(this.logger, _rootPath, GitUrlParse(SettingsHelper.getAppCenterDemoAppGitRepo()).toString("https"));
         });
         return created;
     }

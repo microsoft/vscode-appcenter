@@ -187,6 +187,7 @@
         "chalk": "^2.3.2",
         "date-fns": "^1.29.0",
         "del": "^3.0.0",
+        "git-url-parse": "^8.2.0",
         "gradle-to-js": "^1.1.0",
         "gulp": "^3.9.1",
         "gulp-sourcemaps": "^2.6.4",
