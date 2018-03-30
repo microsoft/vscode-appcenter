@@ -1,19 +1,13 @@
 import * as vscode from "vscode";
 import { ExtensionManager } from "../../extensionManager";
 import { AppCenterOS, Constants } from "../../helpers/constants";
-import { CurrentApp, CurrentAppDeployments } from "../../helpers/interfaces";
+import { CurrentApp, CurrentAppDeployments, QuickPickAppItem } from "../../helpers/interfaces";
 import { Strings } from "../../helpers/strings";
 import { VsCodeUtils } from "../../helpers/vsCodeUtils";
 import { ILogger } from "../../log/logHelper";
 import * as models from '../lib/app-center-node-client/models';
 import { Deployment } from "../lib/app-center-node-client/models";
 import { ReactNativeAppCommand } from './reactNativeAppCommand';
-
-interface QuickPickAppItem {
-    label: string;
-    description: string;
-    target: string;
-}
 
 export default class SetCurrentApp extends ReactNativeAppCommand {
 
@@ -28,8 +22,10 @@ export default class SetCurrentApp extends ReactNativeAppCommand {
 
         let rnApps;
         try {
-            vscode.window.withProgress({ location: vscode.ProgressLocation.Window, title: "Get Apps" }, () => {
-                return this.client.account.apps.list();
+            vscode.window.withProgress({ location: vscode.ProgressLocation.Window, title: Strings.GetAppsListMessage }, () => {
+                return this.client.account.apps.list({
+                    orderBy: "name"
+                });
             }).then((apps: models.AppResponse[]) => {
                 const appsList: models.AppResponse[] = apps;
                 rnApps = appsList.filter(app => app.platform === Constants.AppCenterReactNativePlatformName);
@@ -51,10 +47,11 @@ export default class SetCurrentApp extends ReactNativeAppCommand {
                 }
                 const selectedApp: models.AppResponse = selectedApps[0];
                 const selectedAppName: string = `${selectedApp.owner.name}/${selectedApp.name}`;
+                const type: string = selectedApp.owner.type;
 
                 const OS: AppCenterOS | undefined = this.toAppCenterOS(selectedApp.os);
                 if (!OS) {
-                    this.logger.error(`Couldn't recognise os ${selectedApp.os} returned from CodePush server.`);
+                    this.logger.error(`Couldn't recognize os ${selectedApp.os} returned from CodePush server.`);
                     return;
                 }
                 try {
@@ -83,6 +80,7 @@ export default class SetCurrentApp extends ReactNativeAppCommand {
                             OS,
                             currentDeployments,
                             Constants.AppCenterDefaultTargetBinaryVersion,
+                            type,
                             Constants.AppCenterDefaultIsMandatoryParam
                         );
                     }).then((app: CurrentApp | null) => {

@@ -41,8 +41,9 @@ export class ReactNativeAppCommand extends Command {
         appOS: AppCenterOS,
         currentAppDeployments: CurrentAppDeployments | null,
         targetBinaryVersion: string,
+        type: string,
         isMandatory: boolean): Promise<CurrentApp | null> {
-        const defaultApp = Utils.toCurrentApp(currentAppName, appOS, currentAppDeployments, targetBinaryVersion, isMandatory);
+        const defaultApp = Utils.toCurrentApp(currentAppName, appOS, currentAppDeployments, targetBinaryVersion, type, isMandatory);
         if (!defaultApp) {
             VsCodeUtils.ShowWarningMessage(Strings.InvalidCurrentAppNameMsg);
             return Promise.resolve(null);

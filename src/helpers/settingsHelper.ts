@@ -22,6 +22,15 @@ export class SettingsHelper {
         return Constants.DefaultLoginEndPoint;
     }
 
+    public static getAppCenterPortalEndpoint(): string {
+        const workspaceConfiguration = vscode.workspace.getConfiguration();
+        if (workspaceConfiguration.has("appcenter.portalEndpoint")) {
+            const portalEndpoint: string = ConfigurationReader.readString(workspaceConfiguration.get("appcenter.portalEndpoint"));
+            return portalEndpoint;
+        }
+        return Constants.AppCenterPortalURL;
+    }
+
     public static getAppCenterAPIEndpoint(): string {
         const workspaceConfiguration = vscode.workspace.getConfiguration();
         if (workspaceConfiguration.has("appcenter.api.endpoint")) {

@@ -145,7 +145,13 @@ export default class Start extends Command {
             p.report({message: Strings.LoadingStatusBarMessage });
             return this.client.account.organizations.list().then((orgList: ListOKResponseItem[]) => {
                 const organizations: ListOKResponseItem[] = orgList;
-                return organizations;
+                return organizations.sort((a, b): any => {
+                    if (a.name && b.name) {
+                        return a.name < b.name; // sort alphabetically
+                    } else {
+                        return false;
+                    }
+                });
             });
             }).then(async (orgList: ListOKResponseItem[]) => {
             const options: CustomQuickPickItem[] = orgList.map(item => {

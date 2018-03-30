@@ -33,6 +33,7 @@ export default class SetCurrentDeployment extends RNCPAppCommand {
                                 currentDeploymentName: deploymentName,
                                 codePushDeployments: currentApp.currentAppDeployments.codePushDeployments
                             },
+                            currentApp.type,
                             currentApp.targetBinaryVersion,
                             currentApp.isMandatory
                         );

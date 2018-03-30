@@ -8,12 +8,12 @@ import { Strings } from "../../helpers/strings";
 import { Utils } from "../../helpers/utils";
 import { ILogger } from "../../log/logHelper";
 import { Profile } from "../auth/profile/profile";
+import AppCenterPortalMenu from "./appCenterPortalMenu";
 import * as CodePush from "./codepush";
 import { Command } from "./command";
 import GetCurrentApp from "./getCurrentApp";
 import Login from "./login";
 import Logout from "./logout";
-import OpenAppCenterPortal from "./openAppCenterPortal";
 import SetCurrentApp from "./setCurrentApp";
 import Start from "./start";
 
@@ -54,9 +54,9 @@ export default class ShowMenu extends Command {
                 const isReactNativeProject = Utils.isReactNativeProject(this.manager.projectRootPath, /* showMessageOnError */false);
                 if (isReactNativeProject) {
                     appCenterMenuOptions.push(<vscode.QuickPickItem>{
-                        label: Strings.OpenAppCenterPortalMenuLabel,
+                        label: Strings.AppCenterPortalMenuLabel,
                         description: "",
-                        target: CommandNames.OpenAppCenterPortal
+                        target: CommandNames.AppCenterPortal
                     });
                     const isReactNativeCodePushProject = Utils.isReactNativeCodePushProject(this.manager.projectRootPath, /* showMessageOnError */false);
                     if (isReactNativeCodePushProject) {
@@ -119,8 +119,8 @@ export default class ShowMenu extends Command {
                     }
 
                     switch (selected.target) {
-                        case (CommandNames.OpenAppCenterPortal):
-                            new OpenAppCenterPortal(this.manager, this.logger).runNoClient();
+                        case (CommandNames.AppCenterPortal):
+                            new AppCenterPortalMenu(this.manager, this.logger).run();
                             break;
 
                         case (CommandNames.Start):

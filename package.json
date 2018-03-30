@@ -28,8 +28,8 @@
     "contributes": {
         "commands": [
             {
-                "command": "appcenter.openAppCenterPortal",
-                "title": "Open AppCenter Portal",
+                "command": "appcenter.showPortalMenu",
+                "title": "AppCenter Portal",
                 "category": "AppCenter"
             },
             {
@@ -96,6 +96,12 @@
                     "description": "RN Demo App GH Repository",
                     "type": "string",
                     "default": "https://github.com/max-mironov/AppCenterSample.git",
+                    "scope": "resource"
+                },
+                "appcenter.portalEndpoint": {
+                    "description": "Appcenter portal",
+                    "type": "string",
+                    "default": "https://appcenter.ms",
                     "scope": "resource"
                 },
                 "appcenter.loginendpoint": {

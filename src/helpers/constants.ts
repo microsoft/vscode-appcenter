@@ -52,7 +52,7 @@ export class Constants {
 
 export class CommandNames {
     public static CommandPrefix: string = Constants.ExtensionName + ".";
-    public static OpenAppCenterPortal: string = CommandNames.CommandPrefix + "openAppCenterPortal";
+    public static AppCenterPortal: string = CommandNames.CommandPrefix + "showPortalMenu";
     public static WhoAmI: string = CommandNames.CommandPrefix + "whoAmI";
     public static Login: string = CommandNames.CommandPrefix + "login";
     public static Logout: string = CommandNames.CommandPrefix + "logout";
@@ -96,4 +96,25 @@ export enum AppCenterPlatform {
     UWP = "UWP",
     Xamarin = "Xamarin",
     Java = "Java"
+}
+
+export enum AppCenterBeacons {
+    Build = "Build",
+    Test = "Test",
+    Distribute = "Distribute",
+    Crashes = "Crashes",
+    Analytics = "Analytics",
+    Push = "Push"
+}
+
+export enum AppCenterDistributionTabs {
+    Stores = "distribution-stores",
+    Groups = "distribution-groups",
+    CodePush = "code-push",
+    Releases = "releases"
+}
+
+export enum AppCenteAppType {
+    User = "User",
+    Org = "Org"
 }

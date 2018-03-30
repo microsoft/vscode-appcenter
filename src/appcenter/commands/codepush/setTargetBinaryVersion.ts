@@ -36,6 +36,7 @@ export default class SetTargetBinaryVersion extends RNCPAppCommand {
                                 codePushDeployments: app.currentAppDeployments.codePushDeployments
                             },
                             appVersion,
+                            app.type,
                             app.isMandatory
                         ).then(() => {
                             if (appVersion) {

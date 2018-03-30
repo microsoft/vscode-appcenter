@@ -37,15 +37,29 @@ export class Strings {
     public static FailedToProvideRepositoryNameMsg: string = "Sorry, can't go ahead, repository name was not provided or valid!";
     public static LoginMenuLabel: string = "Login";
     public static GetCurrentAppMenuLabel: string = "Get current app info";
+    public static SelectCurrentAppMenuDescription: string = "SELECT CURRENT APP";
 
-    public static FetchAppsStatusBarMessage: string = "Fetching current apps for you...";
+    public static BuildTabMenuItem: string = "Build";
+    public static TestTabMenuItem: string = "Test";
+    public static DistributeTabMenuItem: string = "Distribute";
+    public static CrashesTabMenuItem: string = "Crashes";
+    public static AnalyticsTabMenuItem: string = "Analytics";
+    public static PushTabMenuItem: string = "Push";
+
+    public static DistributeGroupsTabMenuItem: string = "Groups";
+    public static DistributeStoresTabMenuItem: string = "Stores";
+    public static DistributeCodePushTabMenuItem: string = "CodePush";
+    public static DistributeReleasesTabMenuItem: string = "Releases";
+
+    public static GetAppsListMessage: string = "Getting apps...";
+    public static FetchAppsStatusBarMessage: string = "Fetching apps for you...";
     public static CreatingDistributionStatusBarMessage: string = "Creating distribution group for you...";
     public static ConnectingRepoToBuildServiceStatusBarMessage: string = "Connecting repository for you...";
     public static CreateBranchConfigAndKickOffBuildStatusBarMessage: string = "Starting new build for you...";
     public static ProvideCurrentAppPromptMsg: string = "Please specify an App Center app";
     public static FetchDeploymentsStatusBarMessage: string = "Fetching app deployments for you...";
     public static InvalidCurrentAppNameMsg: string = "Sorry, provided app name is invalid";
-    public static OpenAppCenterPortalMenuLabel: string = "Open appcenter portal";
+    public static AppCenterPortalMenuLabel: string = "AppCenter portal";
 
     public static FailedToConnectRepoToBuildService: string = "Sorry, failed to connect repository to build service";
     public static FailedToConfigureBranchAndStartNewBuild: string = "Sorry, failed to configure branch and start new build";
@@ -67,6 +81,10 @@ export class Strings {
     public static CreatingAppStatusBarMessage: string = `Creating app for you...`;
     public static FailedToCreateAppInAppCenter: string = `Sorry, failed to create app in app center`;
     public static FailedToCreateApAlreadyExistInAppCenter: string = `Sorry, apps with provided idea name already exist in AppCenter`;
+
+    public static OpenTabInBrowserMsg(tabName: string): string {
+        return `Open '${tabName}' tab for currently selected app`;
+    }
 
     public static FailedToPushChangesToRemoteRepoMsg: (repoName: string) => string = (repoName: string) => {
         return `Failed to push changes to remote repository '${repoName}'`;

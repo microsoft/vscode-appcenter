@@ -1,8 +1,8 @@
+import AppCenterPortalMenu from "./appcenter/commands/appCenterPortalMenu";
 import * as CodePush from "./appcenter/commands/codepush";
 import GetCurrentApp from "./appcenter/commands/getCurrentApp";
 import Login from "./appcenter/commands/login";
 import Logout from "./appcenter/commands/logout";
-import OpenAppCenterPortal from "./appcenter/commands/openAppCenterPortal";
 import SetCurrentApp from "./appcenter/commands/setCurrentApp";
 import ShowMenu from "./appcenter/commands/showMenu";
 import Start from "./appcenter/commands/start";
@@ -15,8 +15,8 @@ export class AppCenterCommandHandler {
 
     constructor(private manager: ExtensionManager, private logger: ILogger = new ConsoleLogger()) {}
 
-    public async OpenAppCenterPortal(): Promise<void> {
-        await new OpenAppCenterPortal(this.manager, this.logger).runNoClient();
+    public async AppCenterPortalMenu(): Promise<void> {
+        await new AppCenterPortalMenu(this.manager, this.logger).run();
     }
 
     public async WhoAmI(): Promise<void> {

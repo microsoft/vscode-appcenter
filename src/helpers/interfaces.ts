@@ -24,6 +24,7 @@ export interface CurrentApp {
     targetBinaryVersion: string;
     isMandatory: boolean;
     os: string;
+    type: string;
     currentAppDeployments: CurrentAppDeployments;
 }
 
@@ -59,4 +60,10 @@ export interface ICodePushReleaseParams extends IDefaultCommandParams {
   packageHash?: string;
   rollout?: number;
   token?: string;
+}
+
+export interface QuickPickAppItem {
+    label: string;
+    description: string;
+    target: string;
 }
