@@ -5,7 +5,18 @@ export class FSUtils {
         return fs.readdirSync(dirName);
     }
 
-    public static IsNewDirectoryForProject(dirName: string) {
+    public static IsEmptyDirectory(dirName: string) {
+        let dirContent: string[] | null = null;
+        dirContent = fs.readdirSync(dirName);
+        const ignoredItems = [".vscode"];
+        const filteredDir = dirContent && dirContent.filter((item: string) => {
+            return ignoredItems.indexOf(item) === -1;
+        });
+        const dirExistAndEmpty = filteredDir && filteredDir.length === 0;
+        return dirExistAndEmpty;
+    }
+
+    public static IsEmptyGitInitializedDirectory(dirName: string) {
         let dirContent: string[] | null = null;
         dirContent = fs.readdirSync(dirName);
 

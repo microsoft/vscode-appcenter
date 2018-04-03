@@ -18,6 +18,9 @@ export class Constants {
     public static AndroidAppSecretKey: string = "app_secret";
     public static IOSCodePushDeploymentKey: string = "CodePushDeploymentKey";
     public static AndroidCodePushDeploymentKey: string = "reactNativeCodePush_androidDeploymentKey";
+    public static AppCenterSampleGitRemoteName: string = "appcenter-sample-repo";
+    public static AppCenterSampleGitRemoteDefaultBranchName: string = "master";
+    public static GitDefaultRemoteName: string = 'origin';
 
     // IMPORTANT: this two items below should stay in sync in terms of xcode projectOrWorkspacePath/scheme values
     // We should decide how we should handle this (e.g. create manually within AppCenter site)
@@ -26,7 +29,7 @@ export class Constants {
         "branch": {
             "name": "master"
         },
-        "id": 1,
+        "id": 2,
         "trigger": "continuous",
         "environmentVariables": [],
         "signed": false,
@@ -42,7 +45,8 @@ export class Constants {
                 "projectOrWorkspacePath": "ios/AppCenterSample.xcworkspace",
                 "scheme": "AppCenterSample",
                 "xcodeVersion": "9.2",
-                "automaticSigning": false
+                "automaticSigning": false,
+                "podfilePath":"ios/Podfile"
             }
         }
     }`;
