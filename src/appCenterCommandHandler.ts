@@ -13,7 +13,7 @@ import { ILogger } from "./log/logHelper";
 
 export class AppCenterCommandHandler {
 
-    constructor(private manager: ExtensionManager, private logger: ILogger = new ConsoleLogger()) {}
+    constructor(private manager: ExtensionManager, private logger: ILogger = new ConsoleLogger()) { }
 
     public async AppCenterPortalMenu(): Promise<void> {
         await new AppCenterPortalMenu(this.manager, this.logger).run();
@@ -45,6 +45,10 @@ export class AppCenterCommandHandler {
 
     public async SetCurrentApp(): Promise<void> {
         await new SetCurrentApp(this.manager, this.logger).run();
+    }
+
+    public async ShowCodePushMenu(): Promise<void> {
+        await new CodePush.ShowMenu(this.manager, this.logger).runNoClient();
     }
 
     public async SetCurrentDeployment(): Promise<void> {

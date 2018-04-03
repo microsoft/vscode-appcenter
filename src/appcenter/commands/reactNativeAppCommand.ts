@@ -43,17 +43,17 @@ export class ReactNativeAppCommand extends Command {
         targetBinaryVersion: string,
         type: string,
         isMandatory: boolean): Promise<CurrentApp | null> {
-        const defaultApp = Utils.toCurrentApp(currentAppName, appOS, currentAppDeployments, targetBinaryVersion, type, isMandatory);
-        if (!defaultApp) {
+        const currentApp = Utils.toCurrentApp(currentAppName, appOS, currentAppDeployments, targetBinaryVersion, type, isMandatory);
+        if (!currentApp) {
             VsCodeUtils.ShowWarningMessage(Strings.InvalidCurrentAppNameMsg);
             return Promise.resolve(null);
         }
 
         return this.Profile.then((profile: Profile | null) => {
             if (profile) {
-                profile.currentApp = defaultApp;
+                profile.currentApp = currentApp;
                 profile.save();
-                return Promise.resolve(defaultApp);
+                return Promise.resolve(currentApp);
             } else {
                 // No profile - not logged in?
                 VsCodeUtils.ShowWarningMessage(Strings.UserIsNotLoggedInMsg);

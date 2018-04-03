@@ -37,6 +37,7 @@ export class Strings {
     public static FailedToProvideRepositoryNameMsg: string = "Sorry, can't go ahead, repository name was not provided or valid!";
     public static LoginMenuLabel: string = "Login";
     public static GetCurrentAppMenuLabel: string = "Get current app info";
+    public static CodePushMenuLabelItem: string = "CodePush";
     public static SelectCurrentAppMenuDescription: string = "SELECT CURRENT APP";
 
     public static BuildTabMenuItem: string = "Build";

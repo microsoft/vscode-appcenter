@@ -20,7 +20,7 @@ class ProfileImpl implements Profile {
         this.userName = fileContents.userName || fileContents.name;
         this.displayName = fileContents.displayName;
         this.email = fileContents.email;
-        this.currentApp = fileContents.defaultApp;
+        this.currentApp = fileContents.currentApp;
     }
 
     get accessToken(): Promise<string> {
@@ -47,7 +47,7 @@ class ProfileImpl implements Profile {
             userName: this.userName,
             displayName: this.displayName,
             email: this.email,
-            defaultApp: this.currentApp
+            currentApp: this.currentApp
           };
 
         mkdirp.sync(getProfileDir());
