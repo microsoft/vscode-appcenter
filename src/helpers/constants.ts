@@ -21,7 +21,7 @@ export class Constants {
 
     // IMPORTANT: this two items below should stay in sync in terms of xcode projectOrWorkspacePath/scheme values
     // We should decide how we should handle this (e.g. create manually within AppCenter site)
-    public static AppCenterDemoAppRepository: string = "https://github.com/max-mironov/AppCenterSample.git";
+    public static AppCenterDemoAppRepository: string = "https://github.com/Microsoft/appcenter-sampleapp-react-native.git";
     public static defaultBuildConfigJSON: string = `{
         "branch": {
             "name": "master"

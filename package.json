@@ -95,7 +95,7 @@
                 "appcenter.demoAppGitRepo": {
                     "description": "RN Demo App GH Repository",
                     "type": "string",
-                    "default": "https://github.com/max-mironov/AppCenterSample.git",
+                    "default": "https://github.com/Microsoft/appcenter-sampleapp-react-native.git",
                     "scope": "resource"
                 },
                 "appcenter.portalEndpoint": {
