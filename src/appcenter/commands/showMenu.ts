@@ -60,7 +60,18 @@ export default class ShowMenu extends Command {
                     });
                     const isReactNativeCodePushProject = Utils.isReactNativeCodePushProject(rootPath, /* showMessageOnError */false);
                     if (isReactNativeCodePushProject) {
-                        this.addCodePushMenuItems(appCenterMenuOptions, currentApp);
+                        appCenterMenuOptions.push(<vscode.QuickPickItem>{
+                            label: Strings.setCurrentAppMenuText(currentApp),
+                            description: "",
+                            target: CommandNames.SetCurrentApp
+                        });
+                        if (currentApp) {
+                            appCenterMenuOptions.push(<vscode.QuickPickItem>{
+                                label: Strings.CodePushMenuLabelItem,
+                                description: "",
+                                target: CommandNames.CodePush.ShowMenu
+                            });
+                        }
                     }
                 }
             }
@@ -74,38 +85,6 @@ export default class ShowMenu extends Command {
 
             return this.showQuickPick(appCenterMenuOptions);
         });
-    }
-
-    private addCodePushMenuItems(appCenterMenuOptions: vscode.QuickPickItem[], currentApp?: CurrentApp): void {
-        appCenterMenuOptions.push(<vscode.QuickPickItem>{
-            label: Strings.setCurrentAppMenuText(currentApp),
-            description: "",
-            target: CommandNames.SetCurrentApp
-        });
-        if (currentApp) {
-            appCenterMenuOptions.push(<vscode.QuickPickItem>{
-                label: Strings.releaseReactMenuText(currentApp),
-                description: "",
-                target: CommandNames.CodePush.ReleaseReact
-            });
-            if (currentApp.currentAppDeployments) {
-                appCenterMenuOptions.push(<vscode.QuickPickItem>{
-                    label: Strings.setCurrentAppDeploymentText(<CurrentApp>currentApp),
-                    description: "",
-                    target: CommandNames.CodePush.SetCurrentDeployment
-                });
-                appCenterMenuOptions.push(<vscode.QuickPickItem>{
-                    label: Strings.setCurrentAppTargetBinaryVersionText(<CurrentApp>currentApp),
-                    description: "",
-                    target: CommandNames.CodePush.SetTargetBinaryVersion
-                });
-                appCenterMenuOptions.push(<vscode.QuickPickItem>{
-                    label: Strings.setCurrentAppIsMandatoryText(<CurrentApp>currentApp),
-                    description: "",
-                    target: CommandNames.CodePush.SwitchMandatoryPropForRelease
-                });
-            }
-        }
     }
 
     private showQuickPick(appCenterMenuOptions: vscode.QuickPickItem[]): Promise<void> {
@@ -143,20 +122,8 @@ export default class ShowMenu extends Command {
                             new GetCurrentApp(this.manager, this.logger).runNoClient();
                             break;
 
-                        case (CommandNames.CodePush.SetCurrentDeployment):
-                            new CodePush.SetCurrentDeployment(this.manager, this.logger).runNoClient();
-                            break;
-
-                        case (CommandNames.CodePush.ReleaseReact):
-                            new CodePush.ReleaseReact(this.manager, this.logger).run();
-                            break;
-
-                        case (CommandNames.CodePush.SetTargetBinaryVersion):
-                            new CodePush.SetTargetBinaryVersion(this.manager, this.logger).runNoClient();
-                            break;
-
-                        case (CommandNames.CodePush.SwitchMandatoryPropForRelease):
-                            new CodePush.SwitchMandatoryPropForRelease(this.manager, this.logger).runNoClient();
+                        case (CommandNames.CodePush.ShowMenu):
+                            new CodePush.ShowMenu(this.manager, this.logger).runNoClient();
                             break;
 
                         default:

@@ -68,6 +68,11 @@
                 "category": "AppCenter"
             },
             {
+                "command": "appcenter.codepush.showMenu",
+                "title": "Show CodePush Menu",
+                "category": "AppCenter Code Push"
+            },
+            {
                 "command": "appcenter.codepush.setCurrentDeployment",
                 "title": "Set Current Deployment",
                 "category": "AppCenter Code Push"
