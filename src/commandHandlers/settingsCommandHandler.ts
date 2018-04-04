@@ -7,6 +7,10 @@ export default class SettingsCommandHandler {
 
     constructor(private manager: ExtensionManager, private logger: ILogger = new ConsoleLogger()) { }
 
+    public async ShowMenu(): Promise<void> {
+        await new Settings.ShowMenu(this.manager, this.logger).run();
+    }
+
     public async LoginToAnotherAccount(): Promise<void> {
         await new Settings.LoginToAnotherAccount(this.manager, this.logger).run();
     }
