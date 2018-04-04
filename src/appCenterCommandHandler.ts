@@ -27,10 +27,6 @@ export class AppCenterCommandHandler {
         await new Login(this.manager, this.logger).runNoClient();
     }
 
-    public async Logout(): Promise<void> {
-        await new Logout(this.manager, this.logger).runNoClient();
-    }
-
     public async ShowMenu(): Promise<void> {
         await new ShowMenu(this.manager, this.logger).runNoClient();
     }

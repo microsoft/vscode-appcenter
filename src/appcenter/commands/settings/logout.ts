@@ -1,9 +1,9 @@
-import { ExtensionManager } from "../../extensionManager";
-import { Strings } from "../../helpers/strings";
-import { VsCodeUtils } from "../../helpers/vsCodeUtils";
-import { ILogger } from "../../log/logHelper";
-import Auth from "../auth/auth";
-import { Command } from "./command";
+import { ExtensionManager } from "../../../extensionManager";
+import { Strings } from "../../../helpers/strings";
+import { VsCodeUtils } from "../../../helpers/vsCodeUtils";
+import { ILogger } from "../../../log/logHelper";
+import Auth from "../../auth/auth";
+import { Command } from "../command";
 
 export default class Logout extends Command {
 

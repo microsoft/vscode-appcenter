@@ -1,6 +1,7 @@
 import { Disposable, StatusBarItem } from "vscode";
 import Auth from "./appcenter/auth/auth";
 import { AppCenterCommandHandler } from "./appCenterCommandHandler";
+import { SettingsCommandHandler } from "./settingsCommandHandler";
 import { CommandNames } from "./helpers/constants";
 import { Profile } from "./helpers/interfaces";
 import { Strings } from "./helpers/strings";
@@ -10,12 +11,17 @@ import { ILogger } from "./log/logHelper";
 
 export class ExtensionManager implements Disposable {
     private _appCenterCommandHandler: AppCenterCommandHandler;
+    private _settingsCommandHandler: SettingsCommandHandler;
     private _appCenterStatusBarItem: StatusBarItem;
     private _projectRootPath: string | undefined;
     private _logger: ILogger;
 
     public get AppCenterCommandHandler(): AppCenterCommandHandler {
         return this._appCenterCommandHandler;
+    }
+
+    public get SettingsCommandHandler(): SettingsCommandHandler {
+        return this._settingsCommandHandler;
     }
 
     public get projectRootPath(): string | undefined {
@@ -74,6 +80,7 @@ export class ExtensionManager implements Disposable {
 
     private async initializeExtension(): Promise<void> {
         this._appCenterCommandHandler = new AppCenterCommandHandler(this, this._logger);
+        this._settingsCommandHandler = new SettingsCommandHandler(this, this._logger);
         this._appCenterStatusBarItem = VsCodeUtils.getStatusBarItem();
         Auth.getProfile().then((profile: Profile | null) => {
             return this.setupAppCenterStatusBar(profile);

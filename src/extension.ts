@@ -27,8 +27,6 @@ function registerAppCenterCommands(context: vscode.ExtensionContext): void {
         () => _extensionManager.RunCommand(() => _extensionManager.AppCenterCommandHandler.WhoAmI())));
     context.subscriptions.push(vscode.commands.registerCommand(CommandNames.Login,
         () => _extensionManager.RunCommand(() => _extensionManager.AppCenterCommandHandler.Login())));
-    context.subscriptions.push(vscode.commands.registerCommand(CommandNames.Logout,
-        () => _extensionManager.RunCommand(() => _extensionManager.AppCenterCommandHandler.Logout())));
     context.subscriptions.push(vscode.commands.registerCommand(CommandNames.ShowMenu,
         () => _extensionManager.RunCommand(() => _extensionManager.AppCenterCommandHandler.ShowMenu())));
     context.subscriptions.push(vscode.commands.registerCommand(CommandNames.Start,
@@ -38,6 +36,14 @@ function registerAppCenterCommands(context: vscode.ExtensionContext): void {
     context.subscriptions.push(vscode.commands.registerCommand(CommandNames.SetCurrentApp,
         () => _extensionManager.RunCommand(() => _extensionManager.AppCenterCommandHandler.SetCurrentApp())));
 
+    // Settings commands
+    context.subscriptions.push(vscode.commands.registerCommand(CommandNames.Settings.LoginToAnotherAccount,
+        () => _extensionManager.RunCommand(() => _extensionManager.SettingsCommandHandler.LoginToAnotherAccount())));
+    context.subscriptions.push(vscode.commands.registerCommand(CommandNames.Settings.SwitchAccount,
+        () => _extensionManager.RunCommand(() => _extensionManager.SettingsCommandHandler.SwitchAccount())));
+    context.subscriptions.push(vscode.commands.registerCommand(CommandNames.Settings.Logout,
+        () => _extensionManager.RunCommand(() => _extensionManager.SettingsCommandHandler.Logout())));
+        
     // CodePush commands
     context.subscriptions.push(vscode.commands.registerCommand(CommandNames.CodePush.SetCurrentDeployment,
         () => _extensionManager.RunCommand(() => _extensionManager.AppCenterCommandHandler.SetCurrentDeployment())));

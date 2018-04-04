@@ -1,6 +1,20 @@
 import { CurrentApp } from "./interfaces";
 
 export class Strings {
+
+    /* Menu labeles */
+    public static StartAnIdeaMenuLabel: string = "Start An Idea";    
+    public static OrganizationMenuDescriptionLabel: string = "Organization";    
+    public static UserMenuDescriptionLabel: string = "User";
+    public static LoginMenuLabel: string = "Login";
+    public static GetCurrentAppMenuLabel: string = "Get current app info";
+    public static CodePushMenuLabelItem: string = "CodePush";
+    public static AppCenterPortalMenuLabel: string = "AppCenter portal";
+    public static SettingsMenuLabel: string = "Settings";
+    public static LoginToAnotherAccountMenuLabel: string = "Login to another App Center account";
+    public static SwitchAccountMenuLabel: string = "Switch App Center account";
+    public static LogoutMenuLabel: string = "Logout";  
+
     public static SelectLoginTypeMsg: string = "Select the way you would like to authenticate with App Center";
     public static OkBtnLabel: string = "Ok";
     public static UserMustSignIn: string = "You are signed out. Please login to App Center";
@@ -10,14 +24,12 @@ export class Strings {
     public static UserIsNotLoggedInMsg: string = "You are not logged into App Center";
     public static UserLoggedOutMsg: string = "Successfully logged out of App Center";
     public static MenuTitlePlaceholder: string = "Please select action";
-    public static LogoutMenuLabel: string = "Logout";
-    public static StartAnIdeaMenuLabel: string = "Start An Idea";
+
     public static LoginToAppCenterButton: string = "Login to App Center";
     public static PleaseEnterIdeaName: string = "Please enter idea name";
     public static PleaseEnterNewRepositoryUrl: string = "Please enter repository url";
     public static PleaseSelectCurrentAppOrgMsg: string = "Please select user/organization where to create an App";
-    public static OrganizationMenuDescriptionLabel: string = "Organization";
-    public static UserMenuDescriptionLabel: string = "User";
+
     public static NoIdeaNameSelectedMsg: string = "Please select an idea name!";
     public static VSCodeProgressLoadingTitle: string = "Loading...";
     public static CheckIfAppsExistLoadingMessage: string = "Checking if idea name is already in used...";
@@ -38,9 +50,6 @@ export class Strings {
     public static FailedToGetSelectedUserOrOrganizationMsg: string = "Sorry, failed to get selected user or organization!";
     public static DirectoryIsNotEmptyForNewIdea: string = "Start New Idea should work only for empty directory!";
     public static FailedToProvideRepositoryNameMsg: string = "Sorry, can't go ahead, git repository url was not provided or valid!";
-    public static LoginMenuLabel: string = "Login";
-    public static GetCurrentAppMenuLabel: string = "Get current app info";
-    public static CodePushMenuLabelItem: string = "CodePush";
     public static SelectCurrentAppMenuDescription: string = "SELECT CURRENT APP";
 
     public static BuildTabMenuItem: string = "Build";
@@ -63,7 +72,6 @@ export class Strings {
     public static ProvideCurrentAppPromptMsg: string = "Please specify an App Center app";
     public static FetchDeploymentsStatusBarMessage: string = "Fetching app deployments for you...";
     public static InvalidCurrentAppNameMsg: string = "Sorry, provided app name is invalid";
-    public static AppCenterPortalMenuLabel: string = "AppCenter portal";
 
     public static FailedToConnectRepoToBuildService: string = "Sorry, failed to connect repository to build service";
     public static FailedToConfigureBranchAndStartNewBuild: string = "Sorry, failed to configure branch and start new build";
