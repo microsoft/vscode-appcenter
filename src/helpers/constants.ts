@@ -72,11 +72,11 @@ export class CommandNames {
     }
 
     public static CodePush = class {
+        public static ShowMenu: string = CommandNames.CommandPrefix + "codepush.showMenu";
         public static SetCurrentDeployment: string = CommandNames.CommandPrefix + "codepush.setCurrentDeployment";
         public static ReleaseReact: string = CommandNames.CommandPrefix + "codepush.releaseReact";
         public static SwitchMandatoryPropForRelease: string = CommandNames.CommandPrefix + "codepush.switchMandatoryPropForRelease";
         public static SetTargetBinaryVersion: string = CommandNames.CommandPrefix + "codepush.setTargetBinaryVersion";
-        public static ShowMenu: string = CommandNames.CommandPrefix + "codepush.showMenu";
     };
 }
 

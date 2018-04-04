@@ -75,12 +75,7 @@
             {
                 "command": "appcenter.settings.logout",
                 "title": "Logout",
-                "category": "AppCenter"
-            },
-            {
-                "command": "appcenter.codepush.showMenu",
-                "title": "Show CodePush Menu",
-                "category": "AppCenter Code Push"
+                "category": "AppCenter Settings"
             },
             {
                 "command": "appcenter.codepush.setCurrentDeployment",

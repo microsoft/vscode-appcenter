@@ -1,9 +1,9 @@
-import { ExtensionManager } from "./extensionManager";
-import { ILogger } from "./log/logHelper";
-import { ConsoleLogger } from "./log/consoleLogger";
-import * as Settings from "./appcenter/commands/settings";
+import { ExtensionManager } from "../extensionManager";
+import { ILogger } from "../log/logHelper";
+import { ConsoleLogger } from "../log/consoleLogger";
+import * as Settings from "../appcenter/commands/settings";
 
-export class SettingsCommandHandler {
+export default class SettingsCommandHandler {
 
     constructor(private manager: ExtensionManager, private logger: ILogger = new ConsoleLogger()) { }
 
