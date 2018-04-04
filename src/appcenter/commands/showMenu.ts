@@ -40,7 +40,7 @@ export default class ShowMenu extends Command {
             }
             const rootPath: string = <string>this.manager.projectRootPath;
             // For empty directory show only `Start New Idea`
-            if (FSUtils.IsEmptyDirectory(rootPath) || FSUtils.IsEmptyGitInitializedDirectory(rootPath)) {
+            if (FSUtils.IsEmptyDirectoryToStartNewIdea(rootPath)) {
                 appCenterMenuOptions.push(<vscode.QuickPickItem>{
                     label: Strings.StartAnIdeaMenuLabel,
                     description: "",

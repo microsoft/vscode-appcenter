@@ -16,7 +16,7 @@ export class FSUtils {
         return dirExistAndEmpty;
     }
 
-    public static IsEmptyGitInitializedDirectory(dirName: string) {
+    public static IsEmptyDirectoryToStartNewIdea(dirName: string) {
         let dirContent: string[] | null = null;
         dirContent = fs.readdirSync(dirName);
 

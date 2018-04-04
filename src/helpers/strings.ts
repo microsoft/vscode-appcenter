@@ -20,6 +20,8 @@ export class Strings {
     public static UserMenuDescriptionLabel: string = "User";
     public static NoIdeaNameSelectedMsg: string = "Please select an idea name!";
     public static VSCodeProgressLoadingTitle: string = "Loading...";
+    public static CheckIfAppsExistLoadingMessage: string = "Checking if idea name is already in used...";
+    public static LoadingVSTSProjectsMessage: string = "Loading VSTS projects for you...";
     public static LoadingStatusBarMessage: string = "Loading some information for you...";
     public static CreateRNProjectStatusBarMessage: string = "Pull appcenter sample app project for you...";
     public static PushToRemoteRepoStatusBarMessage: string = "Pushing changes to remote repo...";
@@ -35,7 +37,7 @@ export class Strings {
     public static FailedToAddRemoteRepositoryMsg: string = "Sorry, failed to add remote repository!";
     public static FailedToGetSelectedUserOrOrganizationMsg: string = "Sorry, failed to get selected user or organization!";
     public static DirectoryIsNotEmptyForNewIdea: string = "Start New Idea should work only for empty directory!";
-    public static FailedToProvideRepositoryNameMsg: string = "Sorry, can't go ahead, repository name was not provided or valid!";
+    public static FailedToProvideRepositoryNameMsg: string = "Sorry, can't go ahead, git repository url was not provided or valid!";
     public static LoginMenuLabel: string = "Login";
     public static GetCurrentAppMenuLabel: string = "Get current app info";
     public static CodePushMenuLabelItem: string = "CodePush";
@@ -82,7 +84,9 @@ export class Strings {
 
     public static CreatingAppStatusBarMessage: string = `Creating app for you...`;
     public static FailedToCreateAppInAppCenter: string = `Sorry, failed to create app in app center`;
-    public static FailedToCreateApAlreadyExistInAppCenter: string = `Sorry, apps with provided idea name already exist in AppCenter`;
+    public static FailedToGetVSTSProjects: string = `Sorry, failed to get VSTS Project`;
+    public static FailedToCreateVSTSGitrepository: string = `Sorry, failed to create VSTS git repository`;
+    public static FailedToCreateAppAlreadyExistInAppCenter: string = `Sorry, apps with provided idea name already exist in AppCenter. Please select another idea name.`;
 
     public static OpenTabInBrowserMsg(tabName: string): string {
         return `Open '${tabName}' tab for currently selected app`;

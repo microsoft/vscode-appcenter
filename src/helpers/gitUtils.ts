@@ -17,6 +17,16 @@ export class GitUtils {
         }
     }
 
+    public static async IsGitRepo(logger: ILogger, workingDirectory: string): Promise<boolean> {
+        try {
+            const result: boolean = await git(workingDirectory).checkIsRepo();
+            return result;
+        } catch (e) {
+            logger.error(`failed: ${e.message}`);
+            return false;
+        }
+    }
+
     public static async GitInit(logger: ILogger, workingDirectory: string): Promise<void> {
         try {
             await git(workingDirectory).init();
@@ -37,7 +47,8 @@ export class GitUtils {
 
     public static async GitAddRemote(remoteName: string, remoteUrl: string, logger: ILogger, workingDirectory: string): Promise<boolean> {
         try {
-            await git(workingDirectory).addRemote(remoteName, remoteUrl);
+            const gitrepo = git(workingDirectory);
+            await gitrepo.addRemote(remoteName, remoteUrl);
             return true;
         } catch (e) {
             logger.error(`Failed to add remote: ${e.message}`);
@@ -67,7 +78,7 @@ export class GitUtils {
 
     public static async GitPullFromRemoteUrl(remoteRepo: string, branch: string, logger: ILogger, workingDirectory: string): Promise<boolean> {
         try {
-            await git(workingDirectory).pull(remoteRepo, branch, {'--rebase': 'true'});
+            await git(workingDirectory).pull(remoteRepo, branch, {'--rebase': 'true', '--squash': null});
             return true;
         } catch (e) {
             logger.error(`Failed to pull from remote: ${e.message}`);
@@ -75,19 +86,16 @@ export class GitUtils {
         }
     }
 
-    public static async GitPushToRemoteUrl(remoteRepo: string, branch: string, logger: ILogger, workingDirectory: string): Promise<boolean> {
+    public static async GitPushToRemoteUrl(remoteRepoName: string, branch: string, logger: ILogger, workingDirectory: string): Promise<boolean> {
         try {
             const gitrepo = git(workingDirectory);
             await gitrepo.add('./*');
             await gitrepo.commit(this.gitFirstCommitName);
-            // add/remove to avoid exceptions if already added
-            await gitrepo.removeRemote(Constants.GitDefaultRemoteName);
-            await gitrepo.addRemote(Constants.GitDefaultRemoteName, remoteRepo);
-            await gitrepo.push(Constants.GitDefaultRemoteName, branch);
-            logger.info(`Successfully pushed changes to remote repository: ${remoteRepo} branchname: ${branch}`);
+            await gitrepo.push(remoteRepoName, branch);
+            logger.info(`Successfully pushed changes to remote repository: ${remoteRepoName} branchname: ${branch}`);
             return true;
         } catch (e) {
-            logger.error(`Failed to pull from remote: ${e.message}`);
+            logger.error(`failed to push to remote: ${e.message}`);
             return false;
         }
     }

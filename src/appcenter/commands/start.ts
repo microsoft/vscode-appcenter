@@ -11,12 +11,12 @@ import { GitUtils } from "../../helpers/gitUtils";
 import { CreatedAppFromAppCenter, Deployment, QuickPickAppItem, UserOrOrganizationItem } from "../../helpers/interfaces";
 import { SettingsHelper } from "../../helpers/settingsHelper";
 import { Strings } from "../../helpers/strings";
-import { Utils } from "../../helpers/utils";
 import { Validators } from "../../helpers/validators";
 import { CustomQuickPickItem, VsCodeUtils } from "../../helpers/vsCodeUtils";
 import { ILogger } from "../../log/logHelper";
 import { VSTSGitRepository, VSTSProject } from "../../vsts/types";
 import { VSTSProvider } from "../../vsts/vstsProvider";
+import { models } from "../api";
 import { Profile } from "../auth/profile/profile";
 import { ListOKResponseItem } from "../lib/app-center-node-client/models";
 import { Command } from "./command";
@@ -35,13 +35,13 @@ export default class Start extends Command {
         this.logger.info("Running AppCenter Start New Idea command...");
         const rootPath = <string>this.manager.projectRootPath;
 
-        if (!FSUtils.IsEmptyGitInitializedDirectory(rootPath)) {
+        if (!FSUtils.IsEmptyDirectoryToStartNewIdea(rootPath)) {
             VsCodeUtils.ShowErrorMessage(Strings.DirectoryIsNotEmptyForNewIdea);
             this.logger.error(Strings.DirectoryIsNotEmptyForNewIdea);
             return;
         }
 
-        if (!await this.isGitInstalled(rootPath)) {
+        if (!await GitUtils.IsGitInstalled(rootPath)) {
             VsCodeUtils.ShowErrorMessage(Strings.GitIsNotInstalledMsg);
             return;
         }
@@ -58,10 +58,14 @@ export default class Start extends Command {
                 return;
             }
 
+            if (await this.appAlreadyExistInAppCenter(ideaName)) {
+                VsCodeUtils.ShowErrorMessage(Strings.FailedToCreateAppAlreadyExistInAppCenter);
+                return;
+            }
+
             // For empty directory we create new VSTS repository
-            // For empty git directory (either created by git clone or git init) we just need to be sure that remoteUrl is valid
-            const useVSTSWorkflow = FSUtils.IsEmptyDirectory(rootPath);
-            if (useVSTSWorkflow) {
+            // For empty git directory (either created with git clone or git init) we just need to be sure that remoteUrl is valid
+            if (!await GitUtils.IsGitRepo(this.logger, rootPath)) {
 
                 // 1. Need VSTS TenatnName if not provided
                 const tenantName: string = "msmobilecenter";
@@ -78,26 +82,31 @@ export default class Start extends Command {
 
                 const vstsProject: VSTSProject | null = await this.selectVstsProject(vsts);
                 if (!vstsProject) {
-                    this.logger.error("Failed to get VSTS Projects");
-                    VsCodeUtils.ShowErrorMessage("Failed to get VSTS Projects");
+                    this.logger.error("Failed to get VSTS Project");
+                    VsCodeUtils.ShowErrorMessage(Strings.FailedToGetVSTSProjects);
                     return;
                 }
 
                 const vstsGitRepo: VSTSGitRepository | null = await vsts.CreateGitRepository(vstsProject.id, ideaName);
                 if (!vstsGitRepo) {
                     this.logger.error("Failed to create VSTS git repo");
-                    VsCodeUtils.ShowErrorMessage("Failed to create VSTS git repo");
+                    VsCodeUtils.ShowErrorMessage(Strings.FailedToCreateVSTSGitrepository);
                     return;
                 }
+
                 this.repositoryURL = vstsGitRepo.remoteUrl;
                 await GitUtils.GitInit(this.logger, rootPath);
-                await GitUtils.GitAddRemote(Constants.GitDefaultRemoteName, this.repositoryURL, this.logger, rootPath);
             } else if (!await this.getGitRemoteUrl(rootPath)) {
                 VsCodeUtils.ShowErrorMessage(Strings.FailedToProvideRepositoryNameMsg);
                 return;
             }
 
-            if (!await this.addRemoteUrlForSampleApp(rootPath)) {
+            if (!await this.ensureRemoteAdded(Constants.GitDefaultRemoteName, this.repositoryURL, rootPath)) {
+                VsCodeUtils.ShowErrorMessage(Strings.FailedToAddRemoteRepositoryMsg);
+                return;
+            }
+
+            if (!await this.ensureRemoteAdded(Constants.AppCenterSampleGitRemoteName, SettingsHelper.getAppCenterDemoAppGitRepo(), rootPath)) {
                 VsCodeUtils.ShowErrorMessage(Strings.FailedToAddRemoteRepositoryMsg);
                 return;
             }
@@ -117,11 +126,13 @@ export default class Start extends Command {
                         return;
                     }
 
-                    const appCenterAppBuilder = new AppCenterAppBuilder(<string>ideaName, userOrOrgItem, this.repositoryURL, this.client, this.logger);
+                    const appCenterAppBuilder = new AppCenterAppBuilder(ideaName, userOrOrgItem, this.repositoryURL, this.client, this.logger);
                     await appCenterAppBuilder.createApps();
                     const createdApps: CreatedAppFromAppCenter[] = appCenterAppBuilder.getCreatedApps();
 
                     if (!this.appsCreated(createdApps)) {
+                        this.logger.error("Failed to create apps in appcenter");
+                        VsCodeUtils.ShowErrorMessage(Strings.FailedToCreateAppInAppCenter);
                         return;
                     }
 
@@ -143,18 +154,20 @@ export default class Start extends Command {
                     }
 
                     // We need to push changes before we configure/start build in AppCenter
-                    if (!await this.pushToExistingRemoteRepo(rootPath)) {
+                    if (!await this.pushToDefaultRemoteRepo(rootPath)) {
                         VsCodeUtils.ShowErrorMessage(Strings.FailedToPushChangesToRemoteRepoMsg(this.repositoryURL));
                         return;
                     }
 
+                    // We can run npm install in parralel while doing other stuff for appcenter
+                    this.runNPMInstall();
+
                     const done = await appCenterAppBuilder.startProcess();
                     if (!done) {
                         VsCodeUtils.ShowErrorMessage(Strings.FailedToCreateAppInAppCenter);
-                        return;
+                    } else {
+                        VsCodeUtils.ShowInfoMessage(Strings.FinishedConfigMsg);
                     }
-
-                    await this.runNPMInstall();
                 }
             });
         });
@@ -212,15 +225,12 @@ export default class Start extends Command {
         return items;
     }
 
-    private async runNPMInstall() {
+    private async runNPMInstall(): Promise<boolean> {
         try {
             const installNodeModulesCmd: string = "npm i";
             this.logger.info("Running npm install...");
-            await vscode.window.withProgress({ location: vscode.ProgressLocation.Window, title: Strings.VSCodeProgressLoadingTitle}, async p => {
-                p.report({message: Strings.RunNPMInstallStatusBarMessage });
-                await cpUtils.executeCommand(this.logger, this.manager.projectRootPath, installNodeModulesCmd);
-                VsCodeUtils.ShowInfoMessage(Strings.NodeModulesInstalledMessage);
-            });
+            await cpUtils.executeCommand(this.logger, this.manager.projectRootPath, installNodeModulesCmd);
+            VsCodeUtils.ShowInfoMessage(Strings.NodeModulesInstalledMessage);
             return true;
         } catch (error) {
             this.logger.error("Failed to run npm install");
@@ -315,31 +325,23 @@ export default class Start extends Command {
         return deployments;
     }
 
-    private async isGitInstalled(_rootPath: string): Promise<boolean> {
-        this.logger.info("Checking if git is installed...");
-        return await GitUtils.IsGitInstalled(_rootPath);
-    }
-
-    private async addRemoteUrlForSampleApp(_rootPath: string): Promise<boolean> {
-        this.logger.info("Adding remote url to pul data for sample app");
-        return await GitUtils.GitAddRemote(Constants.AppCenterSampleGitRemoteName, SettingsHelper.getAppCenterDemoAppGitRepo(), this.logger, _rootPath);
-    }
-
     private async getGitRemoteUrl(_rootPath: string): Promise<boolean> {
         const remoteUrl = await GitUtils.GitGetRemoteUrl(this.logger, _rootPath);
         if (!remoteUrl) {
-            await vscode.window.showInputBox({ prompt: Strings.PleaseEnterNewRepositoryUrl, ignoreFocusOut: true })
+            return await vscode.window.showInputBox({ prompt: Strings.PleaseEnterNewRepositoryUrl, ignoreFocusOut: true })
             .then(repositoryURL => {
                 if (!repositoryURL || !Validators.ValidGitName(repositoryURL)) {
-                    VsCodeUtils.ShowErrorMessage(Strings.FailedToProvideRepositoryNameMsg);
                     return false;
                 }
-                this.repositoryURL = GitUrlParse(Utils.removeNewLinesFromString(repositoryURL)).toString("https");
+                this.repositoryURL = GitUrlParse(repositoryURL.trim()).toString("https");
                 return true;
             });
-            return true;
         } else {
-            this.repositoryURL = GitUrlParse(Utils.removeNewLinesFromString(remoteUrl)).toString("https");
+            const repoName = GitUrlParse(remoteUrl.trim()).toString("https");
+            if (!repoName) {
+                return false;
+            }
+            this.repositoryURL = repoName;
             return true;
         }
     }
@@ -354,21 +356,54 @@ export default class Start extends Command {
         return created;
     }
 
-    private async pushToExistingRemoteRepo(_rootPath: string): Promise<boolean> {
+    private async ensureRemoteAdded(remoteName: string, remoteUrl: string, _rootPath: string): Promise<boolean> {
+        const remoteNames: string[] = await GitUtils.GitGetRemoteName(this.logger, _rootPath);
+        if (remoteNames && remoteNames.length > 0) {
+            let alreadyExist: boolean = false;
+            remoteNames.forEach((remote: any) => {
+                if (remote.name.trim() === remoteName) {
+                    alreadyExist = true;
+                }
+            });
+            if (!alreadyExist) {
+                return await GitUtils.GitAddRemote(remoteName, remoteUrl, this.logger, _rootPath);
+            } else {
+                return true;
+            }
+        } else {
+            return await GitUtils.GitAddRemote(remoteName, remoteUrl, this.logger, _rootPath);
+        }
+    }
+
+    private async pushToDefaultRemoteRepo(_rootPath: string): Promise<boolean> {
         let pushed: boolean = false;
         this.logger.info(`Pushing changes to ${this.repositoryURL}...`);
         await vscode.window.withProgress({ location: vscode.ProgressLocation.Window, title: Strings.VSCodeProgressLoadingTitle}, async p => {
             p.report({message: Strings.PushToRemoteRepoStatusBarMessage });
-            pushed = await GitUtils.GitPushToRemoteUrl(this.repositoryURL, SettingsHelper.defaultBranchName(), this.logger, _rootPath);
+            pushed = await GitUtils.GitPushToRemoteUrl(Constants.GitDefaultRemoteName, SettingsHelper.defaultBranchName(), this.logger, _rootPath);
          });
         return pushed;
+    }
+
+    private async appAlreadyExistInAppCenter(ideaName: string): Promise<boolean> {
+        let exist: boolean = false;
+        this.logger.info("Checkig if idea name is not already used before...");
+        await vscode.window.withProgress({ location: vscode.ProgressLocation.Window, title: Strings.VSCodeProgressLoadingTitle}, async p => {
+            p.report({message: Strings.CheckIfAppsExistLoadingMessage });
+            let apps: models.AppResponse[];
+            apps = await this.client.account.apps.list();
+            exist = apps.some(item => {
+                return (item.name === AppCenterAppBuilder.getiOSAppName(ideaName) || item.name === AppCenterAppBuilder.getAndroidAppName(ideaName));
+            });
+         });
+        return exist;
     }
 
     private async selectVstsProject(vstsProvider: VSTSProvider): Promise<VSTSProject | null> {
         let projectList: VSTSProject[] | null = [];
         let vstsProject: VSTSProject | null = null;
         await vscode.window.withProgress({ location: vscode.ProgressLocation.Window, title: Strings.VSCodeProgressLoadingTitle}, async p => {
-            p.report({message: "Loading VSTS projects for you..." });
+            p.report({message: Strings.LoadingVSTSProjectsMessage });
             projectList = await vstsProvider.GetAllProjects();
         });
         if (projectList) {

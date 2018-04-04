@@ -66,11 +66,6 @@ export class Utils {
         }
     }
 
-    public static removeNewLinesFromString(string): string {
-        // tslint:disable-next-line:whitespace
-        return string.replace(/(\r\n\t|\n|\r\t)/gm,"");
-    }
-
     public static projectHaveNpmPackage(projectRoot: string | undefined, packageName: string, installHint: string, showMessageOnError?: boolean): boolean {
         if (!projectRoot) {
             return false;
