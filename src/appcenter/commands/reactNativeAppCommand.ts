@@ -3,9 +3,11 @@ import { CurrentApp, CurrentAppDeployments, Profile } from "../../helpers/interf
 import { Strings } from "../../helpers/strings";
 import { Utils } from "../../helpers/utils";
 import { VsCodeUtils } from "../../helpers/vsCodeUtils";
+import { models } from "../api";
 import { Command } from "./command";
 
 export class ReactNativeAppCommand extends Command {
+    protected static cachedApps: models.AppResponse[];
 
     public async runNoClient(): Promise<boolean | void> {
         if (!await super.runNoClient()) {
