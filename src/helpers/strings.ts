@@ -11,21 +11,21 @@ export class Strings {
     public static CodePushMenuLabelItem: string = "CodePush";
     public static AppCenterPortalMenuLabel: string = "AppCenter portal";
     public static SettingsMenuLabel: string = "Settings";
-    public static LoginToAnotherAccountMenuLabel: string = "Login to another App Center account";
-    public static SwitchAccountMenuLabel: string = "Switch App Center account";
+    public static LoginToAnotherAccountMenuLabel: string = "Login to another AppCenter account";
+    public static SwitchAccountMenuLabel: string = "Switch AppCenter account";
     public static LogoutMenuLabel: string = "Logout";
 
-    public static SelectLoginTypeMsg: string = "Select the way you would like to authenticate with App Center";
+    public static SelectLoginTypeMsg: string = "Select the way you would like to authenticate with AppCenter";
     public static OkBtnLabel: string = "Ok";
-    public static UserMustSignIn: string = "You are signed out. Please login to App Center";
+    public static UserMustSignIn: string = "You are signed out. Please login to AppCenter";
     public static PleaseProvideToken: string = "Please provide token to authenticate";
-    public static PleaseLoginViaBrowser: string = "We are about to launch a browser window so you can automatically create an App Center API token";
-    public static FailedToExecuteLoginMsg: string = "Failed to execute login to App Center";
-    public static UserIsNotLoggedInMsg: string = "You are not logged into App Center";
-    public static UserLoggedOutMsg: string = "Successfully logged out of App Center";
+    public static PleaseLoginViaBrowser: string = "We are about to launch a browser window so you can automatically create an AppCenter API token";
+    public static FailedToExecuteLoginMsg: string = "Failed to execute login to AppCenter";
+    public static UserIsNotLoggedInMsg: string = "You are not logged into AppCenter";
+    public static UserLoggedOutMsg: string = "Successfully logged out of AppCenter";
     public static MenuTitlePlaceholder: string = "Please select action";
 
-    public static LoginToAppCenterButton: string = "Login to App Center";
+    public static LoginToAppCenterButton: string = "Login to AppCenter";
     public static PleaseEnterIdeaName: string = "Please enter idea name";
     public static PleaseEnterNewRepositoryUrl: string = "Please enter repository url";
     public static PleaseSelectCurrentAppOrgMsg: string = "Please select user/organization where to create an App";
@@ -69,7 +69,7 @@ export class Strings {
     public static CreatingDistributionStatusBarMessage: string = "Creating distribution group for you...";
     public static ConnectingRepoToBuildServiceStatusBarMessage: string = "Connecting repository for you...";
     public static CreateBranchConfigAndKickOffBuildStatusBarMessage: string = "Starting new build for you...";
-    public static ProvideCurrentAppPromptMsg: string = "Please specify an App Center app";
+    public static ProvideCurrentAppPromptMsg: string = "Please specify an AppCenter app";
     public static FetchDeploymentsStatusBarMessage: string = "Fetching app deployments for you...";
     public static InvalidCurrentAppNameMsg: string = "Sorry, provided app name is invalid";
 
@@ -91,7 +91,7 @@ export class Strings {
     public static CodePushInstallHint: string = "Make sure you ran \"npm install\" and that you are inside a React Native Code Push project.";
 
     public static CreatingAppStatusBarMessage: string = `Creating app for you...`;
-    public static FailedToCreateAppInAppCenter: string = `Sorry, failed to create app in app center`;
+    public static FailedToCreateAppInAppCenter: string = `Sorry, failed to create app in AppCenter`;
     public static FailedToGetVSTSProjects: string = `Sorry, failed to get VSTS Project`;
     public static FailedToCreateVSTSGitrepository: string = `Sorry, failed to create VSTS git repository`;
     public static FailedToCreateAppAlreadyExistInAppCenter: string = `Sorry, apps with provided idea name already exist in AppCenter. Please select another idea name.`;
@@ -105,7 +105,7 @@ export class Strings {
     }
 
     public static YouAreLoggedInMsg(name: string): string {
-        return `You are logged into App Center as '${name}'`;
+        return `You are logged into AppCenter as '${name}'`;
     }
 
     public static YourCurrentAppMsg(appName: string): string {
@@ -140,7 +140,7 @@ export class Strings {
 
     public static setCurrentAppMenuText(app?: CurrentApp): string {
         if (app) {
-            return `Change '${app.appName}' to a different app`;
+            return `Change current app | ${app.appName}(${app.os})`;
         } else {
             return `Set current app`;
         }
