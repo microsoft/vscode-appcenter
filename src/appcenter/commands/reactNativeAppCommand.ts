@@ -1,6 +1,9 @@
+import * as vscode from "vscode";
 import { AppCenterOS } from "../../constants";
+import { AppCenterAppsCache } from "../../helpers/appsCache";
 import { CurrentApp, CurrentAppDeployments, Profile } from "../../helpers/interfaces";
 import { Utils } from "../../helpers/utils";
+import * as models from '../lib/app-center-node-client/models';
 import { VsCodeUtils } from "../../helpers/vsCodeUtils";
 import { Strings } from "../../strings";
 import { Command } from "./command";
@@ -59,5 +62,24 @@ export class ReactNativeAppCommand extends Command {
                 return Promise.resolve(null);
             }
         });
+    }
+
+    protected loadApps(display: (apps: models.AppResponse[]) => any) {
+        const appsCache: AppCenterAppsCache = AppCenterAppsCache.getInstance();
+        try {
+            if (appsCache.hasCache()) {
+                display(appsCache.cachedApps);
+            }
+            vscode.window.withProgress({ location: vscode.ProgressLocation.Window, title: Strings.GetAppsListMessage }, () => {
+                return this.client.account.apps.list({
+                    orderBy: "name"
+                });
+            }).then((apps: models.AppResponse[]) => {
+                appsCache.updateCache(apps, display);
+            });
+        } catch (e) {
+            VsCodeUtils.ShowErrorMessage(Strings.UnknownError);
+            this.logger.error(e.message, e);
+        }
     }
 }

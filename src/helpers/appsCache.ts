@@ -37,6 +37,10 @@ export class AppCenterAppsCache {
         return this._cachedApps;
     }
 
+    public hasCache(): boolean {
+        return this.cachedApps && this.cachedApps.length > 0;
+    }
+
     protected compareCacheWith(apps: models.AppResponse[]) {
         if (!this.cachedApps || !apps) {
             return true;

@@ -9,7 +9,6 @@ import { ILogger } from "../../log/logHelper";
 import { Strings } from "../../strings";
 import { models } from "../api";
 import { ReactNativeAppCommand } from "./reactNativeAppCommand";
-import { AppCenterAppsCache } from "../../helpers/appsCache";
 
 export default class AppCenterPortalMenu extends ReactNativeAppCommand {
 
@@ -24,22 +23,7 @@ export default class AppCenterPortalMenu extends ReactNativeAppCommand {
         if (!await super.run()) {
             return;
         }
-        const appsCache: AppCenterAppsCache = AppCenterAppsCache.getInstance();
-        try {
-            if (appsCache.cachedApps && appsCache.cachedApps.length > 0) {
-                this.showApps(appsCache.cachedApps);
-            }
-            vscode.window.withProgress({ location: vscode.ProgressLocation.Window, title: Strings.GetAppsListMessage }, async () => {
-                return await this.client.account.apps.list({
-                    orderBy: "name"
-                });
-            }).then(async (apps: any) => {
-                appsCache.updateCache(apps, this.showApps.bind(this));
-            });
-        } catch (e) {
-            VsCodeUtils.ShowErrorMessage(Strings.UnknownError);
-            this.logger.error(e.message, e);
-        }
+        this.loadApps(this.showApps.bind(this));
     }
 
     private getAppCenterDistributeTabMenuItems(): vscode.QuickPickItem[] {
@@ -102,7 +86,7 @@ export default class AppCenterPortalMenu extends ReactNativeAppCommand {
         return appCenterPortalTabOptions;
     }
 
-    private async showApps(rnApps: models.AppResponse[]) {
+    protected async showApps(rnApps: models.AppResponse[]) {
         try {
             const options: QuickPickAppItem[] = VsCodeUtils.getQuickPickItemsForAppsList(rnApps);
             const currentApp: CurrentApp | null = await this.getCurrentApp();

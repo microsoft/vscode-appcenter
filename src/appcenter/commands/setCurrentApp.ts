@@ -8,7 +8,6 @@ import { Strings } from "../../strings";
 import * as models from '../lib/app-center-node-client/models';
 import { Deployment } from "../lib/app-center-node-client/models";
 import { ReactNativeAppCommand } from './reactNativeAppCommand';
-import { AppCenterAppsCache } from "../../helpers/appsCache";
 
 export default class SetCurrentApp extends ReactNativeAppCommand {
 
@@ -22,23 +21,7 @@ export default class SetCurrentApp extends ReactNativeAppCommand {
         if (!await super.run()) {
             return;
         }
-        const appsCache: AppCenterAppsCache = AppCenterAppsCache.getInstance();
-
-        try {
-            if (appsCache.cachedApps && appsCache.cachedApps.length > 0) {
-                this.showApps(appsCache.cachedApps);
-            }
-            vscode.window.withProgress({ location: vscode.ProgressLocation.Window, title: Strings.GetAppsListMessage }, () => {
-                return this.client.account.apps.list({
-                    orderBy: "name"
-                });
-            }).then((apps: models.AppResponse[]) => {
-                appsCache.updateCache(apps, this.showApps.bind(this));
-            });
-        } catch (e) {
-            VsCodeUtils.ShowErrorMessage(Strings.UnknownError);
-            this.logger.error(e.message, e);
-        }
+        this.loadApps(this.showApps.bind(this));
     }
 
     private toAppCenterOS(codePushOs: string): AppCenterOS | undefined {
@@ -54,7 +37,7 @@ export default class SetCurrentApp extends ReactNativeAppCommand {
         }
     }
 
-    private showApps(rnApps: models.AppResponse[]) {
+    protected showApps(rnApps: models.AppResponse[]) {
         try {
             const options: QuickPickAppItem[] = VsCodeUtils.getQuickPickItemsForAppsList(rnApps);
             if (!this.selectedCachedItem) {
