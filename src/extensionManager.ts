@@ -2,6 +2,7 @@ import { Disposable, StatusBarItem } from "vscode";
 import Auth from "./appcenter/auth/auth";
 import * as CommandHandlers from './commandHandlers';
 import { CommandNames } from "./constants";
+import { AppCenterAppsCache } from "./helpers/appsCache";
 import { Profile } from "./helpers/interfaces";
 import { VsCodeUtils } from "./helpers/vsCodeUtils";
 import { ConsoleLogger } from "./log/consoleLogger";
@@ -100,6 +101,9 @@ export class ExtensionManager implements Disposable {
         this._commandHandlersContainer = new CommandHandlersContainer(this, this._logger);
         this._appCenterStatusBarItem = VsCodeUtils.getStatusBarItem();
         Auth.getProfile().then((profile: Profile | null) => {
+            if (profile) {
+                AppCenterAppsCache.getInstance().loadAppsCache(profile);
+            }
             return this.setupAppCenterStatusBar(profile);
         });
     }

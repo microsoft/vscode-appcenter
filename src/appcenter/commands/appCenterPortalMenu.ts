@@ -1,5 +1,5 @@
 import * as vscode from "vscode";
-import { AppCenteAppType, AppCenterBeacons, AppCenterDistributionTabs, Constants } from "../../constants";
+import { AppCenteAppType, AppCenterBeacons, AppCenterDistributionTabs } from "../../constants";
 import { ExtensionManager } from "../../extensionManager";
 import { AppCenterUrlBuilder } from "../../helpers/appCenterUrlBuilder";
 import { CurrentApp, QuickPickAppItem } from "../../helpers/interfaces";
@@ -9,6 +9,7 @@ import { ILogger } from "../../log/logHelper";
 import { Strings } from "../../strings";
 import { models } from "../api";
 import { ReactNativeAppCommand } from "./reactNativeAppCommand";
+import { AppCenterAppsCache } from "../../helpers/appsCache";
 
 export default class AppCenterPortalMenu extends ReactNativeAppCommand {
 
@@ -23,16 +24,17 @@ export default class AppCenterPortalMenu extends ReactNativeAppCommand {
         if (!await super.run()) {
             return;
         }
+        const appsCache: AppCenterAppsCache = AppCenterAppsCache.getInstance();
         try {
-            if (ReactNativeAppCommand.cachedApps && ReactNativeAppCommand.cachedApps.length > 0) {
-                this.showApps(ReactNativeAppCommand.cachedApps);
+            if (appsCache.cachedApps && appsCache.cachedApps.length > 0) {
+                this.showApps(appsCache.cachedApps);
             }
             vscode.window.withProgress({ location: vscode.ProgressLocation.Window, title: Strings.GetAppsListMessage }, async () => {
                 return await this.client.account.apps.list({
                     orderBy: "name"
                 });
             }).then(async (apps: any) => {
-                this.showApps(apps);
+                appsCache.updateCache(apps, this.showApps.bind(this));
             });
         } catch (e) {
             VsCodeUtils.ShowErrorMessage(Strings.UnknownError);
@@ -100,11 +102,8 @@ export default class AppCenterPortalMenu extends ReactNativeAppCommand {
         return appCenterPortalTabOptions;
     }
 
-    private async showApps(appsList: models.AppResponse[]) {
+    private async showApps(rnApps: models.AppResponse[]) {
         try {
-            let rnApps;
-
-            ReactNativeAppCommand.cachedApps = rnApps = appsList.filter(app => app.platform === Constants.AppCenterReactNativePlatformName);
             const options: QuickPickAppItem[] = VsCodeUtils.getQuickPickItemsForAppsList(rnApps);
             const currentApp: CurrentApp | null = await this.getCurrentApp();
 
@@ -120,7 +119,7 @@ export default class AppCenterPortalMenu extends ReactNativeAppCommand {
                 vscode.window.showQuickPick(options, { placeHolder: Strings.ProvideCurrentAppPromptMsg }).then(async (selected: QuickPickAppItem) => {
                     this.selectedCachedItem = true;
                     if (!selected) {
-                        this.logger.info('User cancel selection of current app');
+                        this.logger.debug('User cancel selection of current app');
                         return;
                     }
                     let selectedApp: models.AppResponse;
@@ -140,7 +139,7 @@ export default class AppCenterPortalMenu extends ReactNativeAppCommand {
                     vscode.window.showQuickPick(appCenterPortalTabOptions, { placeHolder: Strings.MenuTitlePlaceholder })
                         .then(async (selected: QuickPickAppItem) => {
                             if (!selected) {
-                                this.logger.info('User cancel selection of current appcenter tab');
+                                this.logger.debug('User cancel selection of current appcenter tab');
                                 return;
                             }
 
@@ -176,7 +175,7 @@ export default class AppCenterPortalMenu extends ReactNativeAppCommand {
                                     vscode.window.showQuickPick(appCenterDistributeTabMenuItems, { placeHolder: Strings.MenuTitlePlaceholder })
                                         .then((selected: QuickPickAppItem) => {
                                             if (!selected) {
-                                                this.logger.info('User cancel selection of current appcenter tab');
+                                                this.logger.debug('User cancel selection of current appcenter tab');
                                                 return;
                                             }
                                             switch (selected.target) {

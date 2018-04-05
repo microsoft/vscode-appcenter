@@ -8,6 +8,7 @@ import { Strings } from "../../strings";
 import * as models from '../lib/app-center-node-client/models';
 import { Deployment } from "../lib/app-center-node-client/models";
 import { ReactNativeAppCommand } from './reactNativeAppCommand';
+import { AppCenterAppsCache } from "../../helpers/appsCache";
 
 export default class SetCurrentApp extends ReactNativeAppCommand {
 
@@ -21,17 +22,18 @@ export default class SetCurrentApp extends ReactNativeAppCommand {
         if (!await super.run()) {
             return;
         }
+        const appsCache: AppCenterAppsCache = AppCenterAppsCache.getInstance();
 
         try {
-            if (ReactNativeAppCommand.cachedApps && ReactNativeAppCommand.cachedApps.length > 0) {
-                this.showApps(ReactNativeAppCommand.cachedApps);
+            if (appsCache.cachedApps && appsCache.cachedApps.length > 0) {
+                this.showApps(appsCache.cachedApps);
             }
             vscode.window.withProgress({ location: vscode.ProgressLocation.Window, title: Strings.GetAppsListMessage }, () => {
                 return this.client.account.apps.list({
                     orderBy: "name"
                 });
             }).then((apps: models.AppResponse[]) => {
-                this.showApps(apps);
+                appsCache.updateCache(apps, this.showApps.bind(this));
             });
         } catch (e) {
             VsCodeUtils.ShowErrorMessage(Strings.UnknownError);
@@ -52,10 +54,8 @@ export default class SetCurrentApp extends ReactNativeAppCommand {
         }
     }
 
-    private showApps(appsList: models.AppResponse[]) {
+    private showApps(rnApps: models.AppResponse[]) {
         try {
-            let rnApps;
-            ReactNativeAppCommand.cachedApps = rnApps = appsList.filter(app => app.platform === Constants.AppCenterReactNativePlatformName);
             const options: QuickPickAppItem[] = VsCodeUtils.getQuickPickItemsForAppsList(rnApps);
             if (!this.selectedCachedItem) {
                 vscode.window.showQuickPick(options, { placeHolder: Strings.ProvideCurrentAppPromptMsg }).then((selected: QuickPickAppItem) => {
