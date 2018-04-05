@@ -1,6 +1,6 @@
 import { Disposable, StatusBarItem } from "vscode";
 import Auth from "./appcenter/auth/auth";
-import { AppCenterCommandHandler } from "./appCenterCommandHandler";
+import * as CommandHandlers from './commandHandlers';
 import { CommandNames } from "./helpers/constants";
 import { Profile } from "./helpers/interfaces";
 import { Strings } from "./helpers/strings";
@@ -8,14 +8,38 @@ import { VsCodeUtils } from "./helpers/vsCodeUtils";
 import { ConsoleLogger } from "./log/consoleLogger";
 import { ILogger } from "./log/logHelper";
 
+class CommandHandlersContainer {
+    private _appCenterCommandHandler: CommandHandlers.AppCenter;
+    private _settingsCommandHandler: CommandHandlers.Settings;
+    private _codePushCommandHandler: CommandHandlers.CodePush;
+
+    constructor(manager: ExtensionManager, logger: ILogger) {
+        this._appCenterCommandHandler = new CommandHandlers.AppCenter(manager, logger);
+        this._settingsCommandHandler = new CommandHandlers.Settings(manager, logger);
+        this._codePushCommandHandler = new CommandHandlers.CodePush(manager, logger);
+    }
+
+    public get appCenterCommandHandler(): CommandHandlers.AppCenter {
+        return this._appCenterCommandHandler;
+    }
+
+    public get settingsCommandHandler(): CommandHandlers.Settings {
+        return this._settingsCommandHandler;
+    }
+
+    public get codePushCommandHandler(): CommandHandlers.CodePush {
+        return this._codePushCommandHandler;
+    }
+}
+
 export class ExtensionManager implements Disposable {
-    private _appCenterCommandHandler: AppCenterCommandHandler;
+    private _commandHandlersContainer: CommandHandlersContainer;
     private _appCenterStatusBarItem: StatusBarItem;
     private _projectRootPath: string | undefined;
     private _logger: ILogger;
 
-    public get AppCenterCommandHandler(): AppCenterCommandHandler {
-        return this._appCenterCommandHandler;
+    public get commandHandlers(): CommandHandlersContainer {
+        return this._commandHandlersContainer;
     }
 
     public get projectRootPath(): string | undefined {
@@ -68,12 +92,12 @@ export class ExtensionManager implements Disposable {
         return Promise.resolve(void 0);
     }
 
-    public async dispose(): Promise<void>  {
+    public async dispose(): Promise<void> {
         this.cleanup();
     }
 
     private async initializeExtension(): Promise<void> {
-        this._appCenterCommandHandler = new AppCenterCommandHandler(this, this._logger);
+        this._commandHandlersContainer = new CommandHandlersContainer(this, this._logger);
         this._appCenterStatusBarItem = VsCodeUtils.getStatusBarItem();
         Auth.getProfile().then((profile: Profile | null) => {
             return this.setupAppCenterStatusBar(profile);

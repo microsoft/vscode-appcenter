@@ -43,11 +43,6 @@
                 "category": "AppCenter"
             },
             {
-                "command": "appcenter.logout",
-                "title": "Logout",
-                "category": "AppCenter"
-            },
-            {
                 "command": "appcenter.menu",
                 "title": "Show Menu",
                 "category": "AppCenter"
@@ -68,9 +63,19 @@
                 "category": "AppCenter"
             },
             {
-                "command": "appcenter.codepush.showMenu",
-                "title": "Show CodePush Menu",
-                "category": "AppCenter Code Push"
+                "command": "appcenter.settings.loginToAnotherAccount",
+                "title": "Login to another AppCenter account",
+                "category": "AppCenter Settings"
+            },
+            {
+                "command": "appcenter.settings.switchAccount",
+                "title": "Switch AppCenter account",
+                "category": "AppCenter Settings"
+            },
+            {
+                "command": "appcenter.settings.logout",
+                "title": "Logout",
+                "category": "AppCenter Settings"
             },
             {
                 "command": "appcenter.codepush.setCurrentDeployment",

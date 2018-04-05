@@ -10,10 +10,10 @@ import { ILogger } from "../../log/logHelper";
 import { Profile } from "../auth/profile/profile";
 import AppCenterPortalMenu from "./appCenterPortalMenu";
 import * as CodePush from "./codepush";
+import * as Settings from "./settings";
 import { Command } from "./command";
 import GetCurrentApp from "./getCurrentApp";
 import Login from "./login";
-import Logout from "./logout";
 import SetCurrentApp from "./setCurrentApp";
 import Start from "./start";
 
@@ -76,11 +76,11 @@ export default class ShowMenu extends Command {
                 }
             }
 
-            // Logout should be the last option
+            // Settings menu
             appCenterMenuOptions.push(<vscode.QuickPickItem>{
-                label: Strings.LogoutMenuLabel,
+                label: Strings.SettingsMenuLabel,
                 description: "",
-                target: CommandNames.Logout
+                target: CommandNames.Settings.ShowMenu
             });
 
             return this.showQuickPick(appCenterMenuOptions);
@@ -106,10 +106,6 @@ export default class ShowMenu extends Command {
                             new Start(this.manager, this.logger).run();
                             break;
 
-                        case (CommandNames.Logout):
-                            new Logout(this.manager, this.logger).runNoClient();
-                            break;
-
                         case (CommandNames.Login):
                             new Login(this.manager, this.logger).run();
                             break;
@@ -124,6 +120,10 @@ export default class ShowMenu extends Command {
 
                         case (CommandNames.CodePush.ShowMenu):
                             new CodePush.ShowMenu(this.manager, this.logger).runNoClient();
+                            break;
+
+                        case (CommandNames.Settings.ShowMenu):
+                            new Settings.ShowMenu(this.manager, this.logger).run();
                             break;
 
                         default:

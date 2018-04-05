@@ -59,18 +59,24 @@ export class CommandNames {
     public static AppCenterPortal: string = CommandNames.CommandPrefix + "showPortalMenu";
     public static WhoAmI: string = CommandNames.CommandPrefix + "whoAmI";
     public static Login: string = CommandNames.CommandPrefix + "login";
-    public static Logout: string = CommandNames.CommandPrefix + "logout";
     public static ShowMenu: string = CommandNames.CommandPrefix + "menu";
     public static Start: string = CommandNames.CommandPrefix + "start";
     public static GetCurrentApp: string = CommandNames.CommandPrefix + "getCurrentApp";
     public static SetCurrentApp: string = CommandNames.CommandPrefix + "setCurrentApp";
 
+    public static Settings = class {
+        public static ShowMenu: string = `${CommandNames.CommandPrefix}settings.showMenu`;
+        public static LoginToAnotherAccount: string = `${CommandNames.CommandPrefix}settings.loginToAnotherAccount`;
+        public static SwitchAccount: string = `${CommandNames.CommandPrefix}settings.switchAccount`;
+        public static Logout: string = `${CommandNames.CommandPrefix}settings.logout`;
+    }
+
     public static CodePush = class {
+        public static ShowMenu: string = CommandNames.CommandPrefix + "codepush.showMenu";
         public static SetCurrentDeployment: string = CommandNames.CommandPrefix + "codepush.setCurrentDeployment";
         public static ReleaseReact: string = CommandNames.CommandPrefix + "codepush.releaseReact";
         public static SwitchMandatoryPropForRelease: string = CommandNames.CommandPrefix + "codepush.switchMandatoryPropForRelease";
         public static SetTargetBinaryVersion: string = CommandNames.CommandPrefix + "codepush.setTargetBinaryVersion";
-        public static ShowMenu: string = CommandNames.CommandPrefix + "codepush.showMenu";
     };
 }
 
