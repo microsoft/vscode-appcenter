@@ -59,10 +59,10 @@ export default class SetCurrentApp extends ReactNativeAppCommand {
             const options: QuickPickAppItem[] = VsCodeUtils.getQuickPickItemsForAppsList(rnApps);
             if (!this.selectedCachedItem) {
                 vscode.window.showQuickPick(options, { placeHolder: Strings.ProvideCurrentAppPromptMsg }).then((selected: QuickPickAppItem) => {
+                    this.selectedCachedItem = true;
                     if (!selected) {
                         return Promise.resolve(void 0);
                     }
-                    this.selectedCachedItem = true;
                     const selectedApps: models.AppResponse[] = rnApps.filter(app => app.name === selected.target);
                     if (!selectedApps || selectedApps.length !== 1) {
                         return Promise.resolve(void 0);

@@ -118,11 +118,11 @@ export default class AppCenterPortalMenu extends ReactNativeAppCommand {
             }
             if (!this.selectedCachedItem) {
                 vscode.window.showQuickPick(options, { placeHolder: Strings.ProvideCurrentAppPromptMsg }).then(async (selected: QuickPickAppItem) => {
+                    this.selectedCachedItem = true;
                     if (!selected) {
                         this.logger.info('User cancel selection of current app');
                         return;
                     }
-                    this.selectedCachedItem = true;
                     let selectedApp: models.AppResponse;
 
                     const selectedApps: models.AppResponse[] = rnApps.filter(app => app.name === selected.target);
