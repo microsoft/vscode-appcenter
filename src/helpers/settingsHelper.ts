@@ -1,7 +1,7 @@
 import * as vscode from "vscode";
+import { Constants } from "../constants";
 import { LogLevel } from "../log/logHelper";
 import { ConfigurationReader } from "./configurationReader";
-import { Constants } from "./constants";
 
 export class SettingsHelper {
     public static getAppCenterDemoAppGitRepo(): string {

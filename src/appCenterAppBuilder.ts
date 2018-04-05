@@ -1,13 +1,13 @@
 import * as vscode from "vscode";
 import { AppCenterClient } from "./appcenter/api";
 import AppCenterAppCreator, { AndroidAppCenterAppCreator, IOSAppCenterAppCreator, NullAppCenterAppCreator } from "./appCenterAppCreator";
-import { Constants } from "./helpers/constants";
+import { Constants } from "./constants";
 import { CreatedAppFromAppCenter, UserOrOrganizationItem } from "./helpers/interfaces";
 import { SettingsHelper } from "./helpers/settingsHelper";
-import { Strings } from "./helpers/strings";
 import { Utils } from "./helpers/utils";
 import { VsCodeUtils } from "./helpers/vsCodeUtils";
 import { ILogger } from "./log/logHelper";
+import { Strings } from "./strings";
 
 export default class AppCenterAppBuilder {
     private _createIOSApp: boolean = false;

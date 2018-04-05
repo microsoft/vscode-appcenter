@@ -1,5 +1,5 @@
+import { Constants } from '../constants';
 import { ILogger } from '../log/logHelper';
-import { Constants } from './constants';
 import { cpUtils } from "./cpUtils";
 // tslint:disable-next-line:no-var-requires
 const git = require('simple-git/promise');

@@ -1,5 +1,3 @@
-"use strict";
-
 import {ILogger, LogHelper, LogLevel} from "./logHelper";
 
 export class ConsoleLogger implements ILogger {

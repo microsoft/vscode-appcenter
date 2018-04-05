@@ -1,5 +1,3 @@
-"use strict";
-
 import { ILogger, LogLevel } from "./logHelper";
 
 export class NullLogger implements ILogger {

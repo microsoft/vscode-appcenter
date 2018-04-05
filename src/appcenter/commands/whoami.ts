@@ -1,8 +1,8 @@
 import { ExtensionManager } from "../../extensionManager";
 import { Profile } from "../../helpers/interfaces";
-import { Strings } from "../../helpers/strings";
 import { VsCodeUtils } from "../../helpers/vsCodeUtils";
 import { ILogger } from "../../log/logHelper";
+import { Strings } from "../../strings";
 import { Command } from "./command";
 
 export default class WhoAmI extends Command {

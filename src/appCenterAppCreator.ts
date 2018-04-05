@@ -1,6 +1,6 @@
 import { AppCenterClient } from "./appcenter/api";
 import { Deployment } from "./appcenter/lib/app-center-node-client/models";
-import { AppCenterOS, AppCenterPlatform, Constants } from "./helpers/constants";
+import { AppCenterOS, AppCenterPlatform, Constants } from "./constants";
 import { CreatedAppFromAppCenter } from "./helpers/interfaces";
 import { SettingsHelper } from "./helpers/settingsHelper";
 import { ILogger } from "./log/logHelper";

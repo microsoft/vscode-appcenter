@@ -1,4 +1,4 @@
-import { CurrentApp } from "./interfaces";
+import { CurrentApp } from "./helpers/interfaces";
 
 export class Strings {
 

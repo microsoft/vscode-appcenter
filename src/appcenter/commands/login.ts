@@ -1,13 +1,13 @@
 import * as os from "os";
 import * as qs from "qs";
 import * as vscode from "vscode";
+import { AppCenterLoginType } from "../../constants";
 import { ExtensionManager } from "../../extensionManager";
-import { AppCenterLoginType } from "../../helpers/constants";
 import { Profile } from "../../helpers/interfaces";
 import { SettingsHelper } from "../../helpers/settingsHelper";
-import { Strings } from "../../helpers/strings";
 import { IButtonMessageItem, VsCodeUtils } from "../../helpers/vsCodeUtils";
 import { ILogger } from "../../log/logHelper";
+import { Strings } from "../../strings";
 import Auth from "../auth/auth";
 import { Command } from "./command";
 

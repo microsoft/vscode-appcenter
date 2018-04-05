@@ -1,6 +1,6 @@
 import { commands, MessageItem, QuickPickItem, StatusBarAlignment, StatusBarItem, window } from "vscode";
 import { models } from "../appcenter/api";
-import { Constants, MessageTypes } from "./constants";
+import { Constants, MessageTypes } from "../constants";
 import { Utils } from "./utils";
 
 "use strict";

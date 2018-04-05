@@ -1,4 +1,4 @@
-import { AppCenterOS } from "./constants";
+import { AppCenterOS } from "../constants";
 
 export interface Deployment {
     name: string;

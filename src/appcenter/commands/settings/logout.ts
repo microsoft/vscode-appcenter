@@ -1,7 +1,7 @@
 import { ExtensionManager } from "../../../extensionManager";
-import { Strings } from "../../../helpers/strings";
 import { VsCodeUtils } from "../../../helpers/vsCodeUtils";
 import { ILogger } from "../../../log/logHelper";
+import { Strings } from "../../../strings";
 import Auth from "../../auth/auth";
 import { Command } from "../command";
 

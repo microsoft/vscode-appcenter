@@ -1,10 +1,10 @@
 import * as vscode from 'vscode';
+import { Constants } from '../../../constants';
 import { ExtensionManager } from "../../../extensionManager";
-import { Constants } from '../../../helpers/constants';
 import { CurrentApp, ICodePushReleaseParams, Profile } from "../../../helpers/interfaces";
-import { Strings } from '../../../helpers/strings';
 import { VsCodeUtils } from '../../../helpers/vsCodeUtils';
 import { ILogger, LogLevel } from "../../../log/logHelper";
+import { Strings } from '../../../strings';
 import { codePushRelease } from '../../codepush';
 import { fileUtils, reactNative, updateContents } from '../../codepush/codepush-sdk/src';
 import { BundleConfig } from '../../codepush/codepush-sdk/src/react-native/react-native-utils';

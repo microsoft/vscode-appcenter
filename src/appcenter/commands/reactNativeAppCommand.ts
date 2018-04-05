@@ -1,8 +1,8 @@
-import { AppCenterOS } from "../../helpers/constants";
+import { AppCenterOS } from "../../constants";
 import { CurrentApp, CurrentAppDeployments, Profile } from "../../helpers/interfaces";
-import { Strings } from "../../helpers/strings";
 import { Utils } from "../../helpers/utils";
 import { VsCodeUtils } from "../../helpers/vsCodeUtils";
+import { Strings } from "../../strings";
 import { models } from "../api";
 import { Command } from "./command";
 

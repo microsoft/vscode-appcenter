@@ -1,9 +1,9 @@
 import { ExtensionManager } from "../../extensionManager";
 import { Profile } from "../../helpers/interfaces";
 import { SettingsHelper } from "../../helpers/settingsHelper";
-import { Strings } from "../../helpers/strings";
 import { VsCodeUtils } from "../../helpers/vsCodeUtils";
 import { ILogger } from "../../log/logHelper";
+import { Strings } from "../../strings";
 import { AppCenterClient, AppCenterClientFactory, createAppCenterClient } from "../api";
 import Auth from "../auth/auth";
 

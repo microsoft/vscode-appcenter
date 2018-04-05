@@ -1,12 +1,12 @@
 import * as vscode from "vscode";
 
+import { CommandNames } from "../../constants";
 import { ExtensionManager } from "../../extensionManager";
-import { CommandNames } from "../../helpers/constants";
 import { FSUtils } from "../../helpers/fsUtils";
 import { CurrentApp } from "../../helpers/interfaces";
-import { Strings } from "../../helpers/strings";
 import { Utils } from "../../helpers/utils";
 import { ILogger } from "../../log/logHelper";
+import { Strings } from "../../strings";
 import { Profile } from "../auth/profile/profile";
 import AppCenterPortalMenu from "./appCenterPortalMenu";
 import * as CodePush from "./codepush";

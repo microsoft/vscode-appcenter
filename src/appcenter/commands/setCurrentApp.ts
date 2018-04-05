@@ -1,10 +1,10 @@
 import * as vscode from "vscode";
+import { AppCenterOS, Constants } from "../../constants";
 import { ExtensionManager } from "../../extensionManager";
-import { AppCenterOS, Constants } from "../../helpers/constants";
 import { CurrentApp, CurrentAppDeployments, QuickPickAppItem } from "../../helpers/interfaces";
-import { Strings } from "../../helpers/strings";
 import { VsCodeUtils } from "../../helpers/vsCodeUtils";
 import { ILogger } from "../../log/logHelper";
+import { Strings } from "../../strings";
 import * as models from '../lib/app-center-node-client/models';
 import { Deployment } from "../lib/app-center-node-client/models";
 import { ReactNativeAppCommand } from './reactNativeAppCommand';

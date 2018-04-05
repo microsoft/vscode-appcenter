@@ -1,10 +1,10 @@
 import * as vscode from 'vscode';
+import { AppCenterOS } from '../../../constants';
 import { ExtensionManager } from '../../../extensionManager';
-import { AppCenterOS } from '../../../helpers/constants';
 import { CurrentApp } from '../../../helpers/interfaces';
-import { Strings } from '../../../helpers/strings';
 import { VsCodeUtils } from '../../../helpers/vsCodeUtils';
 import { ILogger } from '../../../log/logHelper';
+import { Strings } from '../../../strings';
 import { RNCPAppCommand } from './rncpAppCommand';
 
 export default class SetCurrentDeployment extends RNCPAppCommand {

@@ -5,9 +5,9 @@ import * as fs from "fs";
 import * as open from "open";
 import * as opener from "opener";
 import * as path from "path";
-import { AppCenterOS } from "./constants";
+import { AppCenterOS } from "../constants";
+import { Strings } from "../strings";
 import { CurrentApp, CurrentAppDeployments } from "./interfaces";
-import { Strings } from "./strings";
 import { Validators } from "./validators";
 import { VsCodeUtils } from "./vsCodeUtils";
 

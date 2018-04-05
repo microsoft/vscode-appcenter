@@ -1,5 +1,3 @@
-"use strict";
-
 export enum LogLevel {
     Trace = 0,
     Debug = 1,

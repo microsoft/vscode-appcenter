@@ -1,12 +1,12 @@
 import * as vscode from "vscode";
+import { AppCenteAppType, AppCenterBeacons, AppCenterDistributionTabs, Constants } from "../../constants";
 import { ExtensionManager } from "../../extensionManager";
 import { AppCenterUrlBuilder } from "../../helpers/appCenterUrlBuilder";
-import { AppCenteAppType, AppCenterBeacons, AppCenterDistributionTabs, Constants } from "../../helpers/constants";
 import { CurrentApp, QuickPickAppItem } from "../../helpers/interfaces";
-import { Strings } from "../../helpers/strings";
 import { Utils } from "../../helpers/utils";
 import { VsCodeUtils } from "../../helpers/vsCodeUtils";
 import { ILogger } from "../../log/logHelper";
+import { Strings } from "../../strings";
 import { models } from "../api";
 import { ReactNativeAppCommand } from "./reactNativeAppCommand";
 

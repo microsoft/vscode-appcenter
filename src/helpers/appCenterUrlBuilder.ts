@@ -1,4 +1,4 @@
-import { AppCenterBeacons, AppCenterDistributionTabs } from "./constants";
+import { AppCenterBeacons, AppCenterDistributionTabs } from "../constants";
 import { SettingsHelper } from "./settingsHelper";
 
 export class AppCenterUrlBuilder {

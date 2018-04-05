@@ -1,11 +1,11 @@
 import * as vscode from 'vscode';
 import * as CodePush from ".";
+import { CommandNames } from '../../../constants';
 import { ExtensionManager } from "../../../extensionManager";
-import { CommandNames } from '../../../helpers/constants';
 import { CurrentApp } from "../../../helpers/interfaces";
-import { Strings } from '../../../helpers/strings';
 import { CustomQuickPickItem } from '../../../helpers/vsCodeUtils';
 import { ILogger } from "../../../log/logHelper";
+import { Strings } from '../../../strings';
 import { RNCPAppCommand } from './rncpAppCommand';
 
 /* Internal command */

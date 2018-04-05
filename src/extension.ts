@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
+import { CommandNames } from './constants';
 import { ExtensionManager } from './extensionManager';
-import { CommandNames } from './helpers/constants';
 import { OutputChannelLogger } from './log/outputChannelLogger';
 
 let _extensionManager: ExtensionManager;
