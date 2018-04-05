@@ -1,4 +1,5 @@
 import { commands, MessageItem, QuickPickItem, StatusBarAlignment, StatusBarItem, window } from "vscode";
+import { models } from "../appcenter/api";
 import { Constants, MessageTypes } from "./constants";
 import { Utils } from "./utils";
 
@@ -29,6 +30,16 @@ export class ButtonMessageItem implements MessageItem, IButtonMessageItem {
 }
 
 export class VsCodeUtils {
+
+    public static getQuickPickItemsForAppsList(appsList: models.AppResponse[]) {
+        return appsList.map((app: models.AppResponse) => {
+            return {
+                label: `${app.name} (${app.os})`,
+                description: app.owner.type,
+                target: `${app.name}`
+            };
+        });
+    }
 
     public static getStatusBarItem(): StatusBarItem {
         return window.createStatusBarItem(StatusBarAlignment.Left, 12);
