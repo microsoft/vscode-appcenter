@@ -3,8 +3,8 @@ import { CurrentApp } from "./interfaces";
 export class Strings {
 
     /* Menu labeles */
-    public static StartAnIdeaMenuLabel: string = "Start An Idea";    
-    public static OrganizationMenuDescriptionLabel: string = "Organization";    
+    public static StartAnIdeaMenuLabel: string = "Start An Idea";
+    public static OrganizationMenuDescriptionLabel: string = "Organization";
     public static UserMenuDescriptionLabel: string = "User";
     public static LoginMenuLabel: string = "Login";
     public static GetCurrentAppMenuLabel: string = "Get current app info";
@@ -13,7 +13,7 @@ export class Strings {
     public static SettingsMenuLabel: string = "Settings";
     public static LoginToAnotherAccountMenuLabel: string = "Login to another App Center account";
     public static SwitchAccountMenuLabel: string = "Switch App Center account";
-    public static LogoutMenuLabel: string = "Logout";  
+    public static LogoutMenuLabel: string = "Logout";
 
     public static SelectLoginTypeMsg: string = "Select the way you would like to authenticate with App Center";
     public static OkBtnLabel: string = "Ok";

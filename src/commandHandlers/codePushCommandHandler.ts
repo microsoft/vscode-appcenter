@@ -1,7 +1,7 @@
-import { ExtensionManager } from "../extensionManager";
-import { ILogger } from "../log/logHelper";
-import { ConsoleLogger } from "../log/consoleLogger";
 import * as CodePush from "../appcenter/commands/codepush";
+import { ExtensionManager } from "../extensionManager";
+import { ConsoleLogger } from "../log/consoleLogger";
+import { ILogger } from "../log/logHelper";
 
 export default class CodePushCommandHandler {
 

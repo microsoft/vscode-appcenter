@@ -10,11 +10,11 @@ import { ILogger } from "../../log/logHelper";
 import { Profile } from "../auth/profile/profile";
 import AppCenterPortalMenu from "./appCenterPortalMenu";
 import * as CodePush from "./codepush";
-import * as Settings from "./settings";
 import { Command } from "./command";
 import GetCurrentApp from "./getCurrentApp";
 import Login from "./login";
 import SetCurrentApp from "./setCurrentApp";
+import * as Settings from "./settings";
 import Start from "./start";
 
 export default class ShowMenu extends Command {

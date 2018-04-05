@@ -1,7 +1,7 @@
-import { ExtensionManager } from "../extensionManager";
-import { ILogger } from "../log/logHelper";
-import { ConsoleLogger } from "../log/consoleLogger";
 import * as Settings from "../appcenter/commands/settings";
+import { ExtensionManager } from "../extensionManager";
+import { ConsoleLogger } from "../log/consoleLogger";
+import { ILogger } from "../log/logHelper";
 
 export default class SettingsCommandHandler {
 

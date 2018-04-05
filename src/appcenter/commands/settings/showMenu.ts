@@ -1,11 +1,11 @@
 import * as vscode from "vscode";
-import { ExtensionManager } from "../../../extensionManager";
-import { Command } from '../command';
-import { ILogger } from "../../../log/logHelper";
-import { Strings } from "../../../helpers/strings";
-import { CommandNames } from "../../../helpers/constants";
-import { CustomQuickPickItem } from "../../../helpers/vsCodeUtils";
 import * as Settings from ".";
+import { ExtensionManager } from "../../../extensionManager";
+import { CommandNames } from "../../../helpers/constants";
+import { Strings } from "../../../helpers/strings";
+import { CustomQuickPickItem } from "../../../helpers/vsCodeUtils";
+import { ILogger } from "../../../log/logHelper";
+import { Command } from '../command';
 
 /* Internal command */
 export default class ShowMenu extends Command {
@@ -19,7 +19,7 @@ export default class ShowMenu extends Command {
             return false;
         }
 
-        let menuOptions: CustomQuickPickItem[] = [];
+        const menuOptions: CustomQuickPickItem[] = [];
 
         //todo change implementation
 

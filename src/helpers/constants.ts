@@ -69,7 +69,7 @@ export class CommandNames {
         public static LoginToAnotherAccount: string = `${CommandNames.CommandPrefix}settings.loginToAnotherAccount`;
         public static SwitchAccount: string = `${CommandNames.CommandPrefix}settings.switchAccount`;
         public static Logout: string = `${CommandNames.CommandPrefix}settings.logout`;
-    }
+    };
 
     public static CodePush = class {
         public static ShowMenu: string = CommandNames.CommandPrefix + "codepush.showMenu";

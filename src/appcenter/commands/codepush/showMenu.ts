@@ -1,12 +1,12 @@
 import * as vscode from 'vscode';
+import * as CodePush from ".";
 import { ExtensionManager } from "../../../extensionManager";
 import { CommandNames } from '../../../helpers/constants';
 import { CurrentApp } from "../../../helpers/interfaces";
 import { Strings } from '../../../helpers/strings';
+import { CustomQuickPickItem } from '../../../helpers/vsCodeUtils';
 import { ILogger } from "../../../log/logHelper";
 import { RNCPAppCommand } from './rncpAppCommand';
-import * as CodePush from ".";
-import { CustomQuickPickItem } from '../../../helpers/vsCodeUtils';
 
 /* Internal command */
 export default class ShowMenu extends RNCPAppCommand {
