@@ -14,6 +14,9 @@ export class Strings {
     public static LoginToAnotherAccountMenuLabel: string = "Login to another AppCenter account";
     public static SwitchAccountMenuLabel: string = "Switch AppCenter account";
     public static LogoutMenuLabel: string = "Logout";
+    public static VstsLoginToAnotherAccountMenuLabel: string = "Login to another Vsts account";
+    public static VstsSwitchAccountMenuLabel: string = "Switch Vsts account";
+    public static VstsLogoutMenuLabel: string = "Logout Vsts";
 
     public static SelectLoginTypeMsg: string = "Select the way you would like to authenticate with AppCenter";
     public static OkBtnLabel: string = "Ok";
@@ -25,7 +28,7 @@ export class Strings {
     public static UserLoggedOutMsg: string = "Successfully logged out of AppCenter";
     public static MenuTitlePlaceholder: string = "Please select action";
 
-    public static LoginToAppCenterButton: string = "Login to AppCenter";
+    public static LoginToAppCenterButton: string = "AppCenter: Login";
     public static PleaseEnterIdeaName: string = "Please enter idea name";
     public static PleaseEnterNewRepositoryUrl: string = "Please enter repository url";
     public static PleaseSelectCurrentAppOrgMsg: string = "Please select user/organization where to create an App";
