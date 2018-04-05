@@ -105,68 +105,57 @@
                 "appcenter.demoAppGitRepo": {
                     "description": "RN Demo App GH Repository",
                     "type": "string",
-                    "default": "https://github.com/Microsoft/appcenter-sampleapp-react-native.git",
-                    "scope": "resource"
+                    "default": "https://github.com/Microsoft/appcenter-sampleapp-react-native.git"
                 },
                 "appcenter.portalEndpoint": {
                     "description": "Appcenter portal",
                     "type": "string",
-                    "default": "https://appcenter.ms",
-                    "scope": "resource"
+                    "default": "https://appcenter.ms"
                 },
                 "appcenter.loginendpoint": {
                     "description": "Endpoint to login to appcenter",
                     "type": "string",
-                    "default": "https://appcenter.ms/cli-login",
-                    "scope": "resource"
+                    "default": "https://appcenter.ms/cli-login"
                 },
                 "appcenter.api.endpoint": {
                     "description": "API Endpoint to appcenter",
                     "type": "string",
-                    "default": "https://api.appcenter.ms",
-                    "scope": "resource"
+                    "default": "https://api.appcenter.ms"
                 },
                 "appcenter.api.distribitiongrouptestersname": {
                     "description": "AppCenter Distribution Group Testers Name",
                     "type": "string",
-                    "default": "Beta Testers",
-                    "scope": "resource"
+                    "default": "Beta Testers"
                 },
                 "appcenter.api.createtestersdistibutiongroup": {
                     "description": "Configure if we should create new testers distribution group",
                     "type": "boolean",
-                    "default": "true",
-                    "scope": "resource"
+                    "default": "true"
                 },
                 "appcenter.api.connectrepotobuildservice": {
                     "description": "Configure if we should connect repo to build service",
                     "type": "boolean",
-                    "default": "true",
-                    "scope": "resource"
+                    "default": "true"
                 },
                 "appcenter.api.configurebranchandstartnewbuild": {
                     "description": "Configure branch and start new build",
                     "type": "boolean",
-                    "default": "true",
-                    "scope": "resource"
+                    "default": "true"
                 },
                 "appcenter.api.defaultbranchname": {
                     "description": "AppCenter Default Branch Name",
                     "type": "string",
-                    "default": "master",
-                    "scope": "resource"
+                    "default": "master"
                 },
                 "appcenter.api.createiosapp": {
                     "description": "Create iOS App In AppCenter",
                     "type": "boolean",
-                    "default": "true",
-                    "scope": "resource"
+                    "default": "true"
                 },
                 "appcenter.api.createandroidapp": {
                     "description": "Create Android App In AppCenter",
                     "type": "boolean",
-                    "default": "true",
-                    "scope": "resource"
+                    "default": "true"
                 },
                 "appcenter.logLevel": {
                     "description": "Logging level in extension",
@@ -179,8 +168,7 @@
                         "Error",
                         "None"
                     ],
-                    "default": "Info",
-                    "scope": "resource"
+                    "default": "Info"
                 }
             }
         }
