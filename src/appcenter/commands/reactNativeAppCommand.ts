@@ -3,9 +3,9 @@ import { AppCenterOS } from "../../constants";
 import { AppCenterAppsCache } from "../../helpers/appsCache";
 import { CurrentApp, CurrentAppDeployments, Profile } from "../../helpers/interfaces";
 import { Utils } from "../../helpers/utils";
-import * as models from '../lib/app-center-node-client/models';
 import { VsCodeUtils } from "../../helpers/vsCodeUtils";
 import { Strings } from "../../strings";
+import { models } from "../api";
 import { Command } from "./command";
 
 export class ReactNativeAppCommand extends Command {

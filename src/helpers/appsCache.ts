@@ -41,7 +41,7 @@ export class AppCenterAppsCache {
         return this.cachedApps && this.cachedApps.length > 0;
     }
 
-    protected compareCacheWith(apps: models.AppResponse[]) {
+    protected doesCacheDifferFrom(apps: models.AppResponse[]): boolean {
         if (!this.cachedApps || !apps) {
             return true;
         }
@@ -64,7 +64,7 @@ export class AppCenterAppsCache {
 
     public updateCache(apps: models.AppResponse[], display: (apps: models.AppResponse[]) => any) {
         const rnApps = apps.filter(app => app.platform === Constants.AppCenterReactNativePlatformName);
-        const updateMenu = this.compareCacheWith(rnApps);
+        const updateMenu = this.doesCacheDifferFrom(rnApps);
         this._cachedApps = rnApps;
         if (updateMenu) {
             display(rnApps);
