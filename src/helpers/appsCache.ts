@@ -1,8 +1,8 @@
 import { AppCenterClient, AppCenterClientFactory, createAppCenterClient, models } from "../appcenter/api";
 
+import { Constants } from "../constants";
 import { Profile } from "../helpers/interfaces";
 import { SettingsHelper } from "../helpers/settingsHelper";
-import { Constants } from "../constants";
 
 export class AppCenterAppsCache {
     private clientFactory: AppCenterClientFactory;
