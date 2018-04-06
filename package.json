@@ -74,7 +74,22 @@
             },
             {
                 "command": "appcenter.settings.logout",
-                "title": "Logout",
+                "title": "Switch Vsts Account",
+                "category": "AppCenter Settings"
+            },
+            {
+                "command": "appcenter.settings.vsts.login",
+                "title": "Login to another Vsts account",
+                "category": "AppCenter Settings"
+            },
+            {
+                "command": "appcenter.settings.vsts.switchAccount",
+                "title": "Logout from Vsts",
+                "category": "AppCenter Settings"
+            },
+            {
+                "command": "appcenter.settings.vsts.logout",
+                "title": "Logout from Vsts",
                 "category": "AppCenter Settings"
             },
             {

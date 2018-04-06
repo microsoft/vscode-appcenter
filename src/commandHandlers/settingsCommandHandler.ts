@@ -22,4 +22,16 @@ export default class SettingsCommandHandler {
     public async Logout(): Promise<void> {
         await new Settings.Logout(this.manager, this.logger).runNoClient();
     }
+
+    public async LoginToVsts(): Promise<void> {
+        await new Settings.LoginToVsts(this.manager, this.logger).runNoClient();
+    }
+
+    public async LogoutVsts(): Promise<void> {
+        await new Settings.LogoutVsts(this.manager, this.logger).runNoClient();
+    }
+
+    public async SwitchVstsAcc(): Promise<void> {
+        await new Settings.SwitchVstsAccount(this.manager, this.logger).runNoClient();
+    }
 }

@@ -15,7 +15,7 @@ export default class ShowMenu extends Command {
     }
 
     public async run(): Promise<boolean | void> {
-        if (! await super.run()) {
+        if (!await super.run()) {
             return false;
         }
 
@@ -39,6 +39,24 @@ export default class ShowMenu extends Command {
             label: Strings.LogoutMenuLabel,
             description: "",
             target: CommandNames.Settings.Logout
+        });
+
+        menuOptions.push(<CustomQuickPickItem>{
+            label: Strings.VstsSwitchAccountMenuLabel,
+            description: "",
+            target: CommandNames.Settings.SwitchAccountVsts
+        });
+
+        menuOptions.push(<CustomQuickPickItem>{
+            label: Strings.VstsLoginToAnotherAccountMenuLabel,
+            description: "",
+            target: CommandNames.Settings.LoginVsts
+        });
+
+        menuOptions.push(<CustomQuickPickItem>{
+            label: Strings.VstsLogoutMenuLabel,
+            description: "",
+            target: CommandNames.Settings.LogoutVsts
         });
 
         return this.showQuickPick(menuOptions);
@@ -65,6 +83,18 @@ export default class ShowMenu extends Command {
 
                         case (CommandNames.Settings.Logout):
                             new Settings.Logout(this.manager, this.logger).runNoClient();
+                            break;
+
+                        case (CommandNames.Settings.LoginVsts):
+                            new Settings.LoginToVsts(this.manager, this.logger).runNoClient();
+                            break;
+
+                        case (CommandNames.Settings.SwitchAccountVsts):
+                            new Settings.SwitchVstsAccount(this.manager, this.logger).runNoClient();
+                            break;
+
+                        case (CommandNames.Settings.LogoutVsts):
+                            new Settings.LogoutVsts(this.manager, this.logger).runNoClient();
                             break;
 
                         default:

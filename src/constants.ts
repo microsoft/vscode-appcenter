@@ -69,6 +69,10 @@ export class CommandNames {
         public static LoginToAnotherAccount: string = `${CommandNames.CommandPrefix}settings.loginToAnotherAccount`;
         public static SwitchAccount: string = `${CommandNames.CommandPrefix}settings.switchAccount`;
         public static Logout: string = `${CommandNames.CommandPrefix}settings.logout`;
+
+        public static LoginVsts: string = `${CommandNames.CommandPrefix}settings.vsts.login`;
+        public static SwitchAccountVsts: string = `${CommandNames.CommandPrefix}settings.vsts.switchAccount`;
+        public static LogoutVsts: string = `${CommandNames.CommandPrefix}settings.vsts.logout`;
     };
 
     public static CodePush = class {
