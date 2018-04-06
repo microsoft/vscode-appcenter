@@ -1,11 +1,11 @@
-import * as vscode from "vscode";
 import { AppCenterOS } from "../../constants";
-import { AppCenterAppsCache } from "../../helpers/appsCache";
+import { AppCenterCache } from "../../helpers/cache/cache";
+import { createAppCenterCache } from "../../helpers/cache/cacheFactory";
 import { CurrentApp, CurrentAppDeployments, Profile } from "../../helpers/interfaces";
 import { Utils } from "../../helpers/utils";
 import { VsCodeUtils } from "../../helpers/vsCodeUtils";
 import { Strings } from "../../strings";
-import { models } from "../api";
+import { AppCenterClient, models } from "../api";
 import { Command } from "./command";
 
 export class ReactNativeAppCommand extends Command {
@@ -65,21 +65,10 @@ export class ReactNativeAppCommand extends Command {
     }
 
     protected loadApps(display: (apps: models.AppResponse[]) => any) {
-        const appsCache: AppCenterAppsCache = AppCenterAppsCache.getInstance();
-        try {
-            if (appsCache.hasCache()) {
-                display(appsCache.cachedApps);
-            }
-            vscode.window.withProgress({ location: vscode.ProgressLocation.Window, title: Strings.GetAppsListMessage }, () => {
-                return this.client.account.apps.list({
-                    orderBy: "name"
-                });
-            }).then((apps: models.AppResponse[]) => {
-                appsCache.updateCache(apps, display);
-            });
-        } catch (e) {
+        const appsCache: AppCenterCache<models.AppResponse, AppCenterClient> = createAppCenterCache().getAppsCache();
+        appsCache.updateCacheWithProgress(this.client, display).catch((e) => {
             VsCodeUtils.ShowErrorMessage(Strings.UnknownError);
             this.logger.error(e.message, e);
-        }
+        });
     }
 }

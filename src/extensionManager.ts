@@ -1,9 +1,12 @@
 import { Disposable, StatusBarItem } from "vscode";
+import { AppCenterClient, createAppCenterClient, models } from "./appcenter/api/";
 import Auth from "./appcenter/auth/auth";
 import * as CommandHandlers from './commandHandlers';
 import { CommandNames } from "./constants";
-import { AppCenterAppsCache } from "./helpers/appsCache";
+import { AppCenterCache } from "./helpers/cache/cache";
+import { createAppCenterCache } from "./helpers/cache/cacheFactory";
 import { Profile } from "./helpers/interfaces";
+import { SettingsHelper } from "./helpers/settingsHelper";
 import { VsCodeUtils } from "./helpers/vsCodeUtils";
 import { ConsoleLogger } from "./log/consoleLogger";
 import { ILogger } from "./log/logHelper";
@@ -38,6 +41,7 @@ export class ExtensionManager implements Disposable {
     private _appCenterStatusBarItem: StatusBarItem;
     private _projectRootPath: string | undefined;
     private _logger: ILogger;
+    private _appsCache: AppCenterCache<models.AppResponse, AppCenterClient>;
 
     public get commandHandlers(): CommandHandlersContainer {
         return this._commandHandlersContainer;
@@ -49,6 +53,7 @@ export class ExtensionManager implements Disposable {
 
     public async Initialize(projectRootPath: string | undefined, logger: ILogger = new ConsoleLogger()): Promise<void> {
         this._logger = logger;
+        this._appsCache = createAppCenterCache().getAppsCache();
         this._projectRootPath = projectRootPath;
         this._logger.info("Init Extension Manager");
         await this.initializeExtension();
@@ -102,7 +107,10 @@ export class ExtensionManager implements Disposable {
         this._appCenterStatusBarItem = VsCodeUtils.getStatusBarItem();
         Auth.getProfile().then((profile: Profile | null) => {
             if (profile) {
-                AppCenterAppsCache.getInstance().loadAppsCache(profile);
+                const client = createAppCenterClient().fromProfile(profile, SettingsHelper.getAppCenterAPIEndpoint());
+                if (client) {
+                    this._appsCache.updateCacheInBackground(client);
+                }
             }
             return this.setupAppCenterStatusBar(profile);
         });
