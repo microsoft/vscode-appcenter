@@ -1,4 +1,5 @@
 import { Command } from "../command";
+import Login from "../login";
 
 export default class LoginToAnotherAccount extends Command {
     public async run(): Promise<boolean | void> {
@@ -6,8 +7,6 @@ export default class LoginToAnotherAccount extends Command {
             return false;
         }
 
-        return true;
-
-        //todo implement
+        return await new Login(this.manager, this.logger).runNoClient();
     }
 }

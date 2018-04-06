@@ -7,6 +7,8 @@ import { VsCodeUtils } from "./helpers/vsCodeUtils";
 import { ConsoleLogger } from "./log/consoleLogger";
 import { ILogger } from "./log/logHelper";
 import { Strings } from "./strings";
+import AppCenterProfileStorage from "./appcenter/auth/profile/appCenterProfileStorage";
+import { Utils } from "./helpers/utils";
 
 class CommandHandlersContainer {
     private _appCenterCommandHandler: CommandHandlers.AppCenter;
@@ -37,6 +39,7 @@ export class ExtensionManager implements Disposable {
     private _appCenterStatusBarItem: StatusBarItem;
     private _projectRootPath: string | undefined;
     private _logger: ILogger;
+    private _auth: Auth;
 
     public get commandHandlers(): CommandHandlersContainer {
         return this._commandHandlersContainer;
@@ -44,6 +47,10 @@ export class ExtensionManager implements Disposable {
 
     public get projectRootPath(): string | undefined {
         return this._projectRootPath;
+    }
+
+    public get auth(): Auth {
+        return this._auth;
     }
 
     public async Initialize(projectRootPath: string | undefined, logger: ILogger = new ConsoleLogger()): Promise<void> {
@@ -99,9 +106,13 @@ export class ExtensionManager implements Disposable {
     private async initializeExtension(): Promise<void> {
         this._commandHandlersContainer = new CommandHandlersContainer(this, this._logger);
         this._appCenterStatusBarItem = VsCodeUtils.getStatusBarItem();
-        Auth.getProfile().then((profile: Profile | null) => {
-            return this.setupAppCenterStatusBar(profile);
-        });
+
+        // Initialize Auth
+        const profileStorage: AppCenterProfileStorage = new AppCenterProfileStorage(Utils.getProfileFileName());
+        this._auth = new Auth(profileStorage);
+        await this._auth.initialize();
+        const activeProfile = this._auth.activeProfile;
+        return this.setupAppCenterStatusBar(activeProfile);
     }
 
     private cleanup(): void {

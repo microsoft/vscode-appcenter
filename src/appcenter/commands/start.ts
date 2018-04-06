@@ -17,7 +17,7 @@ import { Strings } from "../../strings";
 import { VSTSGitRepository, VSTSProject } from "../../vsts/types";
 import { VSTSProvider } from "../../vsts/vstsProvider";
 import { models } from "../api";
-import { Profile } from "../auth/profile/profile";
+import { Profile } from "../../helpers/interfaces";
 import { ListOKResponseItem } from "../lib/app-center-node-client/models";
 import { Command } from "./command";
 // tslint:disable-next-line:no-var-requires
@@ -211,7 +211,7 @@ export default class Start extends Command {
                     target: item.name
                 };
             });
-            const myself: Profile | null = await this.Profile;
+            const myself: Profile | null = await this.appCenterProfile;
             if (myself) {
                 // Insert user at the very 1st position
                 options.splice( 0, 0, {

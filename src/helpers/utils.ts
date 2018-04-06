@@ -2,10 +2,11 @@
 
 import { execSync } from "child_process";
 import * as fs from "fs";
+import * as os from "os";
 import * as open from "open";
 import * as opener from "opener";
 import * as path from "path";
-import { AppCenterOS } from "../constants";
+import { AppCenterOS, Constants } from "../constants";
 import { Strings } from "../strings";
 import { CurrentApp, CurrentAppDeployments } from "./interfaces";
 import { Validators } from "./validators";
@@ -118,5 +119,17 @@ export class Utils {
             };
         }
         return null;
+    }
+
+    private static getUserDir(): string {
+        if (os.platform() === "win32") {
+            return process.env.AppData;
+        } else {
+            return os.homedir();
+        }
+    }
+
+    public static getProfileFileName() {
+        return path.join(Utils.getUserDir(), Constants.ProfileDir, Constants.ProfileFileName);
     }
 }
