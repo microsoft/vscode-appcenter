@@ -1,3 +1,4 @@
+import { Md5 } from "ts-md5/dist/md5";
 import { AppCenterClient, models } from "../appcenter/api";
 import { Constants } from "../constants";
 import { AppCenterCache } from "./cache";
@@ -22,6 +23,8 @@ export class AppCenterAppsCache extends AppCenterCache<models.AppResponse, AppCe
     }
 
     protected compareItems(cachedApp: models.AppResponse, app: models.AppResponse): boolean {
-        return cachedApp.id === app.id;
+        const hashOfTheCachedObject = Md5.hashStr(JSON.stringify(cachedApp));
+        const hashOfTheIncomingObject = Md5.hashStr(JSON.stringify(app));
+        return hashOfTheCachedObject === hashOfTheIncomingObject;
     }
 }
