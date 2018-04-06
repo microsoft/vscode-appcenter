@@ -34,8 +34,8 @@ gulp.task("tslint", function () {
 
 gulp.task("clean", function () {
     var pathsToDelete = [
-        "!src/appcenter/lib/**/*.js",
         "src/**/*.js",
+        "!src/appcenter/lib/**/*.js",
         "src/**/*.js.map",
         "test/**/*.js",
         "test/**/*.js.map",
