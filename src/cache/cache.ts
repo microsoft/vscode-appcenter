@@ -36,12 +36,12 @@ export abstract class AppCenterCache<T, Z> {
     }
 
     protected updateCache(loader: Z, display: (items: T[]) => any = function () { }) {
-        return this.loadItems(loader).then((cachedItems: T[]) => {
-            if (cachedItems && cachedItems.length) {
-                const displayChanges = this.сacheDiffersFrom(cachedItems);
-                this._cache = cachedItems;
+        return this.loadItems(loader).then((items: T[]) => {
+            if (items && items.length) {
+                const displayChanges = this.сacheDiffersFrom(items);
+                this._cache = items;
                 if (displayChanges) {
-                    display(cachedItems);
+                    display(items);
                 }
             }
         });
