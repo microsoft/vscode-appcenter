@@ -3,11 +3,10 @@ import * as vscode from "vscode";
 import { CommandNames } from "../../constants";
 import { ExtensionManager } from "../../extensionManager";
 import { FSUtils } from "../../helpers/fsUtils";
-import { CurrentApp } from "../../helpers/interfaces";
+import { CurrentApp, AppCenterProfile } from "../../helpers/interfaces";
 import { Utils } from "../../helpers/utils";
 import { ILogger } from "../../log/logHelper";
 import { Strings } from "../../strings";
-import { Profile } from "../auth/profile/profile";
 import AppCenterPortalMenu from "./appCenterPortalMenu";
 import * as CodePush from "./codepush";
 import { Command } from "./command";
@@ -26,7 +25,7 @@ export default class ShowMenu extends Command {
     public async runNoClient(): Promise<void> {
         super.runNoClient();
 
-        return this.Profile.then((profile: Profile | null) => {
+        return this.appCenterProfile.then((profile: AppCenterProfile | null) => {
             const appCenterMenuOptions: vscode.QuickPickItem[] = [];
             if (!profile) {
 

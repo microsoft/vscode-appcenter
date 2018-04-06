@@ -21,6 +21,8 @@ export class Constants {
     public static AppCenterSampleGitRemoteName: string = "appcenter-sample-repo";
     public static AppCenterSampleGitRemoteDefaultBranchName: string = "master";
     public static GitDefaultRemoteName: string = 'origin';
+    public static ProfileDir: string = ".vscode-appcenter";
+    public static ProfileFileName: string = "VSCodeAppCenterProfile.json";
 
     // IMPORTANT: this two items below should stay in sync in terms of xcode projectOrWorkspacePath/scheme values
     // We should decide how we should handle this (e.g. create manually within AppCenter site)

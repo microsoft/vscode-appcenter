@@ -21,13 +21,14 @@ export default class ShowMenu extends Command {
 
         const menuOptions: CustomQuickPickItem[] = [];
 
-        //todo change implementation
-
-        menuOptions.push(<CustomQuickPickItem>{
-            label: Strings.SwitchAccountMenuLabel,
-            description: "",
-            target: CommandNames.Settings.SwitchAccount
-        });
+        const profiles = await this.manager.auth.getProfiles();
+        if (profiles.length > 1) {
+            menuOptions.push(<CustomQuickPickItem>{
+                label: Strings.SwitchAccountMenuLabel,
+                description: "",
+                target: CommandNames.Settings.SwitchAccount
+            });
+        }
 
         menuOptions.push(<CustomQuickPickItem>{
             label: Strings.LoginToAnotherAccountMenuLabel,
@@ -56,7 +57,7 @@ export default class ShowMenu extends Command {
 
                     switch (selected.target) {
                         case (CommandNames.Settings.SwitchAccount):
-                            new Settings.SwitchAccount(this.manager, this.logger).run();
+                            new Settings.SwitchAccount(this.manager, this.logger).runNoClient();
                             break;
 
                         case (CommandNames.Settings.LoginToAnotherAccount):

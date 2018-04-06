@@ -22,8 +22,8 @@ export class Strings {
     public static PleaseLoginViaBrowser: string = "We are about to launch a browser window so you can automatically create an AppCenter API token";
     public static FailedToExecuteLoginMsg: string = "Failed to execute login to AppCenter";
     public static UserIsNotLoggedInMsg: string = "You are not logged into AppCenter";
-    public static UserLoggedOutMsg: string = "Successfully logged out of AppCenter";
     public static MenuTitlePlaceholder: string = "Please select action";
+    public static SelectProfileTitlePlaceholder: string = "Please select account";
 
     public static LoginToAppCenterButton: string = "Login to AppCenter";
     public static PleaseEnterIdeaName: string = "Please enter idea name";
@@ -106,6 +106,14 @@ export class Strings {
 
     public static YouAreLoggedInMsg(name: string): string {
         return `You are logged into AppCenter as '${name}'`;
+    }
+
+    public static UserLoggedOutMsg(name: string): string {
+        return `Successfully logged out of AppCenter as '${name}'`;
+    }
+
+    public static UserSwitchedMsg(name: string): string {
+        return `Successfully switched AppCenter account to '${name}'`;
     }
 
     public static YourCurrentAppMsg(appName: string): string {

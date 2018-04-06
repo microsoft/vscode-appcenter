@@ -22,21 +22,19 @@ export default class SetCurrentApp extends ReactNativeAppCommand {
             return;
         }
 
-        try {
-            if (ReactNativeAppCommand.cachedApps && ReactNativeAppCommand.cachedApps.length > 0) {
-                this.showApps(ReactNativeAppCommand.cachedApps);
-            }
-            vscode.window.withProgress({ location: vscode.ProgressLocation.Window, title: Strings.GetAppsListMessage }, () => {
-                return this.client.account.apps.list({
-                    orderBy: "name"
-                });
+        if (ReactNativeAppCommand.cachedApps && ReactNativeAppCommand.cachedApps.length > 0) {
+            this.showApps(ReactNativeAppCommand.cachedApps);
+        }
+        vscode.window.withProgress({ location: vscode.ProgressLocation.Window, title: Strings.GetAppsListMessage }, () => {
+            return this.client.account.apps.list({
+                orderBy: "name"
             }).then((apps: models.AppResponse[]) => {
                 this.showApps(apps);
+            }).catch((e) => {
+                VsCodeUtils.ShowErrorMessage(Strings.UnknownError);
+                this.logger.error(e.message, e);
             });
-        } catch (e) {
-            VsCodeUtils.ShowErrorMessage(Strings.UnknownError);
-            this.logger.error(e.message, e);
-        }
+        });
     }
 
     private toAppCenterOS(codePushOs: string): AppCenterOS | undefined {
