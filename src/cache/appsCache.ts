@@ -1,5 +1,5 @@
-import { AppCenterClient, models } from "../../appcenter/api";
-import { Constants } from "../../constants";
+import { AppCenterClient, models } from "../appcenter/api";
+import { Constants } from "../constants";
 import { AppCenterCache } from "./cache";
 
 export class AppCenterAppsCache extends AppCenterCache<models.AppResponse, AppCenterClient> {

@@ -1,5 +1,5 @@
 
-import { AppCenterClient, models } from "../../appcenter/api";
+import { AppCenterClient, models } from "../appcenter/api";
 import { AppCenterAppsCache } from "./appsCache";
 import { AppCenterCache } from "./cache";
 

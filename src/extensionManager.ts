@@ -1,10 +1,10 @@
 import { Disposable, StatusBarItem } from "vscode";
 import { AppCenterClient, createAppCenterClient, models } from "./appcenter/api/";
 import Auth from "./appcenter/auth/auth";
+import { AppCenterCache } from "./cache/cache";
+import { createAppCenterCache } from "./cache/cacheFactory";
 import * as CommandHandlers from './commandHandlers';
 import { CommandNames } from "./constants";
-import { AppCenterCache } from "./helpers/cache/cache";
-import { createAppCenterCache } from "./helpers/cache/cacheFactory";
 import { Profile } from "./helpers/interfaces";
 import { SettingsHelper } from "./helpers/settingsHelper";
 import { VsCodeUtils } from "./helpers/vsCodeUtils";

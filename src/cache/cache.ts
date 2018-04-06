@@ -1,5 +1,5 @@
 import * as vscode from "vscode";
-import { Strings } from "../../strings";
+import { Strings } from "../strings";
 
 /**
  * T: type of the cache item.
@@ -38,7 +38,7 @@ export abstract class AppCenterCache<T, Z> {
     protected updateCache(loader: Z, display: (items: T[]) => any = function () { }) {
         return this.loadItems(loader).then((cachedItems: T[]) => {
             if (cachedItems && cachedItems.length) {
-                const displayChanges = this.doesCacheDifferFrom(cachedItems);
+                const displayChanges = this.сacheDiffersFrom(cachedItems);
                 this._cache = cachedItems;
                 if (displayChanges) {
                     display(cachedItems);
@@ -47,8 +47,8 @@ export abstract class AppCenterCache<T, Z> {
         });
     }
 
-    protected doesCacheDifferFrom(items: T[]): boolean {
-        const compareItems = this.compareItems;
+    protected сacheDiffersFrom(items: T[]): boolean {
+        const compareItemsFunction = this.compareItems;
         if (!this.cache || !items) {
             return true;
         }
@@ -56,13 +56,14 @@ export abstract class AppCenterCache<T, Z> {
             return true;
         }
         let differs: boolean = false;
-        this.cache.every(function (cachedItem) {
+        this.cache.every((cachedItem) => {
             const matches = items.filter((item) => {
-                return compareItems(cachedItem, item);
+                return compareItemsFunction(cachedItem, item);
             });
+            // If we find no matches to this cache item in items, then arrays differ.
             if (matches.length === 0) {
                 differs = true;
-                return false;
+                return false; // Stop the execution of every();
             }
             return true;
         });

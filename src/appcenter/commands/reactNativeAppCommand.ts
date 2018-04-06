@@ -1,6 +1,6 @@
+import { AppCenterCache } from "../../cache/cache";
+import { createAppCenterCache } from "../../cache/cacheFactory";
 import { AppCenterOS } from "../../constants";
-import { AppCenterCache } from "../../helpers/cache/cache";
-import { createAppCenterCache } from "../../helpers/cache/cacheFactory";
 import { CurrentApp, CurrentAppDeployments, Profile } from "../../helpers/interfaces";
 import { Utils } from "../../helpers/utils";
 import { VsCodeUtils } from "../../helpers/vsCodeUtils";

@@ -1,6 +1,6 @@
+import { AppCenterCache } from "../../../cache/cache";
+import { createAppCenterCache } from "../../../cache/cacheFactory";
 import { ExtensionManager } from "../../../extensionManager";
-import { AppCenterCache } from "../../../helpers/cache/cache";
-import { createAppCenterCache } from "../../../helpers/cache/cacheFactory";
 import { VsCodeUtils } from "../../../helpers/vsCodeUtils";
 import { ILogger } from "../../../log/logHelper";
 import { Strings } from "../../../strings";
