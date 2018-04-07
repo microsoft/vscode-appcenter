@@ -26,19 +26,9 @@ export default class Login extends Command {
         .then((loginType) => {
             switch (loginType) {
                 case (AppCenterLoginType[AppCenterLoginType.Interactive]):
-                    const messageItems: IButtonMessageItem[] = [];
-                    const loginUrl = `${SettingsHelper.getAppCenterLoginEndpoint()}?${qs.stringify({ hostname: os.hostname()})}`;
-                    messageItems.push({ title : Strings.OkBtnLabel,
-                                        url : loginUrl });
-
-                    return VsCodeUtils.ShowInfoMessage(Strings.PleaseLoginViaBrowser, ...messageItems)
-                    .then((selection: IButtonMessageItem | undefined) => {
-                        if (selection) {
-                            return vscode.window.showInputBox({ prompt: Strings.PleaseProvideToken, ignoreFocusOut: true })
-                            .then(token => {
-                                this.loginWithToken(token);
-                            });
-                        } else { return; }
+                    return vscode.window.showInputBox({ prompt: Strings.PleaseProvideToken, ignoreFocusOut: true })
+                    .then(token => {
+                        this.loginWithToken(token);
                     });
                 case (AppCenterLoginType[AppCenterLoginType.Token]):
                     return vscode.window.showInputBox({ prompt: Strings.PleaseProvideToken , ignoreFocusOut: true})
