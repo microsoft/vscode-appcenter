@@ -1,8 +1,11 @@
 import * as vscode from "vscode";
 import { AppCenteAppType, AppCenterBeacons, AppCenterDistributionTabs } from "../../constants";
+import { AppCenterController } from "../../controller/appCenterController";
 import { ExtensionManager } from "../../extensionManager";
 import { AppCenterUrlBuilder } from "../../helpers/appCenterUrlBuilder";
-import { CurrentApp, QuickPickAppItem } from "../../helpers/interfaces";
+import { AppCenterAppsCache } from "../../helpers/appsCache";
+import { AppCenterAppsLoader } from "../../helpers/appsLoader";
+import { AppCenterCache, AppCenterView, CurrentApp, QuickPickAppItem } from "../../helpers/interfaces";
 import { Utils } from "../../helpers/utils";
 import { VsCodeUtils } from "../../helpers/vsCodeUtils";
 import { ILogger } from "../../log/logHelper";
@@ -10,10 +13,11 @@ import { Strings } from "../../strings";
 import { models } from "../api";
 import { ReactNativeAppCommand } from "./reactNativeAppCommand";
 
-export default class AppCenterPortalMenu extends ReactNativeAppCommand {
+export default class AppCenterPortalMenu extends ReactNativeAppCommand implements AppCenterView<models.AppResponse> {
+
+    private controller: AppCenterController<models.AppResponse>;
 
     private currentAppMenuTarget: string = "MenuCurrentApp";
-    private selectedCachedItem: boolean;
 
     constructor(manager: ExtensionManager, logger: ILogger) {
         super(manager, logger);
@@ -23,7 +27,10 @@ export default class AppCenterPortalMenu extends ReactNativeAppCommand {
         if (!await super.run()) {
             return;
         }
-        this.loadApps(this.showApps.bind(this));
+        const appsLoader = new AppCenterAppsLoader(this.client);
+        const appsCache: AppCenterCache<models.AppResponse[]> = AppCenterAppsCache.getInstance();
+        this.controller = new AppCenterController(this.profile, appsLoader, appsCache, this);
+        this.controller.load();
     }
 
     private getAppCenterDistributeTabMenuItems(): vscode.QuickPickItem[] {
@@ -86,7 +93,7 @@ export default class AppCenterPortalMenu extends ReactNativeAppCommand {
         return appCenterPortalTabOptions;
     }
 
-    protected async showApps(rnApps: models.AppResponse[]) {
+    public async display(rnApps: models.AppResponse[]) {
         try {
             const options: QuickPickAppItem[] = VsCodeUtils.getQuickPickItemsForAppsList(rnApps);
             const currentApp: CurrentApp | null = await this.getCurrentApp();
@@ -99,106 +106,105 @@ export default class AppCenterPortalMenu extends ReactNativeAppCommand {
                 };
                 options.splice(0, 0, currentAppItem);
             }
-            if (!this.selectedCachedItem) {
-                vscode.window.showQuickPick(options, { placeHolder: Strings.ProvideCurrentAppPromptMsg }).then(async (selected: QuickPickAppItem) => {
-                    this.selectedCachedItem = true;
-                    if (!selected) {
-                        this.logger.debug('User cancel selection of current app');
+
+            vscode.window.showQuickPick(options, { placeHolder: Strings.ProvideCurrentAppPromptMsg }).then(async (selected: QuickPickAppItem) => {
+                this.controller.detachView();
+                if (!selected) {
+                    this.logger.debug('User cancel selection of current app');
+                    return;
+                }
+                let selectedApp: models.AppResponse;
+
+                const selectedApps: models.AppResponse[] = rnApps.filter(app => app.name === selected.target);
+
+                // If this is not current app then we can assign current app, otherwise we will use GetCurrentApp method
+                if (selected.target !== this.currentAppMenuTarget) {
+                    if (!selectedApps || selectedApps.length !== 1) {
                         return;
                     }
-                    let selectedApp: models.AppResponse;
+                    selectedApp = selectedApps[0];
+                }
 
-                    const selectedApps: models.AppResponse[] = rnApps.filter(app => app.name === selected.target);
+                const appCenterPortalTabOptions: vscode.QuickPickItem[] = this.getAppCenterTabsMenuItems();
 
-                    // If this is not current app then we can assign current app, otherwise we will use GetCurrentApp method
-                    if (selected.target !== this.currentAppMenuTarget) {
-                        if (!selectedApps || selectedApps.length !== 1) {
+                vscode.window.showQuickPick(appCenterPortalTabOptions, { placeHolder: Strings.MenuTitlePlaceholder })
+                    .then(async (selected: QuickPickAppItem) => {
+                        if (!selected) {
+                            this.logger.debug('User cancel selection of current appcenter tab');
                             return;
                         }
-                        selectedApp = selectedApps[0];
-                    }
 
-                    const appCenterPortalTabOptions: vscode.QuickPickItem[] = this.getAppCenterTabsMenuItems();
+                        let isOrg: boolean;
+                        let appName: string;
+                        let ownerName: string;
 
-                    vscode.window.showQuickPick(appCenterPortalTabOptions, { placeHolder: Strings.MenuTitlePlaceholder })
-                        .then(async (selected: QuickPickAppItem) => {
-                            if (!selected) {
-                                this.logger.debug('User cancel selection of current appcenter tab');
-                                return;
-                            }
-
-                            let isOrg: boolean;
-                            let appName: string;
-                            let ownerName: string;
-
-                            if (selectedApp) {
-                                isOrg = selectedApp.owner.type.toLowerCase() === AppCenteAppType.Org.toLowerCase();
-                                appName = selectedApp.name;
-                                ownerName = selectedApp.owner.name;
+                        if (selectedApp) {
+                            isOrg = selectedApp.owner.type.toLowerCase() === AppCenteAppType.Org.toLowerCase();
+                            appName = selectedApp.name;
+                            ownerName = selectedApp.owner.name;
+                        } else {
+                            const currentApp: CurrentApp | null = await this.getCurrentApp();
+                            if (currentApp) {
+                                isOrg = currentApp.type.toLowerCase() === AppCenteAppType.Org.toLowerCase();
+                                appName = currentApp.appName;
+                                ownerName = currentApp.ownerName;
                             } else {
-                                const currentApp: CurrentApp | null = await this.getCurrentApp();
-                                if (currentApp) {
-                                    isOrg = currentApp.type.toLowerCase() === AppCenteAppType.Org.toLowerCase();
-                                    appName = currentApp.appName;
-                                    ownerName = currentApp.ownerName;
-                                } else {
-                                    this.logger.error("Current app is undefiend");
-                                    throw new Error("Current app is undefiend");
-                                }
+                                this.logger.error("Current app is undefiend");
+                                throw new Error("Current app is undefiend");
                             }
+                        }
 
-                            switch (selected.target) {
-                                case (AppCenterBeacons.Build):
-                                    Utils.OpenUrl(AppCenterUrlBuilder.GetAppCenterURLByBeacon(ownerName, appName, AppCenterBeacons.Build, isOrg));
-                                    break;
-                                case (AppCenterBeacons.Test):
-                                    Utils.OpenUrl(AppCenterUrlBuilder.GetAppCenterURLByBeacon(ownerName, appName, AppCenterBeacons.Test, isOrg));
-                                    break;
-                                case (AppCenterBeacons.Distribute):
-                                    const appCenterDistributeTabMenuItems: vscode.QuickPickItem[] = this.getAppCenterDistributeTabMenuItems();
-                                    vscode.window.showQuickPick(appCenterDistributeTabMenuItems, { placeHolder: Strings.MenuTitlePlaceholder })
-                                        .then((selected: QuickPickAppItem) => {
-                                            if (!selected) {
-                                                this.logger.debug('User cancel selection of current appcenter tab');
-                                                return;
-                                            }
-                                            switch (selected.target) {
-                                                case (AppCenterDistributionTabs.Groups):
-                                                    Utils.OpenUrl(AppCenterUrlBuilder.GetAppCenterDistributeTabUrlByTabName(ownerName, appName, AppCenterDistributionTabs.Groups, isOrg));
-                                                    break;
-                                                case (AppCenterDistributionTabs.Stores):
-                                                    Utils.OpenUrl(AppCenterUrlBuilder.GetAppCenterDistributeTabUrlByTabName(ownerName, appName, AppCenterDistributionTabs.Stores, isOrg));
-                                                    break;
-                                                case (AppCenterDistributionTabs.CodePush):
-                                                    Utils.OpenUrl(AppCenterUrlBuilder.GetAppCenterDistributeTabUrlByTabName(ownerName, appName, AppCenterDistributionTabs.CodePush, isOrg));
-                                                    break;
-                                                case (AppCenterDistributionTabs.Releases):
-                                                    Utils.OpenUrl(AppCenterUrlBuilder.GetAppCenterDistributeTabUrlByTabName(ownerName, appName, AppCenterDistributionTabs.Releases, isOrg));
-                                                    break;
-                                                default:
-                                                    // Ideally shouldn't be there :)
-                                                    this.logger.error("Unknown option selected name");
-                                                    break;
-                                            }
-                                        });
-                                    break;
-                                case (AppCenterBeacons.Crashes):
-                                    Utils.OpenUrl(AppCenterUrlBuilder.GetAppCenterURLByBeacon(ownerName, appName, AppCenterBeacons.Crashes, isOrg));
-                                    break;
-                                case (AppCenterBeacons.Analytics):
-                                    Utils.OpenUrl(AppCenterUrlBuilder.GetAppCenterURLByBeacon(ownerName, appName, AppCenterBeacons.Analytics, isOrg));
-                                    break;
-                                case (AppCenterBeacons.Push):
-                                    Utils.OpenUrl(AppCenterUrlBuilder.GetAppCenterURLByBeacon(ownerName, appName, AppCenterBeacons.Push, isOrg));
-                                    break;
-                                default:
-                                    // Ideally shouldn't be there :)
-                                    this.logger.error("Unknown AppCenter beacon name");
-                                    break;
-                            }
-                        });
-                });
-            }
+                        switch (selected.target) {
+                            case (AppCenterBeacons.Build):
+                                Utils.OpenUrl(AppCenterUrlBuilder.GetAppCenterURLByBeacon(ownerName, appName, AppCenterBeacons.Build, isOrg));
+                                break;
+                            case (AppCenterBeacons.Test):
+                                Utils.OpenUrl(AppCenterUrlBuilder.GetAppCenterURLByBeacon(ownerName, appName, AppCenterBeacons.Test, isOrg));
+                                break;
+                            case (AppCenterBeacons.Distribute):
+                                const appCenterDistributeTabMenuItems: vscode.QuickPickItem[] = this.getAppCenterDistributeTabMenuItems();
+                                vscode.window.showQuickPick(appCenterDistributeTabMenuItems, { placeHolder: Strings.MenuTitlePlaceholder })
+                                    .then((selected: QuickPickAppItem) => {
+                                        if (!selected) {
+                                            this.logger.debug('User cancel selection of current appcenter tab');
+                                            return;
+                                        }
+                                        switch (selected.target) {
+                                            case (AppCenterDistributionTabs.Groups):
+                                                Utils.OpenUrl(AppCenterUrlBuilder.GetAppCenterDistributeTabUrlByTabName(ownerName, appName, AppCenterDistributionTabs.Groups, isOrg));
+                                                break;
+                                            case (AppCenterDistributionTabs.Stores):
+                                                Utils.OpenUrl(AppCenterUrlBuilder.GetAppCenterDistributeTabUrlByTabName(ownerName, appName, AppCenterDistributionTabs.Stores, isOrg));
+                                                break;
+                                            case (AppCenterDistributionTabs.CodePush):
+                                                Utils.OpenUrl(AppCenterUrlBuilder.GetAppCenterDistributeTabUrlByTabName(ownerName, appName, AppCenterDistributionTabs.CodePush, isOrg));
+                                                break;
+                                            case (AppCenterDistributionTabs.Releases):
+                                                Utils.OpenUrl(AppCenterUrlBuilder.GetAppCenterDistributeTabUrlByTabName(ownerName, appName, AppCenterDistributionTabs.Releases, isOrg));
+                                                break;
+                                            default:
+                                                // Ideally shouldn't be there :)
+                                                this.logger.error("Unknown option selected name");
+                                                break;
+                                        }
+                                    });
+                                break;
+                            case (AppCenterBeacons.Crashes):
+                                Utils.OpenUrl(AppCenterUrlBuilder.GetAppCenterURLByBeacon(ownerName, appName, AppCenterBeacons.Crashes, isOrg));
+                                break;
+                            case (AppCenterBeacons.Analytics):
+                                Utils.OpenUrl(AppCenterUrlBuilder.GetAppCenterURLByBeacon(ownerName, appName, AppCenterBeacons.Analytics, isOrg));
+                                break;
+                            case (AppCenterBeacons.Push):
+                                Utils.OpenUrl(AppCenterUrlBuilder.GetAppCenterURLByBeacon(ownerName, appName, AppCenterBeacons.Push, isOrg));
+                                break;
+                            default:
+                                // Ideally shouldn't be there :)
+                                this.logger.error("Unknown AppCenter beacon name");
+                                break;
+                        }
+                    });
+            });
         } catch (e) {
             VsCodeUtils.ShowErrorMessage(Strings.UnknownError);
             this.logger.error(e.message, e);

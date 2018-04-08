@@ -67,3 +67,20 @@ export interface QuickPickAppItem {
     description: string;
     target: string;
 }
+
+export interface AppCenterView<T> {
+    display(items: T[]);
+    showProgress(title: string, fnc: () => Promise<any>): Thenable<void>;
+}
+
+export interface AppCenterLoader<T> {
+    load(): Promise<T[]>;
+}
+
+export interface AppCenterCache<T> {
+    invalidateCache();
+    set(key: string, value: T);
+    get(key: string): Promise<T | null>;
+    cacheDiffersFrom(key: string, items: T): Promise<boolean>;
+}
+

@@ -1,11 +1,9 @@
-import { AppCenterCache } from "../../cache/cache";
-import { createAppCenterCache } from "../../cache/cacheFactory";
+import * as vscode from "vscode";
 import { AppCenterOS } from "../../constants";
 import { CurrentApp, CurrentAppDeployments, Profile } from "../../helpers/interfaces";
 import { Utils } from "../../helpers/utils";
 import { VsCodeUtils } from "../../helpers/vsCodeUtils";
 import { Strings } from "../../strings";
-import { AppCenterClient, models } from "../api";
 import { Command } from "./command";
 
 export class ReactNativeAppCommand extends Command {
@@ -64,11 +62,7 @@ export class ReactNativeAppCommand extends Command {
         });
     }
 
-    protected loadApps(display: (apps: models.AppResponse[]) => any) {
-        const appsCache: AppCenterCache<models.AppResponse, AppCenterClient> = createAppCenterCache().getAppsCache();
-        appsCache.updateCacheWithProgress(this.client, display).catch((e) => {
-            VsCodeUtils.ShowErrorMessage(Strings.UnknownError);
-            this.logger.error(e.message, e);
-        });
+    public showProgress(title: string, fnc: () => Promise<any>): Thenable<void> {
+        return vscode.window.withProgress({ location: vscode.ProgressLocation.Window, title: title }, fnc);
     }
 }

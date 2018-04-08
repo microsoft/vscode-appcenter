@@ -11,6 +11,7 @@ export class Command {
 
     protected clientFactory: AppCenterClientFactory;
     protected client: AppCenterClient;
+    protected profile: Profile;
 
     constructor(protected manager: ExtensionManager, protected logger: ILogger) {
         this.clientFactory = createAppCenterClient();
@@ -50,6 +51,7 @@ export class Command {
             VsCodeUtils.ShowWarningMessage(Strings.UserIsNotLoggedInMsg);
             return Promise.resolve(false);
         } else {
+            this.profile = profile;
             const clientOrNull: AppCenterClient | null = this.resolveAppCenterClient(profile);
             if (clientOrNull) {
                 this.client = clientOrNull;
