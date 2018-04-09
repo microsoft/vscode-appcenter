@@ -1,5 +1,5 @@
-import { ProfileStorage, AppCenterProfile } from '../../../helpers/interfaces';
-import { FSUtils } from "../../../helpers/fsUtils";
+import { FSUtils } from '../../../helpers/fsUtils';
+import { AppCenterProfile, ProfileStorage } from '../../../helpers/interfaces';
 
 export default class AppCenterProfileStorage implements ProfileStorage<AppCenterProfile> {
     protected storageFile: string;
@@ -14,7 +14,7 @@ export default class AppCenterProfileStorage implements ProfileStorage<AppCenter
     public get active(): AppCenterProfile | null {
         return (this.activeIndex === null) ? null : this.profiles[this.activeIndex];
     }
-    
+
     public async init(): Promise<void> {
         if (!await this.storageExists()) {
             await this.createEmptyStorage();

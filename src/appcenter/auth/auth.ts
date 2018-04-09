@@ -1,9 +1,9 @@
-import { SettingsHelper } from "../../helpers/settingsHelper";
-import { createAppCenterClient, models } from "../api";
-import AppCenterProfileImpl from "./profile/appCenterProfileImpl";
-import { ProfileStorage, Profile, AppCenterProfile } from "../../helpers/interfaces";
-import { tokenStore } from "./tokenStore";
-import { ILogger } from "../../log/logHelper";
+import { AppCenterProfile, Profile, ProfileStorage } from '../../helpers/interfaces';
+import { SettingsHelper } from '../../helpers/settingsHelper';
+import { ILogger } from '../../log/logHelper';
+import { createAppCenterClient, models } from '../api';
+import AppCenterProfileImpl from './profile/appCenterProfileImpl';
+import { tokenStore } from './tokenStore';
 
 export default class Auth {
 

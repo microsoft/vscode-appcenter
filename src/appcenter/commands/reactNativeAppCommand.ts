@@ -1,10 +1,10 @@
-import { AppCenterOS } from "../../constants";
-import { CurrentApp, CurrentAppDeployments, AppCenterProfile } from "../../helpers/interfaces";
-import { Utils } from "../../helpers/utils";
-import { VsCodeUtils } from "../../helpers/vsCodeUtils";
-import { Strings } from "../../strings";
-import { models } from "../api";
-import { Command } from "./command";
+import { AppCenterOS } from '../../constants';
+import { AppCenterProfile, CurrentApp, CurrentAppDeployments } from '../../helpers/interfaces';
+import { Utils } from '../../helpers/utils';
+import { VsCodeUtils } from '../../helpers/vsCodeUtils';
+import { Strings } from '../../strings';
+import { models } from '../api';
+import { Command } from './command';
 
 export class ReactNativeAppCommand extends Command {
     protected static cachedApps: models.AppResponse[];
