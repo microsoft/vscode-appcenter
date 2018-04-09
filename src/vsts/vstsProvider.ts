@@ -44,12 +44,12 @@ export class VSTSProvider {
             const requestInfo = this.getRequestInfo(HTTP_METHODS.POST, body);
             const res = await fetch(url, requestInfo);
             const response = await res.json();
-            if (response.message) {
+            if (response.errorCode !== undefined) {
                 throw new Error(response.message);
             }
             return <VSTSGitRepository>response;
         } catch (e) {
-            this.logger.error("Failed to get VSTS Git repositories list. " + e);
+            this.logger.error("Failed to get VSTS Git repositories list. " + e || e.message || "");
             return null;
         }
     }
