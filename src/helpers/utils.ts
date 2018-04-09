@@ -122,10 +122,12 @@ export class Utils {
     }
 
     private static getUserDir(): string {
+        //todo move to constants
         if (os.platform() === "win32") {
             return process.env.AppData;
         } else {
             return os.homedir();
+            
         }
     }
 

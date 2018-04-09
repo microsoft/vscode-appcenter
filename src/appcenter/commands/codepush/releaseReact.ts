@@ -71,7 +71,7 @@ export default class ReleaseReact extends RNCPAppCommand {
                     codePushRelaseParams.isMandatory = isMandatory;
                     return new Promise<any>((publishResolve, publishReject) => {
                         this.appCenterProfile.then((profile: AppCenterProfile) => {
-                            return Auth.accessToken(profile);
+                            return Auth.accessTokenFor(profile);
                         }).then((token: string) => {
                             codePushRelaseParams.token = token;
                             return codePushRelease.exec(this.client, codePushRelaseParams, this.logger);

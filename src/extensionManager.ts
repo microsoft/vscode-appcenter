@@ -2,7 +2,7 @@ import { Disposable, StatusBarItem } from "vscode";
 import Auth from "./appcenter/auth/auth";
 import * as CommandHandlers from './commandHandlers';
 import { CommandNames } from "./constants";
-import { Profile } from "./helpers/interfaces";
+import { Profile, ProfileStorage, AppCenterProfile } from "./helpers/interfaces";
 import { VsCodeUtils } from "./helpers/vsCodeUtils";
 import { ConsoleLogger } from "./log/consoleLogger";
 import { ILogger } from "./log/logHelper";
@@ -108,8 +108,8 @@ export class ExtensionManager implements Disposable {
         this._appCenterStatusBarItem = VsCodeUtils.getStatusBarItem();
 
         // Initialize Auth
-        const profileStorage: AppCenterProfileStorage = new AppCenterProfileStorage(Utils.getProfileFileName());
-        this._auth = new Auth(profileStorage);
+        const profileStorage: ProfileStorage<AppCenterProfile> = new AppCenterProfileStorage(Utils.getProfileFileName());
+        this._auth = new Auth(profileStorage, this._logger);
         await this._auth.initialize();
         const activeProfile = this._auth.activeProfile;
         return this.setupAppCenterStatusBar(activeProfile);

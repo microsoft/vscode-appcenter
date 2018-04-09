@@ -21,7 +21,7 @@ export function createAppCenterClient(): AppCenterClientFactory {
       if (!user) {
         return null;
       }
-      return new AppCenterClient(new AppCenterClientCredentials(Auth.accessToken(user)));
+      return new AppCenterClient(new AppCenterClientCredentials(Auth.accessTokenFor(user)));
     }
   };
 }
