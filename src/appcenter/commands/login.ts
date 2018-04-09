@@ -7,7 +7,6 @@ import { SettingsHelper } from "../../helpers/settingsHelper";
 import { IButtonMessageItem, VsCodeUtils } from "../../helpers/vsCodeUtils";
 import { ILogger } from "../../log/logHelper";
 import { Strings } from "../../strings";
-import Auth from "../auth/auth";
 import { Command } from "./command";
 
 export default class Login extends Command {
@@ -16,8 +15,10 @@ export default class Login extends Command {
         super(manager, logger);
     }
 
-    public async runNoClient(): Promise<void> {
-        super.runNoClient();
+    public async runNoClient(): Promise<boolean | void> {
+        if (! await super.runNoClient()) {
+            return false;
+        }
 
         const messageItems: IButtonMessageItem[] = [];
         const loginUrl = `${SettingsHelper.getAppCenterLoginEndpoint()}?${qs.stringify({ hostname: os.hostname() })}`;
@@ -37,20 +38,24 @@ export default class Login extends Command {
             });
     }
 
-    private loginWithToken(token: string | undefined) {
+    private async loginWithToken(token: string | undefined): Promise<boolean> {
         if (!token) {
-            this.logger.error("No token provided on login");
-            return;
+            this.logger.info("No token provided on login");
+            return true;
         }
 
-        return Auth.doTokenLogin(token).then((profile: Profile) => {
+        return this.manager.auth.doTokenLogin(token).then((profile: Profile) => {
             if (!profile) {
                 this.logger.error("Failed to fetch user info from server");
                 VsCodeUtils.ShowWarningMessage(Strings.FailedToExecuteLoginMsg);
-                return;
+                return false;
             }
             VsCodeUtils.ShowInfoMessage(Strings.YouAreLoggedInMsg(profile.displayName));
-            return this.manager.setupAppCenterStatusBar(profile);
+            return this.manager.setupAppCenterStatusBar(profile).then(() => true);
+        }).catch((e: Error) => {
+            VsCodeUtils.ShowErrorMessage("Could not login into account.");
+            this.logger.error(e.message, e, true);
+            return false;
         });
     }
 }

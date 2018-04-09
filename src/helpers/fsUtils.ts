@@ -1,6 +1,9 @@
 import * as fs from "fs";
 
 export class FSUtils {
+
+    private static readonly FileDoesNotExist = 'ENOENT';
+
     public static GetDirectoryContent(dirName: string) {
         return fs.readdirSync(dirName);
     }
@@ -26,5 +29,41 @@ export class FSUtils {
         });
         const dirExistAndEmpty = filteredDir && filteredDir.length === 0;
         return dirExistAndEmpty;
+    }
+
+    public static readFile(fileName: string): Promise<string> {
+        return new Promise((resolve, reject) => {
+            fs.readFile(fileName, "utf8", (err, data) => {
+                if (err) {
+                    reject(err);
+                }
+                resolve(data);
+            });
+        });
+    }
+
+    public static writeFile(fileName: string, data: string): Promise<void> {
+        return new Promise((resolve, reject) => {
+            fs.writeFile(fileName, data, "utf8", (err) => {
+                if (err) {
+                    reject(err);
+                }
+                resolve(void 0);
+            });
+        });
+    }
+
+    public static exists(fileName: string): Promise<boolean> {
+        return new Promise((resolve, reject) => {
+            fs.stat(fileName, function (err) {
+                if (err == null) {
+                    resolve(true);
+                } else if (err.code === FSUtils.FileDoesNotExist) {
+                    resolve(false);
+                } else {
+                    reject(err);
+                }
+            });
+        });
     }
 }

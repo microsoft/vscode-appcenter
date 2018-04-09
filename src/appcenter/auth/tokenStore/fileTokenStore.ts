@@ -71,7 +71,7 @@ export class FileTokenStore implements TokenStore {
     }
 
     private writeTokenStoreCache(): void {
-      fs.writeFileSync(this.filePath, JSON.stringify(this.tokenStoreCache));
+      fs.writeFileSync(this.filePath,  JSON.stringify(this.tokenStoreCache, null, "\t"));
     }
   }
 

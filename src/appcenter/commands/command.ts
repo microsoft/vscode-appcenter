@@ -1,11 +1,10 @@
 import { ExtensionManager } from "../../extensionManager";
-import { Profile } from "../../helpers/interfaces";
+import { AppCenterProfile } from "../../helpers/interfaces";
 import { SettingsHelper } from "../../helpers/settingsHelper";
 import { VsCodeUtils } from "../../helpers/vsCodeUtils";
 import { ILogger } from "../../log/logHelper";
 import { Strings } from "../../strings";
 import { AppCenterClient, AppCenterClientFactory, createAppCenterClient } from "../api";
-import Auth from "../auth/auth";
 
 export class Command {
 
@@ -16,14 +15,13 @@ export class Command {
         this.clientFactory = createAppCenterClient();
     }
 
-    public get Profile(): Promise<Profile | null> {
-        return Auth.getProfile().then((profile: Profile) => {
-            if (!profile) {
-                this.logger.info(`No profile file found`);
-                return null;
-            }
-            return profile;
-        });
+    public get appCenterProfile(): Promise<AppCenterProfile | null> {
+        const profile = this.manager.auth.activeProfile;
+        if (!profile) {
+            this.logger.info(`No profile file found`);
+            return Promise.resolve(null);
+        }
+        return Promise.resolve(profile);
     }
 
     public runNoClient(): Promise<boolean | void> {
@@ -45,7 +43,7 @@ export class Command {
             return Promise.resolve(false);
         }
 
-        const profile = await this.Profile;
+        const profile: AppCenterProfile | null = await this.appCenterProfile;
         if (!profile) {
             VsCodeUtils.ShowWarningMessage(Strings.UserIsNotLoggedInMsg);
             return Promise.resolve(false);
@@ -61,7 +59,7 @@ export class Command {
         }
     }
 
-    private resolveAppCenterClient(profile: Profile): AppCenterClient | null {
+    private resolveAppCenterClient(profile: AppCenterProfile): AppCenterClient | null {
         if (!this.client) {
             if (profile) {
                 return this.clientFactory.fromProfile(profile, SettingsHelper.getAppCenterAPIEndpoint());

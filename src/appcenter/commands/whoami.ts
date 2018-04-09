@@ -13,7 +13,7 @@ export default class WhoAmI extends Command {
 
     public async runNoClient(): Promise<void> {
         super.runNoClient();
-        const profile: Profile | null = await this.Profile;
+        const profile: Profile | null = await this.appCenterProfile;
         if (profile) {
             VsCodeUtils.ShowInfoMessage(Strings.YouAreLoggedInMsg(profile.displayName));
         } else {
