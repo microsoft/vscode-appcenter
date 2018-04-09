@@ -120,17 +120,28 @@ export class Utils {
         return null;
     }
 
-    private static getUserDir(): string {
+    public static getUserDir(): string {
         //todo move to constants
         if (os.platform() === "win32") {
             return process.env.AppData;
         } else {
             return os.homedir();
-
         }
     }
 
-    public static getProfileFileName() {
-        return path.join(Utils.getUserDir(), Constants.ProfileDir, Constants.ProfileFileName);
+    public static getAppCenterProfileFileName() {
+        return path.join(Utils.getUserDir(), Constants.ProfileDir, Constants.AppCenterProfileFileName);
+    }
+
+    public static getVstsProfileFileName() {
+        return path.join(Utils.getUserDir(), Constants.ProfileDir, Constants.VstsProfileFileName);
+    }
+
+    public static getAppCenterTokensFileName() {
+        return path.join(Utils.getUserDir(), Constants.TokenDir, Constants.AppCenterTokenFileName);
+    }
+
+    public static getVstsTokensFileName() {
+        return path.join(Utils.getUserDir(), Constants.TokenDir, Constants.VstsTokenFileName);
     }
 }

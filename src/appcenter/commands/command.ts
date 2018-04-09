@@ -16,7 +16,7 @@ export class Command {
     }
 
     public get appCenterProfile(): Promise<AppCenterProfile | null> {
-        const profile = this.manager.auth.activeProfile;
+        const profile = this.manager.appCenterAuth.activeProfile;
         if (!profile) {
             this.logger.info(`No profile file found`);
             return Promise.resolve(null);

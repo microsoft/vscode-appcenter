@@ -5,11 +5,12 @@ import { AppCenterProfile, CurrentApp, ICodePushReleaseParams } from '../../../h
 import { VsCodeUtils } from '../../../helpers/vsCodeUtils';
 import { ILogger, LogLevel } from '../../../log/logHelper';
 import { Strings } from '../../../strings';
-import Auth from '../../auth/auth';
 import { codePushRelease } from '../../codepush';
 import { fileUtils, reactNative, updateContents } from '../../codepush/codepush-sdk/src';
 import { BundleConfig } from '../../codepush/codepush-sdk/src/react-native/react-native-utils';
 import { RNCPAppCommand } from './rncpAppCommand';
+import Auth from '../../auth/auth';
+import { tokenStores } from '../../auth/tokenStore';
 
 export default class ReleaseReact extends RNCPAppCommand {
     constructor(manager: ExtensionManager, logger: ILogger) {
@@ -71,7 +72,7 @@ export default class ReleaseReact extends RNCPAppCommand {
                     codePushRelaseParams.isMandatory = isMandatory;
                     return new Promise<any>((publishResolve, publishReject) => {
                         this.appCenterProfile.then((profile: AppCenterProfile) => {
-                            return Auth.accessTokenFor(profile);
+                            return Auth.accessTokenFor(tokenStores.appCenter, profile);
                         }).then((token: string) => {
                             codePushRelaseParams.token = token;
                             return codePushRelease.exec(this.client, codePushRelaseParams, this.logger);

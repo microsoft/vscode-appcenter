@@ -1,32 +1,15 @@
-import { AppCenterProfile, Profile, ProfileStorage } from '../../helpers/interfaces';
-import { SettingsHelper } from '../../helpers/settingsHelper';
+import { Profile, ProfileStorage, LoginCredentials } from '../../helpers/interfaces';
 import { ILogger } from '../../log/logHelper';
-import { createAppCenterClient, models } from '../api';
-import AppCenterProfileImpl from './profile/appCenterProfileImpl';
-import { tokenStore } from './tokenStore';
+import { TokenStore } from './tokenStore';
 
-export default class Auth {
+export default abstract class Auth<T extends Profile, C extends LoginCredentials> {
 
-    constructor(private profileStorage: ProfileStorage<AppCenterProfile>, private logger: ILogger) {
+    public constructor(protected profileStorage: ProfileStorage<T>, protected tokenStore: TokenStore, protected logger: ILogger) {
     }
 
-    public static accessTokenFor(profile: AppCenterProfile): Promise<string> {
-        const getter = tokenStore.get(profile.userId);
-        const emptyToken = "";
-        // tslint:disable-next-line:no-any
-        return getter.then((entry: any) => {
-            if (entry) {
-                return entry.accessToken.token;
-            }
-            return emptyToken;
-        }).catch((e: Error) => {
-            // TODO Find a way to log it via logger
-            console.error("Failed to get token from profile", e);
-            return emptyToken;
-        });
-    }
+    protected abstract async getUserInfo(credentials: C): Promise<Profile>;
 
-    public get activeProfile(): AppCenterProfile | null {
+    public get activeProfile(): T | null {
         return this.profileStorage.active;
     }
 
@@ -34,30 +17,28 @@ export default class Auth {
         await this.profileStorage.init();
     }
 
-    public async doTokenLogin(token: string): Promise<Profile | null> {
+    public async doLogin(credentials: C): Promise<Profile | null> {
+        const token: string = credentials.token;
         if (!token) {
             return null;
         }
 
         // Ask server for user info by token
-        const userResponse: models.UserProfileResponse = await this.getUserInfo(token);
-        if (!userResponse) {
-            this.logger.error("Couldn't get user profile from appcenter.");
+        const profile: Profile = await this.getUserInfo(credentials);
+        if (!profile) {
+            this.logger.error("Couldn't get user profile.");
             return null;
         }
 
         // Remove existent token for user from local store
         // TODO: Probably we need to delete token from server also?
-        await tokenStore.remove(userResponse.id);
+        await this.tokenStore.remove(profile.userId);
 
         // Remove saved profile if exists
-        await this.profileStorage.delete(userResponse.id);
+        await this.profileStorage.delete(profile.userId);
 
         // Save token in local store
-        await tokenStore.set(userResponse.id, { token: token });
-
-        // Convert server user to local profile
-        const profile: AppCenterProfile = new AppCenterProfileImpl(userResponse);
+        await this.tokenStore.set(profile.userId, { token: token });
 
         // Make it active
         profile.isActive = true;
@@ -72,19 +53,23 @@ export default class Auth {
 
         // Remove token from local store
         // TODO: Probably we need to delete token from server also?
-        await tokenStore.remove(userId);
+        await this.tokenStore.remove(userId);
 
         // Remove saved profile from local store
         await this.profileStorage.delete(userId);
 
-        // Choose first saved profile and make it active if possible
-        const profiles: AppCenterProfile[] | null = await this.profileStorage.list();
+        // If there are no profiles left just exit
+        const profiles: T[] | null = await this.profileStorage.list();
         if (profiles.length === 0) {
             return;
         }
-        const firstProfile = profiles[0];
-        firstProfile.isActive = true;
-        await this.profileStorage.save(firstProfile);
+
+        // If there is no active profile then choose first saved profile and make it active if possible
+        if (!this.profileStorage.active) {
+            const firstProfile = profiles[0];
+            firstProfile.isActive = true;
+            await this.profileStorage.save(firstProfile);
+        }
     }
 
     public async updateProfile(profile: Profile): Promise<void> {
@@ -95,9 +80,19 @@ export default class Auth {
         return await this.profileStorage.list();
     }
 
-    private getUserInfo(token: string): Promise<models.UserProfileResponse> {
-        //TODO Handle situation when user had deleted token in appcenter portal already
-        const client = createAppCenterClient().fromToken(token, SettingsHelper.getAppCenterAPIEndpoint());
-        return client.account.users.get();
+    public static accessTokenFor(tokenStore: TokenStore, profile: Profile): Promise<string> {
+        const getter = tokenStore.get(profile.userId);
+        const emptyToken = "";
+        // tslint:disable-next-line:no-any
+        return getter.then((entry: any) => {
+            if (entry) {
+                return entry.accessToken.token;
+            }
+            return emptyToken;
+        }).catch((e: Error) => {
+            // TODO Find a way to log it via logger
+            console.error("Failed to get token from profile", e);
+            return emptyToken;
+        });
     }
 }

@@ -8,6 +8,7 @@ import { IButtonMessageItem, VsCodeUtils } from "../../helpers/vsCodeUtils";
 import { ILogger } from "../../log/logHelper";
 import { Strings } from "../../strings";
 import { Command } from "./command";
+import { AuthProvider } from "../../constants";
 
 export default class Login extends Command {
 
@@ -44,13 +45,13 @@ export default class Login extends Command {
             return true;
         }
 
-        return this.manager.auth.doTokenLogin(token).then((profile: Profile) => {
+        return this.manager.appCenterAuth.doLogin({ token: token }).then((profile: Profile) => {
             if (!profile) {
                 this.logger.error("Failed to fetch user info from server");
-                VsCodeUtils.ShowWarningMessage(Strings.FailedToExecuteLoginMsg);
+                VsCodeUtils.ShowWarningMessage(Strings.FailedToExecuteLoginMsg(AuthProvider.AppCenter));
                 return false;
             }
-            VsCodeUtils.ShowInfoMessage(Strings.YouAreLoggedInMsg(profile.displayName));
+            VsCodeUtils.ShowInfoMessage(Strings.YouAreLoggedInMsg(AuthProvider.Vsts, profile.displayName));
             return this.manager.setupAppCenterStatusBar(profile).then(() => true);
         }).catch((e: Error) => {
             VsCodeUtils.ShowErrorMessage("Could not login into account.");
