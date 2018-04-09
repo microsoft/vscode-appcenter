@@ -3,7 +3,7 @@ import * as vscode from "vscode";
 import { CommandNames } from "../../constants";
 import { ExtensionManager } from "../../extensionManager";
 import { FSUtils } from "../../helpers/fsUtils";
-import { CurrentApp, AppCenterProfile } from "../../helpers/interfaces";
+import { AppCenterProfile, CurrentApp } from "../../helpers/interfaces";
 import { Utils } from "../../helpers/utils";
 import { ILogger } from "../../log/logHelper";
 import { Strings } from "../../strings";

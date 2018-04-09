@@ -1,5 +1,5 @@
 import { AppCenterOS } from "../../constants";
-import { CurrentApp, CurrentAppDeployments, AppCenterProfile } from "../../helpers/interfaces";
+import { AppCenterProfile, CurrentApp, CurrentAppDeployments } from "../../helpers/interfaces";
 import { Utils } from "../../helpers/utils";
 import { VsCodeUtils } from "../../helpers/vsCodeUtils";
 import { Strings } from "../../strings";

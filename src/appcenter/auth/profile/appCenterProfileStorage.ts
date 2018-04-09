@@ -1,5 +1,5 @@
-import { ProfileStorage, AppCenterProfile } from '../../../helpers/interfaces';
 import { FSUtils } from "../../../helpers/fsUtils";
+import { AppCenterProfile, ProfileStorage } from '../../../helpers/interfaces';
 
 export default class AppCenterProfileStorage implements ProfileStorage<AppCenterProfile> {
     protected storageFile: string;

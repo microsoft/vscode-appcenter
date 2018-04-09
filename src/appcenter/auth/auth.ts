@@ -1,7 +1,7 @@
+import { AppCenterProfile, Profile, ProfileStorage } from "../../helpers/interfaces";
 import { SettingsHelper } from "../../helpers/settingsHelper";
 import { createAppCenterClient, models } from "../api";
 import AppCenterProfileImpl from "./profile/appCenterProfileImpl";
-import { ProfileStorage, Profile, AppCenterProfile } from "../../helpers/interfaces";
 import { tokenStore } from "./tokenStore";
 
 export default class Auth {
@@ -36,7 +36,7 @@ export default class Auth {
 
     public async doTokenLogin(token: string): Promise<Profile | null> {
         if (!token) {
-            return Promise.resolve(null);
+            return null;
         }
 
         // Ask server for user info by token

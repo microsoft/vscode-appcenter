@@ -1,10 +1,10 @@
 import * as vscode from "vscode";
 import { ExtensionManager } from "../../../extensionManager";
-import { ILogger } from "../../../log/logHelper";
-import { Command } from "../command";
-import { VsCodeUtils } from "../../../helpers/vsCodeUtils";
 import { Profile, ProfileQuickPickItem } from "../../../helpers/interfaces";
+import { VsCodeUtils } from "../../../helpers/vsCodeUtils";
+import { ILogger } from "../../../log/logHelper";
 import { Strings } from "../../../strings";
+import { Command } from "../command";
 
 export default class Logout extends Command {
 
@@ -17,7 +17,7 @@ export default class Logout extends Command {
             return false;
         }
 
-        // Get profiles in which user is logged in 
+        // Get profiles in which user is logged in
         const profiles: Profile[] = await this.manager.auth.getProfiles();
 
         // No profiles - exit

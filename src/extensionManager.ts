@@ -1,14 +1,14 @@
 import { Disposable, StatusBarItem } from "vscode";
 import Auth from "./appcenter/auth/auth";
+import AppCenterProfileStorage from "./appcenter/auth/profile/appCenterProfileStorage";
 import * as CommandHandlers from './commandHandlers';
 import { CommandNames } from "./constants";
 import { Profile } from "./helpers/interfaces";
+import { Utils } from "./helpers/utils";
 import { VsCodeUtils } from "./helpers/vsCodeUtils";
 import { ConsoleLogger } from "./log/consoleLogger";
 import { ILogger } from "./log/logHelper";
 import { Strings } from "./strings";
-import AppCenterProfileStorage from "./appcenter/auth/profile/appCenterProfileStorage";
-import { Utils } from "./helpers/utils";
 
 class CommandHandlersContainer {
     private _appCenterCommandHandler: CommandHandlers.AppCenter;

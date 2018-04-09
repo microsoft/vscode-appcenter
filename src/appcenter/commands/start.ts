@@ -9,6 +9,7 @@ import { cpUtils } from "../../helpers/cpUtils";
 import { FSUtils } from "../../helpers/fsUtils";
 import { GitUtils } from "../../helpers/gitUtils";
 import { CreatedAppFromAppCenter, Deployment, QuickPickAppItem, UserOrOrganizationItem } from "../../helpers/interfaces";
+import { Profile } from "../../helpers/interfaces";
 import { SettingsHelper } from "../../helpers/settingsHelper";
 import { Validators } from "../../helpers/validators";
 import { CustomQuickPickItem, VsCodeUtils } from "../../helpers/vsCodeUtils";
@@ -17,7 +18,6 @@ import { Strings } from "../../strings";
 import { VSTSGitRepository, VSTSProject } from "../../vsts/types";
 import { VSTSProvider } from "../../vsts/vstsProvider";
 import { models } from "../api";
-import { Profile } from "../../helpers/interfaces";
 import { ListOKResponseItem } from "../lib/app-center-node-client/models";
 import { Command } from "./command";
 // tslint:disable-next-line:no-var-requires
