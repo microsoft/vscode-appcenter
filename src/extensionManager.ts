@@ -2,7 +2,7 @@ import { Disposable, StatusBarItem } from "vscode";
 import { createAppCenterClient, models } from "./appcenter/api/";
 import Auth from "./appcenter/auth/auth";
 import { AppCenterAppsCache } from "./cache/appsCache";
-import { AppCenterCache } from "./cache/baseCache"
+import { AppCenterCache } from "./cache/baseCache";
 import * as CommandHandlers from './commandHandlers';
 import { CommandNames } from "./constants";
 import { AppCenterController } from "./controller/appCenterController";

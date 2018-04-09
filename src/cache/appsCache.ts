@@ -6,7 +6,7 @@ import { AppCenterCache } from "./baseCache";
 export class AppCenterAppsCache extends AppCenterCache<models.AppResponse[]> {
     private static instance: AppCenterAppsCache;
     private KEY_PREFIX: string = "_apps";
-    
+
     private constructor() {
         super();
         this.cache = new NodeCache();

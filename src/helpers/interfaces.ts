@@ -76,5 +76,3 @@ export interface AppCenterView<T> {
 export interface AppCenterLoader<T> {
     load(): Promise<T[]>;
 }
-
-

@@ -1,6 +1,6 @@
 import * as vscode from "vscode";
 import { AppCenterAppsCache } from "../../cache/appsCache";
-import { AppCenterCache } from "../../cache/baseCache"
+import { AppCenterCache } from "../../cache/baseCache";
 import { AppCenterOS, Constants } from "../../constants";
 import { AppCenterController } from "../../controller/appCenterController";
 import { ExtensionManager } from "../../extensionManager";
