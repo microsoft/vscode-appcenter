@@ -7,7 +7,8 @@ export class AppCenterAppsCache implements AppCenterCache<models.AppResponse[]> 
 
     private cache: NodeCache;
     private static instance: AppCenterAppsCache;
-
+    private KEY_PREFIX: string = "_apps";
+    
     private constructor() {
         this.cache = new NodeCache();
     }
@@ -24,11 +25,12 @@ export class AppCenterAppsCache implements AppCenterCache<models.AppResponse[]> 
     }
 
     public set(key: string, value: models.AppResponse[]) {
-        this.cache.set(key, value);
+        this.cache.set(key + this.KEY_PREFIX, value);
     }
 
     public async get(key: string): Promise<models.AppResponse[] | null> {
         const self = this;
+        key = key + this.KEY_PREFIX;
         return new Promise<models.AppResponse[] | null>((resolve, reject) => {
             self.cache.get<models.AppResponse[]>(key, function (err, value) {
                 if (err) {
