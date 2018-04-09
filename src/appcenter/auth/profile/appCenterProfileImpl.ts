@@ -1,4 +1,4 @@
-import { AppCenterProfile, CurrentApp } from "../../../helpers/interfaces";
+import { AppCenterProfile, CurrentApp } from '../../../helpers/interfaces';
 export { Profile } from "../../../helpers/interfaces";
 
 export default class AppCenterProfileImpl implements AppCenterProfile {

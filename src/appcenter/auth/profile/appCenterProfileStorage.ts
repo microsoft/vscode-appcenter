@@ -1,4 +1,4 @@
-import { FSUtils } from "../../../helpers/fsUtils";
+import { FSUtils } from '../../../helpers/fsUtils';
 import { AppCenterProfile, ProfileStorage } from '../../../helpers/interfaces';
 
 export default class AppCenterProfileStorage implements ProfileStorage<AppCenterProfile> {
@@ -6,20 +6,20 @@ export default class AppCenterProfileStorage implements ProfileStorage<AppCenter
     protected profiles: AppCenterProfile[];
     protected activeIndex: number | null;
 
-    public get active(): AppCenterProfile | null {
-        return (this.activeIndex === null) ? null : this.profiles[this.activeIndex];
-    }
-
     constructor(storageFile: string) {
         this.storageFile = storageFile;
         this.profiles = [];
+    }
+
+    public get active(): AppCenterProfile | null {
+        return (this.activeIndex === null) ? null : this.profiles[this.activeIndex];
     }
 
     public async init(): Promise<void> {
         if (!await this.storageExists()) {
             await this.createEmptyStorage();
         }
-        await this.readFromPersistentStorage();
+        await this.loadDataFromStorage();
     }
 
     private async createEmptyStorage(): Promise<void> {
@@ -30,20 +30,20 @@ export default class AppCenterProfileStorage implements ProfileStorage<AppCenter
         return await FSUtils.exists(this.storageFile);
     }
 
-    private async readFromPersistentStorage(): Promise<void> {
+    private async loadDataFromStorage(): Promise<void> {
         const data: string = await FSUtils.readFile(this.storageFile);
         this.profiles = JSON.parse(data);
 
         // Identify active profile
         const activeProfiles: AppCenterProfile[] = this.profiles.filter(profile => profile.isActive);
         if (activeProfiles.length > 1) {
-            throw new Error('Malformed profile storage. Shouldn\'t be more than one active profiles');
+            throw new Error('Malformed profile data. Shouldn\'t be more than one active profiles');
         } else if (activeProfiles.length === 1) {
             this.activeIndex = this.profiles.indexOf(activeProfiles[0]);
         }
     }
 
-    private async saveToPersistentStorage(): Promise<void> {
+    private async commitChanges(): Promise<void> {
         const data = JSON.stringify(this.profiles, null, "\t");
         await FSUtils.writeFile(this.storageFile, data);
     }
@@ -57,7 +57,7 @@ export default class AppCenterProfileStorage implements ProfileStorage<AppCenter
         }
 
         // Reset current active user
-        const currentActive = this.active;
+        const currentActive: AppCenterProfile | null = this.active;
         if (currentActive) {
             currentActive.isActive = false;
             this.activeIndex = null;
@@ -68,7 +68,7 @@ export default class AppCenterProfileStorage implements ProfileStorage<AppCenter
         if (profile.isActive) {
             this.activeIndex = createdIndex;
         }
-        await this.saveToPersistentStorage();
+        await this.commitChanges();
     }
 
     public async delete(userId: string): Promise<AppCenterProfile | null> {
@@ -81,7 +81,7 @@ export default class AppCenterProfileStorage implements ProfileStorage<AppCenter
         if (deletedProfile[0].isActive) {
             this.activeIndex = null;
         }
-        await this.saveToPersistentStorage();
+        await this.commitChanges();
         return deletedProfile[0];
     }
 

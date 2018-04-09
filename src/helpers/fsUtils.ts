@@ -1,6 +1,9 @@
 import * as fs from "fs";
 
 export class FSUtils {
+
+    private static readonly FileDoesNotExist = 'ENOENT';
+
     public static GetDirectoryContent(dirName: string) {
         return fs.readdirSync(dirName);
     }
@@ -55,7 +58,7 @@ export class FSUtils {
             fs.stat(fileName, function (err) {
                 if (err == null) {
                     resolve(true);
-                } else if (err.code === 'ENOENT') {
+                } else if (err.code === FSUtils.FileDoesNotExist) {
                     resolve(false);
                 } else {
                     reject(err);

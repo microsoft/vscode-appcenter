@@ -1,9 +1,9 @@
 import * as vscode from 'vscode';
 import { Constants } from '../../../constants';
-import { ExtensionManager } from "../../../extensionManager";
-import { AppCenterProfile, CurrentApp, ICodePushReleaseParams } from "../../../helpers/interfaces";
+import { ExtensionManager } from '../../../extensionManager';
+import { AppCenterProfile, CurrentApp, ICodePushReleaseParams } from '../../../helpers/interfaces';
 import { VsCodeUtils } from '../../../helpers/vsCodeUtils';
-import { ILogger, LogLevel } from "../../../log/logHelper";
+import { ILogger, LogLevel } from '../../../log/logHelper';
 import { Strings } from '../../../strings';
 import Auth from '../../auth/auth';
 import { codePushRelease } from '../../codepush';
@@ -71,7 +71,7 @@ export default class ReleaseReact extends RNCPAppCommand {
                     codePushRelaseParams.isMandatory = isMandatory;
                     return new Promise<any>((publishResolve, publishReject) => {
                         this.appCenterProfile.then((profile: AppCenterProfile) => {
-                            return Auth.accessToken(profile);
+                            return Auth.accessTokenFor(profile);
                         }).then((token: string) => {
                             codePushRelaseParams.token = token;
                             return codePushRelease.exec(this.client, codePushRelaseParams, this.logger);

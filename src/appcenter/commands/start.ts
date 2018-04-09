@@ -1,25 +1,30 @@
-import * as path from "path";
-import * as vscode from "vscode";
-import AppCenterAppBuilder from "../../appCenterAppBuilder";
-import AppCenterAppCreator from "../../appCenterAppCreator";
-import AppCenterConfig from "../../appCenterConfig";
-import { AppCenterOS, Constants } from "../../constants";
-import { ExtensionManager } from "../../extensionManager";
-import { cpUtils } from "../../helpers/cpUtils";
-import { FSUtils } from "../../helpers/fsUtils";
-import { GitUtils } from "../../helpers/gitUtils";
-import { CreatedAppFromAppCenter, Deployment, QuickPickAppItem, UserOrOrganizationItem } from "../../helpers/interfaces";
-import { Profile } from "../../helpers/interfaces";
-import { SettingsHelper } from "../../helpers/settingsHelper";
-import { Validators } from "../../helpers/validators";
-import { CustomQuickPickItem, VsCodeUtils } from "../../helpers/vsCodeUtils";
-import { ILogger } from "../../log/logHelper";
-import { Strings } from "../../strings";
-import { VSTSGitRepository, VSTSProject } from "../../vsts/types";
-import { VSTSProvider } from "../../vsts/vstsProvider";
-import { models } from "../api";
-import { ListOKResponseItem } from "../lib/app-center-node-client/models";
-import { Command } from "./command";
+import * as path from 'path';
+import * as vscode from 'vscode';
+import AppCenterAppBuilder from '../../appCenterAppBuilder';
+import AppCenterAppCreator from '../../appCenterAppCreator';
+import AppCenterConfig from '../../appCenterConfig';
+import { AppCenterOS, Constants } from '../../constants';
+import { ExtensionManager } from '../../extensionManager';
+import { cpUtils } from '../../helpers/cpUtils';
+import { FSUtils } from '../../helpers/fsUtils';
+import { GitUtils } from '../../helpers/gitUtils';
+import {
+    CreatedAppFromAppCenter,
+    Deployment,
+    QuickPickAppItem,
+    UserOrOrganizationItem
+    } from '../../helpers/interfaces';
+import { Profile } from '../../helpers/interfaces';
+import { SettingsHelper } from '../../helpers/settingsHelper';
+import { Validators } from '../../helpers/validators';
+import { CustomQuickPickItem, VsCodeUtils } from '../../helpers/vsCodeUtils';
+import { ILogger } from '../../log/logHelper';
+import { Strings } from '../../strings';
+import { VSTSGitRepository, VSTSProject } from '../../vsts/types';
+import { VSTSProvider } from '../../vsts/vstsProvider';
+import { models } from '../api';
+import { ListOKResponseItem } from '../lib/app-center-node-client/models';
+import { Command } from './command';
 // tslint:disable-next-line:no-var-requires
 const GitUrlParse = require("git-url-parse");
 

@@ -1,20 +1,19 @@
-import * as vscode from "vscode";
-
-import { CommandNames } from "../../constants";
-import { ExtensionManager } from "../../extensionManager";
-import { FSUtils } from "../../helpers/fsUtils";
-import { AppCenterProfile, CurrentApp } from "../../helpers/interfaces";
-import { Utils } from "../../helpers/utils";
-import { ILogger } from "../../log/logHelper";
-import { Strings } from "../../strings";
-import AppCenterPortalMenu from "./appCenterPortalMenu";
-import * as CodePush from "./codepush";
-import { Command } from "./command";
-import GetCurrentApp from "./getCurrentApp";
-import Login from "./login";
-import SetCurrentApp from "./setCurrentApp";
-import * as Settings from "./settings";
-import Start from "./start";
+import * as vscode from 'vscode';
+import { CommandNames } from '../../constants';
+import { ExtensionManager } from '../../extensionManager';
+import { FSUtils } from '../../helpers/fsUtils';
+import { AppCenterProfile, CurrentApp } from '../../helpers/interfaces';
+import { Utils } from '../../helpers/utils';
+import { ILogger } from '../../log/logHelper';
+import { Strings } from '../../strings';
+import AppCenterPortalMenu from './appCenterPortalMenu';
+import * as CodePush from './codepush';
+import { Command } from './command';
+import GetCurrentApp from './getCurrentApp';
+import Login from './login';
+import SetCurrentApp from './setCurrentApp';
+import * as Settings from './settings';
+import Start from './start';
 
 export default class ShowMenu extends Command {
 

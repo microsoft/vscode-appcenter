@@ -1,10 +1,10 @@
-import * as vscode from "vscode";
-import { ExtensionManager } from "../../../extensionManager";
-import { Profile, ProfileQuickPickItem } from "../../../helpers/interfaces";
-import { VsCodeUtils } from "../../../helpers/vsCodeUtils";
-import { ILogger } from "../../../log/logHelper";
-import { Strings } from "../../../strings";
-import { Command } from "../command";
+import * as vscode from 'vscode';
+import { ExtensionManager } from '../../../extensionManager';
+import { Profile, ProfileQuickPickItem } from '../../../helpers/interfaces';
+import { VsCodeUtils } from '../../../helpers/vsCodeUtils';
+import { ILogger } from '../../../log/logHelper';
+import { Strings } from '../../../strings';
+import { Command } from '../command';
 
 export default class Logout extends Command {
 

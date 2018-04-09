@@ -1,18 +1,17 @@
-import { AppCenterProfile, Profile, ProfileStorage } from "../../helpers/interfaces";
-import { SettingsHelper } from "../../helpers/settingsHelper";
-import { createAppCenterClient, models } from "../api";
-import AppCenterProfileImpl from "./profile/appCenterProfileImpl";
-import { tokenStore } from "./tokenStore";
+import { AppCenterProfile, Profile, ProfileStorage } from '../../helpers/interfaces';
+import { SettingsHelper } from '../../helpers/settingsHelper';
+import { ILogger } from '../../log/logHelper';
+import { createAppCenterClient, models } from '../api';
+import AppCenterProfileImpl from './profile/appCenterProfileImpl';
+import { tokenStore } from './tokenStore';
 
 export default class Auth {
 
-    constructor(private profileStorage: ProfileStorage<AppCenterProfile>) {
+    constructor(private profileStorage: ProfileStorage<AppCenterProfile>, private logger: ILogger) {
     }
 
-    public static accessToken(profile: AppCenterProfile): Promise<string> {
-        const getter = tokenStore.get(profile.userId)
-            .catch(() => {
-            });
+    public static accessTokenFor(profile: AppCenterProfile): Promise<string> {
+        const getter = tokenStore.get(profile.userId);
         const emptyToken = "";
         // tslint:disable-next-line:no-any
         return getter.then((entry: any) => {
@@ -20,8 +19,9 @@ export default class Auth {
                 return entry.accessToken.token;
             }
             return emptyToken;
-        }).catch(() => {
-            // Failed to get token from porfile, return no result
+        }).catch((e: Error) => {
+            // TODO Find a way to log it via logger
+            console.error("Failed to get token from profile", e);
             return emptyToken;
         });
     }
@@ -42,6 +42,7 @@ export default class Auth {
         // Ask server for user info by token
         const userResponse: models.UserProfileResponse = await this.getUserInfo(token);
         if (!userResponse) {
+            this.logger.error("Couldn't get user profile from appcenter.");
             return null;
         }
 

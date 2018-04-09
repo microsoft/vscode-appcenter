@@ -1,8 +1,8 @@
-import * as vscode from "vscode";
-import { AppCenterProfile, Profile, ProfileQuickPickItem } from "../../../helpers/interfaces";
-import { VsCodeUtils } from "../../../helpers/vsCodeUtils";
-import { Strings } from "../../../strings";
-import { Command } from "../command";
+import * as vscode from 'vscode';
+import { AppCenterProfile, Profile, ProfileQuickPickItem } from '../../../helpers/interfaces';
+import { VsCodeUtils } from '../../../helpers/vsCodeUtils';
+import { Strings } from '../../../strings';
+import { Command } from '../command';
 
 export default class LoginToAnotherAccount extends Command {
     public async runNoClient(): Promise<boolean | void> {

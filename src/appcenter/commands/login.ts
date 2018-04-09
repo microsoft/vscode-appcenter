@@ -1,7 +1,6 @@
 import * as os from "os";
 import * as qs from "qs";
 import * as vscode from "vscode";
-import { AppCenterLoginType } from "../../constants";
 import { ExtensionManager } from "../../extensionManager";
 import { Profile } from "../../helpers/interfaces";
 import { SettingsHelper } from "../../helpers/settingsHelper";
@@ -17,45 +16,25 @@ export default class Login extends Command {
     }
 
     public async runNoClient(): Promise<boolean | void> {
-
         if (! await super.runNoClient()) {
             return false;
         }
-        const appCenterLoginOptions: string[] = Object.keys(AppCenterLoginType)
-            .filter(k => typeof AppCenterLoginType[k as any] === "number");
 
-        return vscode.window.showQuickPick(appCenterLoginOptions, { placeHolder: Strings.SelectLoginTypeMsg })
-            .then((loginType) => {
-                switch (loginType) {
-                    case (AppCenterLoginType[AppCenterLoginType.Interactive]):
-                        const messageItems: IButtonMessageItem[] = [];
-                        const loginUrl = `${SettingsHelper.getAppCenterLoginEndpoint()}?${qs.stringify({ hostname: os.hostname() })}`;
-                        messageItems.push({
-                            title: Strings.OkBtnLabel,
-                            url: loginUrl
+        const messageItems: IButtonMessageItem[] = [];
+        const loginUrl = `${SettingsHelper.getAppCenterLoginEndpoint()}?${qs.stringify({ hostname: os.hostname() })}`;
+        messageItems.push({
+            title: Strings.OkBtnLabel,
+            url: loginUrl
+        });
+
+        return VsCodeUtils.ShowInfoMessage(Strings.PleaseLoginViaBrowser, ...messageItems)
+            .then((selection: IButtonMessageItem | undefined) => {
+                if (selection) {
+                    return vscode.window.showInputBox({ prompt: Strings.PleaseProvideToken, ignoreFocusOut: true })
+                        .then(token => {
+                            this.loginWithToken(token);
                         });
-
-                        return VsCodeUtils.ShowInfoMessage(Strings.PleaseLoginViaBrowser, ...messageItems)
-                            .then((selection: IButtonMessageItem | undefined) => {
-                                if (selection) {
-                                    return vscode.window.showInputBox({ prompt: Strings.PleaseProvideToken, ignoreFocusOut: true })
-                                        .then(token => {
-                                            return this.loginWithToken(token);
-                                        });
-                                } else {
-                                    return true;
-                                }
-                            });
-                    case (AppCenterLoginType[AppCenterLoginType.Token]):
-                        return vscode.window.showInputBox({ prompt: Strings.PleaseProvideToken, ignoreFocusOut: true })
-                            .then(token => {
-                                return this.loginWithToken(token);
-                            });
-                    default:
-                        // User cancel login otherwise
-                        this.logger.info("User cancel login");
-                        return true;
-                }
+                } else { return; }
             });
     }
 

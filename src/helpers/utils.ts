@@ -1,16 +1,15 @@
+import { execSync } from 'child_process';
+import * as fs from 'fs';
+import * as open from 'open';
+import * as opener from 'opener';
+import * as os from 'os';
+import * as path from 'path';
+import { AppCenterOS, Constants } from '../constants';
+import { Strings } from '../strings';
+import { CurrentApp, CurrentAppDeployments } from './interfaces';
+import { Validators } from './validators';
+import { VsCodeUtils } from './vsCodeUtils';
 "use strict";
-
-import { execSync } from "child_process";
-import * as fs from "fs";
-import * as open from "open";
-import * as opener from "opener";
-import * as os from "os";
-import * as path from "path";
-import { AppCenterOS, Constants } from "../constants";
-import { Strings } from "../strings";
-import { CurrentApp, CurrentAppDeployments } from "./interfaces";
-import { Validators } from "./validators";
-import { VsCodeUtils } from "./vsCodeUtils";
 
 export class Utils {
     public static FormatMessage(message: string): string {
@@ -122,10 +121,12 @@ export class Utils {
     }
 
     private static getUserDir(): string {
+        //todo move to constants
         if (os.platform() === "win32") {
             return process.env.AppData;
         } else {
             return os.homedir();
+
         }
     }
 
