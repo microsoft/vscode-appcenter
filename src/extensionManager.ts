@@ -85,7 +85,7 @@ export class ExtensionManager implements Disposable {
     public setupAppCenterStatusBar(profile: Profile | null): Promise<void> {
         if (profile && profile.userName) {
             return VsCodeUtils.setStatusBar(this._appCenterStatusBarItem,
-                `$(icon octicon-person) ${profile.userName}`,
+                `AppCenter: ${profile.userName}`,
                 Strings.YouAreLoggedInMsg(profile.userName),
                 `${CommandNames.ShowMenu}`
             );

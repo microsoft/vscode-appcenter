@@ -46,6 +46,12 @@ function registerAppCenterCommands(context: vscode.ExtensionContext): void {
         () => _extensionManager.RunCommand(() => settingsCommandHandler.SwitchAccount())));
     context.subscriptions.push(vscode.commands.registerCommand(CommandNames.Settings.Logout,
         () => _extensionManager.RunCommand(() => settingsCommandHandler.Logout())));
+    context.subscriptions.push(vscode.commands.registerCommand(CommandNames.Settings.LoginVsts,
+        () => _extensionManager.RunCommand(() => settingsCommandHandler.LoginToVsts())));
+    context.subscriptions.push(vscode.commands.registerCommand(CommandNames.Settings.SwitchAccountVsts,
+        () => _extensionManager.RunCommand(() => settingsCommandHandler.SwitchVstsAcc())));
+    context.subscriptions.push(vscode.commands.registerCommand(CommandNames.Settings.LogoutVsts,
+        () => _extensionManager.RunCommand(() => settingsCommandHandler.LogoutVsts())));
 
     // CodePush commands
     const codepushCommandHandler = _extensionManager.commandHandlers.codePushCommandHandler;
