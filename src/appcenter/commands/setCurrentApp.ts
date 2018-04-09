@@ -1,10 +1,11 @@
 import * as vscode from "vscode";
+import { AppCenterAppsCache } from "../../cache/appsCache";
+import { AppCenterCache } from "../../cache/baseCache"
 import { AppCenterOS, Constants } from "../../constants";
 import { AppCenterController } from "../../controller/appCenterController";
 import { ExtensionManager } from "../../extensionManager";
-import { AppCenterAppsCache } from "../../helpers/appsCache";
 import { AppCenterAppsLoader } from "../../helpers/appsLoader";
-import { AppCenterCache, AppCenterView, CurrentApp, CurrentAppDeployments, QuickPickAppItem } from "../../helpers/interfaces";
+import { AppCenterView, CurrentApp, CurrentAppDeployments, QuickPickAppItem } from "../../helpers/interfaces";
 import { VsCodeUtils } from "../../helpers/vsCodeUtils";
 import { ILogger } from "../../log/logHelper";
 import { Strings } from "../../strings";

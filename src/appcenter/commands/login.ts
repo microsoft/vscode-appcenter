@@ -1,12 +1,13 @@
 import * as os from "os";
 import * as qs from "qs";
 import * as vscode from "vscode";
+import { AppCenterAppsCache } from "../../cache/appsCache";
+import { AppCenterCache } from "../../cache/baseCache";
 import { AppCenterLoginType } from "../../constants";
 import { AppCenterController } from "../../controller/appCenterController";
 import { ExtensionManager } from "../../extensionManager";
-import { AppCenterAppsCache } from "../../helpers/appsCache";
 import { AppCenterAppsLoader } from "../../helpers/appsLoader";
-import { AppCenterCache, Profile } from "../../helpers/interfaces";
+import { Profile } from "../../helpers/interfaces";
 import { SettingsHelper } from "../../helpers/settingsHelper";
 import { IButtonMessageItem, VsCodeUtils } from "../../helpers/vsCodeUtils";
 import { ILogger } from "../../log/logHelper";

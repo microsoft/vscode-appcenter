@@ -1,4 +1,5 @@
-import { AppCenterCache, AppCenterLoader, AppCenterView, Profile } from "../helpers/interfaces";
+import { AppCenterLoader, AppCenterView, Profile } from "../helpers/interfaces";
+import { AppCenterCache } from "../cache/baseCache";
 import { Strings } from "../strings";
 
 export class AppCenterController<T> {

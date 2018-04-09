@@ -1,15 +1,14 @@
 import NodeCache = require("node-cache");
 import { Md5 } from "ts-md5/dist/md5";
 import { models } from "../appcenter/api";
-import { AppCenterCache } from "./interfaces";
+import { AppCenterCache } from "./baseCache";
 
-export class AppCenterAppsCache implements AppCenterCache<models.AppResponse[]> {
-
-    private cache: NodeCache;
+export class AppCenterAppsCache extends AppCenterCache<models.AppResponse[]> {
     private static instance: AppCenterAppsCache;
     private KEY_PREFIX: string = "_apps";
     
     private constructor() {
+        super();
         this.cache = new NodeCache();
     }
 
@@ -18,32 +17,6 @@ export class AppCenterAppsCache implements AppCenterCache<models.AppResponse[]> 
             this.instance = new AppCenterAppsCache();
         }
         return this.instance;
-    }
-
-    public invalidateCache() {
-        this.cache.flushAll();
-    }
-
-    public set(key: string, value: models.AppResponse[]) {
-        this.cache.set(key + this.KEY_PREFIX, value);
-    }
-
-    public async get(key: string): Promise<models.AppResponse[] | null> {
-        const self = this;
-        key = key + this.KEY_PREFIX;
-        return new Promise<models.AppResponse[] | null>((resolve, reject) => {
-            self.cache.get<models.AppResponse[]>(key, function (err, value) {
-                if (err) {
-                    return reject(err);
-                } else {
-                    if (value) {
-                        return resolve(value);
-                    } else {
-                        return resolve(null);
-                    }
-                }
-            });
-        });
     }
 
     public async cacheDiffersFrom(key: string, items: models.AppResponse[]): Promise<boolean> {
@@ -67,6 +40,10 @@ export class AppCenterAppsCache implements AppCenterCache<models.AppResponse[]> 
             return true;
         });
         return differs;
+    }
+
+    protected getKeyPrefix(): string {
+        return this.KEY_PREFIX;
     }
 
     private compareItems(cachedItem: models.AppResponse, item: models.AppResponse): boolean {

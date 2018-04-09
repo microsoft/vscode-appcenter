@@ -77,10 +77,4 @@ export interface AppCenterLoader<T> {
     load(): Promise<T[]>;
 }
 
-export interface AppCenterCache<T> {
-    invalidateCache();
-    set(key: string, value: T);
-    get(key: string): Promise<T | null>;
-    cacheDiffersFrom(key: string, items: T): Promise<boolean>;
-}
 
