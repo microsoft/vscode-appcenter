@@ -49,13 +49,7 @@ export class VSTSProvider {
             }
             return <VSTSGitRepository>response;
         } catch (e) {
-            let message: string = "";
-            if (typeof e === "string") {
-                message = e;
-            } else if (e.message) {
-                message = e;
-            }
-            this.logger.error("Failed to get VSTS Git repositories list. " + message);
+            this.logger.error("Failed to get VSTS Git repositories list. " + (e && e.message) || "");
             return null;
         }
     }
