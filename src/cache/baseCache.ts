@@ -4,8 +4,8 @@ export abstract class AppCenterCache<T> {
 
     protected cache: NodeCache;
 
-    public invalidateCache() {
-        this.cache.flushAll();
+    public invalidateCache(key: string) {
+        this.cache.del([key]);
     }
 
     public set(key: string, value: T) {

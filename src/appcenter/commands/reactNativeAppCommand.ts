@@ -1,10 +1,10 @@
-import * as vscode from "vscode";
-import { AppCenterOS } from "../../constants";
-import { CurrentApp, CurrentAppDeployments, Profile } from "../../helpers/interfaces";
-import { Utils } from "../../helpers/utils";
-import { VsCodeUtils } from "../../helpers/vsCodeUtils";
-import { Strings } from "../../strings";
-import { Command } from "./command";
+import * as vscode from 'vscode';
+import { AppCenterOS } from '../../constants';
+import { AppCenterProfile, CurrentApp, CurrentAppDeployments } from '../../helpers/interfaces';
+import { Utils } from '../../helpers/utils';
+import { VsCodeUtils } from '../../helpers/vsCodeUtils';
+import { Strings } from '../../strings';
+import { Command } from './command';
 
 export class ReactNativeAppCommand extends Command {
     public async runNoClient(): Promise<boolean | void> {
@@ -28,7 +28,7 @@ export class ReactNativeAppCommand extends Command {
     }
 
     protected getCurrentApp(): Promise<CurrentApp | null> {
-        return this.Profile.then((profile: Profile | null) => {
+        return this.appCenterProfile.then((profile: AppCenterProfile | null) => {
             if (profile && profile.currentApp) {
                 return profile.currentApp;
             }
@@ -49,11 +49,12 @@ export class ReactNativeAppCommand extends Command {
             return Promise.resolve(null);
         }
 
-        return this.Profile.then((profile: Profile | null) => {
+        return this.appCenterProfile.then((profile: AppCenterProfile | null) => {
             if (profile) {
                 profile.currentApp = currentApp;
-                profile.save();
-                return Promise.resolve(currentApp);
+                return this.manager.auth.updateProfile(profile).then(() => {
+                    return currentApp;
+                });
             } else {
                 // No profile - not logged in?
                 VsCodeUtils.ShowWarningMessage(Strings.UserIsNotLoggedInMsg);

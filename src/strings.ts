@@ -3,53 +3,56 @@ import { CurrentApp } from "./helpers/interfaces";
 export class Strings {
 
     /* Menu labeles */
-    public static StartAnIdeaMenuLabel: string = "Start An Idea";
+    public static StartAnIdeaMenuLabel: string = "Start a new project";
     public static OrganizationMenuDescriptionLabel: string = "Organization";
     public static UserMenuDescriptionLabel: string = "User";
     public static LoginMenuLabel: string = "Login";
     public static GetCurrentAppMenuLabel: string = "Get current app info";
     public static CodePushMenuLabelItem: string = "CodePush";
-    public static AppCenterPortalMenuLabel: string = "AppCenter portal";
+    public static AppCenterPortalMenuLabel: string = "App Center portal";
     public static SettingsMenuLabel: string = "Settings";
-    public static LoginToAnotherAccountMenuLabel: string = "Login to another AppCenter account";
-    public static SwitchAccountMenuLabel: string = "Switch AppCenter account";
+    public static LoginToAnotherAccountMenuLabel: string = "Add App Center account";
+    public static SwitchAccountMenuLabel: string = "Switch App Center account";
     public static LogoutMenuLabel: string = "Logout";
+    public static VstsLoginToAnotherAccountMenuLabel: string = "Add VSTS account";
+    public static VstsSwitchAccountMenuLabel: string = "Switch VSTS account";
+    public static VstsLogoutMenuLabel: string = "Logout VSTS";
 
-    public static SelectLoginTypeMsg: string = "Select the way you would like to authenticate with AppCenter";
+    public static SelectLoginTypeMsg: string = "How would you like to authenticate with App Center?";
     public static OkBtnLabel: string = "Ok";
-    public static UserMustSignIn: string = "You are signed out. Please login to AppCenter";
-    public static PleaseProvideToken: string = "Please provide token to authenticate";
-    public static PleaseLoginViaBrowser: string = "We are about to launch a browser window so you can automatically create an AppCenter API token";
-    public static FailedToExecuteLoginMsg: string = "Failed to execute login to AppCenter";
-    public static UserIsNotLoggedInMsg: string = "You are not logged into AppCenter";
-    public static UserLoggedOutMsg: string = "Successfully logged out of AppCenter";
-    public static MenuTitlePlaceholder: string = "Please select action";
+    public static UserMustSignIn: string = "Please login to App Center.";
+    public static PleaseProvideToken: string = "Please paste your App Center access token";
+    public static PleaseLoginViaBrowser: string = "You are about to be redirected to page containing a new App Center access token. Please copy and paste it here after you press Ok.";
+    public static FailedToExecuteLoginMsg: string = "Failed login to App Center";
+    public static UserIsNotLoggedInMsg: string = "You are not logged into App Center";
+    public static MenuTitlePlaceholder: string = "Please select a menu action.";
+    public static SelectProfileTitlePlaceholder: string = "Please select account.";
 
-    public static LoginToAppCenterButton: string = "Login to AppCenter";
+    public static LoginToAppCenterButton: string = "App Center: Login";
     public static PleaseEnterIdeaName: string = "Please enter idea name";
     public static PleaseEnterNewRepositoryUrl: string = "Please enter repository url";
     public static PleaseSelectCurrentAppOrgMsg: string = "Please select user/organization where to create an App";
 
-    public static NoIdeaNameSelectedMsg: string = "Please select an idea name!";
+    public static NoIdeaNameSelectedMsg: string = "Please enter a name for your project.";
     public static VSCodeProgressLoadingTitle: string = "Loading...";
-    public static CheckIfAppsExistLoadingMessage: string = "Checking if idea name is already in used...";
+    public static CheckIfAppsExistLoadingMessage: string = "Checking if project name is already in use...";
     public static LoadingVSTSProjectsMessage: string = "Loading VSTS projects for you...";
     public static LoadingStatusBarMessage: string = "Loading some information for you...";
-    public static CreateRNProjectStatusBarMessage: string = "Pull appcenter sample app project for you...";
-    public static PushToRemoteRepoStatusBarMessage: string = "Pushing changes to remote repo...";
-    public static CreatingCodePushDeploymentsStatusBarMessage: string = "Creating CodePush deployments...";
-    public static RunNPMInstallStatusBarMessage: string = "Installing node_modules...";
-    public static NodeModulesInstalledMessage: string = "node_modules were installed!";
-    public static FinishedConfigMsg: string = "Ace, you're done!";
-    public static GitIsNotInstalledMsg: string = "Sorry, git is not installed!";
-    public static FailedToCreateRNProjectMsg: string = "Sorry, failed to pull data for sample RN project!";
-    public static NotRNProjectMsg: string = "Sorry, this is not an RN project!";
-    public static IdeaNameIsNotValidMsg: string = "Sorry, idea name is not valid!";
+    public static CreateRNProjectStatusBarMessage: string = "Creating a starting point for your project...";
+    public static PushToRemoteRepoStatusBarMessage: string = "Pushing changes to your new repository...";
+    public static CreatingCodePushDeploymentsStatusBarMessage: string = "Creating CodePush deployments for hotfixing...";
+    public static RunNPMInstallStatusBarMessage: string = "Installing package dependencies...";
+    public static NodeModulesInstalledMessage: string = "Dependencies have been successfully installed.";
+    public static FinishedConfigMsg: string = "Your project has been successfully configured locally and in the cloud.";
+    public static GitIsNotInstalledMsg: string = "It looks like you don't have a local git client installed. ";
+    public static FailedToCreateRNProjectMsg: string = "An unexpected error occurred while fetching the project template.";
+    public static NotRNProjectMsg: string = "Sorry, this project doesn't appear to be React Native.";
+    public static IdeaNameIsNotValidMsg: string = "Sorry, the project name your entered is invalid.";
     public static FailedToRemoveRemoteRepositoryMsg: string = "Sorry, failed to remove remote repository!";
     public static FailedToAddRemoteRepositoryMsg: string = "Sorry, failed to add remote repository!";
-    public static FailedToGetSelectedUserOrOrganizationMsg: string = "Sorry, failed to get selected user or organization!";
-    public static DirectoryIsNotEmptyForNewIdea: string = "Start New Idea should work only for empty directory!";
-    public static FailedToProvideRepositoryNameMsg: string = "Sorry, can't go ahead, git repository url was not provided or valid!";
+    public static FailedToGetSelectedUserOrOrganizationMsg: string = "Sorry, failed to get selected account information.";
+    public static DirectoryIsNotEmptyForNewIdea: string = "Sorry, you can only start a new project inside an empty folder.";
+    public static FailedToProvideRepositoryNameMsg: string = "Sorry, the git url you provided doesn't appear to be valid.";
     public static SelectCurrentAppMenuDescription: string = "SELECT CURRENT APP";
 
     public static BuildTabMenuItem: string = "Build";
@@ -65,63 +68,71 @@ export class Strings {
     public static DistributeReleasesTabMenuItem: string = "Releases";
 
     public static GetAppsListMessage: string = "Getting apps...";
-    public static FetchAppsStatusBarMessage: string = "Fetching apps for you...";
-    public static CreatingDistributionStatusBarMessage: string = "Creating distribution group for you...";
-    public static ConnectingRepoToBuildServiceStatusBarMessage: string = "Connecting repository for you...";
-    public static CreateBranchConfigAndKickOffBuildStatusBarMessage: string = "Starting new build for you...";
-    public static ProvideCurrentAppPromptMsg: string = "Please specify an AppCenter app";
-    public static FetchDeploymentsStatusBarMessage: string = "Fetching app deployments for you...";
-    public static InvalidCurrentAppNameMsg: string = "Sorry, provided app name is invalid";
+    public static FetchAppsStatusBarMessage: string = "Fetching your list of apps...";
+    public static CreatingDistributionStatusBarMessage: string = "Creating distribution groups...";
+    public static ConnectingRepoToBuildServiceStatusBarMessage: string = "Configuring cloud build services...";
+    public static CreateBranchConfigAndKickOffBuildStatusBarMessage: string = "Starting a fresh cloud build...";
+    public static ProvideCurrentAppPromptMsg: string = "Please specify an App Center app";
+    public static FetchDeploymentsStatusBarMessage: string = "Fetching CodePush deployments for you...";
+    public static InvalidCurrentAppNameMsg: string = "Sorry, the app name isn't valid.";
 
-    public static FailedToConnectRepoToBuildService: string = "Sorry, failed to connect repository to build service";
-    public static FailedToConfigureBranchAndStartNewBuild: string = "Sorry, failed to configure branch and start new build";
-    public static FailedToCreateDistributionGroup: string = "Sorry, failed to create distribution group";
-    public static NoCurrentAppSetMsg: string = "No current app specified";
-    public static NoProjectRootFolderFound: string = "Please, open project folder before using this command";
-    public static UnknownError: string = "Unknown error occured. Please, check logs for details.";
-    public static SelectCurrentDeploymentMsg: string = "Please select current deployment";
-    public static PleaseProvideTargetBinaryVersion: string = "Please provide semver compliant version";
-    public static InvalidAppVersionParamMsg: string = "Sorry, provided app version is invalid";
-    public static GettingAppInfoMessage: string = "Getting app info...";
-    public static DetectingAppVersionMessage: string = "Detecting app version...";
-    public static RunningBundleCommandMessage: string = "Running bundle command...";
-    public static ArchivingUpdateContentsMessage: string = "Archiving update contents...";
-    public static ReleasingUpdateContentsMessage: string = "Releasing update contents to CodePush...";
+    public static FailedToConnectRepoToBuildService: string = "Sorry, we failed to connect the repository to the build service.";
+    public static FailedToConfigureBranchAndStartNewBuild: string = "Sorry, we failed to configure the branch for build.";
+    public static FailedToCreateDistributionGroup: string = "Sorry, we failed to create any distribution groups.";
+    public static NoCurrentAppSetMsg: string = "You haven't specified an App Center app for this project.";
+    public static NoProjectRootFolderFound: string = "Please open a project before using this command.";
+    public static UnknownError: string = "An unknown error has occured. Please check the output window for more details.";
+    public static SelectCurrentDeploymentMsg: string = "Please specify a CodePush deployment.";
+    public static PleaseProvideTargetBinaryVersion: string = "Please provide a target binary version in semver format";
+    public static InvalidAppVersionParamMsg: string = "Sorry, the provided app version isn't valid";
+    public static GettingAppInfoMessage: string = "Retrieving app info...";
+    public static DetectingAppVersionMessage: string = "Locating app version...";
+    public static RunningBundleCommandMessage: string = "Creating a new bundle...";
+    public static ArchivingUpdateContentsMessage: string = "Compressing new bundle...";
+    public static ReleasingUpdateContentsMessage: string = "Sending update to CodePush...";
     public static ReactNativeInstallHint: string = "Make sure you ran \"npm install\" and that you are inside a React Native project.";
     public static CodePushInstallHint: string = "Make sure you ran \"npm install\" and that you are inside a React Native Code Push project.";
 
-    public static CreatingAppStatusBarMessage: string = `Creating app for you...`;
-    public static FailedToCreateAppInAppCenter: string = `Sorry, failed to create app in AppCenter`;
-    public static FailedToGetVSTSProjects: string = `Sorry, failed to get VSTS Project`;
-    public static FailedToCreateVSTSGitrepository: string = `Sorry, failed to create VSTS git repository`;
-    public static FailedToCreateAppAlreadyExistInAppCenter: string = `Sorry, apps with provided idea name already exist in AppCenter. Please select another idea name.`;
+    public static CreatingAppStatusBarMessage: string = `Creating a new App Center app...`;
+    public static FailedToCreateAppInAppCenter: string = `An error occurred while creating the new App Center app`;
+    public static FailedToGetVSTSProjects: string = `An error while trying to retrieve your VSTS projects`;
+    public static FailedToCreateVSTSGitrepository: string = `An error occurred while creating your new VSTS repository`;
+    public static FailedToCreateAppAlreadyExistInAppCenter: string = `An app with that name already exists in App Center. Please choose a new name.`;
 
     public static OpenTabInBrowserMsg(tabName: string): string {
         return `Open '${tabName}' tab for currently selected app`;
     }
 
     public static FailedToPushChangesToRemoteRepoMsg: (repoName: string) => string = (repoName: string) => {
-        return `Failed to push changes to remote repository '${repoName}'`;
+        return `Failed to push local changes to remote repository '${repoName}'`;
     }
 
     public static YouAreLoggedInMsg(name: string): string {
-        return `You are logged into AppCenter as '${name}'`;
+        return `You are logged into App Center as '${name}'`;
+    }
+
+    public static UserLoggedOutMsg(name: string): string {
+        return `You have successfully logged out of App Center as '${name}'`;
+    }
+
+    public static UserSwitchedMsg(name: string): string {
+        return `Successfully switched AppCenter account to '${name}'`;
     }
 
     public static YourCurrentAppMsg(appName: string): string {
-        return `Your current app is '${appName}'`;
+        return `The current app is '${appName}'`;
     }
 
     public static YourCurrentAppAndDeploymentMsg(appName: string, deploymentName: string): string {
         if (deploymentName) {
-            return `Your current app is '${appName}', current deployment is '${deploymentName}'`;
+            return `The current app is '${appName}', current CodePush deployment is '${deploymentName}'`;
         } else {
-            return `Your current app is '${appName}', you have no deployments specified`;
+            return `The current app is '${appName}', but you have no CodePush deployments specified`;
         }
     }
 
     public static YourCurrentDeploymentMsg(deploymentName: string): string {
-        return `Your current deployment is '${deploymentName}'`;
+        return `The current CodePush deployment selected is '${deploymentName}'`;
     }
 
     public static setCurrentAppDeploymentText(app: CurrentApp): string {

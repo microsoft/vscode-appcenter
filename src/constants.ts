@@ -21,6 +21,8 @@ export class Constants {
     public static AppCenterSampleGitRemoteName: string = "appcenter-sample-repo";
     public static AppCenterSampleGitRemoteDefaultBranchName: string = "master";
     public static GitDefaultRemoteName: string = 'origin';
+    public static ProfileDir: string = ".vscode-appcenter";
+    public static ProfileFileName: string = "VSCodeAppCenterProfile.json";
 
     // IMPORTANT: this two items below should stay in sync in terms of xcode projectOrWorkspacePath/scheme values
     // We should decide how we should handle this (e.g. create manually within AppCenter site)
@@ -69,6 +71,10 @@ export class CommandNames {
         public static LoginToAnotherAccount: string = `${CommandNames.CommandPrefix}settings.loginToAnotherAccount`;
         public static SwitchAccount: string = `${CommandNames.CommandPrefix}settings.switchAccount`;
         public static Logout: string = `${CommandNames.CommandPrefix}settings.logout`;
+
+        public static LoginVsts: string = `${CommandNames.CommandPrefix}settings.vsts.login`;
+        public static SwitchAccountVsts: string = `${CommandNames.CommandPrefix}settings.vsts.switchAccount`;
+        public static LogoutVsts: string = `${CommandNames.CommandPrefix}settings.vsts.logout`;
     };
 
     public static CodePush = class {
@@ -84,11 +90,6 @@ export enum MessageTypes {
     Error = 0,
     Warn = 1,
     Info = 2
-}
-
-export enum AppCenterLoginType {
-    Interactive,
-    Token
 }
 
 export enum AppCenterOS {

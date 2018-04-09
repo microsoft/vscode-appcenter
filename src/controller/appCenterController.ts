@@ -45,8 +45,11 @@ export class AppCenterController<T> {
     }
 
     private async loadWithUI(): Promise<any> {
-        const cacheForCurrentUser = await this._cache.get(this._profile.userId);
-        if (cacheForCurrentUser && this.isViewAttached()) {
+        let cacheForCurrentUser = await this._cache.get(this._profile.userId);
+        if (!cacheForCurrentUser) {
+            cacheForCurrentUser = [];
+        }
+        if (this.isViewAttached()) {
             (this._view as AppCenterView<T>).display(cacheForCurrentUser);
         }
         if (this.isViewAttached()) {

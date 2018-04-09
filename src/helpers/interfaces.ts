@@ -35,31 +35,41 @@ export interface CreatedAppFromAppCenter {
     name: string;
 }
 
+export interface ProfileStorage<T extends Profile> {
+    active: T | null;
+    save(profile: Profile): Promise<void>;
+    delete(userId: string): Promise<T | null>;
+    get(userId: string): Promise<T | null>;
+    list(): Promise<T[]>;
+    init(): Promise<void>;
+}
+
 export interface Profile {
     userId: string;
     userName: string;
     displayName: string;
+    isActive: boolean;
+}
+
+export interface AppCenterProfile extends Profile {
     email: string;
-    readonly accessToken: Promise<string>;
     currentApp?: CurrentApp;
-    save(): Profile;
-    logout(): Promise<void>;
 }
 
 export interface IDefaultCommandParams {
     app: CurrentApp;
 }
 export interface ICodePushReleaseParams extends IDefaultCommandParams {
-  deploymentName: string;
-  updatedContentZipPath: string;
-  appVersion?: string;
-  description?: string;
-  isDisabled?: boolean;
-  isMandatory?: boolean;
-  label?: string;
-  packageHash?: string;
-  rollout?: number;
-  token?: string;
+    deploymentName: string;
+    updatedContentZipPath: string;
+    appVersion?: string;
+    description?: string;
+    isDisabled?: boolean;
+    isMandatory?: boolean;
+    label?: string;
+    packageHash?: string;
+    rollout?: number;
+    token?: string;
 }
 
 export interface QuickPickAppItem {
@@ -75,4 +85,10 @@ export interface AppCenterView<T> {
 
 export interface AppCenterLoader<T> {
     load(): Promise<T[]>;
+}
+
+export interface ProfileQuickPickItem {
+    label: string;
+    description: string;
+    profile: Profile;
 }

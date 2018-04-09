@@ -1,4 +1,8 @@
-import { Command } from "../command";
+import * as vscode from 'vscode';
+import { AppCenterProfile, Profile, ProfileQuickPickItem } from '../../../helpers/interfaces';
+import { VsCodeUtils } from '../../../helpers/vsCodeUtils';
+import { Strings } from '../../../strings';
+import { Command } from '../command';
 
 export default class LoginToAnotherAccount extends Command {
     public async runNoClient(): Promise<boolean | void> {
@@ -6,8 +10,54 @@ export default class LoginToAnotherAccount extends Command {
             return false;
         }
 
-        return true;
+        const profiles = await this.manager.auth.getProfiles();
+        if (profiles.length < 2) {
+            return true;
+        }
 
-        //todo implement
+        const menuOptions: ProfileQuickPickItem[] = [];
+        profiles.forEach(profile => {
+            if (!profile.isActive) {
+                menuOptions.push(<ProfileQuickPickItem>{
+                    label: profile.userName,
+                    description: "",
+                    profile: profile
+                });
+            }
+        });
+
+        return await vscode.window.showQuickPick(menuOptions, { placeHolder: Strings.SelectProfileTitlePlaceholder })
+            .then((selected: ProfileQuickPickItem) => {
+                if (!selected) {
+                    // User cancel selection
+                    return true;
+                }
+                return this.switchActiveProfile(selected.profile);
+            }, this.handleError);
+
+    }
+
+    private async switchActiveProfile(selectedProfile: Profile): Promise<boolean> {
+        try {
+            const currentActiveProfile: AppCenterProfile | null = this.manager.auth.activeProfile;
+            if (currentActiveProfile) {
+                currentActiveProfile.isActive = false;
+                await this.manager.auth.updateProfile(currentActiveProfile);
+            }
+            selectedProfile.isActive = true;
+            await this.manager.auth.updateProfile(selectedProfile);
+
+            VsCodeUtils.ShowInfoMessage(Strings.UserSwitchedMsg(selectedProfile.userName));
+            await this.manager.setupAppCenterStatusBar(selectedProfile);
+        } catch (e) {
+            this.handleError(e);
+            return false;
+        }
+        return true;
+    }
+
+    private handleError(error: Error) {
+        VsCodeUtils.ShowErrorMessage("Error occured during the switching accounts.");
+        this.logger.error(error.message, error, true);
     }
 }

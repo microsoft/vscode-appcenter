@@ -1,10 +1,11 @@
 import * as vscode from 'vscode';
 import { Constants } from '../../../constants';
-import { ExtensionManager } from "../../../extensionManager";
-import { CurrentApp, ICodePushReleaseParams, Profile } from "../../../helpers/interfaces";
+import { ExtensionManager } from '../../../extensionManager';
+import { AppCenterProfile, CurrentApp, ICodePushReleaseParams } from '../../../helpers/interfaces';
 import { VsCodeUtils } from '../../../helpers/vsCodeUtils';
-import { ILogger, LogLevel } from "../../../log/logHelper";
+import { ILogger, LogLevel } from '../../../log/logHelper';
 import { Strings } from '../../../strings';
+import Auth from '../../auth/auth';
 import { codePushRelease } from '../../codepush';
 import { fileUtils, reactNative, updateContents } from '../../codepush/codepush-sdk/src';
 import { BundleConfig } from '../../codepush/codepush-sdk/src/react-native/react-native-utils';
@@ -69,8 +70,8 @@ export default class ReleaseReact extends RNCPAppCommand {
                     codePushRelaseParams.updatedContentZipPath = pathToZippedBundle;
                     codePushRelaseParams.isMandatory = isMandatory;
                     return new Promise<any>((publishResolve, publishReject) => {
-                        this.Profile.then((profile: Profile) => {
-                            return profile.accessToken;
+                        this.appCenterProfile.then((profile: AppCenterProfile) => {
+                            return Auth.accessTokenFor(profile);
                         }).then((token: string) => {
                             codePushRelaseParams.token = token;
                             return codePushRelease.exec(this.client, codePushRelaseParams, this.logger);
