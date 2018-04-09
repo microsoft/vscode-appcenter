@@ -90,11 +90,6 @@ export enum MessageTypes {
     Info = 2
 }
 
-export enum AppCenterLoginType {
-    Interactive,
-    Token
-}
-
 export enum AppCenterOS {
     iOS = "iOS",
     Android = "Android",
