@@ -59,7 +59,7 @@ export default class FsProfileStorage<T extends Profile> implements ProfileStora
     }
 
     public async save(profile: T): Promise<void> {
-        const deletedProfile = await this.deleteProfileWith(profile.userId);
+        const deletedProfile = await this.delete(profile.userId);
 
         // If user just re-logged in then preserve active state
         if (deletedProfile && deletedProfile.userId === profile.userId) {
@@ -79,8 +79,8 @@ export default class FsProfileStorage<T extends Profile> implements ProfileStora
         await this.saveProfiles();
     }
 
-    public async deleteProfileWith(userId: string): Promise<T | null> {
-        const foundProfile = await this.getProfileWith(userId);
+    public async delete(userId: string): Promise<T | null> {
+        const foundProfile = await this.get(userId);
         if (!foundProfile) {
             return null;
         }
@@ -97,7 +97,7 @@ export default class FsProfileStorage<T extends Profile> implements ProfileStora
         return deletedProfile[0];
     }
 
-    public async getProfileWith(userId: string): Promise<T | null> {
+    public async get(userId: string): Promise<T | null> {
         const foundProfiles: T[] = this.profiles.filter(value => value.userId === userId);
         if (foundProfiles.length === 1) {
             return foundProfiles[0];
@@ -107,7 +107,7 @@ export default class FsProfileStorage<T extends Profile> implements ProfileStora
         return null;
     }
 
-    public async listProfiles(): Promise<T[]> {
+    public async list(): Promise<T[]> {
         return this.profiles;
     }
 }

@@ -42,9 +42,9 @@ export interface CreatedAppFromAppCenter {
 export interface ProfileStorage<T extends Profile> {
     activeProfile: T | null;
     save(profile: Profile): Promise<void>;
-    deleteProfileWith(userId: string): Promise<T | null>;
-    getProfileWith(userId: string): Promise<T | null>;
-    listProfiles(): Promise<T[]>;
+    delete(userId: string): Promise<T | null>;
+    get(userId: string): Promise<T | null>;
+    list(): Promise<T[]>;
     init(): Promise<void>;
 }
 

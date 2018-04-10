@@ -37,7 +37,7 @@ export default abstract class Auth<T extends Profile> {
         await tokenStore.remove(profile.userId);
 
         // Remove saved profile if exists
-        await this.profileStorage.deleteProfileWith(profile.userId);
+        await this.profileStorage.delete(profile.userId);
         await tokenStore.set(profile.userId, { token: token });
 
         // Make it active
@@ -53,10 +53,10 @@ export default abstract class Auth<T extends Profile> {
         // Remove token from local store
         // TODO: Probably we need to delete token from server also?
         await tokenStore.remove(userId);
-        await this.profileStorage.deleteProfileWith(userId);
+        await this.profileStorage.delete(userId);
 
         // If there are no profiles left just exit
-        const profiles: T[] | null = await this.profileStorage.listProfiles();
+        const profiles: T[] | null = await this.profileStorage.list();
         if (profiles.length === 0) {
             return;
         }
@@ -74,7 +74,7 @@ export default abstract class Auth<T extends Profile> {
     }
 
     public async getProfiles(): Promise<Profile[]> {
-        return await this.profileStorage.listProfiles();
+        return await this.profileStorage.list();
     }
 
     public static accessTokenFor(profile: Profile): Promise<string> {
