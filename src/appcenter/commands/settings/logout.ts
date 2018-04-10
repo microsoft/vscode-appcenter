@@ -1,16 +1,14 @@
 import * as vscode from 'vscode';
 import { AuthProvider } from '../../../constants';
-import { ExtensionManager } from '../../../extensionManager';
-import { Profile, ProfileQuickPickItem } from '../../../helpers/interfaces';
+import { CommandParams, Profile, ProfileQuickPickItem } from '../../../helpers/interfaces';
 import { VsCodeUtils } from '../../../helpers/vsCodeUtils';
-import { ILogger } from '../../../log/logHelper';
 import { Strings } from '../../../strings';
 import { Command } from '../command';
 
 export default class Logout extends Command {
 
-    constructor(manager: ExtensionManager, logger: ILogger) {
-        super(manager, logger);
+    constructor(params: CommandParams) {
+        super(params);
     }
 
     public async runNoClient(): Promise<boolean | void> {
@@ -19,7 +17,7 @@ export default class Logout extends Command {
         }
 
         // Get profiles in which user is logged in
-        const profiles: Profile[] = await this.manager.appCenterAuth.getProfiles();
+        const profiles: Profile[] = await this.appCenterAuth.getProfiles();
 
         // No profiles - exit
         if (profiles.length === 0) {
@@ -53,9 +51,9 @@ export default class Logout extends Command {
 
     private async logoutUser(profile: Profile): Promise<boolean> {
         try {
-            await this.manager.appCenterAuth.doLogout(profile.userId);
+            await this.appCenterAuth.doLogout(profile.userId);
             VsCodeUtils.ShowInfoMessage(Strings.UserLoggedOutMsg(AuthProvider.AppCenter, profile.userName));
-            await this.manager.setupAppCenterStatusBar(this.manager.appCenterAuth.activeProfile);
+            await this.manager.setupAppCenterStatusBar(this.appCenterAuth.activeProfile);
             return true;
         } catch (e) {
             this.handleError(e);

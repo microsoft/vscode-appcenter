@@ -1,10 +1,8 @@
 import * as vscode from 'vscode';
 import { CommandNames } from '../../constants';
-import { ExtensionManager } from '../../extensionManager';
 import { FSUtils } from '../../helpers/fsUtils';
-import { AppCenterProfile, CurrentApp } from '../../helpers/interfaces';
+import { AppCenterProfile, CommandParams, CurrentApp } from '../../helpers/interfaces';
 import { Utils } from '../../helpers/utils';
-import { ILogger } from '../../log/logHelper';
 import { Strings } from '../../strings';
 import AppCenterPortalMenu from './appCenterPortalMenu';
 import * as CodePush from './codepush';
@@ -16,9 +14,10 @@ import * as Settings from './settings';
 import Start from './start';
 
 export default class ShowMenu extends Command {
-
-    constructor(manager: ExtensionManager, logger: ILogger) {
-        super(manager, logger);
+    private _params: CommandParams;
+    constructor(params: CommandParams) {
+        super(params);
+        this._params = params;
     }
 
     public async runNoClient(): Promise<void> {
@@ -97,31 +96,31 @@ export default class ShowMenu extends Command {
 
                     switch (selected.target) {
                         case (CommandNames.AppCenterPortal):
-                            new AppCenterPortalMenu(this.manager, this.logger).run();
+                            new AppCenterPortalMenu(this._params).run();
                             break;
 
                         case (CommandNames.Start):
-                            new Start(this.manager, this.logger).run();
+                            new Start(this._params).run();
                             break;
 
                         case (CommandNames.Login):
-                            new Login(this.manager, this.logger).run();
+                            new Login(this._params).run();
                             break;
 
                         case (CommandNames.SetCurrentApp):
-                            new SetCurrentApp(this.manager, this.logger).run();
+                            new SetCurrentApp(this._params).run();
                             break;
 
                         case (CommandNames.GetCurrentApp):
-                            new GetCurrentApp(this.manager, this.logger).runNoClient();
+                            new GetCurrentApp(this._params).runNoClient();
                             break;
 
                         case (CommandNames.CodePush.ShowMenu):
-                            new CodePush.ShowMenu(this.manager, this.logger).runNoClient();
+                            new CodePush.ShowMenu(this._params).runNoClient();
                             break;
 
                         case (CommandNames.Settings.ShowMenu):
-                            new Settings.ShowMenu(this.manager, this.logger).run();
+                            new Settings.ShowMenu(this._params).run();
                             break;
 
                         default:

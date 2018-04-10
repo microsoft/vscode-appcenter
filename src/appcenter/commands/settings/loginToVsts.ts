@@ -40,7 +40,7 @@ export default class LoginToVsts extends Command {
     }
 
     private async login(loginInfo: VstsLoginInfo): Promise<boolean> {
-        return this.manager.vstsAuth.doLogin(loginInfo).then((profile: Profile) => {
+        return this.vstsAuth.doLogin(loginInfo).then((profile: Profile) => {
             if (!profile) {
                 this.logger.error("Failed to fetch user info from server");
                 VsCodeUtils.ShowWarningMessage(Strings.FailedToExecuteLoginMsg(AuthProvider.Vsts));

@@ -12,7 +12,7 @@ export default class SwitchAccount extends Command {
             return false;
         }
 
-        const profiles = await this.manager.vstsAuth.getProfiles();
+        const profiles = await this.vstsAuth.getProfiles();
         if (profiles.length < 2) {
             return true;
         }
@@ -40,13 +40,13 @@ export default class SwitchAccount extends Command {
 
     private async switchActiveProfile(selectedProfile: Profile): Promise<boolean> {
         try {
-            const currentActiveProfile: VstsProfile | null = this.manager.vstsAuth.activeProfile;
+            const currentActiveProfile: VstsProfile | null = this.vstsAuth.activeProfile;
             if (currentActiveProfile) {
                 currentActiveProfile.isActive = false;
-                await this.manager.vstsAuth.updateProfile(currentActiveProfile);
+                await this.vstsAuth.updateProfile(currentActiveProfile);
             }
             selectedProfile.isActive = true;
-            await this.manager.vstsAuth.updateProfile(selectedProfile);
+            await this.vstsAuth.updateProfile(selectedProfile);
 
             VsCodeUtils.ShowInfoMessage(Strings.UserSwitchedMsg(AuthProvider.Vsts, selectedProfile.userName));
         } catch (e) {

@@ -1,4 +1,8 @@
+import AppCenterAuth from "../appcenter/auth/appCenterAuth";
+import VstsAuth from "../appcenter/auth/vstsAuth";
 import { AppCenterOS } from "../constants";
+import { ExtensionManager } from "../extensionManager";
+import { ILogger } from "../log/logHelper";
 
 export interface Deployment {
     name: string;
@@ -99,4 +103,11 @@ export interface ProfileQuickPickItem {
     label: string;
     description: string;
     profile: Profile;
+}
+
+export interface CommandParams {
+    manager: ExtensionManager;
+    logger: ILogger;
+    appCenterAuth: AppCenterAuth;
+    vstsAuth: VstsAuth;
 }

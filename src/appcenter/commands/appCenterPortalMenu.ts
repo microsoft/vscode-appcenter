@@ -1,11 +1,9 @@
 import * as vscode from "vscode";
 import { AppCenteAppType, AppCenterBeacons, AppCenterDistributionTabs, Constants } from "../../constants";
-import { ExtensionManager } from "../../extensionManager";
 import { AppCenterUrlBuilder } from "../../helpers/appCenterUrlBuilder";
-import { CurrentApp, QuickPickAppItem } from "../../helpers/interfaces";
+import { CommandParams, CurrentApp, QuickPickAppItem } from "../../helpers/interfaces";
 import { Utils } from "../../helpers/utils";
 import { VsCodeUtils } from "../../helpers/vsCodeUtils";
-import { ILogger } from "../../log/logHelper";
 import { Strings } from "../../strings";
 import { models } from "../api";
 import { ReactNativeAppCommand } from "./reactNativeAppCommand";
@@ -15,8 +13,8 @@ export default class AppCenterPortalMenu extends ReactNativeAppCommand {
     private currentAppMenuTarget: string = "MenuCurrentApp";
     private selectedCachedItem: boolean;
 
-    constructor(manager: ExtensionManager, logger: ILogger) {
-        super(manager, logger);
+    constructor(params: CommandParams) {
+        super(params);
     }
 
     public async run(): Promise<void> {

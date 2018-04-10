@@ -2,18 +2,16 @@ import * as os from "os";
 import * as qs from "qs";
 import * as vscode from "vscode";
 import { AuthProvider } from "../../constants";
-import { ExtensionManager } from "../../extensionManager";
-import { Profile } from "../../helpers/interfaces";
+import { CommandParams, Profile } from "../../helpers/interfaces";
 import { SettingsHelper } from "../../helpers/settingsHelper";
 import { IButtonMessageItem, VsCodeUtils } from "../../helpers/vsCodeUtils";
-import { ILogger } from "../../log/logHelper";
 import { Strings } from "../../strings";
 import { Command } from "./command";
 
 export default class Login extends Command {
 
-    constructor(manager: ExtensionManager, logger: ILogger) {
-        super(manager, logger);
+    constructor(params: CommandParams) {
+        super(params);
     }
 
     public async runNoClient(): Promise<boolean | void> {
@@ -45,7 +43,7 @@ export default class Login extends Command {
             return true;
         }
 
-        return this.manager.appCenterAuth.doLogin({ token: token }).then((profile: Profile) => {
+        return this.appCenterAuth.doLogin({ token: token }).then((profile: Profile) => {
             if (!profile) {
                 this.logger.error("Failed to fetch user info from server");
                 VsCodeUtils.ShowWarningMessage(Strings.FailedToExecuteLoginMsg(AuthProvider.AppCenter));

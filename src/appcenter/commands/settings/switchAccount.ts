@@ -12,7 +12,7 @@ export default class SwitchAccount extends Command {
             return false;
         }
 
-        const profiles = await this.manager.appCenterAuth.getProfiles();
+        const profiles = await this.appCenterAuth.getProfiles();
         if (profiles.length < 2) {
             return true;
         }
@@ -40,13 +40,13 @@ export default class SwitchAccount extends Command {
 
     private async switchActiveProfile(selectedProfile: Profile): Promise<boolean> {
         try {
-            const currentActiveProfile: AppCenterProfile | null = this.manager.appCenterAuth.activeProfile;
+            const currentActiveProfile: AppCenterProfile | null = this.appCenterAuth.activeProfile;
             if (currentActiveProfile) {
                 currentActiveProfile.isActive = false;
-                await this.manager.appCenterAuth.updateProfile(currentActiveProfile);
+                await this.appCenterAuth.updateProfile(currentActiveProfile);
             }
             selectedProfile.isActive = true;
-            await this.manager.appCenterAuth.updateProfile(selectedProfile);
+            await this.appCenterAuth.updateProfile(selectedProfile);
 
             VsCodeUtils.ShowInfoMessage(Strings.UserSwitchedMsg(AuthProvider.AppCenter, selectedProfile.userName));
             await this.manager.setupAppCenterStatusBar(selectedProfile);

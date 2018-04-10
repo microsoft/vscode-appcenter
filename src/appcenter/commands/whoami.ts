@@ -1,15 +1,13 @@
 import { AuthProvider } from "../../constants";
-import { ExtensionManager } from "../../extensionManager";
-import { Profile } from "../../helpers/interfaces";
+import { CommandParams, Profile } from "../../helpers/interfaces";
 import { VsCodeUtils } from "../../helpers/vsCodeUtils";
-import { ILogger } from "../../log/logHelper";
 import { Strings } from "../../strings";
 import { Command } from "./command";
 
 export default class WhoAmI extends Command {
 
-    constructor(manager: ExtensionManager, logger: ILogger) {
-        super(manager, logger);
+    constructor(params: CommandParams) {
+        super(params);
     }
 
     public async runNoClient(): Promise<void> {

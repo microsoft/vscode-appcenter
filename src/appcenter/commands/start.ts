@@ -4,21 +4,14 @@ import AppCenterAppBuilder from '../../appCenterAppBuilder';
 import AppCenterAppCreator from '../../appCenterAppCreator';
 import AppCenterConfig from '../../appCenterConfig';
 import { AppCenterOS, Constants } from '../../constants';
-import { ExtensionManager } from '../../extensionManager';
 import { cpUtils } from '../../helpers/cpUtils';
 import { FSUtils } from '../../helpers/fsUtils';
 import { GitUtils } from '../../helpers/gitUtils';
-import {
-    CreatedAppFromAppCenter,
-    Deployment,
-    QuickPickAppItem,
-    UserOrOrganizationItem
-    } from '../../helpers/interfaces';
+import { CommandParams, CreatedAppFromAppCenter, Deployment, QuickPickAppItem, UserOrOrganizationItem } from '../../helpers/interfaces';
 import { Profile } from '../../helpers/interfaces';
 import { SettingsHelper } from '../../helpers/settingsHelper';
 import { Validators } from '../../helpers/validators';
 import { CustomQuickPickItem, VsCodeUtils } from '../../helpers/vsCodeUtils';
-import { ILogger } from '../../log/logHelper';
 import { Strings } from '../../strings';
 import { VSTSGitRepository, VSTSProject } from '../../vsts/types';
 import { VSTSProvider } from '../../vsts/vstsProvider';
@@ -31,8 +24,8 @@ const GitUrlParse = require("git-url-parse");
 export default class Start extends Command {
 
     private repositoryURL: string;
-    constructor(manager: ExtensionManager, logger: ILogger) {
-        super(manager, logger);
+    constructor(params: CommandParams) {
+        super(params);
     }
 
     public async run(): Promise<void> {

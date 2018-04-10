@@ -1,9 +1,8 @@
 import * as vscode from 'vscode';
 import { Constants } from '../../../constants';
-import { ExtensionManager } from '../../../extensionManager';
-import { AppCenterProfile, CurrentApp, ICodePushReleaseParams } from '../../../helpers/interfaces';
+import { AppCenterProfile, CommandParams, CurrentApp, ICodePushReleaseParams } from '../../../helpers/interfaces';
 import { VsCodeUtils } from '../../../helpers/vsCodeUtils';
-import { ILogger, LogLevel } from '../../../log/logHelper';
+import { LogLevel } from '../../../log/logHelper';
 import { Strings } from '../../../strings';
 import Auth from '../../auth/auth';
 import { codePushRelease } from '../../codepush';
@@ -12,8 +11,8 @@ import { BundleConfig } from '../../codepush/codepush-sdk/src/react-native/react
 import { RNCPAppCommand } from './rncpAppCommand';
 
 export default class ReleaseReact extends RNCPAppCommand {
-    constructor(manager: ExtensionManager, logger: ILogger) {
-        super(manager, logger);
+    constructor(params: CommandParams) {
+        super(params);
     }
 
     public async run(): Promise<void> {
