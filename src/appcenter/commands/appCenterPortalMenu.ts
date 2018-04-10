@@ -9,6 +9,7 @@ import {
     AppCenterView,
     CommandParams,
     CurrentApp,
+    Profile,
     QuickPickAppItem
     } from '../../helpers/interfaces';
 import { Utils } from '../../helpers/utils';
@@ -33,7 +34,7 @@ export default class AppCenterPortalMenu extends ReactNativeAppCommand implement
         }
         const appsLoader = new AppCenterAppsLoader(this.client);
         const appsCache: AppCenterCache<models.AppResponse[]> = AppCenterAppsCache.getInstance();
-        this.controller = new AppCenterController(this.profile, appsLoader, appsCache, this);
+        this.controller = new AppCenterController(this.appCenterAuth.activeProfile as Profile, appsLoader, appsCache, this);
         this.controller.load();
     }
 

@@ -12,7 +12,6 @@ export class Command {
 
     protected clientFactory: AppCenterClientFactory;
     protected client: AppCenterClient;
-    protected profile: AppCenterProfile;
 
     protected appCenterAuth: AppCenterAuth;
     protected manager: ExtensionManager;
@@ -60,7 +59,6 @@ export class Command {
             VsCodeUtils.ShowWarningMessage(Strings.UserIsNotLoggedInMsg);
             return Promise.resolve(false);
         } else {
-            this.profile = profile;
             const clientOrNull: AppCenterClient | null = this.resolveAppCenterClient(profile);
             if (clientOrNull) {
                 this.client = clientOrNull;
