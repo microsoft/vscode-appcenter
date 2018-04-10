@@ -1,3 +1,4 @@
+ci-test
 # VSCode AppCenter Tools
 This extension provides a development support for AppCenter projects. 
 
