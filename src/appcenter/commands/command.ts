@@ -1,10 +1,12 @@
 import { ExtensionManager } from "../../extensionManager";
-import { AppCenterProfile } from "../../helpers/interfaces";
+import { AppCenterProfile, CommandParams } from "../../helpers/interfaces";
 import { SettingsHelper } from "../../helpers/settingsHelper";
 import { VsCodeUtils } from "../../helpers/vsCodeUtils";
 import { ILogger } from "../../log/logHelper";
 import { Strings } from "../../strings";
 import { AppCenterClient, AppCenterClientFactory, createAppCenterClient } from "../api";
+import AppCenterAuth from "../auth/appCenterAuth";
+import VstsAuth from "../auth/vstsAuth";
 
 export class Command {
 
@@ -12,12 +14,21 @@ export class Command {
     protected client: AppCenterClient;
     protected profile: AppCenterProfile;
 
-    constructor(protected manager: ExtensionManager, protected logger: ILogger) {
+    protected appCenterAuth: AppCenterAuth;
+    protected manager: ExtensionManager;
+    protected logger: ILogger;
+    protected vstsAuth: VstsAuth;
+
+    constructor(commandParams: CommandParams) {
+        this.manager = commandParams.manager;
+        this.logger = commandParams.logger;
+        this.appCenterAuth = commandParams.appCenterAuth;
+        this.vstsAuth = commandParams.vstsAuth;
         this.clientFactory = createAppCenterClient();
     }
 
     public get appCenterProfile(): Promise<AppCenterProfile | null> {
-        const profile = this.manager.auth.activeProfile;
+        const profile = this.appCenterAuth.activeProfile;
         if (!profile) {
             this.logger.info(`No profile file found`);
             return Promise.resolve(null);

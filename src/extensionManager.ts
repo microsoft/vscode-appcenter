@@ -1,16 +1,14 @@
 import { Disposable, StatusBarItem } from 'vscode';
 import { createAppCenterClient, models } from './appcenter/api/';
-import Auth from './appcenter/auth/auth';
-import AppCenterProfileStorage from './appcenter/auth/profile/appCenterProfileStorage';
+import AppCenterAuth from './appcenter/auth/appCenterAuth';
+import VstsAuth from './appcenter/auth/vstsAuth';
 import { AppCenterAppsCache } from './cache/appsCache';
 import { AppCenterCache } from './cache/baseCache';
 import * as CommandHandlers from './commandHandlers';
-import { CommandNames } from './constants';
+import { AuthProvider, CommandNames } from './constants';
 import { AppCenterController } from './controller/appCenterController';
 import { AppCenterAppsLoader } from './helpers/appsLoader';
-import { AppCenterProfile, Profile, ProfileStorage } from './helpers/interfaces';
 import { SettingsHelper } from './helpers/settingsHelper';
-import { Utils } from './helpers/utils';
 import { VsCodeUtils } from './helpers/vsCodeUtils';
 import { ConsoleLogger } from './log/consoleLogger';
 import { ILogger } from './log/logHelper';
@@ -21,10 +19,10 @@ class CommandHandlersContainer {
     private _settingsCommandHandler: CommandHandlers.Settings;
     private _codePushCommandHandler: CommandHandlers.CodePush;
 
-    constructor(manager: ExtensionManager, logger: ILogger) {
-        this._appCenterCommandHandler = new CommandHandlers.AppCenter(manager, logger);
-        this._settingsCommandHandler = new CommandHandlers.Settings(manager, logger);
-        this._codePushCommandHandler = new CommandHandlers.CodePush(manager, logger);
+    constructor(private manager: ExtensionManager, private logger: ILogger, private appCenterAuth: AppCenterAuth, private vstsAuth: VstsAuth) {
+        this._appCenterCommandHandler = new CommandHandlers.AppCenter(this.manager, this.logger, this.appCenterAuth, this.vstsAuth);
+        this._settingsCommandHandler = new CommandHandlers.Settings(this.manager, this.logger, this.appCenterAuth, this.vstsAuth);
+        this._codePushCommandHandler = new CommandHandlers.CodePush(this.manager, this.logger, this.appCenterAuth, this.vstsAuth);
     }
 
     public get appCenterCommandHandler(): CommandHandlers.AppCenter {
@@ -46,9 +44,6 @@ export class ExtensionManager implements Disposable {
     private _projectRootPath: string | undefined;
     private _logger: ILogger;
 
-    private _profile: Profile | null;
-    private _auth: Auth;
-
     public get commandHandlers(): CommandHandlersContainer {
         return this._commandHandlersContainer;
     }
@@ -57,24 +52,16 @@ export class ExtensionManager implements Disposable {
         return this._projectRootPath;
     }
 
-    public get auth(): Auth {
-        return this._auth;
-    }
-
-    public async Initialize(projectRootPath: string | undefined, logger: ILogger = new ConsoleLogger()): Promise<void> {
+    public async Initialize(projectRootPath: string | undefined,
+        logger: ILogger = new ConsoleLogger(),
+        appCenterAuth: AppCenterAuth,
+        vstsAuth: VstsAuth
+    ): Promise<void> {
         this._logger = logger;
         this._projectRootPath = projectRootPath;
-        this._logger.info("Init Extension Manager");
+
+        this._commandHandlersContainer = new CommandHandlersContainer(this, this._logger, appCenterAuth, vstsAuth);
         await this.initializeExtension();
-        if (this._profile) {
-            const client = createAppCenterClient().fromProfile(this._profile, SettingsHelper.getAppCenterAPIEndpoint());
-            if (client) {
-                const appsLoader = new AppCenterAppsLoader(client);
-                const appsCache: AppCenterCache<models.AppResponse[]> = AppCenterAppsCache.getInstance();
-                const controller = new AppCenterController(this._profile, appsLoader, appsCache);
-                controller.load(true);
-            }
-        }
     }
 
     // tslint:disable-next-line:typedef
@@ -101,9 +88,16 @@ export class ExtensionManager implements Disposable {
 
     public setupAppCenterStatusBar(profile: Profile | null): Promise<void> {
         if (profile && profile.userName) {
+            const client = createAppCenterClient().fromProfile(profile, SettingsHelper.getAppCenterAPIEndpoint());
+            if (client) {
+                const appsLoader = new AppCenterAppsLoader(client);
+                const appsCache: AppCenterCache<models.AppResponse[]> = AppCenterAppsCache.getInstance();
+                const controller = new AppCenterController(profile, appsLoader, appsCache);
+                controller.load(true);
+            }
             return VsCodeUtils.setStatusBar(this._appCenterStatusBarItem,
                 `AppCenter: ${profile.userName}`,
-                Strings.YouAreLoggedInMsg(profile.userName),
+                Strings.YouAreLoggedInMsg(AuthProvider.AppCenter, profile.userName),
                 `${CommandNames.ShowMenu}`
             );
         } else {
@@ -121,15 +115,7 @@ export class ExtensionManager implements Disposable {
     }
 
     private async initializeExtension(): Promise<void> {
-        this._commandHandlersContainer = new CommandHandlersContainer(this, this._logger);
         this._appCenterStatusBarItem = VsCodeUtils.getStatusBarItem();
-
-        // Initialize Auth
-        const profileStorage: ProfileStorage<AppCenterProfile> = new AppCenterProfileStorage(Utils.getProfileFileName());
-        this._auth = new Auth(profileStorage, this._logger);
-        await this._auth.initialize();
-        this._profile = this._auth.activeProfile;
-        return this.setupAppCenterStatusBar(this._profile);
     }
 
     private cleanup(): void {

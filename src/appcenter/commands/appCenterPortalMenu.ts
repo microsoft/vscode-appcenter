@@ -1,18 +1,21 @@
-import * as vscode from "vscode";
-import { AppCenterAppsCache } from "../../cache/appsCache";
-import { AppCenterCache } from "../../cache/baseCache";
-import { AppCenteAppType, AppCenterBeacons, AppCenterDistributionTabs } from "../../constants";
-import { AppCenterController } from "../../controller/appCenterController";
-import { ExtensionManager } from "../../extensionManager";
-import { AppCenterUrlBuilder } from "../../helpers/appCenterUrlBuilder";
-import { AppCenterAppsLoader } from "../../helpers/appsLoader";
-import { AppCenterView, CurrentApp, QuickPickAppItem } from "../../helpers/interfaces";
-import { Utils } from "../../helpers/utils";
-import { VsCodeUtils } from "../../helpers/vsCodeUtils";
-import { ILogger } from "../../log/logHelper";
-import { Strings } from "../../strings";
-import { models } from "../api";
-import { ReactNativeAppCommand } from "./reactNativeAppCommand";
+import * as vscode from 'vscode';
+import { AppCenterAppsCache } from '../../cache/appsCache';
+import { AppCenterCache } from '../../cache/baseCache';
+import { AppCenteAppType, AppCenterBeacons, AppCenterDistributionTabs } from '../../constants';
+import { AppCenterController } from '../../controller/appCenterController';
+import { AppCenterUrlBuilder } from '../../helpers/appCenterUrlBuilder';
+import { AppCenterAppsLoader } from '../../helpers/appsLoader';
+import {
+    AppCenterView,
+    CommandParams,
+    CurrentApp,
+    QuickPickAppItem
+    } from '../../helpers/interfaces';
+import { Utils } from '../../helpers/utils';
+import { VsCodeUtils } from '../../helpers/vsCodeUtils';
+import { Strings } from '../../strings';
+import { models } from '../api';
+import { ReactNativeAppCommand } from './reactNativeAppCommand';
 
 export default class AppCenterPortalMenu extends ReactNativeAppCommand implements AppCenterView<models.AppResponse> {
 
@@ -20,8 +23,8 @@ export default class AppCenterPortalMenu extends ReactNativeAppCommand implement
 
     private currentAppMenuTarget: string = "MenuCurrentApp";
 
-    constructor(manager: ExtensionManager, logger: ILogger) {
-        super(manager, logger);
+    constructor(params: CommandParams) {
+        super(params);
     }
 
     public async run(): Promise<void> {

@@ -1,21 +1,20 @@
-import { ExtensionManager } from "../../extensionManager";
-import { Profile } from "../../helpers/interfaces";
+import { AuthProvider } from "../../constants";
+import { CommandParams, Profile } from "../../helpers/interfaces";
 import { VsCodeUtils } from "../../helpers/vsCodeUtils";
-import { ILogger } from "../../log/logHelper";
 import { Strings } from "../../strings";
 import { Command } from "./command";
 
 export default class WhoAmI extends Command {
 
-    constructor(manager: ExtensionManager, logger: ILogger) {
-        super(manager, logger);
+    constructor(params: CommandParams) {
+        super(params);
     }
 
     public async runNoClient(): Promise<void> {
         super.runNoClient();
         const profile: Profile | null = await this.appCenterProfile;
         if (profile) {
-            VsCodeUtils.ShowInfoMessage(Strings.YouAreLoggedInMsg(profile.displayName));
+            VsCodeUtils.ShowInfoMessage(Strings.YouAreLoggedInMsg(AuthProvider.AppCenter, profile.displayName));
         } else {
             VsCodeUtils.ShowInfoMessage(Strings.UserIsNotLoggedInMsg);
         }

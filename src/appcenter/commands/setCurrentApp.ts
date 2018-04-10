@@ -1,24 +1,28 @@
-import * as vscode from "vscode";
-import { AppCenterAppsCache } from "../../cache/appsCache";
-import { AppCenterCache } from "../../cache/baseCache";
-import { AppCenterOS, Constants } from "../../constants";
-import { AppCenterController } from "../../controller/appCenterController";
-import { ExtensionManager } from "../../extensionManager";
-import { AppCenterAppsLoader } from "../../helpers/appsLoader";
-import { AppCenterView, CurrentApp, CurrentAppDeployments, QuickPickAppItem } from "../../helpers/interfaces";
-import { VsCodeUtils } from "../../helpers/vsCodeUtils";
-import { ILogger } from "../../log/logHelper";
-import { Strings } from "../../strings";
+import * as vscode from 'vscode';
+import { AppCenterAppsCache } from '../../cache/appsCache';
+import { AppCenterCache } from '../../cache/baseCache';
+import { AppCenterOS, Constants } from '../../constants';
+import { AppCenterController } from '../../controller/appCenterController';
+import { AppCenterAppsLoader } from '../../helpers/appsLoader';
+import {
+    AppCenterView,
+    CommandParams,
+    CurrentApp,
+    CurrentAppDeployments,
+    QuickPickAppItem
+    } from '../../helpers/interfaces';
+import { VsCodeUtils } from '../../helpers/vsCodeUtils';
+import { Strings } from '../../strings';
 import { models } from '../api';
-import { Deployment } from "../lib/app-center-node-client/models";
+import { Deployment } from '../lib/app-center-node-client/models';
 import { ReactNativeAppCommand } from './reactNativeAppCommand';
 
 export default class SetCurrentApp extends ReactNativeAppCommand implements AppCenterView<models.AppResponse> {
 
     private controller: AppCenterController<models.AppResponse>;
 
-    constructor(manager: ExtensionManager, logger: ILogger) {
-        super(manager, logger);
+    constructor(params: CommandParams) {
+        super(params);
     }
 
     public async run(): Promise<void> {
