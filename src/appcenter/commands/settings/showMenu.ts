@@ -1,17 +1,17 @@
 import * as vscode from "vscode";
 import * as Settings from ".";
 import { CommandNames } from "../../../constants";
-import { ExtensionManager } from "../../../extensionManager";
+import { CommandParams } from "../../../helpers/interfaces";
 import { CustomQuickPickItem } from "../../../helpers/vsCodeUtils";
-import { ILogger } from "../../../log/logHelper";
 import { Strings } from "../../../strings";
 import { Command } from '../command';
 
 /* Internal command */
 export default class ShowMenu extends Command {
-
-    constructor(manager: ExtensionManager, logger: ILogger) {
-        super(manager, logger);
+    private _params: CommandParams;
+    constructor(params: CommandParams) {
+        super(params);
+        this._params = params;
     }
 
     public async run(): Promise<boolean | void> {
@@ -21,7 +21,7 @@ export default class ShowMenu extends Command {
 
         const menuOptions: CustomQuickPickItem[] = [];
 
-        const profiles = await this.manager.auth.getProfiles();
+        const profiles = await this.appCenterAuth.getProfiles();
         if (profiles.length > 1) {
             menuOptions.push(<CustomQuickPickItem>{
                 label: Strings.SwitchAccountMenuLabel,
@@ -42,11 +42,14 @@ export default class ShowMenu extends Command {
             target: CommandNames.Settings.Logout
         });
 
-        menuOptions.push(<CustomQuickPickItem>{
-            label: Strings.VstsSwitchAccountMenuLabel,
-            description: "",
-            target: CommandNames.Settings.SwitchAccountVsts
-        });
+        const vstsProfiles = await this.vstsAuth.getProfiles();
+        if (vstsProfiles.length > 1) {
+            menuOptions.push(<CustomQuickPickItem>{
+                label: Strings.VstsSwitchAccountMenuLabel,
+                description: "",
+                target: CommandNames.Settings.SwitchAccountVsts
+            });
+        }
 
         menuOptions.push(<CustomQuickPickItem>{
             label: Strings.VstsLoginToAnotherAccountMenuLabel,
@@ -75,27 +78,27 @@ export default class ShowMenu extends Command {
 
                     switch (selected.target) {
                         case (CommandNames.Settings.SwitchAccount):
-                            new Settings.SwitchAccount(this.manager, this.logger).runNoClient();
+                            new Settings.SwitchAccount(this._params).runNoClient();
                             break;
 
                         case (CommandNames.Settings.LoginToAnotherAccount):
-                            new Settings.LoginToAnotherAccount(this.manager, this.logger).run();
+                            new Settings.LoginToAnotherAccount(this._params).run();
                             break;
 
                         case (CommandNames.Settings.Logout):
-                            new Settings.Logout(this.manager, this.logger).runNoClient();
+                            new Settings.Logout(this._params).runNoClient();
                             break;
 
                         case (CommandNames.Settings.LoginVsts):
-                            new Settings.LoginToVsts(this.manager, this.logger).runNoClient();
+                            new Settings.LoginToVsts(this._params).runNoClient();
                             break;
 
                         case (CommandNames.Settings.SwitchAccountVsts):
-                            new Settings.SwitchVstsAccount(this.manager, this.logger).runNoClient();
+                            new Settings.SwitchVstsAccount(this._params).runNoClient();
                             break;
 
                         case (CommandNames.Settings.LogoutVsts):
-                            new Settings.LogoutVsts(this.manager, this.logger).runNoClient();
+                            new Settings.LogoutVsts(this._params).runNoClient();
                             break;
 
                         default:

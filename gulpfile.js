@@ -68,3 +68,7 @@ gulp.task("build", function () {
 gulp.task("default", function (callback) {
     runSequence("clean", "build", "tslint", callback);
 });
+
+gulp.task("debug", function (callback) {
+    runSequence("clean", "build", callback);
+});

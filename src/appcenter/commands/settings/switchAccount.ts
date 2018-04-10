@@ -1,16 +1,18 @@
 import * as vscode from 'vscode';
+import { AuthProvider } from '../../../constants';
 import { AppCenterProfile, Profile, ProfileQuickPickItem } from '../../../helpers/interfaces';
 import { VsCodeUtils } from '../../../helpers/vsCodeUtils';
 import { Strings } from '../../../strings';
 import { Command } from '../command';
 
-export default class LoginToAnotherAccount extends Command {
+export default class SwitchAccount extends Command {
+
     public async runNoClient(): Promise<boolean | void> {
         if (!await super.runNoClient()) {
             return false;
         }
 
-        const profiles = await this.manager.auth.getProfiles();
+        const profiles = await this.appCenterAuth.getProfiles();
         if (profiles.length < 2) {
             return true;
         }
@@ -34,20 +36,19 @@ export default class LoginToAnotherAccount extends Command {
                 }
                 return this.switchActiveProfile(selected.profile);
             }, this.handleError);
-
     }
 
     private async switchActiveProfile(selectedProfile: Profile): Promise<boolean> {
         try {
-            const currentActiveProfile: AppCenterProfile | null = this.manager.auth.activeProfile;
+            const currentActiveProfile: AppCenterProfile | null = this.appCenterAuth.activeProfile;
             if (currentActiveProfile) {
                 currentActiveProfile.isActive = false;
-                await this.manager.auth.updateProfile(currentActiveProfile);
+                await this.appCenterAuth.updateProfile(currentActiveProfile);
             }
             selectedProfile.isActive = true;
-            await this.manager.auth.updateProfile(selectedProfile);
+            await this.appCenterAuth.updateProfile(selectedProfile);
 
-            VsCodeUtils.ShowInfoMessage(Strings.UserSwitchedMsg(selectedProfile.userName));
+            VsCodeUtils.ShowInfoMessage(Strings.UserSwitchedMsg(AuthProvider.AppCenter, selectedProfile.userName));
             await this.manager.setupAppCenterStatusBar(selectedProfile);
         } catch (e) {
             this.handleError(e);

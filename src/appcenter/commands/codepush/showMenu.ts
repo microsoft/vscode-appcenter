@@ -1,17 +1,17 @@
 import * as vscode from 'vscode';
 import * as CodePush from ".";
 import { CommandNames } from '../../../constants';
-import { ExtensionManager } from "../../../extensionManager";
-import { CurrentApp } from "../../../helpers/interfaces";
+import { CommandParams, CurrentApp } from "../../../helpers/interfaces";
 import { CustomQuickPickItem } from '../../../helpers/vsCodeUtils';
-import { ILogger } from "../../../log/logHelper";
 import { Strings } from '../../../strings';
 import { RNCPAppCommand } from './rncpAppCommand';
 
 /* Internal command */
 export default class ShowMenu extends RNCPAppCommand {
-    constructor(manager: ExtensionManager, logger: ILogger) {
-        super(manager, logger);
+    private _params: CommandParams;
+    constructor(params: CommandParams) {
+        super(params);
+        this._params = params;
     }
 
     public async runNoClient(): Promise<boolean | void> {
@@ -60,19 +60,19 @@ export default class ShowMenu extends RNCPAppCommand {
 
                     switch (selected.target) {
                         case (CommandNames.CodePush.SetCurrentDeployment):
-                            new CodePush.SetCurrentDeployment(this.manager, this.logger).runNoClient();
+                            new CodePush.SetCurrentDeployment(this._params).runNoClient();
                             break;
 
                         case (CommandNames.CodePush.ReleaseReact):
-                            new CodePush.ReleaseReact(this.manager, this.logger).run();
+                            new CodePush.ReleaseReact(this._params).run();
                             break;
 
                         case (CommandNames.CodePush.SetTargetBinaryVersion):
-                            new CodePush.SetTargetBinaryVersion(this.manager, this.logger).runNoClient();
+                            new CodePush.SetTargetBinaryVersion(this._params).runNoClient();
                             break;
 
                         case (CommandNames.CodePush.SwitchMandatoryPropForRelease):
-                            new CodePush.SwitchMandatoryPropForRelease(this.manager, this.logger).runNoClient();
+                            new CodePush.SwitchMandatoryPropForRelease(this._params).runNoClient();
                             break;
 
                         default:

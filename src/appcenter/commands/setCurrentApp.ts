@@ -1,9 +1,7 @@
 import * as vscode from "vscode";
 import { AppCenterOS, Constants } from "../../constants";
-import { ExtensionManager } from "../../extensionManager";
-import { CurrentApp, CurrentAppDeployments, QuickPickAppItem } from "../../helpers/interfaces";
+import { CommandParams, CurrentApp, CurrentAppDeployments, QuickPickAppItem } from "../../helpers/interfaces";
 import { VsCodeUtils } from "../../helpers/vsCodeUtils";
-import { ILogger } from "../../log/logHelper";
 import { Strings } from "../../strings";
 import * as models from '../lib/app-center-node-client/models';
 import { Deployment } from "../lib/app-center-node-client/models";
@@ -13,8 +11,8 @@ export default class SetCurrentApp extends ReactNativeAppCommand {
 
     private selectedCachedItem: boolean;
 
-    constructor(manager: ExtensionManager, logger: ILogger) {
-        super(manager, logger);
+    constructor(params: CommandParams) {
+        super(params);
     }
 
     public async run(): Promise<void> {
