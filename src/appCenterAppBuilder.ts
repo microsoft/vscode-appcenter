@@ -15,6 +15,9 @@ export default class AppCenterAppBuilder {
     
     
     
+    
+    
+    
     private _createAndroidApp: boolean = false;
     private _createBetaTestersDistributionGroup: boolean = false;
     private _connectRepositoryToBuildService: boolean = false;
