@@ -1,17 +1,17 @@
 import { Disposable, StatusBarItem } from 'vscode';
+import AppCenterAuth from './appcenter/auth/appCenterAuth';
 import Auth from './appcenter/auth/auth';
+import { tokenStores } from './appcenter/auth/tokenStore';
+import VstsAuth from './appcenter/auth/vstsAuth';
 import * as CommandHandlers from './commandHandlers';
-import { CommandNames, AuthProvider } from './constants';
-import { AppCenterProfile, Profile, VstsProfile, AppCenterLoginCredentials, VstsLoginCredentials } from './helpers/interfaces';
+import { AuthProvider, CommandNames } from './constants';
+import DiskProfileStorage from './helpers/diskProfileStorage';
+import { AppCenterLoginCredentials, AppCenterProfile, Profile, VstsLoginCredentials, VstsProfile } from './helpers/interfaces';
 import { Utils } from './helpers/utils';
 import { VsCodeUtils } from './helpers/vsCodeUtils';
 import { ConsoleLogger } from './log/consoleLogger';
 import { ILogger } from './log/logHelper';
 import { Strings } from './strings';
-import DiskProfileStorage from './helpers/diskProfileStorage';
-import AppCenterAuth from './appcenter/auth/appCenterAuth';
-import VstsAuth from './appcenter/auth/vstsAuth';
-import { tokenStores } from './appcenter/auth/tokenStore';
 
 class CommandHandlersContainer {
     private _appCenterCommandHandler: CommandHandlers.AppCenter;

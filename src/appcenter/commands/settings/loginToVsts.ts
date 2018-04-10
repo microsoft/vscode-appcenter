@@ -1,10 +1,10 @@
 import * as vscode from "vscode";
-import { Command } from "../command";
+import { AuthProvider } from "../../../constants";
+import { Profile, VstsLoginCredentials } from "../../../helpers/interfaces";
 import { VsCodeUtils } from "../../../helpers/vsCodeUtils";
 import { Strings } from "../../../strings";
-import { Profile, VstsLoginCredentials } from "../../../helpers/interfaces";
-import { AuthProvider } from "../../../constants";
 import { VSTSProvider } from "../../../vsts/vstsProvider";
+import { Command } from "../command";
 
 export default class LoginToVsts extends Command {
     public async runNoClient(): Promise<boolean | void> {
@@ -12,7 +12,7 @@ export default class LoginToVsts extends Command {
             return false;
         }
 
-        let loginCredentials: any = {};
+        const loginCredentials: any = {};
         let value;
 
         value = await vscode.window.showInputBox({ prompt: Strings.SpecifyTenantTitlePlaceholder, ignoreFocusOut: true });

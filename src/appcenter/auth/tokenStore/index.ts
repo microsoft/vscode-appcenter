@@ -1,16 +1,16 @@
 import * as fs from "fs";
 import * as path from "path";
+import { Constants } from "../../../constants";
+import { Utils } from "../../../helpers/utils";
 import { createFileTokenStore } from "./fileTokenStore";
 import { TokenStore } from "./tokenStore";
-import { Utils } from "../../../helpers/utils";
-import { Constants } from "../../../constants";
 
 export * from "./tokenStore";
 
 type Stores = {
   appCenter: TokenStore,
-  vsts: TokenStore,
-}
+  vsts: TokenStore
+};
 
 function getTokenDir(): string {
   return path.join(Utils.getUserDir(), Constants.TokenDir);
@@ -28,8 +28,8 @@ const getTokenFilePath = (tokenFile: string) => {
   return tokenFilePath;
 };
 
-let stores: Stores = {
+const stores: Stores = {
   appCenter: createFileTokenStore(getTokenFilePath(Constants.AppCenterTokenFileName)),
-  vsts: createFileTokenStore(getTokenFilePath(Constants.VstsTokenFileName)),
+  vsts: createFileTokenStore(getTokenFilePath(Constants.VstsTokenFileName))
 };
 export const tokenStores = stores;

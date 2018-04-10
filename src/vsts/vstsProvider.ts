@@ -17,7 +17,7 @@ export class VSTSProvider {
         this._accessToken = VSTSProvider.getGitAccessToken(configuration.userName, configuration.accessToken);
     }
 
-    public static getGitAccessToken(userName: string, accessToken?: string){
+    public static getGitAccessToken(userName: string, accessToken?: string) {
         return btoa(`${userName}:${accessToken}`);
     }
 

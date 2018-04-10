@@ -1,7 +1,7 @@
-import Auth from "./auth";
-import { AppCenterProfile, AppCenterLoginCredentials, CurrentApp } from "../../helpers/interfaces";
-import { createAppCenterClient } from "../api";
+import { AppCenterLoginCredentials, AppCenterProfile, CurrentApp } from "../../helpers/interfaces";
 import { SettingsHelper } from "../../helpers/settingsHelper";
+import { createAppCenterClient } from "../api";
+import Auth from "./auth";
 
 class AppCenterProfileImpl implements AppCenterProfile {
     public userId: string;
@@ -22,7 +22,7 @@ class AppCenterProfileImpl implements AppCenterProfile {
     }
 }
 
-export default class AppCenterAuth extends Auth<AppCenterProfile, AppCenterLoginCredentials>{
+export default class AppCenterAuth extends Auth<AppCenterProfile, AppCenterLoginCredentials> {
 
     protected async getUserInfo(credentials: AppCenterLoginCredentials): Promise<AppCenterProfile> {
         //TODO Handle situation when user had deleted token in appcenter portal already

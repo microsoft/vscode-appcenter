@@ -1,5 +1,5 @@
 import { FSUtils } from './fsUtils';
-import { ProfileStorage, Profile } from './interfaces';
+import { Profile, ProfileStorage } from './interfaces';
 
 export default class DiskProfileStorage<T extends Profile> implements ProfileStorage<T> {
     protected storageFile: string;

@@ -1,4 +1,4 @@
-import { Profile, ProfileStorage, LoginCredentials } from '../../helpers/interfaces';
+import { LoginCredentials, Profile, ProfileStorage } from '../../helpers/interfaces';
 import { ILogger } from '../../log/logHelper';
 import { TokenStore } from './tokenStore';
 

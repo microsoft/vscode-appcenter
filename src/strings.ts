@@ -1,5 +1,5 @@
-import { CurrentApp } from "./helpers/interfaces";
 import { AuthProvider } from "./constants";
+import { CurrentApp } from "./helpers/interfaces";
 
 export class Strings {
 
@@ -103,9 +103,9 @@ export class Strings {
     public static FailedToCreateVSTSGitrepository: string = `An error occurred while creating your new VSTS repository`;
     public static FailedToCreateAppAlreadyExistInAppCenter: string = `An app with that name already exists in App Center. Please choose a new name.`;
 
-    public static FailedToExecuteLoginMsg(provider: AuthProvider): string { 
+    public static FailedToExecuteLoginMsg(provider: AuthProvider): string {
         return `Failed login to ${provider}`;
-    };
+    }
 
     public static OpenTabInBrowserMsg(tabName: string): string {
         return `Open '${tabName}' tab for currently selected app`;

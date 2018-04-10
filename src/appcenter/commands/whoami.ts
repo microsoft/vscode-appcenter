@@ -1,10 +1,10 @@
+import { AuthProvider } from "../../constants";
 import { ExtensionManager } from "../../extensionManager";
 import { Profile } from "../../helpers/interfaces";
 import { VsCodeUtils } from "../../helpers/vsCodeUtils";
 import { ILogger } from "../../log/logHelper";
 import { Strings } from "../../strings";
 import { Command } from "./command";
-import { AuthProvider } from "../../constants";
 
 export default class WhoAmI extends Command {
 

@@ -1,9 +1,9 @@
 import * as vscode from 'vscode';
+import { AuthProvider } from '../../../constants';
 import { AppCenterProfile, Profile, ProfileQuickPickItem } from '../../../helpers/interfaces';
 import { VsCodeUtils } from '../../../helpers/vsCodeUtils';
 import { Strings } from '../../../strings';
 import { Command } from '../command';
-import { AuthProvider } from '../../../constants';
 
 export default class SwitchAccount extends Command {
 
