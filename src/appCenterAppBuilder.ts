@@ -10,7 +10,11 @@ import { Strings } from "./strings";
 import { ILogger } from "./log/logHelper";
 
 export default class AppCenterAppBuilder {
-    private _createIOSApp: boolean = false;
+    
+    private _createIOSApp: boolean = false
+    
+    
+    
     private _createAndroidApp: boolean = false;
     private _createBetaTestersDistributionGroup: boolean = false;
     private _connectRepositoryToBuildService: boolean = false;
