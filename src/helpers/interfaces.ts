@@ -60,8 +60,8 @@ export interface AppCenterProfile extends Profile {
     currentApp?: CurrentApp;
 }
 
-// tslint:disable-next-line:no-empty-interface
 export interface VstsProfile extends Profile {
+    tenantName: string;
 }
 
 export interface LoginInfo {
