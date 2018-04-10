@@ -1,14 +1,12 @@
-import { ExtensionManager } from "../../extensionManager";
-import { CurrentApp } from "../../helpers/interfaces";
+import { CommandParams, CurrentApp } from "../../helpers/interfaces";
 import { VsCodeUtils } from "../../helpers/vsCodeUtils";
-import { ILogger } from "../../log/logHelper";
 import { Strings } from "../../strings";
 import { ReactNativeAppCommand } from './reactNativeAppCommand';
 
 export default class GetCurrentApp extends ReactNativeAppCommand {
 
-    constructor(manager: ExtensionManager, logger: ILogger) {
-        super(manager, logger);
+    constructor(params: CommandParams) {
+        super(params);
     }
 
     public async runNoClient(): Promise<void> {

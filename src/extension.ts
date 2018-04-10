@@ -1,5 +1,8 @@
 import * as vscode from 'vscode';
-import { CommandNames } from './constants';
+import AppCenterAuth from './appcenter/auth/appCenterAuth';
+import { AuthFactory } from './appcenter/auth/authFactory';
+import VstsAuth from './appcenter/auth/vstsAuth';
+import { AuthProvider, CommandNames } from './constants';
 import { ExtensionManager } from './extensionManager';
 import { OutputChannelLogger } from './log/outputChannelLogger';
 
@@ -10,7 +13,12 @@ export async function activate(context: vscode.ExtensionContext) {
     // Construct the extension manager that handles AppCenter commands
     _extensionManager = new ExtensionManager();
     const rootPath = vscode.workspace.rootPath;
-    await _extensionManager.Initialize(rootPath, outputChannelLogger);
+
+    const appCenterAuth: AppCenterAuth = <AppCenterAuth>await AuthFactory.getAuth(AuthProvider.AppCenter, outputChannelLogger);
+    const vstsAuth: VstsAuth = <VstsAuth>await AuthFactory.getAuth(AuthProvider.Vsts, outputChannelLogger);
+
+    await _extensionManager.Initialize(rootPath, outputChannelLogger, appCenterAuth, vstsAuth);
+    _extensionManager.setupAppCenterStatusBar(appCenterAuth.activeProfile);
 
     // Register the ext manager for disposal
     context.subscriptions.push(_extensionManager);

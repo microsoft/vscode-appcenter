@@ -54,7 +54,7 @@ export class ReactNativeAppCommand extends Command {
         return this.appCenterProfile.then((profile: AppCenterProfile | null) => {
             if (profile) {
                 profile.currentApp = currentApp;
-                return this.manager.auth.updateProfile(profile).then(() => {
+                return this.appCenterAuth.updateProfile(profile).then(() => {
                     return currentApp;
                 });
             } else {

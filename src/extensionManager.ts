@@ -1,10 +1,9 @@
 import { Disposable, StatusBarItem } from 'vscode';
-import Auth from './appcenter/auth/auth';
-import AppCenterProfileStorage from './appcenter/auth/profile/appCenterProfileStorage';
+import AppCenterAuth from './appcenter/auth/appCenterAuth';
+import VstsAuth from './appcenter/auth/vstsAuth';
 import * as CommandHandlers from './commandHandlers';
-import { CommandNames } from './constants';
-import { AppCenterProfile, Profile, ProfileStorage } from './helpers/interfaces';
-import { Utils } from './helpers/utils';
+import { AuthProvider, CommandNames } from './constants';
+import { Profile } from './helpers/interfaces';
 import { VsCodeUtils } from './helpers/vsCodeUtils';
 import { ConsoleLogger } from './log/consoleLogger';
 import { ILogger } from './log/logHelper';
@@ -15,10 +14,10 @@ class CommandHandlersContainer {
     private _settingsCommandHandler: CommandHandlers.Settings;
     private _codePushCommandHandler: CommandHandlers.CodePush;
 
-    constructor(manager: ExtensionManager, logger: ILogger) {
-        this._appCenterCommandHandler = new CommandHandlers.AppCenter(manager, logger);
-        this._settingsCommandHandler = new CommandHandlers.Settings(manager, logger);
-        this._codePushCommandHandler = new CommandHandlers.CodePush(manager, logger);
+    constructor(private manager: ExtensionManager, private logger: ILogger, private appCenterAuth: AppCenterAuth, private vstsAuth: VstsAuth) {
+        this._appCenterCommandHandler = new CommandHandlers.AppCenter(this.manager, this.logger, this.appCenterAuth, this.vstsAuth);
+        this._settingsCommandHandler = new CommandHandlers.Settings(this.manager, this.logger, this.appCenterAuth, this.vstsAuth);
+        this._codePushCommandHandler = new CommandHandlers.CodePush(this.manager, this.logger, this.appCenterAuth, this.vstsAuth);
     }
 
     public get appCenterCommandHandler(): CommandHandlers.AppCenter {
@@ -39,7 +38,6 @@ export class ExtensionManager implements Disposable {
     private _appCenterStatusBarItem: StatusBarItem;
     private _projectRootPath: string | undefined;
     private _logger: ILogger;
-    private _auth: Auth;
 
     public get commandHandlers(): CommandHandlersContainer {
         return this._commandHandlersContainer;
@@ -49,14 +47,15 @@ export class ExtensionManager implements Disposable {
         return this._projectRootPath;
     }
 
-    public get auth(): Auth {
-        return this._auth;
-    }
-
-    public async Initialize(projectRootPath: string | undefined, logger: ILogger = new ConsoleLogger()): Promise<void> {
+    public async Initialize(projectRootPath: string | undefined,
+            logger: ILogger = new ConsoleLogger(),
+            appCenterAuth: AppCenterAuth,
+            vstsAuth: VstsAuth
+        ): Promise<void> {
         this._logger = logger;
         this._projectRootPath = projectRootPath;
-        this._logger.info("Init Extension Manager");
+
+        this._commandHandlersContainer = new CommandHandlersContainer(this, this._logger, appCenterAuth, vstsAuth);
         await this.initializeExtension();
     }
 
@@ -86,7 +85,7 @@ export class ExtensionManager implements Disposable {
         if (profile && profile.userName) {
             return VsCodeUtils.setStatusBar(this._appCenterStatusBarItem,
                 `AppCenter: ${profile.userName}`,
-                Strings.YouAreLoggedInMsg(profile.userName),
+                Strings.YouAreLoggedInMsg(AuthProvider.AppCenter, profile.userName),
                 `${CommandNames.ShowMenu}`
             );
         } else {
@@ -104,15 +103,7 @@ export class ExtensionManager implements Disposable {
     }
 
     private async initializeExtension(): Promise<void> {
-        this._commandHandlersContainer = new CommandHandlersContainer(this, this._logger);
         this._appCenterStatusBarItem = VsCodeUtils.getStatusBarItem();
-
-        // Initialize Auth
-        const profileStorage: ProfileStorage<AppCenterProfile> = new AppCenterProfileStorage(Utils.getProfileFileName());
-        this._auth = new Auth(profileStorage, this._logger);
-        await this._auth.initialize();
-        const activeProfile = this._auth.activeProfile;
-        return this.setupAppCenterStatusBar(activeProfile);
     }
 
     private cleanup(): void {
