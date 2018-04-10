@@ -8,6 +8,7 @@ import * as CommandHandlers from './commandHandlers';
 import { AuthProvider, CommandNames } from './constants';
 import { AppCenterController } from './controller/appCenterController';
 import { AppCenterAppsLoader } from './helpers/appsLoader';
+import { Profile } from './helpers/interfaces';
 import { SettingsHelper } from './helpers/settingsHelper';
 import { VsCodeUtils } from './helpers/vsCodeUtils';
 import { ConsoleLogger } from './log/consoleLogger';
