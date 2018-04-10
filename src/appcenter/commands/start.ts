@@ -7,7 +7,7 @@ import { AppCenterOS, Constants } from '../../constants';
 import { cpUtils } from '../../helpers/cpUtils';
 import { FSUtils } from '../../helpers/fsUtils';
 import { GitUtils } from '../../helpers/gitUtils';
-import { CommandParams, CreatedAppFromAppCenter, Deployment, QuickPickAppItem, UserOrOrganizationItem } from '../../helpers/interfaces';
+import { CommandParams, CreatedAppFromAppCenter, Deployment, QuickPickAppItem, UserOrOrganizationItem, VstsProfile } from '../../helpers/interfaces';
 import { Profile } from '../../helpers/interfaces';
 import { SettingsHelper } from '../../helpers/settingsHelper';
 import { Validators } from '../../helpers/validators';
@@ -16,8 +16,10 @@ import { Strings } from '../../strings';
 import { VSTSGitRepository, VSTSProject } from '../../vsts/types';
 import { VSTSProvider } from '../../vsts/vstsProvider';
 import { models } from '../api';
+import Auth from '../auth/auth';
 import { ListOKResponseItem } from '../lib/app-center-node-client/models';
 import { Command } from './command';
+import LoginToVsts from './settings/loginToVsts';
 // tslint:disable-next-line:no-var-requires
 const GitUrlParse = require("git-url-parse");
 
@@ -65,12 +67,28 @@ export default class Start extends Command {
             // For empty git directory (either created with git clone or git init) we just need to be sure that remoteUrl is valid
             if (!await GitUtils.IsGitRepo(this.logger, rootPath)) {
 
-                // 1. Need VSTS TenatnName if not provided
-                const tenantName: string = "msmobilecenter";
-                // 2. Need userName + accessToken if not provided
-                const accessToken: string = "";
-                // 3. Need use name
-                const userName: string = "";
+                let vstsProfile: VstsProfile | null = this.vstsAuth.activeProfile;
+                if (!vstsProfile) {
+                    await new LoginToVsts(
+                        {
+                            manager: this.manager,
+                            logger: this.logger,
+                            appCenterAuth: this.appCenterAuth,
+                            vstsAuth: this.vstsAuth
+                        }
+                    ).runNoClient();
+                }
+                vstsProfile = this.vstsAuth.activeProfile;
+                if (!vstsProfile) {
+                    this.logger.error("Failed to get VSTS profile for command");
+                    return;
+                }
+
+                const tenantName: string = vstsProfile.tenantName; //"msmobilecenter";
+
+                const accessToken: string = await Auth.accessTokenFor(vstsProfile);
+
+                const userName: string = vstsProfile.userName;
 
                 const vsts = new VSTSProvider({
                     tenantName: tenantName,
