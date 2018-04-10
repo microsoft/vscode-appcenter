@@ -4,16 +4,7 @@ import { Strings } from "../strings";
 
 export class AppCenterController<T> {
 
-    private _loader: AppCenterLoader<T>;
-    private _view: AppCenterView<T> | null;
-    private _cache: AppCenterCache<T[]>;
-    private _profile: Profile;
-
-    public constructor(profile: Profile, loader: AppCenterLoader<T>, cache: AppCenterCache<T[]>, view: AppCenterView<T> | null = null) {
-        this._loader = loader;
-        this._cache = cache;
-        this._view = view;
-        this._profile = profile;
+    public constructor(private _profile: Profile, private _loader: AppCenterLoader<T>, private _cache: AppCenterCache<T[]>, private _view: AppCenterView<T> | null = null) {
     }
 
     public detachView() {
@@ -51,8 +42,6 @@ export class AppCenterController<T> {
         }
         if (this.isViewAttached()) {
             (this._view as AppCenterView<T>).display(cacheForCurrentUser);
-        }
-        if (this.isViewAttached()) {
             return (this._view as AppCenterView<T>).showProgress(Strings.GetAppsListMessage, this.updateItemsAndDisplayNew.bind(this));
         } else {
             return this.updateItemsAndDisplayNew();

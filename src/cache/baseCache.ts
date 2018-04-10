@@ -9,12 +9,12 @@ export abstract class AppCenterCache<T> {
     }
 
     public set(key: string, value: T) {
-        this.cache.set(key + this.getKeyPrefix(), value);
+        this.cache.set(this.getKeyPrefix() + key, value);
     }
 
     public async get(key: string): Promise<T | null> {
         const self = this;
-        key = key + this.getKeyPrefix();
+        key = this.getKeyPrefix() + key;
         return new Promise<T | null>((resolve, reject) => {
             self.cache.get<T>(key, function (err, value) {
                 if (err) {
