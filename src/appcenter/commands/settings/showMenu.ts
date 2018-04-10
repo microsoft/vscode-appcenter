@@ -21,7 +21,7 @@ export default class ShowMenu extends Command {
 
         const menuOptions: CustomQuickPickItem[] = [];
 
-        const profiles = await this.manager.auth.getProfiles();
+        const profiles = await this.manager.appCenterAuth.getProfiles();
         if (profiles.length > 1) {
             menuOptions.push(<CustomQuickPickItem>{
                 label: Strings.SwitchAccountMenuLabel,
@@ -42,11 +42,14 @@ export default class ShowMenu extends Command {
             target: CommandNames.Settings.Logout
         });
 
-        menuOptions.push(<CustomQuickPickItem>{
-            label: Strings.VstsSwitchAccountMenuLabel,
-            description: "",
-            target: CommandNames.Settings.SwitchAccountVsts
-        });
+        const vstsProfiles = await this.manager.vstsAuth.getProfiles();
+        if (vstsProfiles.length > 1) {
+            menuOptions.push(<CustomQuickPickItem>{
+                label: Strings.VstsSwitchAccountMenuLabel,
+                description: "",
+                target: CommandNames.Settings.SwitchAccountVsts
+            });
+        }
 
         menuOptions.push(<CustomQuickPickItem>{
             label: Strings.VstsLoginToAnotherAccountMenuLabel,

@@ -5,6 +5,7 @@ import { VsCodeUtils } from '../../../helpers/vsCodeUtils';
 import { ILogger } from '../../../log/logHelper';
 import { Strings } from '../../../strings';
 import { Command } from '../command';
+import { AuthProvider } from '../../../constants';
 
 export default class Logout extends Command {
 
@@ -18,7 +19,7 @@ export default class Logout extends Command {
         }
 
         // Get profiles in which user is logged in
-        const profiles: Profile[] = await this.manager.auth.getProfiles();
+        const profiles: Profile[] = await this.manager.appCenterAuth.getProfiles();
 
         // No profiles - exit
         if (profiles.length === 0) {
@@ -52,9 +53,9 @@ export default class Logout extends Command {
 
     private async logoutUser(profile: Profile): Promise<boolean> {
         try {
-            await this.manager.auth.doLogout(profile.userId);
-            VsCodeUtils.ShowInfoMessage(Strings.UserLoggedOutMsg(profile.userName));
-            await this.manager.setupAppCenterStatusBar(this.manager.auth.activeProfile);
+            await this.manager.appCenterAuth.doLogout(profile.userId);
+            VsCodeUtils.ShowInfoMessage(Strings.UserLoggedOutMsg(AuthProvider.AppCenter, profile.userName));
+            await this.manager.setupAppCenterStatusBar(this.manager.appCenterAuth.activeProfile);
             return true;
         } catch (e) {
             this.handleError(e);

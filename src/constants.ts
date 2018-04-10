@@ -22,8 +22,13 @@ export class Constants {
     public static AppCenterSampleGitRemoteDefaultBranchName: string = "master";
     public static GitDefaultRemoteName: string = 'origin';
     public static ProfileDir: string = ".vscode-appcenter";
-    public static ProfileFileName: string = "VSCodeAppCenterProfile.json";
-
+    public static AppCenterProfileFileName: string = "VSCodeAppCenterProfile.json";
+    public static VstsProfileFileName: string = "VSCodeVstsProfile.json";
+    public static TokenDir: string = ".vscode-appcenter";
+    public static AppCenterTokenFileName = "VSCodeAppCenterTokens.json";
+    public static VstsTokenFileName = "VSCodeVstsTokens.json";
+    
+    
     // IMPORTANT: this two items below should stay in sync in terms of xcode projectOrWorkspacePath/scheme values
     // We should decide how we should handle this (e.g. create manually within AppCenter site)
     public static AppCenterDemoAppRepository: string = "https://github.com/Microsoft/appcenter-sampleapp-react-native.git";
@@ -128,4 +133,9 @@ export enum AppCenterDistributionTabs {
 export enum AppCenteAppType {
     User = "User",
     Org = "Org"
+}
+
+export enum AuthProvider {
+    Vsts = "VSTS",
+    AppCenter = "App Center"
 }

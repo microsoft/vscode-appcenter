@@ -56,6 +56,21 @@ export interface AppCenterProfile extends Profile {
     currentApp?: CurrentApp;
 }
 
+export interface VstsProfile extends Profile {
+}
+
+export interface LoginCredentials {
+    token: string;
+}
+
+export interface AppCenterLoginCredentials extends LoginCredentials {
+}
+
+export interface VstsLoginCredentials extends LoginCredentials {
+    tenantName: string;
+    userName: string;
+}
+
 export interface IDefaultCommandParams {
     app: CurrentApp;
 }

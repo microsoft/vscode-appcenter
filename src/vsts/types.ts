@@ -27,6 +27,16 @@ export interface VSTSGitRepository {
     url: string;
 }
 
+export interface VSTSProfileApi {
+    displayName: string,
+    publicAlias: string,
+    emailAddress: string,
+    coreRevision: number,
+    timeStamp: string,
+    id: string,
+    revision: number
+}
+
 export enum HTTP_METHODS {
     GET = "GET",
     PUT = "PUT",

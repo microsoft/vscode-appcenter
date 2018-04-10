@@ -15,8 +15,7 @@
             "problemMatcher": "$gulp-tsc"
         },
         {
-            "taskName": "tslint",
-            "problemMatcher": "$tslint5"
+            "taskName": "debug"
         }
     ]
 }

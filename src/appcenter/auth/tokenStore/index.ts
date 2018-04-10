@@ -1,35 +1,35 @@
 import * as fs from "fs";
-import * as os from "os";
 import * as path from "path";
 import { createFileTokenStore } from "./fileTokenStore";
 import { TokenStore } from "./tokenStore";
+import { Utils } from "../../../helpers/utils";
+import { Constants } from "../../../constants";
 
 export * from "./tokenStore";
-export const tokenFile = "VSCodeAppCenterTokens.json";
 
-let store: TokenStore;
-
-const tokenDirName: string = ".vscode-appcenter";
-
-function getTokenDirParent(): string {
-  if (os.platform() === "win32") {
-    return process.env.AppData;
-  } else {
-    return os.homedir();
-  }
+type Stores = {
+  appCenter: TokenStore,
+  vsts: TokenStore,
 }
 
 function getTokenDir(): string {
-    return path.join(getTokenDirParent(), tokenDirName);
+  return path.join(Utils.getUserDir(), Constants.TokenDir);
 }
 
 // Currently only support file-base token store
-const tokenFilePath = path.join(getTokenDir(), tokenFile);
-if (!fs.existsSync(tokenFilePath)) {
+const getTokenFilePath = (tokenFile: string) => {
+  const tokenFilePath = path.join(getTokenDir(), tokenFile);
+  if (!fs.existsSync(tokenFilePath)) {
     if (!fs.existsSync(getTokenDir())) {
-        fs.mkdirSync(getTokenDir());
+      fs.mkdirSync(getTokenDir());
     }
     fs.writeFileSync(tokenFilePath, /* create empty */ "");
-}
-store = createFileTokenStore(tokenFilePath);
-export const tokenStore = store;
+  }
+  return tokenFilePath;
+};
+
+let stores: Stores = {
+  appCenter: createFileTokenStore(getTokenFilePath(Constants.AppCenterTokenFileName)),
+  vsts: createFileTokenStore(getTokenFilePath(Constants.VstsTokenFileName)),
+};
+export const tokenStores = stores;

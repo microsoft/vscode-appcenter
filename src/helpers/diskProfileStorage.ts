@@ -1,9 +1,9 @@
-import { FSUtils } from '../../../helpers/fsUtils';
-import { AppCenterProfile, ProfileStorage } from '../../../helpers/interfaces';
+import { FSUtils } from './fsUtils';
+import { ProfileStorage, Profile } from './interfaces';
 
-export default class AppCenterProfileStorage implements ProfileStorage<AppCenterProfile> {
+export default class DiskProfileStorage<T extends Profile> implements ProfileStorage<T> {
     protected storageFile: string;
-    protected profiles: AppCenterProfile[];
+    protected profiles: T[];
     protected activeIndex: number | null;
 
     constructor(storageFile: string) {
@@ -11,7 +11,7 @@ export default class AppCenterProfileStorage implements ProfileStorage<AppCenter
         this.profiles = [];
     }
 
-    public get active(): AppCenterProfile | null {
+    public get active(): T | null {
         return (this.activeIndex === null) ? null : this.profiles[this.activeIndex];
     }
 
@@ -35,9 +35,9 @@ export default class AppCenterProfileStorage implements ProfileStorage<AppCenter
         this.profiles = JSON.parse(data);
 
         // Identify active profile
-        const activeProfiles: AppCenterProfile[] = this.profiles.filter(profile => profile.isActive);
+        const activeProfiles: T[] = this.profiles.filter(profile => profile.isActive);
         if (activeProfiles.length > 1) {
-            throw new Error('Malformed profile data. Shouldn\'t be more than one active profiles');
+            throw new Error('Malformed profile data. Shouldn\'t be more than one active profiles.');
         } else if (activeProfiles.length === 1) {
             this.activeIndex = this.profiles.indexOf(activeProfiles[0]);
         }
@@ -48,7 +48,7 @@ export default class AppCenterProfileStorage implements ProfileStorage<AppCenter
         await FSUtils.writeFile(this.storageFile, data);
     }
 
-    public async save(profile: AppCenterProfile): Promise<void> {
+    public async save(profile: T): Promise<void> {
         const deletedProfile = await this.delete(profile.userId);
 
         // If user just re-logged in then preserve active state
@@ -57,7 +57,7 @@ export default class AppCenterProfileStorage implements ProfileStorage<AppCenter
         }
 
         // Reset current active user
-        const currentActive: AppCenterProfile | null = this.active;
+        const currentActive: T | null = this.active;
         if (currentActive) {
             currentActive.isActive = false;
             this.activeIndex = null;
@@ -71,22 +71,26 @@ export default class AppCenterProfileStorage implements ProfileStorage<AppCenter
         await this.commitChanges();
     }
 
-    public async delete(userId: string): Promise<AppCenterProfile | null> {
+    public async delete(userId: string): Promise<T | null> {
         const existentProfile = await this.get(userId);
         if (!existentProfile) {
             return null;
         }
         const indexToDelete = this.profiles.indexOf(existentProfile);
-        const deletedProfile: AppCenterProfile[] = this.profiles.splice(indexToDelete, 1);
-        if (deletedProfile[0].isActive) {
-            this.activeIndex = null;
+        const deletedProfile: T[] = this.profiles.splice(indexToDelete, 1);
+        if (this.activeIndex) {
+            if (indexToDelete < this.activeIndex) {
+                this.activeIndex--;
+            } else if (indexToDelete === this.activeIndex) {
+                this.activeIndex = null;
+            }
         }
         await this.commitChanges();
         return deletedProfile[0];
     }
 
-    public async get(userId: string): Promise<AppCenterProfile | null> {
-        const existentProfiles: AppCenterProfile[] = this.profiles.filter(value => value.userId === userId);
+    public async get(userId: string): Promise<T | null> {
+        const existentProfiles: T[] = this.profiles.filter(value => value.userId === userId);
         if (existentProfiles.length === 1) {
             return existentProfiles[0];
         } else if (existentProfiles.length > 1) {
@@ -95,7 +99,7 @@ export default class AppCenterProfileStorage implements ProfileStorage<AppCenter
         return null;
     }
 
-    public async list(): Promise<AppCenterProfile[]> {
+    public async list(): Promise<T[]> {
         return this.profiles;
     }
 }
