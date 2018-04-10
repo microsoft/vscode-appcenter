@@ -51,7 +51,7 @@ export default class Login extends Command {
                 VsCodeUtils.ShowWarningMessage(Strings.FailedToExecuteLoginMsg(AuthProvider.AppCenter));
                 return false;
             }
-            VsCodeUtils.ShowInfoMessage(Strings.YouAreLoggedInMsg(AuthProvider.Vsts, profile.displayName));
+            VsCodeUtils.ShowInfoMessage(Strings.YouAreLoggedInMsg(AuthProvider.AppCenter, profile.displayName));
             return this.manager.setupAppCenterStatusBar(profile).then(() => true);
         }).catch((e: Error) => {
             VsCodeUtils.ShowErrorMessage("Could not login into account.");

@@ -60,15 +60,15 @@ export interface AppCenterProfile extends Profile {
 export interface VstsProfile extends Profile {
 }
 
-export interface LoginCredentials {
+export interface LoginInfo {
     token: string;
 }
 
 // tslint:disable-next-line:no-empty-interface
-export interface AppCenterLoginCredentials extends LoginCredentials {
+export interface AppCenterLoginInfo extends LoginInfo {
 }
 
-export interface VstsLoginCredentials extends LoginCredentials {
+export interface VstsLoginInfo extends LoginInfo {
     tenantName: string;
     userName: string;
 }

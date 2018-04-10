@@ -14,7 +14,7 @@ export class Strings {
     public static SettingsMenuLabel: string = "Settings";
     public static LoginToAnotherAccountMenuLabel: string = "Add App Center account";
     public static SwitchAccountMenuLabel: string = "Switch App Center account";
-    public static LogoutMenuLabel: string = "Logout";
+    public static LogoutMenuLabel: string = "Logout App Center";
     public static VstsLoginToAnotherAccountMenuLabel: string = "Add VSTS account";
     public static VstsSwitchAccountMenuLabel: string = "Switch VSTS account";
     public static VstsLogoutMenuLabel: string = "Logout VSTS";
@@ -28,9 +28,9 @@ export class Strings {
     public static MenuTitlePlaceholder: string = "Please select a menu action.";
     public static SelectProfileTitlePlaceholder: string = "Please select account.";
 
-    public static SpecifyTenantTitlePlaceholder: string = "(Step 1). Please specify tenant name.";
-    public static SpecifyUserNameTitlePlaceholder: string = "(Step 2). Please specify user name.";
-    public static SpecifyPATTitlePlaceholder: string = "(Step 3). Please specify personal access token.";
+    public static SpecifyTenantTitlePlaceholder: string = "(Step 1). Please specify tenant name";
+    public static SpecifyUserNameTitlePlaceholder: string = "(Step 2). Please specify user name";
+    public static SpecifyPATTitlePlaceholder: string = "(Step 3). Please specify personal access token";
 
     public static LoginToAppCenterButton: string = "App Center: Login";
     public static PleaseEnterIdeaName: string = "Please enter idea name";
@@ -104,7 +104,7 @@ export class Strings {
     public static FailedToCreateAppAlreadyExistInAppCenter: string = `An app with that name already exists in App Center. Please choose a new name.`;
 
     public static FailedToExecuteLoginMsg(provider: AuthProvider): string {
-        return `Failed login to ${provider}`;
+        return `Failed to login to ${provider}`;
     }
 
     public static OpenTabInBrowserMsg(tabName: string): string {

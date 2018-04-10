@@ -7,10 +7,7 @@ import { TokenStore } from "./tokenStore";
 
 export * from "./tokenStore";
 
-type Stores = {
-  appCenter: TokenStore,
-  vsts: TokenStore
-};
+let store: TokenStore;
 
 function getTokenDir(): string {
   return path.join(Utils.getUserDir(), Constants.TokenDir);
@@ -28,8 +25,5 @@ const getTokenFilePath = (tokenFile: string) => {
   return tokenFilePath;
 };
 
-const stores: Stores = {
-  appCenter: createFileTokenStore(getTokenFilePath(Constants.AppCenterTokenFileName)),
-  vsts: createFileTokenStore(getTokenFilePath(Constants.VstsTokenFileName))
-};
-export const tokenStores = stores;
+store = createFileTokenStore(getTokenFilePath(Constants.AppCenterTokenFileName));
+export const tokenStore = store;

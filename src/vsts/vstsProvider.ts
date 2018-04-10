@@ -14,11 +14,7 @@ export class VSTSProvider {
 
     constructor(private configuration: Config, private logger: ILogger = new ConsoleLogger()) {
         this._baseUrl = `https://${this.configuration.tenantName}.visualstudio.com/DefaultCollection/`;
-        this._accessToken = VSTSProvider.getGitAccessToken(configuration.userName, configuration.accessToken);
-    }
-
-    public static getGitAccessToken(userName: string, accessToken?: string) {
-        return btoa(`${userName}:${accessToken}`);
+        this._accessToken = btoa(`${this.configuration.userName}:${this.configuration.accessToken}`);
     }
 
     public async GetAllProjects(): Promise<VSTSProject[] | null> {

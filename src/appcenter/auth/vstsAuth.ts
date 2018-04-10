@@ -1,27 +1,23 @@
-import { VstsLoginCredentials, VstsProfile } from "../../helpers/interfaces";
+import { VstsLoginInfo, VstsProfile } from "../../helpers/interfaces";
 import Auth from "./auth";
 
-/*
-  NOTE: This is not a real profile yet.
-*/
 class VstsProfileImpl implements VstsProfile {
     public userId: string;
     public userName: string;
     public displayName: string;
     public isActive: boolean;
 
-    // tslint:disable-next-line:no-any
-    constructor(credentials: VstsLoginCredentials) {
-        this.userId = credentials.userName;
-        this.userName = credentials.userName;
-        this.displayName = credentials.userName;
+    constructor(loginInfo: VstsLoginInfo) {
+        this.userId = loginInfo.userName;
+        this.userName = loginInfo.userName;
+        this.displayName = loginInfo.userName;
         this.isActive = false;
     }
 }
 
-export default class VstsAuth extends Auth<VstsProfile, VstsLoginCredentials> {
+export default class VstsAuth extends Auth<VstsProfile> {
 
-    protected async getUserInfo(loginCredentials: VstsLoginCredentials): Promise<VstsProfile> {
-        return new VstsProfileImpl(loginCredentials);
+    protected async getUserInfo(loginInfo: VstsLoginInfo): Promise<VstsProfile> {
+        return new VstsProfileImpl(loginInfo);
     }
 }

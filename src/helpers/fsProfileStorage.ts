@@ -1,14 +1,17 @@
+import { ILogger } from '../log/logHelper';
 import { FSUtils } from './fsUtils';
 import { Profile, ProfileStorage } from './interfaces';
 
-export default class DiskProfileStorage<T extends Profile> implements ProfileStorage<T> {
+export default class FsProfileStorage<T extends Profile> implements ProfileStorage<T> {
     protected storageFile: string;
     protected profiles: T[];
     protected activeIndex: number | null;
+    protected logger: ILogger;
 
-    constructor(storageFile: string) {
+    constructor(storageFile: string, logger: ILogger) {
         this.storageFile = storageFile;
         this.profiles = [];
+        this.logger = logger;
     }
 
     public get active(): T | null {
@@ -32,7 +35,12 @@ export default class DiskProfileStorage<T extends Profile> implements ProfileSto
 
     private async loadDataFromStorage(): Promise<void> {
         const data: string = await FSUtils.readFile(this.storageFile);
-        this.profiles = JSON.parse(data);
+        try {
+            this.profiles = JSON.parse(data);
+        } catch (e) {
+            this.logger.info(`Failed to parse JSON file for ${this.storageFile}`);
+            return;
+        }
 
         // Identify active profile
         const activeProfiles: T[] = this.profiles.filter(profile => profile.isActive);

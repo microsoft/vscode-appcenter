@@ -2,7 +2,6 @@
 // Licensed under the MIT license. See LICENSE file in the project root for details.
 import { AppCenterProfile, Profile } from '../../helpers/interfaces';
 import Auth from '../auth/auth';
-import { tokenStores } from "../auth/tokenStore";
 import AppCenterClient from '../lib/app-center-node-client/index';
 import { AppCenterClientCredentials } from './appCenterClientCredentials';
 
@@ -21,7 +20,7 @@ export function createAppCenterClient(): AppCenterClientFactory {
       if (!user) {
         return null;
       }
-      return new AppCenterClient(new AppCenterClientCredentials(Auth.accessTokenFor(tokenStores.appCenter, user)));
+      return new AppCenterClient(new AppCenterClientCredentials(Auth.accessTokenFor(user)));
     }
   };
 }

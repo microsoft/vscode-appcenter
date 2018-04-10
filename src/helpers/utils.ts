@@ -9,7 +9,6 @@ import { Strings } from '../strings';
 import { CurrentApp, CurrentAppDeployments } from './interfaces';
 import { Validators } from './validators';
 import { VsCodeUtils } from './vsCodeUtils';
-"use strict";
 
 export class Utils {
     public static FormatMessage(message: string): string {
@@ -139,9 +138,5 @@ export class Utils {
 
     public static getAppCenterTokensFileName() {
         return path.join(Utils.getUserDir(), Constants.TokenDir, Constants.AppCenterTokenFileName);
-    }
-
-    public static getVstsTokensFileName() {
-        return path.join(Utils.getUserDir(), Constants.TokenDir, Constants.VstsTokenFileName);
     }
 }

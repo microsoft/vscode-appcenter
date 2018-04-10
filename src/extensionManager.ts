@@ -1,13 +1,9 @@
 import { Disposable, StatusBarItem } from 'vscode';
-import AppCenterAuth from './appcenter/auth/appCenterAuth';
 import Auth from './appcenter/auth/auth';
-import { tokenStores } from './appcenter/auth/tokenStore';
-import VstsAuth from './appcenter/auth/vstsAuth';
+import { AuthFactory } from './appcenter/auth/authFactory';
 import * as CommandHandlers from './commandHandlers';
 import { AuthProvider, CommandNames } from './constants';
-import DiskProfileStorage from './helpers/diskProfileStorage';
-import { AppCenterLoginCredentials, AppCenterProfile, Profile, VstsLoginCredentials, VstsProfile } from './helpers/interfaces';
-import { Utils } from './helpers/utils';
+import { AppCenterProfile, Profile, VstsProfile } from './helpers/interfaces';
 import { VsCodeUtils } from './helpers/vsCodeUtils';
 import { ConsoleLogger } from './log/consoleLogger';
 import { ILogger } from './log/logHelper';
@@ -42,8 +38,8 @@ export class ExtensionManager implements Disposable {
     private _appCenterStatusBarItem: StatusBarItem;
     private _projectRootPath: string | undefined;
     private _logger: ILogger;
-    private _appCenterAuth: Auth<AppCenterProfile, AppCenterLoginCredentials>;
-    private _vstsAuth: Auth<VstsProfile, VstsLoginCredentials>;
+    private _appCenterAuth: Auth<AppCenterProfile>;
+    private _vstsAuth: Auth<VstsProfile>;
 
     public get commandHandlers(): CommandHandlersContainer {
         return this._commandHandlersContainer;
@@ -53,11 +49,11 @@ export class ExtensionManager implements Disposable {
         return this._projectRootPath;
     }
 
-    public get appCenterAuth(): Auth<AppCenterProfile, AppCenterLoginCredentials> {
+    public get appCenterAuth(): Auth<AppCenterProfile> {
         return this._appCenterAuth;
     }
 
-    public get vstsAuth(): Auth<VstsProfile, VstsLoginCredentials> {
+    public get vstsAuth(): Auth<VstsProfile> {
         return this._vstsAuth;
     }
 
@@ -115,15 +111,9 @@ export class ExtensionManager implements Disposable {
         this._commandHandlersContainer = new CommandHandlersContainer(this, this._logger);
         this._appCenterStatusBarItem = VsCodeUtils.getStatusBarItem();
 
-        // Initialize VSTS Auth
-        const vstsProfileStorage: DiskProfileStorage<AppCenterProfile> = new DiskProfileStorage(Utils.getVstsProfileFileName());
-        this._vstsAuth = new VstsAuth(vstsProfileStorage, tokenStores.vsts, this._logger);
-        await this._vstsAuth.initialize();
+        this._vstsAuth = await AuthFactory.getAuth(AuthProvider.Vsts, this._logger);
+        this._appCenterAuth = <Auth<AppCenterProfile>>await AuthFactory.getAuth(AuthProvider.AppCenter, this._logger);
 
-        // Initialize AppCenter Auth
-        const appcenterProfileStorage: DiskProfileStorage<AppCenterProfile> = new DiskProfileStorage(Utils.getAppCenterProfileFileName());
-        this._appCenterAuth = new AppCenterAuth(appcenterProfileStorage, tokenStores.appCenter, this._logger);
-        await this._appCenterAuth.initialize();
         const activeProfile = this._appCenterAuth.activeProfile;
         return this.setupAppCenterStatusBar(activeProfile);
     }

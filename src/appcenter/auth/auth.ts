@@ -1,13 +1,15 @@
-import { LoginCredentials, Profile, ProfileStorage } from '../../helpers/interfaces';
+import { LoginInfo, Profile, ProfileStorage } from '../../helpers/interfaces';
 import { ILogger } from '../../log/logHelper';
-import { TokenStore } from './tokenStore';
+import { tokenStore } from './tokenStore';
 
-export default abstract class Auth<T extends Profile, C extends LoginCredentials> {
+export default abstract class Auth<T extends Profile> {
 
-    public constructor(protected profileStorage: ProfileStorage<T>, protected tokenStore: TokenStore, protected logger: ILogger) {
+    public constructor(
+        protected profileStorage: ProfileStorage<T>,
+        protected logger: ILogger) {
     }
 
-    protected abstract async getUserInfo(credentials: C): Promise<Profile>;
+    protected abstract async getUserInfo(credentials: LoginInfo): Promise<Profile>;
 
     public get activeProfile(): T | null {
         return this.profileStorage.active;
@@ -17,14 +19,14 @@ export default abstract class Auth<T extends Profile, C extends LoginCredentials
         await this.profileStorage.init();
     }
 
-    public async doLogin(credentials: C): Promise<Profile | null> {
-        const token: string = credentials.token;
+    public async doLogin(loginInfo: LoginInfo): Promise<Profile | null> {
+        const token: string = loginInfo.token;
         if (!token) {
             return null;
         }
 
         // Ask server for user info by token
-        const profile: Profile = await this.getUserInfo(credentials);
+        const profile: Profile = await this.getUserInfo(loginInfo);
         if (!profile) {
             this.logger.error("Couldn't get user profile.");
             return null;
@@ -32,20 +34,17 @@ export default abstract class Auth<T extends Profile, C extends LoginCredentials
 
         // Remove existent token for user from local store
         // TODO: Probably we need to delete token from server also?
-        await this.tokenStore.remove(profile.userId);
+        await tokenStore.remove(profile.userId);
 
         // Remove saved profile if exists
         await this.profileStorage.delete(profile.userId);
-
-        // Save token in local store
-        await this.tokenStore.set(profile.userId, { token: token });
+        await tokenStore.set(profile.userId, { token: token });
 
         // Make it active
         profile.isActive = true;
 
         // Save it in local store
         await this.profileStorage.save(profile);
-
         return profile;
     }
 
@@ -53,9 +52,7 @@ export default abstract class Auth<T extends Profile, C extends LoginCredentials
 
         // Remove token from local store
         // TODO: Probably we need to delete token from server also?
-        await this.tokenStore.remove(userId);
-
-        // Remove saved profile from local store
+        await tokenStore.remove(userId);
         await this.profileStorage.delete(userId);
 
         // If there are no profiles left just exit
@@ -80,7 +77,7 @@ export default abstract class Auth<T extends Profile, C extends LoginCredentials
         return await this.profileStorage.list();
     }
 
-    public static accessTokenFor(tokenStore: TokenStore, profile: Profile): Promise<string> {
+    public static accessTokenFor(profile: Profile): Promise<string> {
         const getter = tokenStore.get(profile.userId);
         const emptyToken = "";
         // tslint:disable-next-line:no-any
