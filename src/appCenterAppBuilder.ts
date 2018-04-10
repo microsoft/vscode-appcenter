@@ -6,8 +6,8 @@ import { CreatedAppFromAppCenter, UserOrOrganizationItem } from "./helpers/inter
 import { SettingsHelper } from "./helpers/settingsHelper";
 import { Utils } from "./helpers/utils";
 import { VsCodeUtils } from "./helpers/vsCodeUtils";
-import { ILogger } from "./log/logHelper";
 import { Strings } from "./strings";
+import { ILogger } from "./log/logHelper";
 
 export default class AppCenterAppBuilder {
     private _createIOSApp: boolean = false;
