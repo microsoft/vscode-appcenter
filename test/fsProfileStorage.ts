@@ -10,6 +10,10 @@ describe('FileStore', function () {
 
   let path;
   let sandbox: sinon.SinonSandbox;
+  const fakeFilePath = "./file.json";
+  const mockFilePath = "./mock/profilesMock.json";
+  const mockFilePathMalformed = "./mock/profilesMockMalformed.json";
+  const mockFilePathMalformedDuplicateUserIds = "./mock/profilesMockMalformedUserIds.json";
 
   before(() => {
     sandbox = sinon.sandbox.create();
@@ -21,9 +25,6 @@ describe('FileStore', function () {
   });
 
   describe('#init', () => {
-    const fakeFilePath = "./file.json";
-    const mockFilePath = "./mock/profilesMock.json";
-    const mockFilePathMalformed = "./mock/profilesMockMalformed.json";
     let profiles: VstsProfile[];
     let vstsProfileStorage: FsProfileStorage<VstsProfile>;
 
@@ -39,7 +40,7 @@ describe('FileStore', function () {
       should.equal(existsStorage, true);
     });
 
-    it('should return active profile', async () => {
+    it('should load profiles', async () => {
       const absolutePath = path.resolve("test/" + mockFilePath);
       vstsProfileStorage = new FsProfileStorage(absolutePath, new ConsoleLogger());
       await vstsProfileStorage.init();
@@ -63,7 +64,6 @@ describe('FileStore', function () {
   });
 
   describe('#save', () => {
-    const mockFilePath = "./mock/profilesMock.json";
     let vstsProfileStorage: FsProfileStorage<VstsProfile>;
     let profiles: VstsProfile[];
     const fakeProfile: VstsProfile = {
@@ -89,7 +89,7 @@ describe('FileStore', function () {
       sandbox.restore();
     });
 
-    it('should return active profile', async () => {
+    it('should make profile active', async () => {
       await vstsProfileStorage.save(fakeProfile);
       const activeProfile = vstsProfileStorage.activeProfile;
       should.deepEqual(activeProfile, fakeProfile);
