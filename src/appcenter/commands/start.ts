@@ -212,8 +212,8 @@ export default class Start extends Command {
             return this.client.account.organizations.list().then((orgList: ListOKResponseItem[]) => {
                 const organizations: ListOKResponseItem[] = orgList;
                 return organizations.sort((a, b): any => {
-                    if (a.name && b.name) {
-                        return a.name < b.name; // sort alphabetically
+                    if (a.displayName && b.displayName) {
+                        return a.displayName > b.displayName; // sort alphabetically
                     } else {
                         return false;
                     }
@@ -423,6 +423,13 @@ export default class Start extends Command {
             projectList = await vstsProvider.GetAllProjects();
         });
         if (projectList) {
+            projectList = projectList.sort((a, b): any => {
+                if (a.name && b.name) {
+                    return a.name > b.name; // sort alphabetically
+                } else {
+                    return false;
+                }
+            });
             const options: QuickPickAppItem[] = projectList.map((project: VSTSProject) => {
                 return {
                     label: `${project.name}`,
