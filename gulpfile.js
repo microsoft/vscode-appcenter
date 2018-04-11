@@ -89,13 +89,13 @@ gulp.task("run-tests", function (callback) {
         .pipe(mocha(globalMochaSettings))
         .once('error', function (err) {
             if (callback) {
-                cb(err);
+                callback(err);
                 callback = null;
             }
         })
         .once('end', function () {
             if (callback) {
-                cb();
+                callback();
                 callback = null;
             }
         });

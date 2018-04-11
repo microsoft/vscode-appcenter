@@ -73,6 +73,7 @@ describe('FileStore', function () {
       isActive: true,
       tenantName: ""
     };
+    let saveProfilesStub: sinon.stub;
 
     before(() => {
       profiles = require(mockFilePath);
@@ -81,7 +82,8 @@ describe('FileStore', function () {
     beforeEach(async () => {
       const absolutePath = path.resolve("test/" + mockFilePath);
       vstsProfileStorage = new FsProfileStorage(absolutePath, new ConsoleLogger());
-      sandbox.stub(vstsProfileStorage, 'saveProfiles');
+      saveProfilesStub = sandbox.stub(vstsProfileStorage, 'saveProfiles');
+      saveProfilesStub.resolves();
       await vstsProfileStorage.init();
     });
 
@@ -93,6 +95,7 @@ describe('FileStore', function () {
       await vstsProfileStorage.save(fakeProfile);
       const activeProfile = vstsProfileStorage.activeProfile;
       should.deepEqual(activeProfile, fakeProfile);
+      saveProfilesStub.calledOnce.should.be.true();
     });
 
     it('should preserve active state on re-login', async () => {
@@ -102,6 +105,7 @@ describe('FileStore', function () {
       deleteSpy.calledOnce.should.be.true();
       const activeProfile = vstsProfileStorage.activeProfile;
       should.deepEqual(activeProfile, currentActiveProfile);
+      saveProfilesStub.calledTwice.should.be.true();
     });
   });
 });
