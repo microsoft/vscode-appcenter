@@ -9,6 +9,7 @@ import { ConsoleLogger } from '../src/log/consoleLogger';
 describe('FsProfileStorage', function () {
 
   let path;
+  let fs;
   let sandbox: sinon.SinonSandbox;
   const fakeFilePath = "./file.json";
   const mockFilePath = "./mock/profilesMock.json";
@@ -18,6 +19,7 @@ describe('FsProfileStorage', function () {
   before(() => {
     sandbox = sinon.sandbox.create();
     path = require("path");
+    fs = require('fs');
   });
 
   afterEach(() => {
@@ -30,6 +32,12 @@ describe('FsProfileStorage', function () {
 
     before(() => {
       profiles = require(mockFilePath);
+    });
+
+    after(() => {
+      // Delete the file created during testing.
+      const absolutePath = path.resolve("test/" + fakeFilePath);
+      fs.unlink(absolutePath);
     });
 
     it('should create empty storage', async () => {
