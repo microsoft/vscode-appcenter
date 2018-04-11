@@ -1,5 +1,5 @@
 import * as vscode from "vscode";
-import { AppCenterClient } from "./appcenter/api";
+import { AppCenterClient } from "./appcenter/apis";
 import AppCenterAppCreator, { AndroidAppCenterAppCreator, IOSAppCenterAppCreator, NullAppCenterAppCreator } from "./appCenterAppCreator";
 import { Constants } from "./constants";
 import { CreatedAppFromAppCenter, UserOrOrganizationItem } from "./helpers/interfaces";
