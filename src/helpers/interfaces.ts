@@ -99,6 +99,15 @@ export interface QuickPickAppItem {
     target: string;
 }
 
+export interface AppCenterView<T> {
+    display(items: T[]);
+    showProgress(title: string, fnc: () => Promise<any>): Thenable<void>;
+}
+
+export interface AppCenterLoader<T> {
+    load(): Promise<T[]>;
+}
+
 export interface ProfileQuickPickItem {
     label: string;
     description: string;

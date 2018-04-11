@@ -1,9 +1,15 @@
 import { Disposable, StatusBarItem } from 'vscode';
+import { createAppCenterClient, models } from './appcenter/api/';
 import AppCenterAuth from './appcenter/auth/appCenterAuth';
 import VstsAuth from './appcenter/auth/vstsAuth';
+import { AppCenterAppsCache } from './cache/appsCache';
+import { AppCenterCache } from './cache/baseCache';
 import * as CommandHandlers from './commandHandlers';
 import { AuthProvider, CommandNames } from './constants';
+import { AppCenterController } from './controller/appCenterController';
+import { AppCenterAppsLoader } from './helpers/appsLoader';
 import { Profile } from './helpers/interfaces';
+import { SettingsHelper } from './helpers/settingsHelper';
 import { VsCodeUtils } from './helpers/vsCodeUtils';
 import { ConsoleLogger } from './log/consoleLogger';
 import { ILogger } from './log/logHelper';
@@ -48,10 +54,10 @@ export class ExtensionManager implements Disposable {
     }
 
     public async Initialize(projectRootPath: string | undefined,
-            logger: ILogger = new ConsoleLogger(),
-            appCenterAuth: AppCenterAuth,
-            vstsAuth: VstsAuth
-        ): Promise<void> {
+        logger: ILogger = new ConsoleLogger(),
+        appCenterAuth: AppCenterAuth,
+        vstsAuth: VstsAuth
+    ): Promise<void> {
         this._logger = logger;
         this._projectRootPath = projectRootPath;
 
@@ -83,6 +89,13 @@ export class ExtensionManager implements Disposable {
 
     public setupAppCenterStatusBar(profile: Profile | null): Promise<void> {
         if (profile && profile.userName) {
+            const client = createAppCenterClient().fromProfile(profile, SettingsHelper.getAppCenterAPIEndpoint());
+            if (client) {
+                const appsLoader = new AppCenterAppsLoader(client);
+                const appsCache: AppCenterCache<models.AppResponse[]> = AppCenterAppsCache.getInstance();
+                const controller = new AppCenterController(profile, appsLoader, appsCache);
+                controller.load(true);
+            }
             return VsCodeUtils.setStatusBar(this._appCenterStatusBarItem,
                 `AppCenter: ${profile.userName}`,
                 Strings.YouAreLoggedInMsg(AuthProvider.AppCenter, profile.userName),

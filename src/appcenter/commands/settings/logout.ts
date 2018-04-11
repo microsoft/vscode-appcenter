@@ -15,7 +15,6 @@ export default class Logout extends Command {
         if (!await super.runNoClient()) {
             return false;
         }
-
         // Get profiles in which user is logged in
         const profiles: Profile[] = await this.appCenterAuth.getProfiles();
 

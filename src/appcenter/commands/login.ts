@@ -1,12 +1,17 @@
-import * as os from "os";
-import * as qs from "qs";
-import * as vscode from "vscode";
-import { AuthProvider } from "../../constants";
-import { CommandParams, Profile } from "../../helpers/interfaces";
-import { SettingsHelper } from "../../helpers/settingsHelper";
-import { IButtonMessageItem, VsCodeUtils } from "../../helpers/vsCodeUtils";
-import { Strings } from "../../strings";
-import { Command } from "./command";
+import * as os from 'os';
+import * as qs from 'qs';
+import * as vscode from 'vscode';
+import { AppCenterAppsCache } from '../../cache/appsCache';
+import { AppCenterCache } from '../../cache/baseCache';
+import { AuthProvider } from '../../constants';
+import { AppCenterController } from '../../controller/appCenterController';
+import { AppCenterAppsLoader } from '../../helpers/appsLoader';
+import { CommandParams, Profile } from '../../helpers/interfaces';
+import { SettingsHelper } from '../../helpers/settingsHelper';
+import { IButtonMessageItem, VsCodeUtils } from '../../helpers/vsCodeUtils';
+import { Strings } from '../../strings';
+import { createAppCenterClient, models } from '../api';
+import { Command } from './command';
 
 export default class Login extends Command {
 
@@ -49,7 +54,15 @@ export default class Login extends Command {
                 VsCodeUtils.ShowWarningMessage(Strings.FailedToExecuteLoginMsg(AuthProvider.AppCenter));
                 return false;
             }
+            const client = createAppCenterClient().fromProfile(profile, SettingsHelper.getAppCenterAPIEndpoint());
+            if (client) {
+                const appsLoader = new AppCenterAppsLoader(client);
+                const appsCache: AppCenterCache<models.AppResponse[]> = AppCenterAppsCache.getInstance();
+                const controller = new AppCenterController(profile, appsLoader, appsCache);
+                controller.load(true);
+            }
             VsCodeUtils.ShowInfoMessage(Strings.YouAreLoggedInMsg(AuthProvider.AppCenter, profile.displayName));
+
             return this.manager.setupAppCenterStatusBar(profile).then(() => true);
         }).catch((e: Error) => {
             VsCodeUtils.ShowErrorMessage("Could not login into account.");

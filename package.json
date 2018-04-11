@@ -218,6 +218,7 @@
         "mkdirp": "^0.5.1",
         "moment": "^2.21.0",
         "ms-rest": "^2.3.2",
+        "node-cache": "^4.2.0",
         "node-fetch": "^2.1.2",
         "node-jsxml": "^0.9.0",
         "node-noop": "^1.0.0",
@@ -230,6 +231,7 @@
         "semver": "^5.5.0",
         "simple-git": "^1.92.0",
         "temp": "^0.8.3",
+        "ts-md5": "^1.2.4",
         "tslint": "^5.9.1",
         "tslint-microsoft-contrib": "^5.0.3",
         "xml2js": "^0.4.19"

@@ -1,14 +1,12 @@
+import * as vscode from 'vscode';
 import { AppCenterOS } from '../../constants';
 import { AppCenterProfile, CurrentApp, CurrentAppDeployments } from '../../helpers/interfaces';
 import { Utils } from '../../helpers/utils';
 import { VsCodeUtils } from '../../helpers/vsCodeUtils';
 import { Strings } from '../../strings';
-import { models } from '../api';
 import { Command } from './command';
 
 export class ReactNativeAppCommand extends Command {
-    protected static cachedApps: models.AppResponse[];
-
     public async runNoClient(): Promise<boolean | void> {
         if (!await super.runNoClient()) {
             return false;
@@ -63,5 +61,9 @@ export class ReactNativeAppCommand extends Command {
                 return Promise.resolve(null);
             }
         });
+    }
+
+    public showProgress(title: string, fnc: () => Promise<any>): Thenable<void> {
+        return vscode.window.withProgress({ location: vscode.ProgressLocation.Window, title: title }, fnc);
     }
 }
