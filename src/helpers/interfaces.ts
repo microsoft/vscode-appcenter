@@ -40,7 +40,7 @@ export interface CreatedAppFromAppCenter {
 }
 
 export interface ProfileStorage<T extends Profile> {
-    active: T | null;
+    activeProfile: T | null;
     save(profile: Profile): Promise<void>;
     delete(userId: string): Promise<T | null>;
     get(userId: string): Promise<T | null>;
