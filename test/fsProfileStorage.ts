@@ -8,11 +8,12 @@ import { ConsoleLogger } from '../src/log/consoleLogger';
 
 describe('FileStore', function () {
 
-  const path = require("path");
+  let path;
   let sandbox: sinon.SinonSandbox;
 
   before(() => {
     sandbox = sinon.sandbox.create();
+    path = require("path");
   });
 
   afterEach(() => {
@@ -54,7 +55,7 @@ describe('FileStore', function () {
         vstsProfileStorage.init().catch(error => {
           should.exist(error);
           resolve();
-        }).then(() => { 
+        }).then(() => {
           reject("the function should throw");
         });
       });
