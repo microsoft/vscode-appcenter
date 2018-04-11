@@ -1,17 +1,17 @@
 import * as fs from "fs";
 import { ICodePushReleaseParams } from "../../../helpers/interfaces";
-import { AppCenterClient } from "../../api/index";
+import { AppCenterClient } from "../../apis";
 
-export function appCenterCodePushRelease(client: AppCenterClient, params: ICodePushReleaseParams): Promise<void> {
+export async function appCenterCodePushRelease(client: AppCenterClient, params: ICodePushReleaseParams): Promise<void> {
     const app = params.app;
-    return client.codepush.codePushDeploymentReleases.create(
-        app.appName,
+    await client.codePushDeploymentReleases.create(
         params.deploymentName,
         app.ownerName,
+        app.appName,
         <string>params.appVersion,
         {
             packageProperty: fs.createReadStream(params.updatedContentZipPath),
-            deploymentName: params.deploymentName,
+            deploymentName1: params.deploymentName,
             description: params.description,
             disabled: params.isDisabled,
             mandatory: params.isMandatory,

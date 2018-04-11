@@ -10,12 +10,13 @@
         "noUnusedLocals": true,
         "noImplicitThis": true,
         "noImplicitReturns": true,
-        "strictNullChecks": true,
+        "strictNullChecks": false,
         "noUnusedParameters": true
     },
     "exclude": [
         "node_modules",
         ".vscode-test",
-        "src/appcenter/lib"
+        "src/appcenter/lib",
+        "src/appcenter/apis/generated"
     ]
 }

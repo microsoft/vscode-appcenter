@@ -9,6 +9,6 @@ src/**/nodeDebugLocation.json
 
 # Compiled files
 src/**/*.js
-!src/appcenter/lib/**/*.js
+!src/appcenter/apis/generated/**/*.js
 test/**/*.js
 **/*.js.map

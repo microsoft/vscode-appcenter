@@ -17,4 +17,8 @@ export class AppCenterUrlBuilder {
             return `${SettingsHelper.getAppCenterPortalEndpoint()}/users/${ownerName}/apps/${appName}/distribute/${tabName}/`;
         }
     }
+
+    public static GetPortalBuildLink(appOwner: string, appName: string, branchName: string, buildId: string): string {
+        return `${SettingsHelper.getAppCenterPortalEndpoint()}/users/${appOwner}/apps/${appName}/build/branches/${branchName}/builds/${buildId}`;
+      }
 }

@@ -1,5 +1,3 @@
-"use strict";
-
 export class Constants {
     public static ExtensionName: string = "appcenter";
     public static DefaultAPIEndPoint: string = "https://api.appcenter.ms";

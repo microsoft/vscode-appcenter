@@ -1,7 +1,7 @@
 import { ICodePushReleaseParams } from "../../helpers/interfaces";
 import { SettingsHelper } from "../../helpers/settingsHelper";
 import { ILogger, LogLevel } from "../../log/logHelper";
-import { AppCenterClient, models } from "../api/index";
+import { AppCenterClient, models } from "../apis";
 import { CommandResult, ErrorCodes, failure, success } from "./commandResult";
 import { appCenterCodePushRelease } from "./release-strategy/appcenterCodePushRelease";
 import { legacyCodePushRelease } from "./release-strategy/legacyCodePushRelease";

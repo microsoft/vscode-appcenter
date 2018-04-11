@@ -3,7 +3,7 @@ import { AppCenterProfile, CurrentApp, CurrentAppDeployments } from '../../helpe
 import { Utils } from '../../helpers/utils';
 import { VsCodeUtils } from '../../helpers/vsCodeUtils';
 import { Strings } from '../../strings';
-import { models } from '../api';
+import { models } from '../apis';
 import { Command } from './command';
 
 export class ReactNativeAppCommand extends Command {
@@ -29,7 +29,7 @@ export class ReactNativeAppCommand extends Command {
         return true;
     }
 
-    protected getCurrentApp(): Promise<CurrentApp | null> {
+    protected async getCurrentApp(): Promise<CurrentApp | null> {
         return this.appCenterProfile.then((profile: AppCenterProfile | null) => {
             if (profile && profile.currentApp) {
                 return profile.currentApp;

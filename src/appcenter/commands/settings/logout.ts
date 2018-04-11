@@ -43,7 +43,7 @@ export default class Logout extends Command {
             .then((selected: ProfileQuickPickItem) => {
                 if (!selected) {
                     // User cancel selection
-                    return;
+                    return void 0;
                 }
                 return this.logoutUser(selected.profile);
             }, this.handleError);

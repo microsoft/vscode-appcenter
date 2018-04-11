@@ -1,6 +1,6 @@
 import { AppCenterLoginInfo, AppCenterProfile, CurrentApp } from "../../helpers/interfaces";
 import { SettingsHelper } from "../../helpers/settingsHelper";
-import { createAppCenterClient } from "../api";
+import { createAppCenterClient } from "../apis";
 import Auth from "./auth";
 
 class AppCenterProfileImpl implements AppCenterProfile {
@@ -27,7 +27,7 @@ export default class AppCenterAuth extends Auth<AppCenterProfile> {
     protected async getUserInfo(credentials: AppCenterLoginInfo): Promise<AppCenterProfile> {
         //TODO Handle situation when user had deleted token in appcenter portal already
         const client = createAppCenterClient().fromToken(credentials.token, SettingsHelper.getAppCenterAPIEndpoint());
-        const userResponse = await client.account.users.get();
+        const userResponse = await client.users.get();
         if (!userResponse) {
             throw new Error("Could get profile from appcenter.");
         }
