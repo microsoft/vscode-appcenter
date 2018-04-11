@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 import { AuthProvider } from '../../../constants';
-import { AppCenterProfile, Profile, ProfileQuickPickItem } from '../../../helpers/interfaces';
+import { Profile, ProfileQuickPickItem } from '../../../helpers/interfaces';
 import { VsCodeUtils } from '../../../helpers/vsCodeUtils';
 import { Strings } from '../../../strings';
 import { Command } from '../command';
@@ -40,11 +40,7 @@ export default class SwitchAccount extends Command {
 
     private async switchActiveProfile(selectedProfile: Profile): Promise<boolean> {
         try {
-            const currentActiveProfile: AppCenterProfile | null = this.appCenterAuth.activeProfile;
-            if (currentActiveProfile) {
-                currentActiveProfile.isActive = false;
-                await this.appCenterAuth.updateProfile(currentActiveProfile);
-            }
+
             selectedProfile.isActive = true;
             await this.appCenterAuth.updateProfile(selectedProfile);
 

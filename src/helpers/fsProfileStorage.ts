@@ -3,19 +3,15 @@ import { FSUtils } from './fsUtils';
 import { Profile, ProfileStorage } from './interfaces';
 
 export default class FsProfileStorage<T extends Profile> implements ProfileStorage<T> {
-    protected storageFile: string;
     protected profiles: T[];
-    protected activeIndex: number | null;
-    protected logger: ILogger;
+    protected indexOfActiveProfile: number | null;
 
-    constructor(storageFile: string, logger: ILogger) {
-        this.storageFile = storageFile;
+    constructor(protected storageFilePath: string, protected logger: ILogger) {
         this.profiles = [];
-        this.logger = logger;
     }
 
-    public get active(): T | null {
-        return (this.activeIndex === null) ? null : this.profiles[this.activeIndex];
+    public get activeProfile(): T | null {
+        return (this.indexOfActiveProfile === null || this.profiles.length <= this.indexOfActiveProfile) ? null : this.profiles[this.indexOfActiveProfile];
     }
 
     public async init(): Promise<void> {
@@ -26,34 +22,40 @@ export default class FsProfileStorage<T extends Profile> implements ProfileStora
     }
 
     private async createEmptyStorage(): Promise<void> {
-        return await FSUtils.writeFile(this.storageFile, "[]");
+        return await FSUtils.writeFile(this.storageFilePath, "[]");
     }
 
     private async storageExists(): Promise<boolean> {
-        return await FSUtils.exists(this.storageFile);
+        return await FSUtils.exists(this.storageFilePath);
     }
 
     private async loadDataFromStorage(): Promise<void> {
-        const data: string = await FSUtils.readFile(this.storageFile);
         try {
+            const data: string = await FSUtils.readFile(this.storageFilePath);
             this.profiles = JSON.parse(data);
         } catch (e) {
-            this.logger.info(`Failed to parse JSON file for ${this.storageFile}`);
+            this.logger.info(`Failed to parse JSON file for ${this.storageFilePath}. ` + (e && e.message) || "");
             return;
         }
 
         // Identify active profile
         const activeProfiles: T[] = this.profiles.filter(profile => profile.isActive);
+
         if (activeProfiles.length > 1) {
-            throw new Error('Malformed profile data. Shouldn\'t be more than one active profiles.');
+            throw new Error(`Malformed profile data. Shouldn\'t be more than one active profile. Try deleting ${this.storageFilePath} and log in again.`);
         } else if (activeProfiles.length === 1) {
-            this.activeIndex = this.profiles.indexOf(activeProfiles[0]);
+            this.indexOfActiveProfile = this.profiles.indexOf(activeProfiles[0]);
         }
     }
 
-    private async commitChanges(): Promise<void> {
+    private async saveProfiles(): Promise<void> {
         const data = JSON.stringify(this.profiles, null, "\t");
-        await FSUtils.writeFile(this.storageFile, data);
+        try {
+            await FSUtils.writeFile(this.storageFilePath, data);
+        } catch (e) {
+            this.logger.info(`Failed to write profiles into ${this.storageFilePath}. ` + (e && e.message) || "");
+            return;
+        }
     }
 
     public async save(profile: T): Promise<void> {
@@ -64,45 +66,43 @@ export default class FsProfileStorage<T extends Profile> implements ProfileStora
             profile.isActive = deletedProfile.isActive;
         }
 
-        // Reset current active user
-        const currentActive: T | null = this.active;
-        if (currentActive) {
-            currentActive.isActive = false;
-            this.activeIndex = null;
+        if (this.activeProfile) {
+            this.activeProfile.isActive = false;
+            this.indexOfActiveProfile = null;
         }
 
         // Add new user
         const createdIndex = this.profiles.push(profile) - 1;
         if (profile.isActive) {
-            this.activeIndex = createdIndex;
+            this.indexOfActiveProfile = createdIndex;
         }
-        await this.commitChanges();
+        await this.saveProfiles();
     }
 
     public async delete(userId: string): Promise<T | null> {
-        const existentProfile = await this.get(userId);
-        if (!existentProfile) {
+        const foundProfile = await this.get(userId);
+        if (!foundProfile) {
             return null;
         }
-        const indexToDelete = this.profiles.indexOf(existentProfile);
+        const indexToDelete = this.profiles.indexOf(foundProfile);
         const deletedProfile: T[] = this.profiles.splice(indexToDelete, 1);
-        if (this.activeIndex) {
-            if (indexToDelete < this.activeIndex) {
-                this.activeIndex--;
-            } else if (indexToDelete === this.activeIndex) {
-                this.activeIndex = null;
+        if (this.indexOfActiveProfile) {
+            if (indexToDelete < this.indexOfActiveProfile) {
+                this.indexOfActiveProfile--;
+            } else if (indexToDelete === this.indexOfActiveProfile) {
+                this.indexOfActiveProfile = null;
             }
         }
-        await this.commitChanges();
+        await this.saveProfiles();
         return deletedProfile[0];
     }
 
     public async get(userId: string): Promise<T | null> {
-        const existentProfiles: T[] = this.profiles.filter(value => value.userId === userId);
-        if (existentProfiles.length === 1) {
-            return existentProfiles[0];
-        } else if (existentProfiles.length > 1) {
-            throw new Error('There are more than one profiles with such userId saved.');
+        const foundProfiles: T[] = this.profiles.filter(value => value.userId === userId);
+        if (foundProfiles.length === 1) {
+            return foundProfiles[0];
+        } else if (foundProfiles.length > 1) {
+            throw new Error(`There are more than one profile saved with userId ${userId}. Try deleting ${this.storageFilePath} and log in again.`);
         }
         return null;
     }
