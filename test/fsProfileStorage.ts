@@ -6,7 +6,7 @@ import { FSUtils } from '../src/helpers/fsUtils';
 import { VstsProfile } from '../src/helpers/interfaces';
 import { ConsoleLogger } from '../src/log/consoleLogger';
 
-describe('FileStore', function () {
+describe('FsProfileStorage', function () {
 
   let path;
   let sandbox: sinon.SinonSandbox;
