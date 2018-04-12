@@ -1,5 +1,8 @@
+var glob = require('glob');
+var mocha = require('gulp-mocha');
 var gulp = require("gulp");
 var del = require("del");
+var gutil = require('gulp-util');
 var tslint = require("gulp-tslint");
 var libtslint = require("tslint");
 var runSequence = require("run-sequence");
@@ -65,10 +68,47 @@ gulp.task("build", function () {
         }));
 });
 
-gulp.task("default", function (callback) {
-    runSequence("clean", "build", "tslint", callback);
+gulp.task("run-tests", function (callback) {
+    var tsProject = ts.createProject("tsconfig.json");
+    tsProject.config.files = glob.sync('./test/**/*.ts');
+
+    var globalMochaSettings = {
+        clearRequireCache: true,
+        ignoreLeaks: false,
+        timeout: 5000,
+        slow: 200,
+        reporter: 'spec'
+    };
+
+    var testFiles = tsProject.config.files.slice();
+    for (var i = 0; i < testFiles.length; i++) {
+        testFiles[i] = testFiles[i].replace(/.ts$/i, '.js');
+    }
+
+    gulp.src(testFiles)
+        .pipe(mocha(globalMochaSettings))
+        .once('error', function (err) {
+            if (callback) {
+                callback(err);
+                callback = null;
+            }
+        })
+        .once('end', function () {
+            if (callback) {
+                callback();
+                callback = null;
+            }
+        });
 });
 
 gulp.task("debug", function (callback) {
     runSequence("clean", "build", callback);
+});
+
+gulp.task("test", function (callback) {
+    runSequence("build", "run-tests", callback);
+});
+
+gulp.task("default", function (callback) {
+    runSequence("clean", "build", "tslint", "test", callback);
 });
