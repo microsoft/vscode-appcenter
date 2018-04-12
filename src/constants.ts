@@ -53,6 +53,15 @@ export class Constants {
                 "xcodeVersion": "9.3",
                 "automaticSigning": false,
                 "podfilePath":"ios/Podfile"
+            },
+            "android": {
+                "module": "app",
+                "buildVariant": "release",
+                "isRoot": false,
+                "runTests": false,
+                "runLint": false,
+                "automaticSigning": false,
+                "gradleWrapperPath": "android/gradlew"
             }
         }
     }`;

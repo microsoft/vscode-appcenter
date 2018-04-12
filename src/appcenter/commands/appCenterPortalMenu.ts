@@ -164,10 +164,10 @@ export default class AppCenterPortalMenu extends ReactNativeAppCommand {
 
                             switch (selected.target) {
                                 case (AppCenterBeacons.Build):
-                                    Utils.OpenUrl(AppCenterUrlBuilder.GetAppCenterURLByBeacon(ownerName, appName, AppCenterBeacons.Build, isOrg));
+                                    Utils.OpenUrl(AppCenterUrlBuilder.GetAppCenterLinkByBeacon(ownerName, appName, AppCenterBeacons.Build, isOrg));
                                     break;
                                 case (AppCenterBeacons.Test):
-                                    Utils.OpenUrl(AppCenterUrlBuilder.GetAppCenterURLByBeacon(ownerName, appName, AppCenterBeacons.Test, isOrg));
+                                    Utils.OpenUrl(AppCenterUrlBuilder.GetAppCenterLinkByBeacon(ownerName, appName, AppCenterBeacons.Test, isOrg));
                                     break;
                                 case (AppCenterBeacons.Distribute):
                                     const appCenterDistributeTabMenuItems: vscode.QuickPickItem[] = this.getAppCenterDistributeTabMenuItems();
@@ -179,16 +179,16 @@ export default class AppCenterPortalMenu extends ReactNativeAppCommand {
                                             }
                                             switch (selected.target) {
                                                 case (AppCenterDistributionTabs.Groups):
-                                                    Utils.OpenUrl(AppCenterUrlBuilder.GetAppCenterDistributeTabUrlByTabName(ownerName, appName, AppCenterDistributionTabs.Groups, isOrg));
+                                                    Utils.OpenUrl(AppCenterUrlBuilder.GetAppCenterDistributeTabLinkByTabName(ownerName, appName, AppCenterDistributionTabs.Groups, isOrg));
                                                     break;
                                                 case (AppCenterDistributionTabs.Stores):
-                                                    Utils.OpenUrl(AppCenterUrlBuilder.GetAppCenterDistributeTabUrlByTabName(ownerName, appName, AppCenterDistributionTabs.Stores, isOrg));
+                                                    Utils.OpenUrl(AppCenterUrlBuilder.GetAppCenterDistributeTabLinkByTabName(ownerName, appName, AppCenterDistributionTabs.Stores, isOrg));
                                                     break;
                                                 case (AppCenterDistributionTabs.CodePush):
-                                                    Utils.OpenUrl(AppCenterUrlBuilder.GetAppCenterDistributeTabUrlByTabName(ownerName, appName, AppCenterDistributionTabs.CodePush, isOrg));
+                                                    Utils.OpenUrl(AppCenterUrlBuilder.GetAppCenterDistributeTabLinkByTabName(ownerName, appName, AppCenterDistributionTabs.CodePush, isOrg));
                                                     break;
                                                 case (AppCenterDistributionTabs.Releases):
-                                                    Utils.OpenUrl(AppCenterUrlBuilder.GetAppCenterDistributeTabUrlByTabName(ownerName, appName, AppCenterDistributionTabs.Releases, isOrg));
+                                                    Utils.OpenUrl(AppCenterUrlBuilder.GetAppCenterDistributeTabLinkByTabName(ownerName, appName, AppCenterDistributionTabs.Releases, isOrg));
                                                     break;
                                                 default:
                                                     // Ideally shouldn't be there :)
@@ -198,13 +198,13 @@ export default class AppCenterPortalMenu extends ReactNativeAppCommand {
                                         });
                                     break;
                                 case (AppCenterBeacons.Crashes):
-                                    Utils.OpenUrl(AppCenterUrlBuilder.GetAppCenterURLByBeacon(ownerName, appName, AppCenterBeacons.Crashes, isOrg));
+                                    Utils.OpenUrl(AppCenterUrlBuilder.GetAppCenterLinkByBeacon(ownerName, appName, AppCenterBeacons.Crashes, isOrg));
                                     break;
                                 case (AppCenterBeacons.Analytics):
-                                    Utils.OpenUrl(AppCenterUrlBuilder.GetAppCenterURLByBeacon(ownerName, appName, AppCenterBeacons.Analytics, isOrg));
+                                    Utils.OpenUrl(AppCenterUrlBuilder.GetAppCenterLinkByBeacon(ownerName, appName, AppCenterBeacons.Analytics, isOrg));
                                     break;
                                 case (AppCenterBeacons.Push):
-                                    Utils.OpenUrl(AppCenterUrlBuilder.GetAppCenterURLByBeacon(ownerName, appName, AppCenterBeacons.Push, isOrg));
+                                    Utils.OpenUrl(AppCenterUrlBuilder.GetAppCenterLinkByBeacon(ownerName, appName, AppCenterBeacons.Push, isOrg));
                                     break;
                                 default:
                                     // Ideally shouldn't be there :)
