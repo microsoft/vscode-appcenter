@@ -244,8 +244,8 @@ export default class Start extends Command {
         try {
             const installNodeModulesCmd: string = "npm i";
             this.logger.info("Running npm install...");
-            await cpUtils.executeCommand(this.logger, this.manager.projectRootPath, installNodeModulesCmd);
-            VsCodeUtils.ShowInfoMessage(Strings.NodeModulesInstalledMessage);
+            await cpUtils.executeCommand(this.logger, true, this.manager.projectRootPath, installNodeModulesCmd);
+            this.logger.info(Strings.NodeModulesInstalledMessage);
             return true;
         } catch (error) {
             this.logger.error("Failed to run npm install");

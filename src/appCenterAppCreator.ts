@@ -14,7 +14,6 @@ export default class AppCenterAppCreator {
     public async withBranchConfigurationCreatedAndBuildKickOff(appName: string, branchName: string, ownerName: string): Promise<boolean> {
         // TODO: get out what to do with this magic with not working of method to create default config!
         try {
-            this.logger.info(`Creating new branch configuration for branch ${branchName} and starting new build for ${appName}...`);
             // const configJson = Constants.defaultBuildConfigJSON;
             // const configObj = JSON.parse(configJson);
             // tslint:disable-next-line:no-debugger
@@ -25,12 +24,12 @@ export default class AppCenterAppCreator {
             const realBranchName = queueBuildRequestResponse.sourceBranch;
 
             const url = AppCenterUrlBuilder.GetPortalBuildLink(ownerName, appName, realBranchName, buildId.toString());
-            this.logger.info(`Queued build link: ${url}`);
+            this.logger.info(`Queued build link: "${url}"`);
         } catch (error) {
             if (error.statusCode === 400) {
-                this.logger.error(`app ${appName} is not configured for building`);
+                this.logger.error(`app "${appName}" is not configured for building`);
               } else {
-                this.logger.error(`failed to queue build request`);
+                this.logger.error(`failed to queue build request for "${appName}"`);
             }
             return false;
         }
@@ -39,25 +38,22 @@ export default class AppCenterAppCreator {
 
     public async connectRepositoryToBuildService(appName: string, ownerName: string, repoUrl: string): Promise<boolean> {
         try {
-            this.logger.info(`Connecting repository to build service for ${appName}...`);
-
             await this.client.repositoryConfigurations.createOrUpdate(ownerName, appName, repoUrl);
             return true;
         } catch (err) {
-            this.logger.error(`failed to connect repository to build service`);
+            this.logger.error(`failed to connect repository "${repoUrl}" to build service for app "${appName}"`);
             return false;
         }
     }
 
     public async createBetaTestersDistributionGroup(appName: string, ownerName: string): Promise<boolean> {
         try {
-            this.logger.info(`Creating BetaTesters distribution group for ${appName}...`);
             await this.client.distributionGroups.create(ownerName, appName, SettingsHelper.distribitionGroupTestersName());
         } catch (error) {
             if (error === 409) {
-                this.logger.error(`distribution group ${SettingsHelper.distribitionGroupTestersName()} already exists`);
+                this.logger.error(`distribution group "${SettingsHelper.distribitionGroupTestersName()}" in "${appName}" already exists`);
               } else {
-                this.logger.error("failed to create distribution group");
+                this.logger.error(`failed to create distribution group for "${appName}"`);
               }
             return false;
         }
@@ -79,7 +75,7 @@ export default class AppCenterAppCreator {
                 name: result.name
             };
         } catch (err) {
-            this.logger.error("failed to create apps for org");
+            this.logger.error(`failed to create "${appName}" app for org "${orgName}"`);
             return false;
         }
     }
@@ -99,7 +95,7 @@ export default class AppCenterAppCreator {
                 name: result.name
             };
         } catch (err) {
-            this.logger.error("failed to create apps for org");
+            this.logger.error(`failed to create app "${appName}"`);
             return false;
         }
     }
@@ -109,8 +105,8 @@ export default class AppCenterAppCreator {
             const result: models.Deployment = await this.client.codePushDeployments.create(ownerName, appName, Constants.CodePushStagingDeplymentName);
             return result;
         } catch (err) {
-            this.logger.error("failed to create codepush deployment");
-            throw new Error("failed to create codepush deployment");
+            this.logger.error(`failed to create codepush deployment for ${appName}`);
+            throw new Error(`failed to create codepush deployment for ${appName}`);
         }
     }
 }

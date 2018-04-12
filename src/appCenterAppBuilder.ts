@@ -28,8 +28,9 @@ export default class AppCenterAppBuilder {
         private defaultBranchName = SettingsHelper.defaultBranchName()) {
 
         if (this.userOrOrg.name === undefined || this.userOrOrg.displayName === undefined || this.ideaName === undefined) {
-            this.logger.error(`Sorry, IdeaName or User/Organization is not set`);
-            throw new Error(`Sorry, IdeaName or User/Organization is not set`);
+            const errMsg: string = `Sorry, IdeaName or User/Organization is not set`;
+            this.logger.error(errMsg);
+            throw new Error(errMsg);
         }
         this.withIOSApp();
         this.withAndroidApp();
@@ -133,6 +134,7 @@ export default class AppCenterAppBuilder {
 
                 this.createdApps = created;
                 this.appsCreated = true;
+                this.logger.info(`Apps for your project "${this.ideaName}" were created`);
             });
         }
     }
@@ -157,6 +159,8 @@ export default class AppCenterAppBuilder {
                     return val === true;
                 })) {
                     VsCodeUtils.ShowErrorMessage(Strings.FailedToCreateDistributionGroup);
+                } else {
+                    this.logger.info(`"${SettingsHelper.distribitionGroupTestersName()}" distribution group was created for your app`);
                 }
             }
 
