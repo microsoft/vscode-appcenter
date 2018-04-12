@@ -68,7 +68,7 @@ gulp.task("build", function () {
         }));
 });
 
-gulp.task("run-tests", function (callback) {
+gulp.task("test", function (callback) {
     var tsProject = ts.createProject("tsconfig.json");
     tsProject.config.files = glob.sync('./test/**/*.ts');
 
@@ -103,10 +103,6 @@ gulp.task("run-tests", function (callback) {
 
 gulp.task("debug", function (callback) {
     runSequence("clean", "build", callback);
-});
-
-gulp.task("test", function (callback) {
-    runSequence("build", "run-tests", callback);
 });
 
 gulp.task("default", function (callback) {
