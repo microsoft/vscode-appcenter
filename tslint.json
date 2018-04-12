@@ -1,7 +1,7 @@
 {
     "linterOptions": {
         "exclude": [
-            "src/appcenter/lib"
+            "src/appcenter/apis/generated"
         ]
     },
     "rules": {

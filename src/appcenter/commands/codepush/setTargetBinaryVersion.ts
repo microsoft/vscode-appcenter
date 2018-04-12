@@ -15,15 +15,15 @@ export default class SetTargetBinaryVersion extends RNCPAppCommand {
         if (!await super.runNoClient()) {
             return;
         }
-        vscode.window.showInputBox({ prompt: Strings.PleaseProvideTargetBinaryVersion, ignoreFocusOut: true })
+        return vscode.window.showInputBox({ prompt: Strings.PleaseProvideTargetBinaryVersion, ignoreFocusOut: true })
             .then(appVersion => {
                 if (!appVersion) {
                     // if user press esc do nothing then
-                    return;
+                    return void 0;
                 }
                 if (appVersion !== Constants.AppCenterDefaultTargetBinaryVersion && !validRange(appVersion)) {
                     VsCodeUtils.ShowWarningMessage(Strings.InvalidAppVersionParamMsg);
-                    return;
+                    return void 0;
                 }
                 return this.getCurrentApp().then((app: CurrentApp) => {
                     if (app) {
@@ -45,8 +45,8 @@ export default class SetTargetBinaryVersion extends RNCPAppCommand {
                         });
                     } else {
                         VsCodeUtils.ShowInfoMessage(Strings.NoCurrentAppSetMsg);
-                        return;
                     }
+                    return void 0;
                 });
             });
     }
