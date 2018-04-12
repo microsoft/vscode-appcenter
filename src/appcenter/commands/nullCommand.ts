@@ -1,12 +1,11 @@
-import { ExtensionManager } from "../../extensionManager";
-import { ILogger } from "../../log/logHelper";
+import { CommandParams } from "../../helpers/interfaces";
 import { Command } from "./command";
 
 // For testing, command that do literally nothing
 export default class NullCommand extends Command {
 
-    constructor(manager: ExtensionManager, logger: ILogger) {
-        super(manager, logger);
+    constructor(params: CommandParams) {
+        super(params);
     }
 
     public async runNoClient(): Promise<void> {

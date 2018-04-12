@@ -1,5 +1,3 @@
-"use strict";
-
 export class Constants {
     public static ExtensionName: string = "appcenter";
     public static DefaultAPIEndPoint: string = "https://api.appcenter.ms";
@@ -8,7 +6,7 @@ export class Constants {
     public static DefaultDistributionGroupTestersName: string = "Beta Testers";
     public static DefaultBranchName: string = "master";
     public static DefaultLoginEndPoint: string = "https://appcenter.ms/cli-login";
-    public static AppCenterCodePushStatusBarColor: string = "#F3F3B2";
+    public static AppCenterCodePushStatusBarColor: string = "#ffffff";
     public static CodePushStagingDeplymentName: string = "Staging";
     public static iOSAppSuffix: string = "-ios";
     public static AndroidAppSuffix: string = "-android";
@@ -22,7 +20,10 @@ export class Constants {
     public static AppCenterSampleGitRemoteDefaultBranchName: string = "master";
     public static GitDefaultRemoteName: string = 'origin';
     public static ProfileDir: string = ".vscode-appcenter";
-    public static ProfileFileName: string = "VSCodeAppCenterProfile.json";
+    public static AppCenterProfileFileName: string = "VSCodeAppCenterProfile.json";
+    public static VstsProfileFileName: string = "VSCodeVstsProfile.json";
+    public static TokenDir: string = ".vscode-appcenter";
+    public static AppCenterTokenFileName = "VSCodeAppCenterTokens.json";
 
     // IMPORTANT: this two items below should stay in sync in terms of xcode projectOrWorkspacePath/scheme values
     // We should decide how we should handle this (e.g. create manually within AppCenter site)
@@ -31,7 +32,7 @@ export class Constants {
         "branch": {
             "name": "master"
         },
-        "id": 2,
+        "id": 1,
         "trigger": "continuous",
         "environmentVariables": [],
         "signed": false,
@@ -128,4 +129,9 @@ export enum AppCenterDistributionTabs {
 export enum AppCenteAppType {
     User = "User",
     Org = "Org"
+}
+
+export enum AuthProvider {
+    Vsts = "VSTS",
+    AppCenter = "App Center"
 }

@@ -1,4 +1,8 @@
+import AppCenterAuth from "../appcenter/auth/appCenterAuth";
+import VstsAuth from "../appcenter/auth/vstsAuth";
 import { AppCenterOS } from "../constants";
+import { ExtensionManager } from "../extensionManager";
+import { ILogger } from "../log/logHelper";
 
 export interface Deployment {
     name: string;
@@ -36,7 +40,7 @@ export interface CreatedAppFromAppCenter {
 }
 
 export interface ProfileStorage<T extends Profile> {
-    active: T | null;
+    activeProfile: T | null;
     save(profile: Profile): Promise<void>;
     delete(userId: string): Promise<T | null>;
     get(userId: string): Promise<T | null>;
@@ -54,6 +58,23 @@ export interface Profile {
 export interface AppCenterProfile extends Profile {
     email: string;
     currentApp?: CurrentApp;
+}
+
+export interface VstsProfile extends Profile {
+    tenantName: string;
+}
+
+export interface LoginInfo {
+    token: string;
+}
+
+// tslint:disable-next-line:no-empty-interface
+export interface AppCenterLoginInfo extends LoginInfo {
+}
+
+export interface VstsLoginInfo extends LoginInfo {
+    tenantName: string;
+    userName: string;
 }
 
 export interface IDefaultCommandParams {
@@ -82,4 +103,11 @@ export interface ProfileQuickPickItem {
     label: string;
     description: string;
     profile: Profile;
+}
+
+export interface CommandParams {
+    manager: ExtensionManager;
+    logger: ILogger;
+    appCenterAuth: AppCenterAuth;
+    vstsAuth: VstsAuth;
 }

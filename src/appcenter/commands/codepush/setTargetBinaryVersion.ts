@@ -1,31 +1,29 @@
 import { validRange } from 'semver';
 import * as vscode from 'vscode';
 import { AppCenterOS, Constants } from '../../../constants';
-import { ExtensionManager } from '../../../extensionManager';
-import { CurrentApp } from '../../../helpers/interfaces';
+import { CommandParams, CurrentApp } from '../../../helpers/interfaces';
 import { VsCodeUtils } from '../../../helpers/vsCodeUtils';
-import { ILogger } from '../../../log/logHelper';
 import { Strings } from '../../../strings';
 import { RNCPAppCommand } from './rncpAppCommand';
 
 export default class SetTargetBinaryVersion extends RNCPAppCommand {
-    constructor(manager: ExtensionManager, logger: ILogger) {
-        super(manager, logger);
+    constructor(params: CommandParams) {
+        super(params);
     }
 
     public async runNoClient(): Promise<void> {
         if (!await super.runNoClient()) {
             return;
         }
-        vscode.window.showInputBox({ prompt: Strings.PleaseProvideTargetBinaryVersion, ignoreFocusOut: true })
+        return vscode.window.showInputBox({ prompt: Strings.PleaseProvideTargetBinaryVersion, ignoreFocusOut: true })
             .then(appVersion => {
                 if (!appVersion) {
                     // if user press esc do nothing then
-                    return;
+                    return void 0;
                 }
                 if (appVersion !== Constants.AppCenterDefaultTargetBinaryVersion && !validRange(appVersion)) {
                     VsCodeUtils.ShowWarningMessage(Strings.InvalidAppVersionParamMsg);
-                    return;
+                    return void 0;
                 }
                 return this.getCurrentApp().then((app: CurrentApp) => {
                     if (app) {
@@ -47,8 +45,8 @@ export default class SetTargetBinaryVersion extends RNCPAppCommand {
                         });
                     } else {
                         VsCodeUtils.ShowInfoMessage(Strings.NoCurrentAppSetMsg);
-                        return;
                     }
+                    return void 0;
                 });
             });
     }

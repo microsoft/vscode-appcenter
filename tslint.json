@@ -1,7 +1,7 @@
 {
     "linterOptions": {
         "exclude": [
-            "src/appcenter/lib"
+            "src/appcenter/apis/generated"
         ]
     },
     "rules": {
@@ -134,7 +134,7 @@
         "max-file-line-count": true,
         "max-func-body-length": [
             true,
-            150,
+            160,
             {
                 "ignore-parameters-to-function-regex": "describe"
             }

@@ -9,13 +9,11 @@ const fetch = require('node-fetch');
 export class VSTSProvider {
 
     private _apiVersion: string = "1.0";
-
     private _baseUrl: string;
     private _accessToken: string;
 
     constructor(private configuration: Config, private logger: ILogger = new ConsoleLogger()) {
         this._baseUrl = `https://${this.configuration.tenantName}.visualstudio.com/DefaultCollection/`;
-
         this._accessToken = btoa(`${this.configuration.userName}:${this.configuration.accessToken}`);
     }
 
@@ -39,14 +37,17 @@ export class VSTSProvider {
                 name: gitRepoName,
                 project: {
                     id: projectId
-                  }
+                }
             };
             const requestInfo = this.getRequestInfo(HTTP_METHODS.POST, body);
             const res = await fetch(url, requestInfo);
             const response = await res.json();
+            if (response.errorCode !== undefined) {
+                throw new Error(response.message);
+            }
             return <VSTSGitRepository>response;
         } catch (e) {
-            this.logger.error("Failed to get VSTS Git repositories list");
+            this.logger.error("Failed to get VSTS Git repositories list. " + (e && e.message) || "");
             return null;
         }
     }
@@ -66,8 +67,8 @@ export class VSTSProvider {
 
     private getRequestInfo(method: HTTP_METHODS, body: any = null) {
         if (body) {
-            return { method: method, headers: {Authorization: `BASIC ${this._accessToken}`, "Content-Type": "application/json"}, body: JSON.stringify(body) };
+            return { method: method, headers: { Authorization: `BASIC ${this._accessToken}`, "Content-Type": "application/json" }, body: JSON.stringify(body) };
         }
-        return { method: method, headers: {Authorization: `BASIC ${this._accessToken}`, "Content-Type": "application/json"} };
+        return { method: method, headers: { Authorization: `BASIC ${this._accessToken}`, "Content-Type": "application/json" } };
     }
 }

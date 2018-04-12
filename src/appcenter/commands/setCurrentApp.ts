@@ -1,20 +1,18 @@
 import * as vscode from "vscode";
 import { AppCenterOS, Constants } from "../../constants";
-import { ExtensionManager } from "../../extensionManager";
-import { CurrentApp, CurrentAppDeployments, QuickPickAppItem } from "../../helpers/interfaces";
+import { CommandParams, CurrentApp, CurrentAppDeployments, QuickPickAppItem } from "../../helpers/interfaces";
 import { VsCodeUtils } from "../../helpers/vsCodeUtils";
-import { ILogger } from "../../log/logHelper";
 import { Strings } from "../../strings";
-import * as models from '../lib/app-center-node-client/models';
-import { Deployment } from "../lib/app-center-node-client/models";
+import { models } from "../apis";
+import { Deployment } from "../apis/generated/models";
 import { ReactNativeAppCommand } from './reactNativeAppCommand';
 
 export default class SetCurrentApp extends ReactNativeAppCommand {
 
     private selectedCachedItem: boolean;
 
-    constructor(manager: ExtensionManager, logger: ILogger) {
-        super(manager, logger);
+    constructor(params: CommandParams) {
+        super(params);
     }
 
     public async run(): Promise<void> {
@@ -26,7 +24,7 @@ export default class SetCurrentApp extends ReactNativeAppCommand {
             this.showApps(ReactNativeAppCommand.cachedApps);
         }
         vscode.window.withProgress({ location: vscode.ProgressLocation.Window, title: Strings.GetAppsListMessage }, () => {
-            return this.client.account.apps.list({
+            return this.client.apps.list({
                 orderBy: "name"
             }).then((apps: models.AppResponse[]) => {
                 this.showApps(apps);
@@ -46,7 +44,7 @@ export default class SetCurrentApp extends ReactNativeAppCommand {
             case 'windows':
                 return AppCenterOS.Windows;
             default:
-                return;
+                throw new Error('Unknown AppCenter OS');
         }
     }
 
@@ -72,12 +70,12 @@ export default class SetCurrentApp extends ReactNativeAppCommand {
                     const OS: AppCenterOS | undefined = this.toAppCenterOS(selectedApp.os);
                     if (!OS) {
                         this.logger.error(`Couldn't recognize os ${selectedApp.os} returned from CodePush server.`);
-                        return;
+                        return false;
                     }
                     try {
                         vscode.window.withProgress({ location: vscode.ProgressLocation.Window, title: "Get Deployments" }, p => {
                             p.report({ message: Strings.FetchDeploymentsStatusBarMessage });
-                            return this.client.codepush.codePushDeployments.list(selectedApp.name, selectedApp.owner.name);
+                            return this.client.codePushDeployments.list(selectedApp.owner.name, selectedApp.name);
                         }).then((deployments: models.Deployment[]) => {
                             return deployments.sort((a, b): any => {
                                 return a.name < b.name; // sort alphabetically
@@ -109,14 +107,14 @@ export default class SetCurrentApp extends ReactNativeAppCommand {
                                 return VsCodeUtils.ShowInfoMessage(message);
                             } else {
                                 this.logger.error("Failed to save current app");
-                                return;
+                                return false;
                             }
                         });
                     } catch (e) {
                         VsCodeUtils.ShowErrorMessage(Strings.UnknownError);
                         this.logger.error(e.message, e);
                     }
-                    return;
+                    return false;
                 });
             }
         } catch (e) {

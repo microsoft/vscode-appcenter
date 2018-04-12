@@ -1,18 +1,17 @@
 import * as os from "os";
 import * as qs from "qs";
 import * as vscode from "vscode";
-import { ExtensionManager } from "../../extensionManager";
-import { Profile } from "../../helpers/interfaces";
+import { AuthProvider } from "../../constants";
+import { CommandParams, Profile } from "../../helpers/interfaces";
 import { SettingsHelper } from "../../helpers/settingsHelper";
 import { IButtonMessageItem, VsCodeUtils } from "../../helpers/vsCodeUtils";
-import { ILogger } from "../../log/logHelper";
 import { Strings } from "../../strings";
 import { Command } from "./command";
 
 export default class Login extends Command {
 
-    constructor(manager: ExtensionManager, logger: ILogger) {
-        super(manager, logger);
+    constructor(params: CommandParams) {
+        super(params);
     }
 
     public async runNoClient(): Promise<boolean | void> {
@@ -34,7 +33,7 @@ export default class Login extends Command {
                         .then(token => {
                             this.loginWithToken(token);
                         });
-                } else { return; }
+                } else { return void 0; }
             });
     }
 
@@ -44,13 +43,13 @@ export default class Login extends Command {
             return true;
         }
 
-        return this.manager.auth.doTokenLogin(token).then((profile: Profile) => {
+        return this.appCenterAuth.doLogin({ token: token }).then((profile: Profile) => {
             if (!profile) {
                 this.logger.error("Failed to fetch user info from server");
-                VsCodeUtils.ShowWarningMessage(Strings.FailedToExecuteLoginMsg);
+                VsCodeUtils.ShowWarningMessage(Strings.FailedToExecuteLoginMsg(AuthProvider.AppCenter));
                 return false;
             }
-            VsCodeUtils.ShowInfoMessage(Strings.YouAreLoggedInMsg(profile.displayName));
+            VsCodeUtils.ShowInfoMessage(Strings.YouAreLoggedInMsg(AuthProvider.AppCenter, profile.displayName));
             return this.manager.setupAppCenterStatusBar(profile).then(() => true);
         }).catch((e: Error) => {
             VsCodeUtils.ShowErrorMessage("Could not login into account.");

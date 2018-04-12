@@ -1,6 +1,6 @@
-import { AppCenterClient } from "./appcenter/api";
-import { Deployment } from "./appcenter/lib/app-center-node-client/models";
+import { AppCenterClient, models } from "./appcenter/apis";
 import { AppCenterOS, AppCenterPlatform, Constants } from "./constants";
+import { AppCenterUrlBuilder } from "./helpers/appCenterUrlBuilder";
 import { CreatedAppFromAppCenter } from "./helpers/interfaces";
 import { SettingsHelper } from "./helpers/settingsHelper";
 import { ILogger } from "./log/logHelper";
@@ -14,118 +14,100 @@ export default class AppCenterAppCreator {
     public async withBranchConfigurationCreatedAndBuildKickOff(appName: string, branchName: string, ownerName: string): Promise<boolean> {
         // TODO: get out what to do with this magic with not working of method to create default config!
         try {
-            this.logger.info(`Start creating new branch configuration for branch ${branchName} and starting new build for ${appName}...`);
-            const configJson = Constants.defaultBuildConfigJSON;
-            const configObj = JSON.parse(configJson);
+            // const configJson = Constants.defaultBuildConfigJSON;
+            // const configObj = JSON.parse(configJson);
+            // tslint:disable-next-line:no-debugger
+            await this.client.branchConfigurations.create(branchName, ownerName, appName);
+            const queueBuildRequestResponse: models.Build = await this.client.builds.create(branchName, ownerName, appName);
 
-            await this.client.build.branchConfigurations.create(appName, branchName, ownerName, configObj);
-            await this.client.build.builds.create(appName, branchName, ownerName);
-        } catch (err) {
-            return this.proceedErrorResponse(err);
+            const buildId = queueBuildRequestResponse.id;
+            const realBranchName = queueBuildRequestResponse.sourceBranch;
+
+            const url = AppCenterUrlBuilder.GetPortalBuildLink(ownerName, appName, realBranchName, buildId.toString());
+            this.logger.info(`Queued build link: "${url}"`);
+        } catch (error) {
+            if (error.statusCode === 400) {
+                this.logger.error(`app "${appName}" is not configured for building`);
+              } else {
+                this.logger.error(`failed to queue build request for "${appName}"`);
+            }
+            return false;
         }
         return true;
     }
 
     public async connectRepositoryToBuildService(appName: string, ownerName: string, repoUrl: string): Promise<boolean> {
         try {
-            this.logger.info(`Start connecting repository to build service for ${appName}...`);
-            await this.client.build.repositoryConfigurations.createOrUpdate(
-                appName,
-                ownerName,
-                {
-                    repoUrl: repoUrl
-                }
-            );
+            await this.client.repositoryConfigurations.createOrUpdate(ownerName, appName, repoUrl);
+            return true;
         } catch (err) {
-            return this.proceedErrorResponse(err);
+            this.logger.error(`failed to connect repository "${repoUrl}" to build service for app "${appName}"`);
+            return false;
         }
-        return true;
     }
 
     public async createBetaTestersDistributionGroup(appName: string, ownerName: string): Promise<boolean> {
         try {
-            this.logger.info(`Start creating BetaTesters distribution group for ${appName}...`);
-            await this.client.account.distributionGroups.create(appName, {
-                name: SettingsHelper.distribitionGroupTestersName()
-            }, ownerName);
-        } catch (err) {
-            return this.proceedErrorResponse(err);
+            await this.client.distributionGroups.create(ownerName, appName, SettingsHelper.distribitionGroupTestersName());
+        } catch (error) {
+            if (error === 409) {
+                this.logger.error(`distribution group "${SettingsHelper.distribitionGroupTestersName()}" in "${appName}" already exists`);
+              } else {
+                this.logger.error(`failed to create distribution group for "${appName}"`);
+              }
+            return false;
         }
         return true;
     }
 
     public async createAppForOrg(appName: string, displayName: string, orgName: string): Promise<CreatedAppFromAppCenter | false> {
-        let httpOperationResponse: any;
-        let result: any;
         try {
-            this.logger.info(`Start creating new app ${appName} for org ${orgName}`);
-            httpOperationResponse = await this.client.account.apps.createForOrgWithHttpOperationResponse( {
-                displayName: displayName,
-                name: appName,
-                os: this.os,
-                platform: this.platform
-            }, orgName);
-        } catch (err) {
-            // TODO: investigate this strange issue
-            // I dont know why client falls into catch block here, so apply quick fix just to overcome this
-            if (err.statusCode > 400) {
-                this.proceedErrorResponse(err);
-                return false;
-            } else {
-                result = JSON.parse(err.response.body);
-                return {
-                    appSecret: result.app_secret,
-                    platform: result.platform,
-                    os: result.os,
-                    name: result.name
-                };
-            }
-        }
-        result = JSON.parse(httpOperationResponse.response.body);
-        return {
-            appSecret: result.app_secret,
-            platform: result.platform,
-            os: result.os,
-            name: result.name
-        };
-    }
-
-    public async createApp(appName: string, displayName: string): Promise<CreatedAppFromAppCenter | false> {
-        let httpOperationResponse: any;
-        try {
-            this.logger.info(`Start creating new app ${appName}...`);
-            httpOperationResponse = await this.client.account.apps.createWithHttpOperationResponse( {
+            const result: models.AppResponse = await this.client.apps.createForOrg(orgName, {
                 displayName: displayName,
                 name: appName,
                 os: this.os,
                 platform: this.platform
             });
+            return {
+                appSecret: result.appSecret,
+                platform: result.platform,
+                os: result.os,
+                name: result.name
+            };
         } catch (err) {
-            this.proceedErrorResponse(err);
+            this.logger.error(`failed to create "${appName}" app for org "${orgName}"`);
             return false;
         }
-        const result = JSON.parse(httpOperationResponse.response.body);
-        return {
-            appSecret: result.app_secret,
-            platform: result.platform,
-            os: result.os,
-            name: result.name
-        };
     }
 
-    public async createCodePushDeployment(appName: string, ownerName: string): Promise<Deployment> {
-        this.logger.info(`Start creating codepush deployment for ${appName}...`);
-        const result: any = await this.client.codepush.codePushDeployments.createWithHttpOperationResponse(appName, {
-            name: Constants.CodePushStagingDeplymentName
-        } , ownerName);
-        const codePushDeployment: Deployment = JSON.parse(result.response.body);
-        return codePushDeployment;
+    public async createApp(appName: string, displayName: string): Promise<CreatedAppFromAppCenter | false> {
+        try {
+            const result: models.AppResponse = await this.client.apps.create({
+                displayName: displayName,
+                name: appName,
+                os: this.os,
+                platform: this.platform
+            });
+            return {
+                appSecret: result.appSecret,
+                platform: result.platform,
+                os: result.os,
+                name: result.name
+            };
+        } catch (err) {
+            this.logger.error(`failed to create app "${appName}"`);
+            return false;
+        }
     }
 
-    private proceedErrorResponse(error: any): boolean {
-        const errMessage: string = error.response ? error.response.body : error;
-        this.logger.error(errMessage);
-        return false;
+    public async createCodePushDeployment(appName: string, ownerName: string): Promise<models.Deployment> {
+        try {
+            const result: models.Deployment = await this.client.codePushDeployments.create(ownerName, appName, Constants.CodePushStagingDeplymentName);
+            return result;
+        } catch (err) {
+            this.logger.error(`failed to create codepush deployment for ${appName}`);
+            throw new Error(`failed to create codepush deployment for ${appName}`);
+        }
     }
 }
 

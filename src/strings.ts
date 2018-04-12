@@ -1,3 +1,4 @@
+import { AuthProvider } from "./constants";
 import { CurrentApp } from "./helpers/interfaces";
 
 export class Strings {
@@ -13,7 +14,7 @@ export class Strings {
     public static SettingsMenuLabel: string = "Settings";
     public static LoginToAnotherAccountMenuLabel: string = "Add App Center account";
     public static SwitchAccountMenuLabel: string = "Switch App Center account";
-    public static LogoutMenuLabel: string = "Logout";
+    public static LogoutMenuLabel: string = "Logout App Center";
     public static VstsLoginToAnotherAccountMenuLabel: string = "Add VSTS account";
     public static VstsSwitchAccountMenuLabel: string = "Switch VSTS account";
     public static VstsLogoutMenuLabel: string = "Logout VSTS";
@@ -23,10 +24,13 @@ export class Strings {
     public static UserMustSignIn: string = "Please login to App Center.";
     public static PleaseProvideToken: string = "Please paste your App Center access token";
     public static PleaseLoginViaBrowser: string = "You are about to be redirected to page containing a new App Center access token. Please copy and paste it here after you press Ok.";
-    public static FailedToExecuteLoginMsg: string = "Failed login to App Center";
     public static UserIsNotLoggedInMsg: string = "You are not logged into App Center";
     public static MenuTitlePlaceholder: string = "Please select a menu action.";
     public static SelectProfileTitlePlaceholder: string = "Please select account.";
+
+    public static SpecifyTenantTitlePlaceholder: string = "(Step 1). Please specify tenant name";
+    public static SpecifyUserNameTitlePlaceholder: string = "(Step 2). Please specify user name";
+    public static SpecifyPATTitlePlaceholder: string = "(Step 3). Please specify personal access token";
 
     public static LoginToAppCenterButton: string = "App Center: Login";
     public static PleaseEnterIdeaName: string = "Please enter idea name";
@@ -42,7 +46,7 @@ export class Strings {
     public static PushToRemoteRepoStatusBarMessage: string = "Pushing changes to your new repository...";
     public static CreatingCodePushDeploymentsStatusBarMessage: string = "Creating CodePush deployments for hotfixing...";
     public static RunNPMInstallStatusBarMessage: string = "Installing package dependencies...";
-    public static NodeModulesInstalledMessage: string = "Dependencies have been successfully installed.";
+    public static NodeModulesInstalledMessage: string = "Dependencies have been successfully installed";
     public static FinishedConfigMsg: string = "Your project has been successfully configured locally and in the cloud.";
     public static GitIsNotInstalledMsg: string = "It looks like you don't have a local git client installed. ";
     public static FailedToCreateRNProjectMsg: string = "An unexpected error occurred while fetching the project template.";
@@ -99,6 +103,10 @@ export class Strings {
     public static FailedToCreateVSTSGitrepository: string = `An error occurred while creating your new VSTS repository`;
     public static FailedToCreateAppAlreadyExistInAppCenter: string = `An app with that name already exists in App Center. Please choose a new name.`;
 
+    public static FailedToExecuteLoginMsg(provider: AuthProvider): string {
+        return `Failed to login to ${provider}`;
+    }
+
     public static OpenTabInBrowserMsg(tabName: string): string {
         return `Open '${tabName}' tab for currently selected app`;
     }
@@ -107,16 +115,16 @@ export class Strings {
         return `Failed to push local changes to remote repository '${repoName}'`;
     }
 
-    public static YouAreLoggedInMsg(name: string): string {
-        return `You are logged into App Center as '${name}'`;
+    public static YouAreLoggedInMsg(provider: AuthProvider, name: string): string {
+        return `You are logged into ${provider} as '${name}'`;
     }
 
-    public static UserLoggedOutMsg(name: string): string {
-        return `You have successfully logged out of App Center as '${name}'`;
+    public static UserLoggedOutMsg(provider: AuthProvider, name: string): string {
+        return `You have successfully logged out of ${provider} as '${name}'`;
     }
 
-    public static UserSwitchedMsg(name: string): string {
-        return `Successfully switched AppCenter account to '${name}'`;
+    public static UserSwitchedMsg(provider: AuthProvider, name: string): string {
+        return `Successfully switched ${provider} account to '${name}'`;
     }
 
     public static YourCurrentAppMsg(appName: string): string {
