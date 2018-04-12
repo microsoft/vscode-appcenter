@@ -1,7 +1,7 @@
 # VSCode AppCenter Tools
 This extension provides a development support for AppCenter projects. 
 
-_NOTE: Currently it supports only React-Native based apps._
+_NOTE: Curreqweqwently it supports only React-Native based apps._
 
 ## Getting Started
 * [Install VS Code](https://code.visualstudio.com).
