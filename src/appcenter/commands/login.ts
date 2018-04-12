@@ -33,7 +33,7 @@ export default class Login extends Command {
                         .then(token => {
                             this.loginWithToken(token);
                         });
-                } else { return; }
+                } else { return void 0; }
             });
     }
 

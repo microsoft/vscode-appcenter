@@ -1,7 +1,7 @@
 import * as fs from "fs";
 import * as request from "request";
 import { CurrentApp } from "../../../helpers/interfaces";
-import { models } from "../../api/index";
+import { models } from "../../apis";
 
 export interface PackageInfo {
     appVersion?: string;

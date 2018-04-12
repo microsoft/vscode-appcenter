@@ -3,7 +3,7 @@ import * as os from 'os';
 import { ILogger } from '../log/logHelper';
 
 export namespace cpUtils {
-    export async function executeCommand(logger: ILogger | undefined, workingDirectory: string | undefined, command: string, ...args: string[]): Promise<string> {
+    export async function executeCommand(logger: ILogger | undefined, logErrorsOnly: boolean = false, workingDirectory: string | undefined, command: string, ...args: string[]): Promise<string> {
         let cmdOutput: string = '';
         let cmdOutputIncludingStderr: string = '';
         workingDirectory = workingDirectory || os.tmpdir();
@@ -15,7 +15,7 @@ export namespace cpUtils {
             };
             const childProc: cp.ChildProcess = cp.spawn(command, args, options);
 
-            if (logger) {
+            if (logger && !logErrorsOnly) {
                 logger.info(`runningCommand', 'Running command: "${command} ${formattedArgs}"...`);
             }
 
@@ -23,7 +23,7 @@ export namespace cpUtils {
                 data = data.toString();
                 cmdOutput = cmdOutput.concat(data);
                 cmdOutputIncludingStderr = cmdOutputIncludingStderr.concat(data);
-                if (logger) {
+                if (logger && !logErrorsOnly) {
                     logger.info(data);
                 }
             });
@@ -31,7 +31,7 @@ export namespace cpUtils {
             childProc.stderr.on('data', (data: string | Buffer) => {
                 data = data.toString();
                 cmdOutputIncludingStderr = cmdOutputIncludingStderr.concat(data);
-                if (logger) {
+                if (logger && !logErrorsOnly) {
                     logger.info(data);
                 }
             });
@@ -39,9 +39,11 @@ export namespace cpUtils {
             childProc.on('error', reject);
             childProc.on('close', (code: number) => {
                 if (code !== 0) {
-                    reject(new Error(`AppCenter.commandError', 'Command "${command} ${formattedArgs}" failed with exit code "${code}":${os.EOL}${cmdOutputIncludingStderr}`));
+                    const errMsg: string = `AppCenter.commandError', 'Command "${command} ${formattedArgs}" failed with exit code "${code}":${os.EOL}${cmdOutputIncludingStderr}`;
+                    logger.error(errMsg);
+                    reject(new Error(errMsg));
                 } else {
-                    if (logger) {
+                    if (logger && !logErrorsOnly) {
                         logger.info(`finishedRunningCommand', 'Finished running command: "${command} ${formattedArgs}".`);
                     }
                     resolve();

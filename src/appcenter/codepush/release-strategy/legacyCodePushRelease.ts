@@ -1,5 +1,5 @@
 import { ICodePushReleaseParams } from "../../../helpers/interfaces";
-import { models } from "../../api";
+import { models } from "../../apis";
 import LegacyCodePushServiceClient, { PackageInfo } from "./legacyCodePushService";
 
 export function legacyCodePushRelease(params: ICodePushReleaseParams, token: string, serverUrl: string): Promise<models.CodePushRelease> {

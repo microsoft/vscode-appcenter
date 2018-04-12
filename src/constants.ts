@@ -1,5 +1,3 @@
-"use strict";
-
 export class Constants {
     public static ExtensionName: string = "appcenter";
     public static DefaultAPIEndPoint: string = "https://api.appcenter.ms";
@@ -8,7 +6,7 @@ export class Constants {
     public static DefaultDistributionGroupTestersName: string = "Beta Testers";
     public static DefaultBranchName: string = "master";
     public static DefaultLoginEndPoint: string = "https://appcenter.ms/cli-login";
-    public static AppCenterCodePushStatusBarColor: string = "#F3F3B2";
+    public static AppCenterCodePushStatusBarColor: string = "#ffffff";
     public static CodePushStagingDeplymentName: string = "Staging";
     public static iOSAppSuffix: string = "-ios";
     public static AndroidAppSuffix: string = "-android";
@@ -34,7 +32,7 @@ export class Constants {
         "branch": {
             "name": "master"
         },
-        "id": 2,
+        "id": 1,
         "trigger": "continuous",
         "environmentVariables": [],
         "signed": false,

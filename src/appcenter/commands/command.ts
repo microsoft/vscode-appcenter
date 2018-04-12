@@ -4,7 +4,7 @@ import { SettingsHelper } from "../../helpers/settingsHelper";
 import { VsCodeUtils } from "../../helpers/vsCodeUtils";
 import { ILogger } from "../../log/logHelper";
 import { Strings } from "../../strings";
-import { AppCenterClient, AppCenterClientFactory, createAppCenterClient } from "../api";
+import { AppCenterClient, AppCenterClientFactory, createAppCenterClient } from "../apis";
 import AppCenterAuth from "../auth/appCenterAuth";
 import VstsAuth from "../auth/vstsAuth";
 

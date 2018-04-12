@@ -46,7 +46,7 @@ export class Strings {
     public static PushToRemoteRepoStatusBarMessage: string = "Pushing changes to your new repository...";
     public static CreatingCodePushDeploymentsStatusBarMessage: string = "Creating CodePush deployments for hotfixing...";
     public static RunNPMInstallStatusBarMessage: string = "Installing package dependencies...";
-    public static NodeModulesInstalledMessage: string = "Dependencies have been successfully installed.";
+    public static NodeModulesInstalledMessage: string = "Dependencies have been successfully installed";
     public static FinishedConfigMsg: string = "Your project has been successfully configured locally and in the cloud.";
     public static GitIsNotInstalledMsg: string = "It looks like you don't have a local git client installed. ";
     public static FailedToCreateRNProjectMsg: string = "An unexpected error occurred while fetching the project template.";

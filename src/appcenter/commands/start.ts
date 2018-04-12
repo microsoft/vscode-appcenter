@@ -15,9 +15,8 @@ import { CustomQuickPickItem, VsCodeUtils } from '../../helpers/vsCodeUtils';
 import { Strings } from '../../strings';
 import { VSTSGitRepository, VSTSProject } from '../../vsts/types';
 import { VSTSProvider } from '../../vsts/vstsProvider';
-import { models } from '../api';
+import { models } from '../apis';
 import Auth from '../auth/auth';
-import { ListOKResponseItem } from '../lib/app-center-node-client/models';
 import { Command } from './command';
 import LoginToVsts from './settings/loginToVsts';
 // tslint:disable-next-line:no-var-requires
@@ -209,17 +208,17 @@ export default class Start extends Command {
         this.logger.info("Getting user/organization items...");
         await vscode.window.withProgress({ location: vscode.ProgressLocation.Window, title: Strings.VSCodeProgressLoadingTitle}, p => {
             p.report({message: Strings.LoadingStatusBarMessage });
-            return this.client.account.organizations.list().then((orgList: ListOKResponseItem[]) => {
-                const organizations: ListOKResponseItem[] = orgList;
+            return this.client.organizations.list().then((orgList: models.ListOKResponseItem[]) => {
+                const organizations: models.ListOKResponseItem[] = orgList;
                 return organizations.sort((a, b): any => {
-                    if (a.name && b.name) {
-                        return a.name < b.name; // sort alphabetically
+                    if (a.displayName && b.displayName) {
+                        return a.displayName > b.displayName; // sort alphabetically
                     } else {
                         return false;
                     }
                 });
             });
-            }).then(async (orgList: ListOKResponseItem[]) => {
+            }).then(async (orgList: models.ListOKResponseItem[]) => {
             const options: CustomQuickPickItem[] = orgList.map(item => {
                 return {
                     label: `${item.displayName} (${item.name})`,
@@ -245,8 +244,8 @@ export default class Start extends Command {
         try {
             const installNodeModulesCmd: string = "npm i";
             this.logger.info("Running npm install...");
-            await cpUtils.executeCommand(this.logger, this.manager.projectRootPath, installNodeModulesCmd);
-            VsCodeUtils.ShowInfoMessage(Strings.NodeModulesInstalledMessage);
+            await cpUtils.executeCommand(this.logger, true, this.manager.projectRootPath, installNodeModulesCmd);
+            this.logger.info(Strings.NodeModulesInstalledMessage);
             return true;
         } catch (error) {
             this.logger.error("Failed to run npm install");
@@ -407,7 +406,7 @@ export default class Start extends Command {
         await vscode.window.withProgress({ location: vscode.ProgressLocation.Window, title: Strings.VSCodeProgressLoadingTitle}, async p => {
             p.report({message: Strings.CheckIfAppsExistLoadingMessage });
             let apps: models.AppResponse[];
-            apps = await this.client.account.apps.list();
+            apps = await this.client.apps.list();
             exist = apps.some(item => {
                 return (item.name === AppCenterAppBuilder.getiOSAppName(ideaName) || item.name === AppCenterAppBuilder.getAndroidAppName(ideaName));
             });
@@ -423,6 +422,13 @@ export default class Start extends Command {
             projectList = await vstsProvider.GetAllProjects();
         });
         if (projectList) {
+            projectList = projectList.sort((a, b): any => {
+                if (a.name && b.name) {
+                    return a.name > b.name; // sort alphabetically
+                } else {
+                    return false;
+                }
+            });
             const options: QuickPickAppItem[] = projectList.map((project: VSTSProject) => {
                 return {
                     label: `${project.name}`,

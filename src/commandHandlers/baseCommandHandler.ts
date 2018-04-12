@@ -5,7 +5,7 @@ import { CommandParams } from "../helpers/interfaces";
 import { ConsoleLogger } from "../log/consoleLogger";
 import { ILogger } from "../log/logHelper";
 
-export default class BaseCommandHandler {
+export default abstract class BaseCommandHandler {
 
     constructor(
         private manager: ExtensionManager,
