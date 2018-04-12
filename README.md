@@ -1,4 +1,4 @@
-# VSCode AppCenter Tools
+# VSCode AppCenter Tools &middot; [![Build Status](https://msmobilecenter.visualstudio.com/_apis/public/build/definitions/d7809725-8fd7-4b76-8022-ebb8720603f6/2854/badge)](https://msmobilecenter.visualstudio.com/Patricks%20Sandbox/_build/index?definitionId=2854)
 This extension provides a development support for AppCenter projects. 
 
 _NOTE: Currently it supports only React-Native based apps._
