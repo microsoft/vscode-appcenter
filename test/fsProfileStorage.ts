@@ -41,9 +41,9 @@ describe('FsProfileStorage', function () {
     });
 
     it('should create empty storage', async () => {
-      const absolutePath = path.resolve("test/" + fakeFilePath);
+      const absolutePath = path.resolve(path.join("test",fakeFilePath));
       vstsProfileStorage = new FsProfileStorage(absolutePath, new ConsoleLogger());
-      vstsProfileStorage.init();
+      await vstsProfileStorage.init();
       const existsStorage: boolean = await FSUtils.exists(absolutePath);
       should.equal(existsStorage, true);
     });
