@@ -32,28 +32,25 @@ export default class ShowTools extends Command {
         return this.showQuickPick(appCenterMenuOptions);
     }
 
-    private showQuickPick(appCenterMenuOptions: vscode.QuickPickItem[]): Promise<void> {
-        return new Promise((resolve) => {
-            return vscode.window.showQuickPick(appCenterMenuOptions, { placeHolder: Strings.MenuTitlePlaceholder })
-                .then((selected: { label: string, description: string, target: string }) => {
-                    if (!selected) {
-                        // user cancel selection
-                        resolve();
-                        return;
-                    }
+    private async showQuickPick(appCenterMenuOptions: vscode.QuickPickItem[]): Promise<void> {
+        return vscode.window.showQuickPick(appCenterMenuOptions, { placeHolder: Strings.MenuTitlePlaceholder })
+            .then((selected: { label: string, description: string, target: string }) => {
+                if (!selected) {
+                    // user cancel selection
+                    return;
+                }
 
-                    switch (selected.target) {
-                        case (CommandNames.Tools.SimulateCrashes):
-                            new Tools.SimulateCrashes(this._params).runNoClient();
-                            break;
+                switch (selected.target) {
+                    case (CommandNames.Tools.SimulateCrashes):
+                        new Tools.SimulateCrashes(this._params).runNoClient();
+                        break;
 
-                        default:
-                            // Ideally shouldn't be there :)
-                            this.logger.error("Unknown AppCenter menu command");
-                            break;
-                    }
-                    resolve();
-                });
-        });
+                    default:
+                        // Ideally shouldn't be there :)
+                        this.logger.error("Unknown AppCenter menu command");
+                        break;
+                }
+                return;
+            });
     }
 }

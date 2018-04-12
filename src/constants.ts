@@ -6,9 +6,9 @@ export class Constants {
     public static DefaultDistributionGroupTestersName: string = "Beta Testers";
     public static DefaultBranchName: string = "master";
     public static DefaultLoginEndPoint: string = "https://appcenter.ms/cli-login";
-    public static ProdCrashesEndPoint: string = "https://in.mobile.azure.com/logs?api-version=1.0.0";
-    public static IntCrashesEndPoint: string = "https://in-integration.dev.avalanch.es/logs?api-version=1.0.0";
-    public static StagingCrashesEndPoint: string = "https://in-staging-south-centralus.staging.avalanch.es/logs?api-version=1.0.0";
+    public static ProdCrashesEndPoint: string = "https://in.mobile.azure.com/logs";
+    public static IntCrashesEndPoint: string = "https://in-integration.dev.avalanch.es/logs";
+    public static StagingCrashesEndPoint: string = "https://in-staging-south-centralus.staging.avalanch.es/logs";
     public static AppCenterCodePushStatusBarColor: string = "#ffffff";
     public static CodePushStagingDeplymentName: string = "Staging";
     public static iOSAppSuffix: string = "-ios";

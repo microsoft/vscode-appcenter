@@ -75,13 +75,6 @@ export default class ShowMenu extends Command {
                 }
             }
 
-            // Settings menu
-            appCenterMenuOptions.push(<vscode.QuickPickItem>{
-                label: Strings.SettingsMenuLabel,
-                description: "",
-                target: CommandNames.Settings.ShowMenu
-            });
-
             const crashesEnabled = SettingsHelper.isCrashesEnabled();
             if (crashesEnabled) {
                 appCenterMenuOptions.push(<vscode.QuickPickItem>{
@@ -90,6 +83,13 @@ export default class ShowMenu extends Command {
                     target: CommandNames.Tools.ShowTools
                 });
             }
+
+            // Settings menu
+            appCenterMenuOptions.push(<vscode.QuickPickItem>{
+                label: Strings.SettingsMenuLabel,
+                description: "",
+                target: CommandNames.Settings.ShowMenu
+            });
 
             return this.showQuickPick(appCenterMenuOptions);
         });
