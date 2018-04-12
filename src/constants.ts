@@ -50,7 +50,7 @@ export class Constants {
             "xcode": {
                 "projectOrWorkspacePath": "ios/AppCenterSample.xcworkspace",
                 "scheme": "AppCenterSample",
-                "xcodeVersion": "9.2",
+                "xcodeVersion": "9.3",
                 "automaticSigning": false,
                 "podfilePath":"ios/Podfile"
             }

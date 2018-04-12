@@ -132,7 +132,7 @@ export default class Start extends Command {
             }
 
             const userOrOrgQuickPickItems: CustomQuickPickItem[] = await this.getUserOrOrganizationItems();
-            vscode.window.showQuickPick(userOrOrgQuickPickItems, { placeHolder: Strings.PleaseSelectCurrentAppOrgMsg })
+            vscode.window.showQuickPick(userOrOrgQuickPickItems, { placeHolder: Strings.PleaseSelectCurrentAppOrgMsg, ignoreFocusOut: true })
             .then(async (selectedQuickPickItem: CustomQuickPickItem) => {
                 if (selectedQuickPickItem) {
                     const userOrOrgItem: UserOrOrganizationItem | null = this.getSelectedUserOrOrgItem(selectedQuickPickItem, userOrOrgQuickPickItems);
@@ -402,7 +402,7 @@ export default class Start extends Command {
 
     private async appAlreadyExistInAppCenter(ideaName: string): Promise<boolean> {
         let exist: boolean = false;
-        this.logger.info("Checkig if idea name is not already used before...");
+        this.logger.info(`Checkig if idea name "${ideaName}" is not already used before...`);
         await vscode.window.withProgress({ location: vscode.ProgressLocation.Window, title: Strings.VSCodeProgressLoadingTitle}, async p => {
             p.report({message: Strings.CheckIfAppsExistLoadingMessage });
             let apps: models.AppResponse[];
