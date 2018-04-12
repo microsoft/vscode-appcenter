@@ -111,6 +111,16 @@
                 "command": "appcenter.codepush.setTargetBinaryVersion",
                 "title": "Set Code Push release target binary verison",
                 "category": "AppCenter Code Push"
+            },
+            {
+                "command": "appcenter.tools",
+                "title": "Open AppCenter tools",
+                "category": "AppCenter Tools"
+            },
+            {
+                "command": "appcenter.tools.simulateCrashes",
+                "title": "Simulate AppCenter Crash",
+                "category": "AppCenter Tools"
             }
         ],
         "configuration": {
@@ -184,6 +194,21 @@
                         "None"
                     ],
                     "default": "Info"
+                },
+                "appcenter.crashes" : {
+                    "description": "Enable menu items to work with AppCenter Crashes",
+                    "type": "boolean",
+                    "default": false
+                },
+                "appcenter.environment" : {
+                    "description": "Environment to configure AppCenter endpoints",
+                    "type": "enum",
+                    "enum": [
+                        "prod",
+                        "staging",
+                        "int"
+                    ],
+                    "default": "prod"
                 }
             }
         }

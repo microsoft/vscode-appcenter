@@ -1,7 +1,7 @@
-import * as vscode from "vscode";
-import { Constants } from "../constants";
-import { LogLevel } from "../log/logHelper";
-import { ConfigurationReader } from "./configurationReader";
+import * as vscode from 'vscode';
+import { AppCenterEnvironment, Constants } from '../constants';
+import { LogLevel } from '../log/logHelper';
+import { ConfigurationReader } from './configurationReader';
 
 export class SettingsHelper {
     public static getAppCenterDemoAppGitRepo(): string {
@@ -118,5 +118,23 @@ export class SettingsHelper {
             return <LogLevel>parseInt(LogLevel[<any>logLevelString], 10);
         }
         return LogLevel.Info;
+    }
+
+    public static getEnvironment(): AppCenterEnvironment {
+        const workspaceConfiguration = vscode.workspace.getConfiguration();
+        if (workspaceConfiguration.has("appcenter.environment")) {
+            const appCenterEnvironment: string = ConfigurationReader.readString(workspaceConfiguration.get("appcenter.environment"));
+            return <AppCenterEnvironment>parseInt(AppCenterEnvironment[<any>appCenterEnvironment], 10);
+        }
+        return AppCenterEnvironment.Prod;
+    }
+
+    public static isCrashesEnabled(): boolean {
+        const workspaceConfiguration = vscode.workspace.getConfiguration();
+        if (workspaceConfiguration.has("appcenter.crashes")) {
+            const crashesEnabled: boolean = ConfigurationReader.readBoolean(workspaceConfiguration.get("appcenter.crashes"));
+            return crashesEnabled;
+        }
+        return false;
     }
 }
