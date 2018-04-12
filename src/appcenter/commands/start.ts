@@ -132,7 +132,7 @@ export default class Start extends Command {
             }
 
             const userOrOrgQuickPickItems: CustomQuickPickItem[] = await this.getUserOrOrganizationItems();
-            vscode.window.showQuickPick(userOrOrgQuickPickItems, { placeHolder: Strings.PleaseSelectCurrentAppOrgMsg })
+            vscode.window.showQuickPick(userOrOrgQuickPickItems, { placeHolder: Strings.PleaseSelectCurrentAppOrgMsg, ignoreFocusOut: true })
             .then(async (selectedQuickPickItem: CustomQuickPickItem) => {
                 if (selectedQuickPickItem) {
                     const userOrOrgItem: UserOrOrganizationItem | null = this.getSelectedUserOrOrgItem(selectedQuickPickItem, userOrOrgQuickPickItems);
