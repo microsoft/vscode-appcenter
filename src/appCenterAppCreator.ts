@@ -14,17 +14,16 @@ export default class AppCenterAppCreator {
     public async withBranchConfigurationCreatedAndBuildKickOff(appName: string, branchName: string, ownerName: string): Promise<boolean> {
         // TODO: get out what to do with this magic with not working of method to create default config!
         try {
-            // const configJson = Constants.defaultBuildConfigJSON;
-            // const configObj = JSON.parse(configJson);
+            const configJson = Constants.defaultBuildConfigJSON;
+            const configObj = JSON.parse(configJson);
             // tslint:disable-next-line:no-debugger
-            await this.client.branchConfigurations.create(branchName, ownerName, appName);
+            await this.client.branchConfigurations.create(branchName, ownerName, appName, configObj);
             const queueBuildRequestResponse: models.Build = await this.client.builds.create(branchName, ownerName, appName);
-
             const buildId = queueBuildRequestResponse.id;
             const realBranchName = queueBuildRequestResponse.sourceBranch;
 
             const url = AppCenterUrlBuilder.GetPortalBuildLink(ownerName, appName, realBranchName, buildId.toString());
-            this.logger.info(`Queued build link: "${url}"`);
+            this.logger.info(`Queued build link for "${appName}": "${url}"`);
         } catch (error) {
             if (error.statusCode === 400) {
                 this.logger.error(`app "${appName}" is not configured for building`);

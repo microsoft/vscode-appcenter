@@ -40,7 +40,7 @@ export class GitUtils {
             await git(workingDirectory).removeRemote(remoteName);
             return true;
         } catch (e) {
-            logger.error(`Failed to remove remote: ${e.message}`);
+            logger.error(`Failed to remove remote "${remoteName}": ${e.message}`);
             return false;
         }
     }
@@ -51,7 +51,7 @@ export class GitUtils {
             await gitrepo.addRemote(remoteName, remoteUrl);
             return true;
         } catch (e) {
-            logger.error(`Failed to add remote: ${e.message}`);
+            logger.error(`Failed to add remote "${remoteName}": ${e.message}`);
             return false;
         }
     }
@@ -81,7 +81,7 @@ export class GitUtils {
             await git(workingDirectory).pull(remoteRepo, branch, {'--rebase': 'true', '--squash': null});
             return true;
         } catch (e) {
-            logger.error(`Failed to pull from remote: ${e.message}`);
+            logger.error(`Failed to pull from remote repo "${remoteRepo}": ${e.message}`);
             return false;
         }
     }
@@ -92,10 +92,10 @@ export class GitUtils {
             await gitrepo.add('./*');
             await gitrepo.commit(this.gitFirstCommitName);
             await gitrepo.push(remoteRepoName, branch);
-            logger.info(`Successfully pushed changes to remote repository: ${remoteRepoName} branchname: ${branch}`);
+            logger.info(`Successfully pushed changes to remote repository: "${remoteRepoName}" branchname: "${branch}"`);
             return true;
         } catch (e) {
-            logger.error(`failed to push to remote: ${e.message}`);
+            logger.error(`failed to push to remote "${remoteRepoName}": ${e.message}`);
             return false;
         }
     }
@@ -108,7 +108,7 @@ export class GitUtils {
             await gitrepo.fetch();
             await gitrepo.checkout(['-t', 'origin/master']);
         } catch (e) {
-            logger.error(`Failed to clone into exiting repository: ${e.message}`);
+            logger.error(`Failed to clone into exiting repository: "${e.message}"`);
             return false;
         }
         return true;
