@@ -1,0 +1,23 @@
+[
+	{
+		"userId": "a0021bd2-9be1-4904-b4c6-16ce9c797779",
+		"userName": "user1",
+		"displayName": "User",
+		"email": "v-user@microsoft.com",
+		"isActive": false
+	},
+	{
+		"userId": "a0021bd2-9be1-4904-b4c6-16ce9c797779",
+		"userName": "user2",
+		"displayName": "User Second",
+		"email": "user@gmail.com",
+		"isActive": false
+	},
+	{
+		"userId": "365a2fe6-bf2a-4418-ae2e-1738950bd4fb",
+		"userName": "user3",
+		"displayName": "User Third",
+		"email": "user@mail.ru",
+		"isActive": true
+	}
+]
