@@ -13,7 +13,9 @@ export default class ShowTools extends Command {
     }
 
     public async runNoClient(): Promise<void> {
-        super.runNoClient();
+        if (! await super.runNoClient()) {
+            return;
+        }
         const appCenterMenuOptions: vscode.QuickPickItem[] = [];
 
         // Tools menu

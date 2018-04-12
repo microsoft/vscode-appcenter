@@ -1,6 +1,5 @@
 import * as vscode from 'vscode';
-import { AppCenterEnvironment } from '../appcenter/crashes/appCenterEnvironment';
-import { Constants } from '../constants';
+import { AppCenterEnvironment, Constants } from '../constants';
 import { LogLevel } from '../log/logHelper';
 import { ConfigurationReader } from './configurationReader';
 

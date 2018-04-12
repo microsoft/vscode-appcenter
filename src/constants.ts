@@ -143,3 +143,9 @@ export enum AuthProvider {
     Vsts = "VSTS",
     AppCenter = "App Center"
 }
+
+export enum AppCenterEnvironment {
+    Prod = 0,
+    Staging = 1,
+    Int = 2
+}
