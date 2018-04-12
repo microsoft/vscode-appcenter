@@ -160,7 +160,7 @@ export default class AppCenterAppBuilder {
                 })) {
                     VsCodeUtils.ShowErrorMessage(Strings.FailedToCreateDistributionGroup);
                 } else {
-                    this.logger.info(`"${SettingsHelper.distribitionGroupTestersName()}" distribution group was created for your app`);
+                    this.logger.info(`"${SettingsHelper.distribitionGroupTestersName()}" distribution group was created for your project ${this.ideaName}`);
                 }
             }
 
