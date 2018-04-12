@@ -2,6 +2,7 @@ import * as vscode from 'vscode';
 import * as Tools from '.';
 import { CommandNames } from '../../../constants';
 import { CommandParams } from '../../../helpers/interfaces';
+import { SettingsHelper } from '../../../helpers/settingsHelper';
 import { Strings } from '../../../strings';
 import { Command } from '../command';
 
@@ -19,11 +20,14 @@ export default class ShowTools extends Command {
         const appCenterMenuOptions: vscode.QuickPickItem[] = [];
 
         // Tools menu
-        appCenterMenuOptions.push(<vscode.QuickPickItem>{
-            label: Strings.CrashesMenuLabel,
-            description: "",
-            target: CommandNames.Tools.SimulateCrashes
-        });
+        const crashesEnabled = SettingsHelper.isCrashesEnabled();
+        if (crashesEnabled) {
+            appCenterMenuOptions.push(<vscode.QuickPickItem>{
+                label: Strings.CrashesMenuLabel,
+                description: "",
+                target: CommandNames.Tools.SimulateCrashes
+            });
+        }
 
         return this.showQuickPick(appCenterMenuOptions);
     }
