@@ -6,6 +6,9 @@ export class Constants {
     public static DefaultDistributionGroupTestersName: string = "Beta Testers";
     public static DefaultBranchName: string = "master";
     public static DefaultLoginEndPoint: string = "https://appcenter.ms/cli-login";
+    public static ProdCrashesEndPoint: string = "https://in.mobile.azure.com/logs?api-version=1.0.0";
+    public static IntCrashesEndPoint: string = "https://in-integration.dev.avalanch.es/logs?api-version=1.0.0";
+    public static StagingCrashesEndPoint: string = "https://in-staging-south-centralus.staging.avalanch.es/logs?api-version=1.0.0";
     public static AppCenterCodePushStatusBarColor: string = "#ffffff";
     public static CodePushStagingDeplymentName: string = "Staging";
     public static iOSAppSuffix: string = "-ios";
@@ -76,6 +79,11 @@ export class CommandNames {
         public static LoginVsts: string = `${CommandNames.CommandPrefix}settings.vsts.login`;
         public static SwitchAccountVsts: string = `${CommandNames.CommandPrefix}settings.vsts.switchAccount`;
         public static LogoutVsts: string = `${CommandNames.CommandPrefix}settings.vsts.logout`;
+    };
+
+    public static Tools = class {
+        public static ShowTools: string = `${CommandNames.CommandPrefix}tools`;
+        public static SimulateCrashes: string = `${CommandNames.CommandPrefix}tools.simulateCrashes`;
     };
 
     public static CodePush = class {

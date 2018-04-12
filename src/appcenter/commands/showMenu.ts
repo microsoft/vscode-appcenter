@@ -2,6 +2,7 @@ import * as vscode from 'vscode';
 import { CommandNames } from '../../constants';
 import { FSUtils } from '../../helpers/fsUtils';
 import { AppCenterProfile, CommandParams, CurrentApp } from '../../helpers/interfaces';
+import { SettingsHelper } from '../../helpers/settingsHelper';
 import { Utils } from '../../helpers/utils';
 import { Strings } from '../../strings';
 import AppCenterPortalMenu from './appCenterPortalMenu';
@@ -12,6 +13,7 @@ import Login from './login';
 import SetCurrentApp from './setCurrentApp';
 import * as Settings from './settings';
 import Start from './start';
+import * as Tools from './tools';
 
 export default class ShowMenu extends Command {
     private _params: CommandParams;
@@ -80,6 +82,15 @@ export default class ShowMenu extends Command {
                 target: CommandNames.Settings.ShowMenu
             });
 
+            const crashesEnabled = SettingsHelper.isCrashesEnabled();
+            if (crashesEnabled) {
+                appCenterMenuOptions.push(<vscode.QuickPickItem>{
+                    label: Strings.ToolsMenuLabel,
+                    description: "",
+                    target: CommandNames.Tools.ShowTools
+                });
+            }
+
             return this.showQuickPick(appCenterMenuOptions);
         });
     }
@@ -121,6 +132,10 @@ export default class ShowMenu extends Command {
 
                         case (CommandNames.Settings.ShowMenu):
                             new Settings.ShowMenu(this._params).run();
+                            break;
+
+                        case (CommandNames.Tools.ShowTools):
+                            new Tools.ShowTools(this._params).runNoClient();
                             break;
 
                         default:
