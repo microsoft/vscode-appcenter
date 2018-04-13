@@ -6,6 +6,9 @@ export class Constants {
     public static DefaultDistributionGroupTestersName: string = "Beta Testers";
     public static DefaultBranchName: string = "master";
     public static DefaultLoginEndPoint: string = "https://appcenter.ms/cli-login";
+    public static ProdCrashesEndPoint: string = "https://in.mobile.azure.com/logs";
+    public static IntCrashesEndPoint: string = "https://in-integration.dev.avalanch.es/logs";
+    public static StagingCrashesEndPoint: string = "https://in-staging-south-centralus.staging.avalanch.es/logs";
     public static AppCenterCodePushStatusBarColor: string = "#ffffff";
     public static CodePushStagingDeplymentName: string = "Staging";
     public static iOSAppSuffix: string = "-ios";
@@ -47,9 +50,18 @@ export class Constants {
             "xcode": {
                 "projectOrWorkspacePath": "ios/AppCenterSample.xcworkspace",
                 "scheme": "AppCenterSample",
-                "xcodeVersion": "9.2",
+                "xcodeVersion": "9.3",
                 "automaticSigning": false,
                 "podfilePath":"ios/Podfile"
+            },
+            "android": {
+                "module": "app",
+                "buildVariant": "release",
+                "isRoot": false,
+                "runTests": false,
+                "runLint": false,
+                "automaticSigning": false,
+                "gradleWrapperPath": "android/gradlew"
             }
         }
     }`;
@@ -76,6 +88,11 @@ export class CommandNames {
         public static LoginVsts: string = `${CommandNames.CommandPrefix}settings.vsts.login`;
         public static SwitchAccountVsts: string = `${CommandNames.CommandPrefix}settings.vsts.switchAccount`;
         public static LogoutVsts: string = `${CommandNames.CommandPrefix}settings.vsts.logout`;
+    };
+
+    public static Tools = class {
+        public static ShowTools: string = `${CommandNames.CommandPrefix}tools`;
+        public static SimulateCrashes: string = `${CommandNames.CommandPrefix}tools.simulateCrashes`;
     };
 
     public static CodePush = class {
@@ -134,4 +151,10 @@ export enum AppCenteAppType {
 export enum AuthProvider {
     Vsts = "VSTS",
     AppCenter = "App Center"
+}
+
+export enum AppCenterEnvironment {
+    Prod = 0,
+    Staging = 1,
+    Int = 2
 }

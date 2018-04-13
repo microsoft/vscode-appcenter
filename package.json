@@ -111,6 +111,16 @@
                 "command": "appcenter.codepush.setTargetBinaryVersion",
                 "title": "Set Code Push release target binary verison",
                 "category": "AppCenter Code Push"
+            },
+            {
+                "command": "appcenter.tools",
+                "title": "Open AppCenter tools",
+                "category": "AppCenter Tools"
+            },
+            {
+                "command": "appcenter.tools.simulateCrashes",
+                "title": "Simulate AppCenter Crash",
+                "category": "AppCenter Tools"
             }
         ],
         "configuration": {
@@ -184,6 +194,21 @@
                         "None"
                     ],
                     "default": "Info"
+                },
+                "appcenter.crashes" : {
+                    "description": "Enable menu items to work with AppCenter Crashes",
+                    "type": "boolean",
+                    "default": false
+                },
+                "appcenter.environment" : {
+                    "description": "Environment to configure AppCenter endpoints",
+                    "type": "enum",
+                    "enum": [
+                        "prod",
+                        "staging",
+                        "int"
+                    ],
+                    "default": "prod"
                 }
             }
         }
@@ -194,7 +219,7 @@
         "watch": "tsc -watch -p ./",
         "lint": "tslint --project tsconfig.json -e src/*.d.ts -t verbose",
         "postinstall": "node ./node_modules/vscode/bin/install",
-        "test": "npm run compile && node ./node_modules/vscode/bin/test"
+        "test": "./node_modules/.bin/mocha --reporter spec"
     },
     "devDependencies": {
         "@types/mocha": "^2.2.42",
@@ -210,6 +235,7 @@
         "git-url-parse": "^8.2.0",
         "gradle-to-js": "^1.1.0",
         "gulp": "^3.9.1",
+        "gulp-mocha": "^5.0.0",
         "gulp-sourcemaps": "^2.6.4",
         "gulp-tslint": "^8.1.3",
         "gulp-typescript": "^4.0.1",
@@ -227,9 +253,13 @@
         "properties": "^1.2.1",
         "run-sequence": "^2.2.1",
         "rx-lite": "^4.0.8",
+        "sandbox": "^0.8.6",
         "semver": "^5.5.0",
+        "should": "^13.2.1",
         "simple-git": "^1.92.0",
+        "sinon": "^4.5.0",
         "temp": "^0.8.3",
+        "test": "^0.6.0",
         "tslint": "^5.9.1",
         "tslint-microsoft-contrib": "^5.0.3",
         "xml2js": "^0.4.19"

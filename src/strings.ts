@@ -12,6 +12,8 @@ export class Strings {
     public static CodePushMenuLabelItem: string = "CodePush";
     public static AppCenterPortalMenuLabel: string = "App Center portal";
     public static SettingsMenuLabel: string = "Settings";
+    public static CrashesMenuLabel: string = "Simulate Crashes";
+    public static ToolsMenuLabel: string = "Tools";
     public static LoginToAnotherAccountMenuLabel: string = "Add App Center account";
     public static SwitchAccountMenuLabel: string = "Switch App Center account";
     public static LogoutMenuLabel: string = "Logout App Center";
