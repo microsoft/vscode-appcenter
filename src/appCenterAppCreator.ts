@@ -23,12 +23,12 @@ export default class AppCenterAppCreator {
             const realBranchName = queueBuildRequestResponse.sourceBranch;
 
             const url = AppCenterUrlBuilder.GetPortalBuildLink(ownerName, appName, realBranchName, buildId.toString());
-            this.logger.info(`Queued build link for "${appName}": "${url}"`);
+            this.logger.info(`Queued a new build for "${appName}": ${url}`);
         } catch (error) {
             if (error.statusCode === 400) {
-                this.logger.error(`app "${appName}" is not configured for building`);
+                this.logger.error(`An error occurred while configuring your ${appName}" app for build`);
               } else {
-                this.logger.error(`failed to queue build request for "${appName}"`);
+                this.logger.error(`An unexpected error occurred while queueing a build for "${appName}"`);
             }
             return false;
         }
@@ -40,7 +40,7 @@ export default class AppCenterAppCreator {
             await this.client.repositoryConfigurations.createOrUpdate(ownerName, appName, repoUrl);
             return true;
         } catch (err) {
-            this.logger.error(`failed to connect repository "${repoUrl}" to build service for app "${appName}"`);
+            this.logger.error(`Could not connect your new repository "${repoUrl}" to your "${appName}" App Center project`);
             return false;
         }
     }
@@ -50,9 +50,9 @@ export default class AppCenterAppCreator {
             await this.client.distributionGroups.create(ownerName, appName, SettingsHelper.distribitionGroupTestersName());
         } catch (error) {
             if (error === 409) {
-                this.logger.error(`distribution group "${SettingsHelper.distribitionGroupTestersName()}" in "${appName}" already exists`);
+                this.logger.error(`Distribution group "${SettingsHelper.distribitionGroupTestersName()}" in "${appName}" already exists`);
               } else {
-                this.logger.error(`failed to create distribution group for "${appName}"`);
+                this.logger.error(`An unexpected error occurred while creating a distribution group for "${appName}"`);
               }
             return false;
         }
@@ -74,7 +74,7 @@ export default class AppCenterAppCreator {
                 name: result.name
             };
         } catch (err) {
-            this.logger.error(`failed to create "${appName}" app for org "${orgName}"`);
+            this.logger.error(`An unexpected error occurred trying to create "${appName}" under "${orgName}"`);
             return false;
         }
     }
@@ -94,7 +94,7 @@ export default class AppCenterAppCreator {
                 name: result.name
             };
         } catch (err) {
-            this.logger.error(`failed to create app "${appName}"`);
+            this.logger.error(`An unexpected error occurred trying to create your ${appName} app in App Center`);
             return false;
         }
     }
@@ -104,8 +104,8 @@ export default class AppCenterAppCreator {
             const result: models.Deployment = await this.client.codePushDeployments.create(ownerName, appName, Constants.CodePushStagingDeplymentName);
             return result;
         } catch (err) {
-            this.logger.error(`failed to create codepush deployment for ${appName}`);
-            throw new Error(`failed to create codepush deployment for ${appName}`);
+            this.logger.error(`An unexpected error occurred trying to create CodePush deployments for ${appName}`);
+            throw new Error(`An unexpected error occurred trying to create CodePush deployments for ${appName}`);
         }
     }
 }
