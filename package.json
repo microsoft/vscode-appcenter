@@ -195,12 +195,12 @@
                     ],
                     "default": "Info"
                 },
-                "appcenter.crashes" : {
+                "appcenter.crashes": {
                     "description": "Enable menu items to work with AppCenter Crashes",
                     "type": "boolean",
                     "default": false
                 },
-                "appcenter.environment" : {
+                "appcenter.environment": {
                     "description": "Environment to configure AppCenter endpoints",
                     "type": "enum",
                     "enum": [
