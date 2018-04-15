@@ -134,7 +134,7 @@ export default class AppCenterAppBuilder {
 
                 this.createdApps = created;
                 this.appsCreated = true;
-                this.logger.info(`Apps for your project "${this.ideaName}" were created`);
+                this.logger.debug(`Apps for your project "${this.ideaName}" were created`);
             });
         }
     }
@@ -160,7 +160,7 @@ export default class AppCenterAppBuilder {
                 })) {
                     VsCodeUtils.ShowErrorMessage(Strings.FailedToCreateDistributionGroup);
                 } else {
-                    this.logger.info(`"${SettingsHelper.distribitionGroupTestersName()}" distribution group was created for your project "${this.ideaName}"`);
+                    this.logger.debug(`"${SettingsHelper.distribitionGroupTestersName()}" distribution group was created for your project "${this.ideaName}"`);
                 }
             }
 
@@ -177,7 +177,7 @@ export default class AppCenterAppBuilder {
                 })) {
                     VsCodeUtils.ShowErrorMessage(Strings.FailedToConnectRepoToBuildService);
                 } else {
-                    this.logger.info(`Project "${this.ideaName}" was connected to repositry "${this.repoUrl}"`);
+                    this.logger.debug(`Project "${this.ideaName}" was connected to repositry "${this.repoUrl}"`);
                     if (this._withBranchConfigurationCreatedAndBuildKickOff) {
                         p.report({message: Strings.CreateBranchConfigAndKickOffBuildStatusBarMessage });
                         const branchConfiguredAndBuildStarted: boolean[] = await Promise.all(
