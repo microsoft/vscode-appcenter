@@ -33,7 +33,8 @@ export default class SetCurrentDeployment extends RNCPAppCommand {
                             },
                             currentApp.targetBinaryVersion,
                             currentApp.type,
-                            currentApp.isMandatory
+                            currentApp.isMandatory,
+                            currentApp.appSecret
                         );
                         VsCodeUtils.ShowInfoMessage(Strings.YourCurrentDeploymentMsg(deploymentName));
                     }

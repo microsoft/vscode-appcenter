@@ -22,11 +22,16 @@ export class AppCenterUrlBuilder {
         return `${SettingsHelper.getAppCenterPortalEndpoint()}/users/${appOwner}/apps/${appName}/build/branches/${branchName}/setup`;
     }
 
+    public static GetPortalCrashesLink(appOwner: string, appName: string): string {
+        return `${SettingsHelper.getAppCenterPortalEndpoint()}/users/${appOwner}/apps/${appName}/crashes/`;
+    }
+
     public static GetPortalBuildLink(appOwner: string, appName: string, branchName: string, buildId: string): string {
         return `${SettingsHelper.getAppCenterPortalEndpoint()}/users/${appOwner}/apps/${appName}/build/branches/${branchName}/builds/${buildId}`;
     }
 
-    public static getCrashesEndpoint(appCenterEnvironment: AppCenterEnvironment): string {
+    public static getCrashesEndpoint(): string {
+        const appCenterEnvironment: AppCenterEnvironment = SettingsHelper.getEnvironment();
         switch (appCenterEnvironment) {
             case AppCenterEnvironment.Prod: return Constants.ProdCrashesEndPoint;
             case AppCenterEnvironment.Int: return Constants.IntCrashesEndPoint;
