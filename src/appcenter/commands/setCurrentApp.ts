@@ -65,6 +65,7 @@ export default class SetCurrentApp extends ReactNativeAppCommand {
                     }
                     const selectedApp: models.AppResponse = selectedApps[0];
                     const selectedAppName: string = `${selectedApp.owner.name}/${selectedApp.name}`;
+                    const selectedAppSecret: string = selectedApp.appSecret;
                     const type: string = selectedApp.owner.type;
 
                     const OS: AppCenterOS | undefined = this.toAppCenterOS(selectedApp.os);
@@ -99,7 +100,8 @@ export default class SetCurrentApp extends ReactNativeAppCommand {
                                 currentDeployments,
                                 Constants.AppCenterDefaultTargetBinaryVersion,
                                 type,
-                                Constants.AppCenterDefaultIsMandatoryParam
+                                Constants.AppCenterDefaultIsMandatoryParam,
+                                selectedAppSecret
                             );
                         }).then((app: CurrentApp | null) => {
                             if (app) {
