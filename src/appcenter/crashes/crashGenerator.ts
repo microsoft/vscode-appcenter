@@ -15,7 +15,7 @@ export class CrashGenerator {
         this._appSecret = currentApp.appSecret;
     }
 
-    public generateCrashes(): Promise<void> {
+    public async generateCrashes(): Promise<void> {
         const crashTime = Date.now();
         const crashDate = new Date(crashTime).toISOString();
         const sessionId: string = uuid.v4();
@@ -47,9 +47,9 @@ export class CrashGenerator {
         return this.sendCrashes(installId, sessionLogContainer).then(() => {
             return this.sendCrashes(installId, crashLogContainer);
         }).then(() => {
-            return Promise.resolve();
+            return;
         }).catch(() => {
-            return Promise.reject(void 0);
+            throw new Error();
         });
     }
 
@@ -68,7 +68,7 @@ export class CrashGenerator {
             return response;
         } catch (e) {
             this.logger.error("Failed to send crashes information. " + (e && e.message) || "");
-            return Promise.reject(void 0);
+            throw new Error(e);
         }
     }
 

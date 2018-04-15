@@ -14,14 +14,15 @@ export default class SimulateCrashes extends Command {
         }
         try {
             vscode.window.withProgress({ location: vscode.ProgressLocation.Window, title: Strings.SimulateCrashesMessage }, (progress) => {
-                return this.appCenterProfile.then((profile: AppCenterProfile | null) => {
+                return this.appCenterProfile.then(async (profile: AppCenterProfile | null) => {
                     if (profile && profile.currentApp) {
                         const crashGenerator: CrashGenerator = new CrashGenerator(profile.currentApp, AppCenterUrlBuilder.getCrashesEndpoint(), this.logger, progress);
-                        return crashGenerator.generateCrashes().then(() => {
+                        try {
+                            await crashGenerator.generateCrashes();
                             return AppCenterUrlBuilder.GetPortalCrashesLink(profile.userName, profile.currentApp.appName);
-                        }).catch(() => {
+                        } catch {
                             VsCodeUtils.ShowErrorMessage(Strings.GenerateCrashesError);
-                        });
+                        }
                     }
                     return null;
                 });
