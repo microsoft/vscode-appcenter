@@ -22,6 +22,10 @@ export class AppCenterUrlBuilder {
         return `${SettingsHelper.getAppCenterPortalEndpoint()}/users/${appOwner}/apps/${appName}/build/branches/${branchName}/setup`;
     }
 
+    public static GetPortalConnectRepoLink(appOwner: string, appName: string): string {
+        return `${SettingsHelper.getAppCenterPortalEndpoint()}/users/${appOwner}/apps/${appName}/build/connect`;
+    }
+
     public static GetPortalCrashesLink(appOwner: string, appName: string): string {
         return `${SettingsHelper.getAppCenterPortalEndpoint()}/users/${appOwner}/apps/${appName}/crashes/`;
     }
