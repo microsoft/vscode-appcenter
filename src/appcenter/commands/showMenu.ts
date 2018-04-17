@@ -76,7 +76,7 @@ export default class ShowMenu extends Command {
             }
 
             const crashesEnabled = SettingsHelper.isCrashesEnabled();
-            if (crashesEnabled) {
+            if (crashesEnabled && profile.currentApp) {
                 appCenterMenuOptions.push(<vscode.QuickPickItem>{
                     label: Strings.ToolsMenuLabel,
                     description: "",

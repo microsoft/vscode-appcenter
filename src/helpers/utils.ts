@@ -102,7 +102,8 @@ export class Utils {
         appDeployment: CurrentAppDeployments | null,
         targetBinaryVersion: string,
         type: string,
-        isMandatory: boolean): CurrentApp | null {
+        isMandatory: boolean,
+        appSecret: string): CurrentApp | null {
         const matches = app.match(Validators.ValidAppCenterAppName);
         if (matches !== null) {
             return {
@@ -113,6 +114,7 @@ export class Utils {
                 targetBinaryVersion: targetBinaryVersion,
                 isMandatory: isMandatory,
                 type: type,
+                appSecret: appSecret,
                 currentAppDeployments: appDeployment ? appDeployment : {
                     codePushDeployments: [],
                     currentDeploymentName: ""

@@ -42,7 +42,7 @@ export default class ShowTools extends Command {
 
                 switch (selected.target) {
                     case (CommandNames.Tools.SimulateCrashes):
-                        new Tools.SimulateCrashes(this._params).runNoClient();
+                        new Tools.SimulateCrashes(this._params).run();
                         break;
 
                     default:
