@@ -280,7 +280,7 @@ export default class Start extends Command {
         if (!apps || apps.length === 0) {
             return saved;
         }
-        this.logger.debug("Updating app secrets...");
+        this.logger.debug("Setting app secrets...");
         apps.forEach((app: CreatedAppFromAppCenter) => {
             if (!app || !app.appSecret) {
                 return saved;
@@ -307,7 +307,7 @@ export default class Start extends Command {
         if (!deployments || deployments.length === 0) {
             return saved;
         }
-        this.logger.info("Updating CodePush Deployment Keys...");
+        this.logger.info("Setting CodePush deployment keys...");
         deployments.forEach(async (deployment: Deployment) => {
             if (!deployment || !deployment.os || !deployment.key) {
                 return saved;
