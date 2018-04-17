@@ -20,6 +20,9 @@ export class Strings {
     public static VstsLoginToAnotherAccountMenuLabel: string = "Add VSTS account";
     public static VstsSwitchAccountMenuLabel: string = "Switch VSTS account";
     public static VstsLogoutMenuLabel: string = "Logout VSTS";
+    public static RunUITestsMenuLabel: string = "Run UI tests";
+    public static RunUITestsAsyncMenuLabel: string = "Run UI tests asynchronously";
+    public static ViewUITestResultOnPortalenuLabel: string = "View results in portal";    
 
     public static SelectLoginTypeMsg: string = "How would you like to authenticate with App Center?";
     public static OkBtnLabel: string = "Ok";
@@ -29,6 +32,7 @@ export class Strings {
     public static UserIsNotLoggedInMsg: string = "You are not logged into App Center";
     public static MenuTitlePlaceholder: string = "Please select a menu action.";
     public static SelectProfileTitlePlaceholder: string = "Please select account.";
+    public static SelectTestDeviceTitlePlaceholder: string = "Please select device.";
 
     public static SpecifyTenantTitlePlaceholder: string = "(Step 1). Please specify tenant name";
     public static SpecifyUserNameTitlePlaceholder: string = "(Step 2). Please specify user name";

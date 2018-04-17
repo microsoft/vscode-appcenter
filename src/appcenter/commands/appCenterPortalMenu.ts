@@ -7,14 +7,17 @@ import { VsCodeUtils } from "../../helpers/vsCodeUtils";
 import { Strings } from "../../strings";
 import { models } from "../apis";
 import { ReactNativeAppCommand } from "./reactNativeAppCommand";
+import * as Test from "./test";
 
 export default class AppCenterPortalMenu extends ReactNativeAppCommand {
 
     private currentAppMenuTarget: string = "MenuCurrentApp";
     private selectedCachedItem: boolean;
+    private _params: CommandParams;
 
     constructor(params: CommandParams) {
         super(params);
+        this._params = params;
     }
 
     public async run(): Promise<void> {
@@ -167,7 +170,7 @@ export default class AppCenterPortalMenu extends ReactNativeAppCommand {
                                     Utils.OpenUrl(AppCenterUrlBuilder.GetAppCenterLinkByBeacon(ownerName, appName, AppCenterBeacons.Build, isOrg));
                                     break;
                                 case (AppCenterBeacons.Test):
-                                    Utils.OpenUrl(AppCenterUrlBuilder.GetAppCenterLinkByBeacon(ownerName, appName, AppCenterBeacons.Test, isOrg));
+                                    await new Test.ShowMenu(this._params).runNoClient();
                                     break;
                                 case (AppCenterBeacons.Distribute):
                                     const appCenterDistributeTabMenuItems: vscode.QuickPickItem[] = this.getAppCenterDistributeTabMenuItems();

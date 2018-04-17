@@ -102,6 +102,13 @@ export class CommandNames {
         public static SwitchMandatoryPropForRelease: string = CommandNames.CommandPrefix + "codepush.switchMandatoryPropForRelease";
         public static SetTargetBinaryVersion: string = CommandNames.CommandPrefix + "codepush.setTargetBinaryVersion";
     };
+
+    public static Test = class {
+        public static ShowMenu: string = CommandNames.CommandPrefix + "test.showMenu";
+        public static RunUITests: string = CommandNames.CommandPrefix + "test.runUITests";
+        public static RunUITestsAsync: string = CommandNames.CommandPrefix + "test.runUITestsAsync";
+        public static ViewResults: string = CommandNames.CommandPrefix + "test.viewResults";
+    }
 }
 
 export enum MessageTypes {
@@ -157,4 +164,9 @@ export enum AppCenterEnvironment {
     Prod = 0,
     Staging = 1,
     Int = 2
+}
+
+export enum ReactNativePlatformDirectory {
+    IOS = "ios",
+    Android = "android"
 }

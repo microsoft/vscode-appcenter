@@ -121,6 +121,21 @@
                 "command": "appcenter.tools.simulateCrashes",
                 "title": "Simulate AppCenter Crash",
                 "category": "AppCenter Tools"
+            },
+            {
+                "command": "appcenter.test.runUITests",
+                "title": "Run UI tests",
+                "category": "AppCenter Test"
+            },
+            {
+                "command": "appcenter.test.runUITestsAsync",
+                "title": "Run UI tests asynchronously",
+                "category": "AppCenter Test"
+            },
+            {
+                "command": "appcenter.test.vewResults",
+                "title": "View UI tests results",
+                "category": "AppCenter Test"
             }
         ],
         "configuration": {
@@ -195,12 +210,12 @@
                     ],
                     "default": "Info"
                 },
-                "appcenter.crashes" : {
+                "appcenter.crashes": {
                     "description": "Enable menu items to work with AppCenter Crashes",
                     "type": "boolean",
                     "default": false
                 },
-                "appcenter.environment" : {
+                "appcenter.environment": {
                     "description": "Environment to configure AppCenter endpoints",
                     "type": "enum",
                     "enum": [
@@ -224,6 +239,7 @@
     "devDependencies": {
         "@types/mocha": "^2.2.42",
         "@types/node": "^7.0.43",
+        "@types/rimraf": "^2.0.2",
         "typescript": "^2.7.2",
         "vscode": "^1.1.6"
     },
@@ -251,6 +267,7 @@
         "opener": "^1.4.3",
         "plist": "^3.0.1",
         "properties": "^1.2.1",
+        "rimraf": "^2.6.2",
         "run-sequence": "^2.2.1",
         "rx-lite": "^4.0.8",
         "sandbox": "^0.8.6",
@@ -262,6 +279,7 @@
         "test": "^0.6.0",
         "tslint": "^5.9.1",
         "tslint-microsoft-contrib": "^5.0.3",
+        "uni": "0.0.6",
         "xml2js": "^0.4.19"
     }
 }

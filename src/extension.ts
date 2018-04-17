@@ -71,4 +71,15 @@ function registerAppCenterCommands(context: vscode.ExtensionContext): void {
         () => _extensionManager.RunCommand(() => codepushCommandHandler.SwitchMandatoryPropForRelease())));
     context.subscriptions.push(vscode.commands.registerCommand(CommandNames.CodePush.SetTargetBinaryVersion,
         () => _extensionManager.RunCommand(() => codepushCommandHandler.SetTargetBinaryVersion())));
+
+    // Test commands
+    const testCommandHandler = _extensionManager.commandHandlers.testCommandHandler;
+    context.subscriptions.push(vscode.commands.registerCommand(CommandNames.Test.ShowMenu,
+        () => _extensionManager.RunCommand(() => testCommandHandler.showMenu())));
+    context.subscriptions.push(vscode.commands.registerCommand(CommandNames.Test.RunUITests,
+        () => _extensionManager.RunCommand(() => testCommandHandler.runUITests())));
+    context.subscriptions.push(vscode.commands.registerCommand(CommandNames.Test.RunUITestsAsync,
+        () => _extensionManager.RunCommand(() => testCommandHandler.runUITestsAsync())));
+    context.subscriptions.push(vscode.commands.registerCommand(CommandNames.Test.ViewResults,
+        () => _extensionManager.RunCommand(() => testCommandHandler.viewResults())));
 }

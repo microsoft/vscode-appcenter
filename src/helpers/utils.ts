@@ -51,12 +51,15 @@ export class Utils {
         return yarnVersion;
     }
 
-    public static parseJsonFile(path, installHint) {
+    public static parseJsonFile(path: string, installHint?: string) {
         let fileContents;
         try {
             fileContents = fs.readFileSync(path, 'utf8');
         } catch (err) {
-            throw new Error(`Cannot find "${path}". ${installHint}`);
+            if(installHint){
+                installHint = ` ${installHint}`;
+            }
+            throw new Error(`Cannot find "${path}".${installHint}`);
         }
         try {
             return JSON.parse(fileContents);
@@ -138,5 +141,14 @@ export class Utils {
 
     public static getAppCenterTokensFileName() {
         return path.join(Utils.getUserDir(), Constants.TokenDir, Constants.AppCenterTokenFileName);
+    }
+
+    public static getAppName(projectRoot: string) {
+        const packageJsonPath = path.resolve(
+            projectRoot, 'package.json'
+        );
+
+        const packageJson = Utils.parseJsonFile(packageJsonPath);
+        return packageJson.name;
     }
 }
