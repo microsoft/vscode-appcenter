@@ -6,7 +6,7 @@ export class RNCPAppCommand extends ReactNativeAppCommand {
         if (!await super.runNoClient()) {
             return false;
         }
-        if (!Utils.isReactNativeCodePushProject(this.manager.projectRootPath, true)) {
+        if (!Utils.isReactNativeCodePushProject(this.rootPath, true)) {
             return false;
         }
         return true;
@@ -16,7 +16,7 @@ export class RNCPAppCommand extends ReactNativeAppCommand {
         if (!await super.run()) {
             return false;
         }
-        if (!Utils.isReactNativeCodePushProject(this.manager.projectRootPath, true)) {
+        if (!Utils.isReactNativeCodePushProject(this.rootPath, true)) {
             return false;
         }
         return true;

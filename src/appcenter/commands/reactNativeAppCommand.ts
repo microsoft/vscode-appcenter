@@ -26,7 +26,7 @@ export class ReactNativeAppCommand extends Command {
         if (!await super.runNoClient()) {
             return false;
         }
-        if (!Utils.isReactNativeProject(this.manager.projectRootPath, true)) {
+        if (!Utils.isReactNativeProject(this.rootPath, true)) {
             return false;
         }
         return true;
@@ -36,7 +36,7 @@ export class ReactNativeAppCommand extends Command {
         if (!await super.run()) {
             return false;
         }
-        if (!Utils.isReactNativeProject(this.manager.projectRootPath, true)) {
+        if (!Utils.isReactNativeProject(this.rootPath, true)) {
             return false;
         }
         return true;
