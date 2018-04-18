@@ -1,6 +1,7 @@
 import * as vscode from "vscode";
 import { AppCenterOS, Constants } from "../../constants";
 import { CommandParams, CurrentApp, CurrentAppDeployments, QuickPickAppItem } from "../../helpers/interfaces";
+import { MenuHelper } from "../../helpers/menuHelper";
 import { VsCodeUtils } from "../../helpers/vsCodeUtils";
 import { Strings } from "../../strings";
 import { models } from "../apis";
@@ -52,7 +53,7 @@ export default class SetCurrentApp extends ReactNativeAppCommand {
         try {
             let rnApps;
             ReactNativeAppCommand.cachedApps = rnApps = appsList.filter(app => app.platform === Constants.AppCenterReactNativePlatformName);
-            const options: QuickPickAppItem[] = VsCodeUtils.getQuickPickItemsForAppsList(rnApps);
+            const options: QuickPickAppItem[] = MenuHelper.getQuickPickItemsForAppsList(rnApps);
             if (!this.selectedCachedItem) {
                 vscode.window.showQuickPick(options, { placeHolder: Strings.ProvideCurrentAppPromptMsg }).then((selected: QuickPickAppItem) => {
                     this.selectedCachedItem = true;

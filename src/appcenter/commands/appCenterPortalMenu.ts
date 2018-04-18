@@ -1,8 +1,7 @@
 import * as vscode from "vscode";
-import { AppCenteAppType, AppCenterBeacons, AppCenterDistributionTabs, Constants } from "../../constants";
-import { AppCenterUrlBuilder } from "../../helpers/appCenterUrlBuilder";
+import { AppCenteAppType, Constants } from "../../constants";
 import { CommandParams, CurrentApp, QuickPickAppItem } from "../../helpers/interfaces";
-import { Utils } from "../../helpers/utils";
+import { MenuHelper } from "../../helpers/menuHelper";
 import { VsCodeUtils } from "../../helpers/vsCodeUtils";
 import { Strings } from "../../strings";
 import { models } from "../apis";
@@ -38,72 +37,12 @@ export default class AppCenterPortalMenu extends ReactNativeAppCommand {
         }
     }
 
-    private getAppCenterDistributeTabMenuItems(): vscode.QuickPickItem[] {
-        const getAppCenterDistributeTabMenuItems: vscode.QuickPickItem[] = [];
-        getAppCenterDistributeTabMenuItems.push(<vscode.QuickPickItem>{
-            label: Strings.DistributeGroupsTabMenuItem,
-            description: Strings.OpenTabInBrowserMsg(Strings.DistributeGroupsTabMenuItem),
-            target: AppCenterDistributionTabs.Groups
-        });
-        getAppCenterDistributeTabMenuItems.push(<vscode.QuickPickItem>{
-            label: Strings.DistributeStoresTabMenuItem,
-            description: Strings.OpenTabInBrowserMsg(Strings.DistributeStoresTabMenuItem),
-            target: AppCenterDistributionTabs.Stores
-        });
-        getAppCenterDistributeTabMenuItems.push(<vscode.QuickPickItem>{
-            label: Strings.DistributeCodePushTabMenuItem,
-            description: Strings.OpenTabInBrowserMsg(Strings.DistributeCodePushTabMenuItem),
-            target: AppCenterDistributionTabs.CodePush
-        });
-        getAppCenterDistributeTabMenuItems.push(<vscode.QuickPickItem>{
-            label: Strings.DistributeReleasesTabMenuItem,
-            description: Strings.OpenTabInBrowserMsg(Strings.DistributeReleasesTabMenuItem),
-            target: AppCenterDistributionTabs.Releases
-        });
-        return getAppCenterDistributeTabMenuItems;
-    }
-
-    private getAppCenterTabsMenuItems(): vscode.QuickPickItem[] {
-        const appCenterPortalTabOptions: vscode.QuickPickItem[] = [];
-        appCenterPortalTabOptions.push(<vscode.QuickPickItem>{
-            label: Strings.BuildTabMenuItem,
-            description: Strings.OpenTabInBrowserMsg(Strings.BuildTabMenuItem),
-            target: AppCenterBeacons.Build
-        });
-        appCenterPortalTabOptions.push(<vscode.QuickPickItem>{
-            label: Strings.TestTabMenuItem,
-            description: Strings.OpenTabInBrowserMsg(Strings.TestTabMenuItem),
-            target: AppCenterBeacons.Test
-        });
-        appCenterPortalTabOptions.push(<vscode.QuickPickItem>{
-            label: Strings.DistributeTabMenuItem,
-            description: Strings.OpenTabInBrowserMsg(Strings.DistributeTabMenuItem),
-            target: AppCenterBeacons.Distribute
-        });
-        appCenterPortalTabOptions.push(<vscode.QuickPickItem>{
-            label: Strings.CrashesTabMenuItem,
-            description: Strings.OpenTabInBrowserMsg(Strings.CrashesTabMenuItem),
-            target: AppCenterBeacons.Crashes
-        });
-        appCenterPortalTabOptions.push(<vscode.QuickPickItem>{
-            label: Strings.AnalyticsTabMenuItem,
-            description: Strings.OpenTabInBrowserMsg(Strings.AnalyticsTabMenuItem),
-            target: AppCenterBeacons.Analytics
-        });
-        appCenterPortalTabOptions.push(<vscode.QuickPickItem>{
-            label: Strings.PushTabMenuItem,
-            description: Strings.OpenTabInBrowserMsg(Strings.PushTabMenuItem),
-            target: AppCenterBeacons.Push
-        });
-        return appCenterPortalTabOptions;
-    }
-
     private async showApps(appsList: models.AppResponse[]) {
         try {
             let rnApps;
 
             ReactNativeAppCommand.cachedApps = rnApps = appsList.filter(app => app.platform === Constants.AppCenterReactNativePlatformName);
-            const options: QuickPickAppItem[] = VsCodeUtils.getQuickPickItemsForAppsList(rnApps);
+            const options: QuickPickAppItem[] = MenuHelper.getQuickPickItemsForAppsList(rnApps);
             const currentApp: CurrentApp | null = await this.getCurrentApp();
 
             if (currentApp) {
@@ -133,9 +72,7 @@ export default class AppCenterPortalMenu extends ReactNativeAppCommand {
                         selectedApp = selectedApps[0];
                     }
 
-                    const appCenterPortalTabOptions: vscode.QuickPickItem[] = this.getAppCenterTabsMenuItems();
-
-                    vscode.window.showQuickPick(appCenterPortalTabOptions, { placeHolder: Strings.MenuTitlePlaceholder })
+                    vscode.window.showQuickPick(MenuHelper.getAppCenterPortalMenuItems(), { placeHolder: Strings.MenuTitlePlaceholder })
                         .then(async (selected: QuickPickAppItem) => {
                             if (!selected) {
                                 this.logger.info('User cancel selection of current appcenter tab');
@@ -161,58 +98,10 @@ export default class AppCenterPortalMenu extends ReactNativeAppCommand {
                                     throw new Error("Current app is undefiend");
                                 }
                             }
-
-                            switch (selected.target) {
-                                case (AppCenterBeacons.Build):
-                                    Utils.OpenUrl(AppCenterUrlBuilder.GetAppCenterLinkByBeacon(ownerName, appName, AppCenterBeacons.Build, isOrg));
-                                    break;
-                                case (AppCenterBeacons.Test):
-                                    Utils.OpenUrl(AppCenterUrlBuilder.GetAppCenterLinkByBeacon(ownerName, appName, AppCenterBeacons.Test, isOrg));
-                                    break;
-                                case (AppCenterBeacons.Distribute):
-                                    const appCenterDistributeTabMenuItems: vscode.QuickPickItem[] = this.getAppCenterDistributeTabMenuItems();
-                                    vscode.window.showQuickPick(appCenterDistributeTabMenuItems, { placeHolder: Strings.MenuTitlePlaceholder })
-                                        .then((selected: QuickPickAppItem) => {
-                                            if (!selected) {
-                                                this.logger.info('User cancel selection of current appcenter tab');
-                                                return;
-                                            }
-                                            switch (selected.target) {
-                                                case (AppCenterDistributionTabs.Groups):
-                                                    Utils.OpenUrl(AppCenterUrlBuilder.GetAppCenterDistributeTabLinkByTabName(ownerName, appName, AppCenterDistributionTabs.Groups, isOrg));
-                                                    break;
-                                                case (AppCenterDistributionTabs.Stores):
-                                                    Utils.OpenUrl(AppCenterUrlBuilder.GetAppCenterDistributeTabLinkByTabName(ownerName, appName, AppCenterDistributionTabs.Stores, isOrg));
-                                                    break;
-                                                case (AppCenterDistributionTabs.CodePush):
-                                                    Utils.OpenUrl(AppCenterUrlBuilder.GetAppCenterDistributeTabLinkByTabName(ownerName, appName, AppCenterDistributionTabs.CodePush, isOrg));
-                                                    break;
-                                                case (AppCenterDistributionTabs.Releases):
-                                                    Utils.OpenUrl(AppCenterUrlBuilder.GetAppCenterDistributeTabLinkByTabName(ownerName, appName, AppCenterDistributionTabs.Releases, isOrg));
-                                                    break;
-                                                default:
-                                                    // Ideally shouldn't be there :)
-                                                    this.logger.error("Unknown option selected name");
-                                                    break;
-                                            }
-                                        });
-                                    break;
-                                case (AppCenterBeacons.Crashes):
-                                    Utils.OpenUrl(AppCenterUrlBuilder.GetAppCenterLinkByBeacon(ownerName, appName, AppCenterBeacons.Crashes, isOrg));
-                                    break;
-                                case (AppCenterBeacons.Analytics):
-                                    Utils.OpenUrl(AppCenterUrlBuilder.GetAppCenterLinkByBeacon(ownerName, appName, AppCenterBeacons.Analytics, isOrg));
-                                    break;
-                                case (AppCenterBeacons.Push):
-                                    Utils.OpenUrl(AppCenterUrlBuilder.GetAppCenterLinkByBeacon(ownerName, appName, AppCenterBeacons.Push, isOrg));
-                                    break;
-                                default:
-                                    // Ideally shouldn't be there :)
-                                    this.logger.error("Unknown AppCenter beacon name");
-                                    break;
-                            }
+                            MenuHelper.handleMenuPortalQuickPickSelection(selected.target, ownerName, appName, isOrg);
                         });
-                });
+                    }
+                );
             }
         } catch (e) {
             VsCodeUtils.ShowErrorMessage(Strings.UnknownError);

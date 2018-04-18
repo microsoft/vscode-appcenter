@@ -5,15 +5,20 @@ export class Strings {
 
     /* Menu labeles */
     public static StartAnIdeaMenuLabel: string = "Start a new project";
+    public static StartAnIdeaMenuDescription: string = "";
     public static OrganizationMenuDescriptionLabel: string = "Organization";
     public static UserMenuDescriptionLabel: string = "User";
+    public static MenuCurrentAppDescription: string = "Click here to change current app";
     public static LoginMenuLabel: string = "Login";
     public static GetCurrentAppMenuLabel: string = "Get current app info";
     public static CodePushMenuLabelItem: string = "CodePush";
+    public static CodePushMenuLabelDescription: string = "";
     public static AppCenterPortalMenuLabel: string = "App Center portal";
     public static SettingsMenuLabel: string = "Settings";
+    public static SettingsMenuDescription: string = "";
     public static CrashesMenuLabel: string = "Simulate Crashes";
     public static ToolsMenuLabel: string = "Tools";
+    public static ToolsMenuDescription: string = "";
     public static LoginToAnotherAccountMenuLabel: string = "Add App Center account";
     public static SwitchAccountMenuLabel: string = "Switch App Center account";
     public static LogoutMenuLabel: string = "Logout App Center";
@@ -127,7 +132,7 @@ export class Strings {
     }
 
     public static OpenTabInBrowserMsg(tabName: string): string {
-        return `Open '${tabName}' tab for currently selected app`;
+        return `Navigate to '${tabName}' options for current app`;
     }
 
     public static FailedToPushChangesToRemoteRepoMsg: (repoName: string) => string = (repoName: string) => {
@@ -178,7 +183,7 @@ export class Strings {
 
     public static setCurrentAppMenuText(app?: CurrentApp): string {
         if (app) {
-            return `Change current app | ${app.appName}(${app.os})`;
+            return `Current app: "${app.appName}(${app.os})"`;
         } else {
             return `Set current app`;
         }

@@ -1,11 +1,11 @@
 import * as vscode from 'vscode';
-import { CommandNames } from '../../constants';
+import { AppCenteAppType, AppCenterBeacons, CommandNames } from '../../constants';
 import { FSUtils } from '../../helpers/fsUtils';
 import { AppCenterProfile, CommandParams, CurrentApp } from '../../helpers/interfaces';
+import { MenuHelper } from '../../helpers/menuHelper';
 import { SettingsHelper } from '../../helpers/settingsHelper';
 import { Utils } from '../../helpers/utils';
 import { Strings } from '../../strings';
-import AppCenterPortalMenu from './appCenterPortalMenu';
 import * as CodePush from './codepush';
 import { Command } from './command';
 import GetCurrentApp from './getCurrentApp';
@@ -17,6 +17,10 @@ import * as Tools from './tools';
 
 export default class ShowMenu extends Command {
     private _params: CommandParams;
+    private appName: string;
+    private ownerName: string;
+    private isOrg: boolean;
+
     constructor(params: CommandParams) {
         super(params);
         this._params = params;
@@ -26,7 +30,7 @@ export default class ShowMenu extends Command {
         super.runNoClient();
 
         return this.appCenterProfile.then((profile: AppCenterProfile | null) => {
-            const appCenterMenuOptions: vscode.QuickPickItem[] = [];
+            let appCenterMenuOptions: vscode.QuickPickItem[] = [];
             if (!profile) {
 
                 // In rare cases that might happen.
@@ -42,7 +46,7 @@ export default class ShowMenu extends Command {
             if (FSUtils.IsEmptyDirectoryToStartNewIdea(rootPath)) {
                 appCenterMenuOptions.push(<vscode.QuickPickItem>{
                     label: Strings.StartAnIdeaMenuLabel,
-                    description: "",
+                    description: Strings.StartAnIdeaMenuDescription,
                     target: CommandNames.Start
                 });
             } else {
@@ -50,27 +54,26 @@ export default class ShowMenu extends Command {
                 if (profile.currentApp) {
                     currentApp = profile.currentApp;
                 }
+
+                appCenterMenuOptions.push(<vscode.QuickPickItem>{
+                    label: Strings.setCurrentAppMenuText(currentApp),
+                    description: Strings.MenuCurrentAppDescription,
+                    target: CommandNames.SetCurrentApp
+                });
+
                 const isReactNativeProject = Utils.isReactNativeProject(rootPath, /* showMessageOnError */false);
-                if (isReactNativeProject) {
-                    appCenterMenuOptions.push(<vscode.QuickPickItem>{
-                        label: Strings.AppCenterPortalMenuLabel,
-                        description: "",
-                        target: CommandNames.AppCenterPortal
-                    });
-                    const isReactNativeCodePushProject = Utils.isReactNativeCodePushProject(rootPath, /* showMessageOnError */false);
-                    if (isReactNativeCodePushProject) {
+                if (isReactNativeProject && currentApp) {
+                    this.isOrg = currentApp.type.toLowerCase() === AppCenteAppType.Org.toLowerCase();
+                    this.appName = currentApp.appName;
+                    this.ownerName = currentApp.ownerName;
+                    appCenterMenuOptions = appCenterMenuOptions.concat(MenuHelper.getAppCenterPortalMenuItems());
+
+                    if (Utils.isReactNativeCodePushProject(rootPath, false)) {
                         appCenterMenuOptions.push(<vscode.QuickPickItem>{
-                            label: Strings.setCurrentAppMenuText(currentApp),
-                            description: "",
-                            target: CommandNames.SetCurrentApp
+                            label: Strings.CodePushMenuLabelItem,
+                            description: Strings.CodePushMenuLabelDescription,
+                            target: CommandNames.CodePush.ShowMenu
                         });
-                        if (currentApp) {
-                            appCenterMenuOptions.push(<vscode.QuickPickItem>{
-                                label: Strings.CodePushMenuLabelItem,
-                                description: "",
-                                target: CommandNames.CodePush.ShowMenu
-                            });
-                        }
                     }
                 }
             }
@@ -79,15 +82,14 @@ export default class ShowMenu extends Command {
             if (crashesEnabled && profile.currentApp) {
                 appCenterMenuOptions.push(<vscode.QuickPickItem>{
                     label: Strings.ToolsMenuLabel,
-                    description: "",
+                    description: Strings.ToolsMenuDescription,
                     target: CommandNames.Tools.ShowTools
                 });
             }
 
-            // Settings menu
             appCenterMenuOptions.push(<vscode.QuickPickItem>{
                 label: Strings.SettingsMenuLabel,
-                description: "",
+                description: Strings.SettingsMenuDescription,
                 target: CommandNames.Settings.ShowMenu
             });
 
@@ -106,8 +108,13 @@ export default class ShowMenu extends Command {
                     }
 
                     switch (selected.target) {
-                        case (CommandNames.AppCenterPortal):
-                            new AppCenterPortalMenu(this._params).run();
+                        case (AppCenterBeacons.Build):
+                        case (AppCenterBeacons.Test):
+                        case (AppCenterBeacons.Distribute):
+                        case (AppCenterBeacons.Analytics):
+                        case (AppCenterBeacons.Crashes):
+                        case (AppCenterBeacons.Push):
+                            MenuHelper.handleMenuPortalQuickPickSelection(selected.target, this.ownerName, this.appName, this.isOrg);
                             break;
 
                         case (CommandNames.Start):
