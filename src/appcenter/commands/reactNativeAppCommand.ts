@@ -1,3 +1,4 @@
+import { Md5 } from "ts-md5/dist/md5";
 import { AppCenterOS } from '../../constants';
 import { AppCenterProfile, CurrentApp, CurrentAppDeployments } from '../../helpers/interfaces';
 import { Utils } from '../../helpers/utils';
@@ -8,6 +9,14 @@ import { Command } from './command';
 
 export class ReactNativeAppCommand extends Command {
     protected static cachedApps: models.AppResponse[];
+
+    public get CachedApps(): models.AppResponse[] | null {
+        if (ReactNativeAppCommand.cachedApps && ReactNativeAppCommand.cachedApps.length > 0) {
+            return ReactNativeAppCommand.cachedApps;
+        } else {
+            return null;
+        }
+    }
 
     public async runNoClient(): Promise<boolean | void> {
         if (!await super.runNoClient()) {
@@ -64,5 +73,34 @@ export class ReactNativeAppCommand extends Command {
                 return Promise.resolve(null);
             }
         });
+    }
+
+    protected cachedAppsItemsDiffer(appsList: models.AppResponse[], cachedApps: models.AppResponse[]): boolean {
+        if (!cachedApps || !appsList) {
+            return true;
+        }
+        if (cachedApps.length !== appsList.length) {
+           return true;
+        }
+
+        let differs: boolean = false;
+        cachedApps.every((cachedItem) => {
+            const matches = appsList.filter((item) => {
+                return this.compareAppsItems(cachedItem, item);
+            });
+            // If we find no matches to this cache item in items, then arrays differ.
+            if (matches.length === 0) {
+                differs = true;
+                return false;
+            }
+            return true;
+        });
+        return differs;
+    }
+
+    private compareAppsItems(cachedItem: models.AppResponse, item: models.AppResponse): boolean {
+        const hashOfTheCachedObject = Md5.hashStr(JSON.stringify(cachedItem));
+        const hashOfTheIncomingObject = Md5.hashStr(JSON.stringify(item));
+        return hashOfTheCachedObject === hashOfTheIncomingObject;
     }
 }

@@ -5,6 +5,7 @@ import { AppCenterProfile, CommandParams, CurrentApp } from '../../helpers/inter
 import { MenuHelper } from '../../helpers/menuHelper';
 import { SettingsHelper } from '../../helpers/settingsHelper';
 import { Utils } from '../../helpers/utils';
+import { CustomQuickPickItem } from '../../helpers/vsCodeUtils';
 import { Strings } from '../../strings';
 import * as CodePush from './codepush';
 import { Command } from './command';
@@ -30,46 +31,43 @@ export default class ShowMenu extends Command {
         super.runNoClient();
 
         return this.appCenterProfile.then((profile: AppCenterProfile | null) => {
-            let appCenterMenuOptions: vscode.QuickPickItem[] = [];
+            let appCenterMenuOptions: CustomQuickPickItem[] = [];
             if (!profile) {
-
-                // In rare cases that might happen.
-                appCenterMenuOptions.push(<vscode.QuickPickItem>{
+                appCenterMenuOptions.push(<CustomQuickPickItem>{
                     label: Strings.LoginMenuLabel,
-                    description: "",
+                    description: Strings.LoginMenuDescription,
                     target: CommandNames.Login
                 });
-                return this.showQuickPick(appCenterMenuOptions);
+                return this.showMenuQuickPick(appCenterMenuOptions);
             }
-            const rootPath: string = <string>this.manager.projectRootPath;
+
+            let currentApp: CurrentApp | undefined;
+            if (profile.currentApp) {
+                currentApp = profile.currentApp;
+            }
+
             // For empty directory show only `Start New Idea`
-            if (FSUtils.IsEmptyDirectoryToStartNewIdea(rootPath)) {
-                appCenterMenuOptions.push(<vscode.QuickPickItem>{
+            if (FSUtils.IsEmptyDirectoryToStartNewIdea(this.rootPath)) {
+                appCenterMenuOptions.push(<CustomQuickPickItem>{
                     label: Strings.StartAnIdeaMenuLabel,
                     description: Strings.StartAnIdeaMenuDescription,
                     target: CommandNames.Start
                 });
             } else {
-                let currentApp: CurrentApp | undefined;
-                if (profile.currentApp) {
-                    currentApp = profile.currentApp;
-                }
-
-                appCenterMenuOptions.push(<vscode.QuickPickItem>{
+                appCenterMenuOptions.push(<CustomQuickPickItem>{
                     label: Strings.setCurrentAppMenuText(currentApp),
                     description: Strings.MenuCurrentAppDescription,
                     target: CommandNames.SetCurrentApp
                 });
 
-                const isReactNativeProject = Utils.isReactNativeProject(rootPath, /* showMessageOnError */false);
-                if (isReactNativeProject && currentApp) {
+                if (Utils.isReactNativeProject(this.rootPath, false) && currentApp) {
                     this.isOrg = currentApp.type.toLowerCase() === AppCenteAppType.Org.toLowerCase();
                     this.appName = currentApp.appName;
                     this.ownerName = currentApp.ownerName;
                     appCenterMenuOptions = appCenterMenuOptions.concat(MenuHelper.getAppCenterPortalMenuItems());
 
-                    if (Utils.isReactNativeCodePushProject(rootPath, false)) {
-                        appCenterMenuOptions.push(<vscode.QuickPickItem>{
+                    if (Utils.isReactNativeCodePushProject(this.rootPath, false)) {
+                        appCenterMenuOptions.push(<CustomQuickPickItem>{
                             label: Strings.CodePushMenuLabelItem,
                             description: Strings.CodePushMenuLabelDescription,
                             target: CommandNames.CodePush.ShowMenu
@@ -78,80 +76,74 @@ export default class ShowMenu extends Command {
                 }
             }
 
-            const crashesEnabled = SettingsHelper.isCrashesEnabled();
-            if (crashesEnabled && profile.currentApp) {
-                appCenterMenuOptions.push(<vscode.QuickPickItem>{
+            if (SettingsHelper.isCrashesEnabled() && currentApp) {
+                appCenterMenuOptions.push(<CustomQuickPickItem>{
                     label: Strings.ToolsMenuLabel,
                     description: Strings.ToolsMenuDescription,
                     target: CommandNames.Tools.ShowTools
                 });
             }
 
-            appCenterMenuOptions.push(<vscode.QuickPickItem>{
+            appCenterMenuOptions.push(<CustomQuickPickItem>{
                 label: Strings.SettingsMenuLabel,
                 description: Strings.SettingsMenuDescription,
                 target: CommandNames.Settings.ShowMenu
             });
 
-            return this.showQuickPick(appCenterMenuOptions);
+            return this.showMenuQuickPick(appCenterMenuOptions);
         });
     }
 
-    private showQuickPick(appCenterMenuOptions: vscode.QuickPickItem[]): Promise<void> {
-        return new Promise((resolve) => {
-            return vscode.window.showQuickPick(appCenterMenuOptions, { placeHolder: Strings.MenuTitlePlaceholder })
-                .then((selected: { label: string, description: string, target: string }) => {
-                    if (!selected) {
-                        // user cancel selection
-                        resolve();
-                        return;
-                    }
+    private async showMenuQuickPick(appCenterMenuOptions: CustomQuickPickItem[]): Promise<void> {
+        return vscode.window.showQuickPick(appCenterMenuOptions, { placeHolder: Strings.MenuTitlePlaceholder })
+            .then((selected: CustomQuickPickItem) => {
+                if (!selected) {
+                    return;
+                }
 
-                    switch (selected.target) {
-                        case (AppCenterBeacons.Build):
-                        case (AppCenterBeacons.Test):
-                        case (AppCenterBeacons.Distribute):
-                        case (AppCenterBeacons.Analytics):
-                        case (AppCenterBeacons.Crashes):
-                        case (AppCenterBeacons.Push):
-                            MenuHelper.handleMenuPortalQuickPickSelection(selected.target, this.ownerName, this.appName, this.isOrg);
-                            break;
+                switch (selected.target) {
+                    case (AppCenterBeacons.Build):
+                    case (AppCenterBeacons.Test):
+                    case (AppCenterBeacons.Distribute):
+                    case (AppCenterBeacons.Analytics):
+                    case (AppCenterBeacons.Crashes):
+                    case (AppCenterBeacons.Push):
+                        MenuHelper.handleMenuPortalQuickPickSelection(selected.target, this.ownerName, this.appName, this.isOrg);
+                        break;
 
-                        case (CommandNames.Start):
-                            new Start(this._params).run();
-                            break;
+                    case (CommandNames.Start):
+                        new Start(this._params).run();
+                        break;
 
-                        case (CommandNames.Login):
-                            new Login(this._params).run();
-                            break;
+                    case (CommandNames.Login):
+                        new Login(this._params).run();
+                        break;
 
-                        case (CommandNames.SetCurrentApp):
-                            new SetCurrentApp(this._params).run();
-                            break;
+                    case (CommandNames.SetCurrentApp):
+                        new SetCurrentApp(this._params).run();
+                        break;
 
-                        case (CommandNames.GetCurrentApp):
-                            new GetCurrentApp(this._params).runNoClient();
-                            break;
+                    case (CommandNames.GetCurrentApp):
+                        new GetCurrentApp(this._params).runNoClient();
+                        break;
 
-                        case (CommandNames.CodePush.ShowMenu):
-                            new CodePush.ShowMenu(this._params).runNoClient();
-                            break;
+                    case (CommandNames.CodePush.ShowMenu):
+                        new CodePush.ShowMenu(this._params).runNoClient();
+                        break;
 
-                        case (CommandNames.Settings.ShowMenu):
-                            new Settings.ShowMenu(this._params).run();
-                            break;
+                    case (CommandNames.Settings.ShowMenu):
+                        new Settings.ShowMenu(this._params).run();
+                        break;
 
-                        case (CommandNames.Tools.ShowTools):
-                            new Tools.ShowTools(this._params).runNoClient();
-                            break;
+                    case (CommandNames.Tools.ShowTools):
+                        new Tools.ShowTools(this._params).runNoClient();
+                        break;
 
-                        default:
-                            // Ideally shouldn't be there :)
-                            this.logger.error("Unknown AppCenter menu command");
-                            break;
-                    }
-                    resolve();
-                });
+                    default:
+                        // Ideally shouldn't be there :)
+                        this.logger.error("Unknown AppCenter menu command");
+                        break;
+            }
         });
     }
 }
