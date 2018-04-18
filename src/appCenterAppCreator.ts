@@ -3,13 +3,15 @@ import { AppCenterOS, AppCenterPlatform, Constants } from "./constants";
 import { AppCenterUrlBuilder } from "./helpers/appCenterUrlBuilder";
 import { CreatedAppFromAppCenter } from "./helpers/interfaces";
 import { SettingsHelper } from "./helpers/settingsHelper";
+import { IButtonMessageItem, VsCodeUtils } from "./helpers/vsCodeUtils";
 import { ILogger } from "./log/logHelper";
+import { Strings } from "./strings";
 
 export default class AppCenterAppCreator {
     protected platform: AppCenterPlatform = AppCenterPlatform.ReactNative;
     protected os: AppCenterOS;
 
-    constructor(private client: AppCenterClient, private logger: ILogger) {}
+    constructor(private client: AppCenterClient, private logger: ILogger) { }
 
     public async withBranchConfigurationCreatedAndBuildKickOff(appName: string, branchName: string, ownerName: string): Promise<boolean> {
         // TODO: get out what to do with this magic with not working of method to create default config!
@@ -25,11 +27,18 @@ export default class AppCenterAppCreator {
             const url = AppCenterUrlBuilder.GetPortalBuildLink(ownerName, appName, realBranchName, buildId.toString());
             this.logger.info(`Queued a new build for "${appName}": ${url}`);
         } catch (error) {
+            const configureBuildLink: string = AppCenterUrlBuilder.GetPortalBuildConfigureLink(ownerName, appName, branchName);
             if (error.statusCode === 400) {
                 this.logger.error(`An error occurred while configuring your ${appName}" app for build`);
-              } else {
+            } else {
                 this.logger.error(`An unexpected error occurred while queueing a build for "${appName}"`);
             }
+            const messageItems: IButtonMessageItem[] = [];
+            messageItems.push({
+                title: Strings.BuildManualConfigureBtnLabel,
+                url: configureBuildLink
+            });
+            VsCodeUtils.ShowInfoMessage(Strings.BuildManualConfigureMessage(appName), ...messageItems);
             return false;
         }
         return true;
@@ -40,7 +49,15 @@ export default class AppCenterAppCreator {
             await this.client.repositoryConfigurations.createOrUpdate(ownerName, appName, repoUrl);
             return true;
         } catch (err) {
+            const connectRepoLink: string = AppCenterUrlBuilder.GetPortalConnectRepoLink(ownerName, appName);
             this.logger.error(`Could not connect your new repository "${repoUrl}" to your "${appName}" App Center project`);
+
+            const messageItems: IButtonMessageItem[] = [];
+            messageItems.push({
+                title: Strings.RepoManualConnectBtnLabel,
+                url: connectRepoLink
+            });
+            VsCodeUtils.ShowInfoMessage(Strings.RepoManualConnectMessage(appName), ...messageItems);
             return false;
         }
     }
@@ -51,9 +68,9 @@ export default class AppCenterAppCreator {
         } catch (error) {
             if (error === 409) {
                 this.logger.error(`Distribution group "${SettingsHelper.distribitionGroupTestersName()}" in "${appName}" already exists`);
-              } else {
+            } else {
                 this.logger.error(`An unexpected error occurred while creating a distribution group for "${appName}"`);
-              }
+            }
             return false;
         }
         return true;

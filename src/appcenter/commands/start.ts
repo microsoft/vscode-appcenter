@@ -98,7 +98,6 @@ export default class Start extends Command {
                 const vstsProject: VSTSProject | null = await this.selectVstsProject(vsts);
                 if (!vstsProject) {
                     this.logger.error("Failed to get VSTS Project");
-                    VsCodeUtils.ShowErrorMessage(Strings.FailedToGetVSTSProjects);
                     return;
                 }
 
@@ -219,9 +218,17 @@ export default class Start extends Command {
                 const organizations: models.ListOKResponseItem[] = orgList;
                 return organizations.sort((a, b): any => {
                     if (a.displayName && b.displayName) {
-                        return a.displayName > b.displayName; // sort alphabetically
+                        const nameA = a.displayName.toUpperCase();
+                        const nameB = b.displayName.toUpperCase();
+                        if (nameA < nameB) {
+                            return -1;
+                          }
+                          if (nameA > nameB) {
+                            return 1;
+                          }
+                          return 0; // sort alphabetically
                     } else {
-                        return false;
+                        return 0;
                     }
                 });
             });
@@ -280,7 +287,7 @@ export default class Start extends Command {
         if (!apps || apps.length === 0) {
             return saved;
         }
-        this.logger.debug("Updating app secrets...");
+        this.logger.debug("Setting app secrets...");
         apps.forEach((app: CreatedAppFromAppCenter) => {
             if (!app || !app.appSecret) {
                 return saved;
@@ -307,7 +314,7 @@ export default class Start extends Command {
         if (!deployments || deployments.length === 0) {
             return saved;
         }
-        this.logger.info("Updating CodePush Deployment Keys...");
+        this.logger.info("Setting CodePush deployment keys...");
         deployments.forEach(async (deployment: Deployment) => {
             if (!deployment || !deployment.os || !deployment.key) {
                 return saved;
@@ -431,9 +438,17 @@ export default class Start extends Command {
         if (projectList) {
             projectList = projectList.sort((a, b): any => {
                 if (a.name && b.name) {
-                    return a.name > b.name; // sort alphabetically
+                    const nameA = a.name.toUpperCase();
+                    const nameB = b.name.toUpperCase();
+                    if (nameA < nameB) {
+                        return -1;
+                      }
+                      if (nameA > nameB) {
+                        return 1;
+                      }
+                      return 0; // sort alphabetically
                 } else {
-                    return false;
+                    return 0;
                 }
             });
             const options: QuickPickAppItem[] = projectList.map((project: VSTSProject) => {
@@ -443,7 +458,7 @@ export default class Start extends Command {
                     target: `${project.id}`
                 };
             });
-            await vscode.window.showQuickPick(options, { placeHolder: Strings.ProvideCurrentAppPromptMsg })
+            await vscode.window.showQuickPick(options, { placeHolder: Strings.ProvideVSTSProjectPromptMsg })
             .then(async (selected: QuickPickAppItem) => {
                 if (!selected) {
                     this.logger.debug('User cancel selection of vsts project');
