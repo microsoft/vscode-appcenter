@@ -1,16 +1,13 @@
 import * as vscode from "vscode";
-import { AppCenteAppType, Constants } from "../../constants";
+import { AppCenteAppType } from "../../constants";
 import { CommandParams, CurrentApp, QuickPickAppItem } from "../../helpers/interfaces";
 import { MenuHelper } from "../../helpers/menuHelper";
-import { CustomQuickPickItem, VsCodeUtils } from "../../helpers/vsCodeUtils";
+import { CustomQuickPickItem } from "../../helpers/vsCodeUtils";
 import { Strings } from "../../strings";
 import { models } from "../apis";
 import { ReactNativeAppCommand } from "./reactNativeAppCommand";
 
 export default class AppCenterPortalMenu extends ReactNativeAppCommand {
-
-    private currentAppMenuTarget: string = "MenuCurrentApp";
-    private userAlreadySelectedApp: boolean;
     private appName: string;
     private ownerName: string;
     private isOrg: boolean;
@@ -23,55 +20,11 @@ export default class AppCenterPortalMenu extends ReactNativeAppCommand {
         if (!await super.run()) {
             return;
         }
-        try {
-            this.showAppsQuickPick(this.CachedApps);
-            vscode.window.withProgress({ location: vscode.ProgressLocation.Window, title: Strings.GetAppsListMessage }, async () => {
-                return await this.client.apps.list({
-                    orderBy: "name"
-                });
-            }).then((apps: any) => {
-                const rnApps: models.AppResponse[] = apps.filter(app => app.platform === Constants.AppCenterReactNativePlatformName);
-                // we repaint menu only in case we have changed apps
-                if (this.cachedAppsItemsDiffer(rnApps, ReactNativeAppCommand.cachedApps)) {
-                    this.showAppsQuickPick(rnApps);
-                }
-            });
-        } catch (e) {
-            VsCodeUtils.ShowErrorMessage(Strings.UnknownError);
-            this.logger.error(e.message, e);
-        }
+        this.showAppsQuickPick(this.CachedApps, true);
+        this.refreshCachedAppsAndRepaintQuickPickIfNeeded(true);
     }
 
-    private async showAppsQuickPick(rnApps: models.AppResponse[]) {
-        if (!rnApps) {
-            this.logger.debug("Do not show apps quick pick due to no apps (either in cache or fetched from server");
-            return;
-        }
-
-        ReactNativeAppCommand.cachedApps = rnApps;
-        const options: QuickPickAppItem[] = MenuHelper.getQuickPickItemsForAppsList(rnApps);
-        const currentApp: CurrentApp | null = await this.getCurrentApp();
-
-        if (currentApp) {
-            const currentAppItem = {
-                label: Strings.SelectCurrentAppMenuDescription,
-                description: currentApp.type,
-                target: this.currentAppMenuTarget
-            };
-            options.splice(0, 0, currentAppItem);
-        }
-        if (!this.userAlreadySelectedApp) {
-            vscode.window.showQuickPick(options, { placeHolder: Strings.ProvideCurrentAppPromptMsg }).then((selected: QuickPickAppItem) => {
-                this.userAlreadySelectedApp = true;
-                if (!selected) {
-                    return;
-                }
-                this.handleShowCurrentAppQuickPickSelection(selected.target, rnApps);
-            });
-        }
-    }
-
-    private async handleShowCurrentAppQuickPickSelection(target: string, rnApps: models.AppResponse[]) {
+    protected async handleShowCurrentAppQuickPickSelection(target: string, rnApps: models.AppResponse[]) {
         let selectedApp: models.AppResponse;
 
         const selectedApps: models.AppResponse[] = rnApps.filter(app => app.name === target);
