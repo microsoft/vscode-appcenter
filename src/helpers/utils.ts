@@ -4,6 +4,7 @@ import * as open from 'open';
 import * as opener from 'opener';
 import * as os from 'os';
 import * as path from 'path';
+import { models } from '../appcenter/apis';
 import { AppCenterOS, Constants } from '../constants';
 import { Strings } from '../strings';
 import { CurrentApp, CurrentAppDeployments } from './interfaces';
@@ -153,5 +154,21 @@ export class Utils {
 
     public static getAppCenterTokensFileName() {
         return path.join(Utils.getUserDir(), Constants.TokenDir, Constants.AppCenterTokenFileName);
+    }
+
+    public static sortOrganizations(a: models.ListOKResponseItem, b: models.ListOKResponseItem): number {
+        if (a.displayName && b.displayName) {
+            const nameA = a.displayName.toUpperCase();
+            const nameB = b.displayName.toUpperCase();
+            if (nameA < nameB) {
+                return -1;
+            }
+            if (nameA > nameB) {
+                return 1;
+            }
+            return 0; // sort alphabetically
+        } else {
+            return 0;
+        }
     }
 }

@@ -3,7 +3,7 @@ import { models } from "../appcenter/apis";
 import { AppCenterBeacons, AppCenterDistributionTabs, CommandNames } from "../constants";
 import { Strings } from "../strings";
 import { AppCenterUrlBuilder } from "./appCenterUrlBuilder";
-import { QuickPickAppItem, UserOrOrganizationItem } from "./interfaces";
+import { Profile, QuickPickAppItem, UserOrOrganizationItem } from "./interfaces";
 import { Utils } from "./utils";
 import { CustomQuickPickItem } from "./vsCodeUtils";
 
@@ -161,5 +161,24 @@ export class MenuHelper {
                 target: `${app.name}`
             };
         });
+    }
+
+    public static getQuickPickItemsForOrgList(orgList: models.ListOKResponseItem[], myself: Profile | null): CustomQuickPickItem[] {
+        const options: CustomQuickPickItem[] = orgList.map(item => {
+            return {
+                label: `${item.displayName} (${item.name})`,
+                description: Strings.OrganizationMenuDescriptionLabel,
+                target: item.name
+            };
+        });
+        if (myself) {
+            // Insert user at the very 1st position
+            options.splice(0, 0, {
+                label: `${myself.displayName}`,
+                description: Strings.UserMenuDescriptionLabel,
+                target: myself.userName
+            });
+        }
+        return options;
     }
 }

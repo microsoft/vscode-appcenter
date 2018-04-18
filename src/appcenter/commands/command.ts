@@ -1,7 +1,9 @@
 import * as vscode from "vscode";
 import { ExtensionManager } from "../../extensionManager";
 import { AppCenterProfile, CommandParams, Profile } from "../../helpers/interfaces";
+import { MenuHelper } from "../../helpers/menuHelper";
 import { SettingsHelper } from "../../helpers/settingsHelper";
+import { Utils } from "../../helpers/utils";
 import { CustomQuickPickItem, VsCodeUtils } from "../../helpers/vsCodeUtils";
 import { ILogger } from "../../log/logHelper";
 import { Strings } from "../../strings";
@@ -94,40 +96,11 @@ export class Command {
             p.report({ message: Strings.LoadingStatusBarMessage });
             return this.client.organizations.list().then((orgList: models.ListOKResponseItem[]) => {
                 const organizations: models.ListOKResponseItem[] = orgList;
-                return organizations.sort((a, b): any => {
-                    if (a.displayName && b.displayName) {
-                        const nameA = a.displayName.toUpperCase();
-                        const nameB = b.displayName.toUpperCase();
-                        if (nameA < nameB) {
-                            return -1;
-                        }
-                        if (nameA > nameB) {
-                            return 1;
-                        }
-                        return 0; // sort alphabetically
-                    } else {
-                        return 0;
-                    }
-                });
+                return organizations.sort(Utils.sortOrganizations);
             });
         }).then(async (orgList: models.ListOKResponseItem[]) => {
-            const options: CustomQuickPickItem[] = orgList.map(item => {
-                return {
-                    label: `${item.displayName} (${item.name})`,
-                    description: Strings.OrganizationMenuDescriptionLabel,
-                    target: item.name
-                };
-            });
             const myself: Profile | null = await this.appCenterProfile;
-            if (myself) {
-                // Insert user at the very 1st position
-                options.splice(0, 0, {
-                    label: `${myself.displayName}`,
-                    description: Strings.UserMenuDescriptionLabel,
-                    target: myself.userName
-                });
-            }
-            items = options;
+            items = MenuHelper.getQuickPickItemsForOrgList(orgList, myself);
         });
         return items;
     }
