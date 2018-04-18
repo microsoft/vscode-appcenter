@@ -1,6 +1,7 @@
 import * as vscode from "vscode";
 import { AppCenterOS, CommandNames, Constants } from "../../constants";
 import { CommandParams, CurrentApp, CurrentAppDeployments, QuickPickAppItem } from "../../helpers/interfaces";
+import { MenuHelper } from "../../helpers/menuHelper";
 import { VsCodeUtils } from "../../helpers/vsCodeUtils";
 import { Strings } from "../../strings";
 import { models } from "../apis";
@@ -55,7 +56,7 @@ export default class SetCurrentApp extends ReactNativeAppCommand {
         try {
             let rnApps;
             ReactNativeAppCommand.cachedApps = rnApps = appsList.filter(app => app.platform === Constants.AppCenterReactNativePlatformName);
-            const options: QuickPickAppItem[] = VsCodeUtils.getQuickPickItemsForAppsList(rnApps);
+            const options: QuickPickAppItem[] = MenuHelper.getQuickPickItemsForAppsList(rnApps);
             const createNewAppItem = {
                 label: Strings.CreateNewAppMenuLabel,
                 description: "",
@@ -140,7 +141,7 @@ export default class SetCurrentApp extends ReactNativeAppCommand {
     }
 
     private showCreateAppOptions() {
-        const appCenterPortalTabOptions: vscode.QuickPickItem[] = this.getCreateAppOptions();
+        const appCenterPortalTabOptions: vscode.QuickPickItem[] = MenuHelper.getCreateAppOptions();
 
         return vscode.window.showQuickPick(appCenterPortalTabOptions, { placeHolder: Strings.CreateAppPlaceholder })
             .then(async (selected: QuickPickAppItem) => {
@@ -165,25 +166,5 @@ export default class SetCurrentApp extends ReactNativeAppCommand {
                         break;
                 }
             });
-    }
-
-    private getCreateAppOptions(): vscode.QuickPickItem[] {
-        const createAppOptions: vscode.QuickPickItem[] = [];
-        createAppOptions.push(<vscode.QuickPickItem>{
-            label: Strings.CreateNewAndroidAppMenuLabel,
-            description: "",
-            target: CommandNames.CreateApp.Android
-        });
-        createAppOptions.push(<vscode.QuickPickItem>{
-            label: Strings.CreateNewIOSAppMenuLabel,
-            description: "",
-            target: CommandNames.CreateApp.IOS
-        });
-        createAppOptions.push(<vscode.QuickPickItem>{
-            label: Strings.CreateNewAppsForBothMenuLabel,
-            description: "",
-            target: CommandNames.CreateApp.Both
-        });
-        return createAppOptions;
     }
 }
