@@ -18,6 +18,14 @@ export class AppCenterUrlBuilder {
         }
     }
 
+    public static GetAppCenterAppLink(ownerName: string, appName: string, isOrg: boolean): string {
+        if (isOrg) {
+            return `${SettingsHelper.getAppCenterPortalEndpoint()}/orgs/${ownerName}/apps/${appName}/`;
+        } else {
+            return `${SettingsHelper.getAppCenterPortalEndpoint()}/users/${ownerName}/apps/${appName}/`;
+        }
+    }
+
     public static GetPortalBuildConfigureLink(appOwner: string, appName: string, branchName: string): string {
         return `${SettingsHelper.getAppCenterPortalEndpoint()}/users/${appOwner}/apps/${appName}/build/branches/${branchName}/setup`;
     }

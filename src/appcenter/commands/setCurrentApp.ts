@@ -8,6 +8,7 @@ import { models } from "../apis";
 import { Deployment } from "../apis/generated/models";
 import { CreateNewApp, CreateNewAppOption } from "./createNewApp";
 import { ReactNativeAppCommand } from './reactNativeAppCommand';
+import { Utils } from "../../helpers/utils";
 
 export default class SetCurrentApp extends ReactNativeAppCommand {
 
@@ -39,19 +40,6 @@ export default class SetCurrentApp extends ReactNativeAppCommand {
         });
     }
 
-    private toAppCenterOS(codePushOs: string): AppCenterOS | undefined {
-        switch (codePushOs.toLowerCase()) {
-            case 'android':
-                return AppCenterOS.Android;
-            case 'ios':
-                return AppCenterOS.iOS;
-            case 'windows':
-                return AppCenterOS.Windows;
-            default:
-                throw new Error('Unknown AppCenter OS');
-        }
-    }
-
     private showApps(appsList: models.AppResponse[]) {
         try {
             let rnApps;
@@ -81,7 +69,7 @@ export default class SetCurrentApp extends ReactNativeAppCommand {
                         const selectedAppSecret: string = selectedApp.appSecret;
                         const type: string = selectedApp.owner.type;
 
-                        const OS: AppCenterOS | undefined = this.toAppCenterOS(selectedApp.os);
+                        const OS: AppCenterOS | undefined = Utils.toAppCenterOS(selectedApp.os);
                         if (!OS) {
                             this.logger.error(`Couldn't recognize os ${selectedApp.os} returned from CodePush server.`);
                             return false;

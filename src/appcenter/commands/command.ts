@@ -1,10 +1,11 @@
+import * as vscode from "vscode"
 import { ExtensionManager } from "../../extensionManager";
-import { AppCenterProfile, CommandParams } from "../../helpers/interfaces";
+import { AppCenterProfile, CommandParams, Profile } from "../../helpers/interfaces";
 import { SettingsHelper } from "../../helpers/settingsHelper";
-import { VsCodeUtils } from "../../helpers/vsCodeUtils";
+import { VsCodeUtils, CustomQuickPickItem } from "../../helpers/vsCodeUtils";
 import { ILogger } from "../../log/logHelper";
 import { Strings } from "../../strings";
-import { AppCenterClient, AppCenterClientFactory, createAppCenterClient } from "../apis";
+import { AppCenterClient, AppCenterClientFactory, createAppCenterClient, models } from "../apis";
 import AppCenterAuth from "../auth/appCenterAuth";
 import VstsAuth from "../auth/vstsAuth";
 
@@ -80,5 +81,50 @@ export class Command {
             }
         }
         return this.client;
+    }
+
+    protected async getUserOrOrganizationItems(): Promise<CustomQuickPickItem[]> {
+        let items: CustomQuickPickItem[] = [];
+        this.logger.debug("Getting user/organization items...");
+        await vscode.window.withProgress({ location: vscode.ProgressLocation.Window, title: Strings.VSCodeProgressLoadingTitle }, p => {
+            p.report({ message: Strings.LoadingStatusBarMessage });
+            return this.client.organizations.list().then((orgList: models.ListOKResponseItem[]) => {
+                const organizations: models.ListOKResponseItem[] = orgList;
+                return organizations.sort((a, b): any => {
+                    if (a.displayName && b.displayName) {
+                        const nameA = a.displayName.toUpperCase();
+                        const nameB = b.displayName.toUpperCase();
+                        if (nameA < nameB) {
+                            return -1;
+                        }
+                        if (nameA > nameB) {
+                            return 1;
+                        }
+                        return 0; // sort alphabetically
+                    } else {
+                        return 0;
+                    }
+                });
+            });
+        }).then(async (orgList: models.ListOKResponseItem[]) => {
+            const options: CustomQuickPickItem[] = orgList.map(item => {
+                return {
+                    label: `${item.displayName} (${item.name})`,
+                    description: Strings.OrganizationMenuDescriptionLabel,
+                    target: item.name
+                };
+            });
+            const myself: Profile | null = await this.appCenterProfile;
+            if (myself) {
+                // Insert user at the very 1st position
+                options.splice(0, 0, {
+                    label: `${myself.displayName}`,
+                    description: Strings.UserMenuDescriptionLabel,
+                    target: myself.userName
+                });
+            }
+            items = options;
+        });
+        return items;
     }
 }

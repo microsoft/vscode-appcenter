@@ -8,7 +8,6 @@ import { cpUtils } from '../../helpers/cpUtils';
 import { FSUtils } from '../../helpers/fsUtils';
 import { GitUtils } from '../../helpers/gitUtils';
 import { CommandParams, CreatedAppFromAppCenter, Deployment, QuickPickAppItem, UserOrOrganizationItem, VstsProfile } from '../../helpers/interfaces';
-import { Profile } from '../../helpers/interfaces';
 import { SettingsHelper } from '../../helpers/settingsHelper';
 import { Validators } from '../../helpers/validators';
 import { CustomQuickPickItem, VsCodeUtils } from '../../helpers/vsCodeUtils';
@@ -19,6 +18,7 @@ import { models } from '../apis';
 import Auth from '../auth/auth';
 import { Command } from './command';
 import LoginToVsts from './settings/loginToVsts';
+import { MenuHelper } from '../../helpers/menuHelper';
 // tslint:disable-next-line:no-var-requires
 const GitUrlParse = require("git-url-parse");
 
@@ -134,7 +134,7 @@ export default class Start extends Command {
             vscode.window.showQuickPick(userOrOrgQuickPickItems, { placeHolder: Strings.PleaseSelectCurrentAppOrgMsg, ignoreFocusOut: true })
             .then(async (selectedQuickPickItem: CustomQuickPickItem) => {
                 if (selectedQuickPickItem) {
-                    const userOrOrgItem: UserOrOrganizationItem | null = this.getSelectedUserOrOrgItem(selectedQuickPickItem, userOrOrgQuickPickItems);
+                    const userOrOrgItem: UserOrOrganizationItem | null = MenuHelper.getSelectedUserOrOrgItem(selectedQuickPickItem, userOrOrgQuickPickItems);
                     if (!userOrOrgItem) {
                         VsCodeUtils.ShowErrorMessage(Strings.FailedToGetSelectedUserOrOrganizationMsg);
                         return;
@@ -192,67 +192,7 @@ export default class Start extends Command {
                 }
             });
         });
-    }
-
-    private getSelectedUserOrOrgItem(selected: CustomQuickPickItem, allItems: CustomQuickPickItem[]): UserOrOrganizationItem | null {
-        let userOrOrgItem: UserOrOrganizationItem;
-        const selectedUserOrOrgs: CustomQuickPickItem[] = allItems.filter(item => item.target === selected.target);
-        if (selectedUserOrOrgs && selectedUserOrOrgs.length === 1) {
-            userOrOrgItem = {
-                name: selectedUserOrOrgs[0].target,
-                displayName: selectedUserOrOrgs[0].label,
-                isOrganization: selectedUserOrOrgs[0].description !== Strings.UserMenuDescriptionLabel
-            };
-            return userOrOrgItem;
-        } else {
-            return null;
-        }
-    }
-
-    private async getUserOrOrganizationItems(): Promise<CustomQuickPickItem[]> {
-        let items: CustomQuickPickItem[] = [];
-        this.logger.debug("Getting user/organization items...");
-        await vscode.window.withProgress({ location: vscode.ProgressLocation.Window, title: Strings.VSCodeProgressLoadingTitle}, p => {
-            p.report({message: Strings.LoadingStatusBarMessage });
-            return this.client.organizations.list().then((orgList: models.ListOKResponseItem[]) => {
-                const organizations: models.ListOKResponseItem[] = orgList;
-                return organizations.sort((a, b): any => {
-                    if (a.displayName && b.displayName) {
-                        const nameA = a.displayName.toUpperCase();
-                        const nameB = b.displayName.toUpperCase();
-                        if (nameA < nameB) {
-                            return -1;
-                          }
-                          if (nameA > nameB) {
-                            return 1;
-                          }
-                          return 0; // sort alphabetically
-                    } else {
-                        return 0;
-                    }
-                });
-            });
-            }).then(async (orgList: models.ListOKResponseItem[]) => {
-            const options: CustomQuickPickItem[] = orgList.map(item => {
-                return {
-                    label: `${item.displayName} (${item.name})`,
-                    description: Strings.OrganizationMenuDescriptionLabel,
-                    target: item.name
-                };
-            });
-            const myself: Profile | null = await this.appCenterProfile;
-            if (myself) {
-                // Insert user at the very 1st position
-                options.splice( 0, 0, {
-                    label: `${myself.displayName}`,
-                    description: Strings.UserMenuDescriptionLabel,
-                    target: myself.userName
-                });
-            }
-            items = options;
-        });
-        return items;
-    }
+    }    
 
     private async runNPMInstall(): Promise<boolean> {
         try {
