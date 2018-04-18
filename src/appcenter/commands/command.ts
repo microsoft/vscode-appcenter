@@ -1,8 +1,8 @@
-import * as vscode from "vscode"
+import * as vscode from "vscode";
 import { ExtensionManager } from "../../extensionManager";
 import { AppCenterProfile, CommandParams, Profile } from "../../helpers/interfaces";
 import { SettingsHelper } from "../../helpers/settingsHelper";
-import { VsCodeUtils, CustomQuickPickItem } from "../../helpers/vsCodeUtils";
+import { CustomQuickPickItem, VsCodeUtils } from "../../helpers/vsCodeUtils";
 import { ILogger } from "../../log/logHelper";
 import { Strings } from "../../strings";
 import { AppCenterClient, AppCenterClientFactory, createAppCenterClient, models } from "../apis";
@@ -25,6 +25,10 @@ export class Command {
         this.appCenterAuth = commandParams.appCenterAuth;
         this.vstsAuth = commandParams.vstsAuth;
         this.clientFactory = createAppCenterClient();
+    }
+
+    public get rootPath(): string {
+        return <string>this.manager.projectRootPath;
     }
 
     public get appCenterProfile(): Promise<AppCenterProfile | null> {

@@ -1,14 +1,15 @@
-import * as vscode from "vscode"
-import { CommandParams, CreatedAppFromAppCenter, UserOrOrganizationItem } from '../../helpers/interfaces';
-import { CustomQuickPickItem, VsCodeUtils, IButtonMessageItem } from '../../helpers/vsCodeUtils';
-import { Strings } from '../../strings';
-import { MenuHelper } from '../../helpers/menuHelper';
-import { Utils } from "../../helpers/utils";
+import * as vscode from "vscode";
 import AppCenterAppBuilder from "../../appCenterAppBuilder";
-import AppCenterAppCreator, { IOSAppCenterAppCreator, AndroidAppCenterAppCreator } from "../../appCenterAppCreator";
-import { ReactNativeAppCommand } from "./reactNativeAppCommand";
+import AppCenterAppCreator, { AndroidAppCenterAppCreator, IOSAppCenterAppCreator } from "../../appCenterAppCreator";
 import { Constants } from "../../constants";
 import { AppCenterUrlBuilder } from "../../helpers/appCenterUrlBuilder";
+import { CommandParams, CreatedAppFromAppCenter, UserOrOrganizationItem } from '../../helpers/interfaces';
+import { MenuHelper } from '../../helpers/menuHelper';
+import { Utils } from "../../helpers/utils";
+import { CustomQuickPickItem, IButtonMessageItem, VsCodeUtils } from '../../helpers/vsCodeUtils';
+import { Strings } from '../../strings';
+
+import { ReactNativeAppCommand } from "./reactNativeAppCommand";
 
 export enum CreateNewAppOption {
     Android,
@@ -92,9 +93,9 @@ export class CreateNewApp extends ReactNativeAppCommand {
     }
 
     private getCreateAppPromises(): Promise<false | CreatedAppFromAppCenter>[] {
-        const appName = Utils.parseJsonFile(this.manager.projectRootPath + "/package.json", "").name;
-        let promises: Promise<false | CreatedAppFromAppCenter>[] = [];
-        if (this._option == CreateNewAppOption.IOS || this._option == CreateNewAppOption.Both) {
+        const appName = Utils.parseJsonFile(this.rootPath + "/package.json", "").name;
+        const promises: Promise<false | CreatedAppFromAppCenter>[] = [];
+        if (this._option === CreateNewAppOption.IOS || this._option === CreateNewAppOption.Both) {
             if (this.userOrOrg.isOrganization) {
                 promises.push(this.iOSAppCreator.createAppForOrg(AppCenterAppBuilder.getiOSAppName(appName), AppCenterAppBuilder.getiOSDisplayName(appName), <string>this.userOrOrg.name));
             } else {
@@ -102,7 +103,7 @@ export class CreateNewApp extends ReactNativeAppCommand {
             }
         }
 
-        if (this._option == CreateNewAppOption.Android || this._option == CreateNewAppOption.Both) {
+        if (this._option === CreateNewAppOption.Android || this._option === CreateNewAppOption.Both) {
             if (this.userOrOrg.isOrganization) {
                 promises.push(this.androidAppCreator.createAppForOrg(AppCenterAppBuilder.getAndroidAppName(appName), AppCenterAppBuilder.getAndroidDisplayName(appName), <string>this.userOrOrg.name));
             } else {

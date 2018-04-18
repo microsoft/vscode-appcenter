@@ -93,7 +93,7 @@ export class Utils {
     public static isReactNativeCodePushProject(projectRoot: string | undefined, showMessageOnError?: boolean) {
         return Utils.projectHaveNpmPackage(projectRoot, 'react-native-code-push', Strings.CodePushInstallHint, showMessageOnError);
     }
-    
+
     public static toAppCenterOS(codePushOs: string): AppCenterOS | undefined {
         switch (codePushOs.toLowerCase()) {
             case 'android':
