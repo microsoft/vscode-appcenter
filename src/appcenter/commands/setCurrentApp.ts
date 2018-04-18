@@ -96,7 +96,7 @@ export default class SetCurrentApp extends ReactNativeAppCommand {
         return vscode.window.showQuickPick(appCenterPortalTabOptions, { placeHolder: Strings.CreateAppPlaceholder })
             .then(async (selected: QuickPickAppItem) => {
                 if (!selected) {
-                    this.logger.info('User cancel selection of create app tab');
+                    this.logger.debug('User cancel selection of create app tab');
                     return;
                 }
 

@@ -9,8 +9,11 @@ export enum CreateNewAppOption {
 
 export class CreateNewApp extends Command {
 
-    constructor(params: CommandParams, private _option: CreateNewAppOption) {
+    constructor(params: CommandParams, private _option?: CreateNewAppOption) {
         super(params);
+        if (!_option) {
+            this._option = CreateNewAppOption.Both;
+        }
     }
 
     public async run(): Promise<boolean | void> {
