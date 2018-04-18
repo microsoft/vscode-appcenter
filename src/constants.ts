@@ -90,6 +90,13 @@ export class CommandNames {
         public static LogoutVsts: string = `${CommandNames.CommandPrefix}settings.vsts.logout`;
     };
 
+    public static CreateApp = class {
+        public static CommandName: string = `${CommandNames.CommandPrefix}appcenter.createNewApp`;
+        public static Android: string = `${CommandNames.CommandPrefix}appcenter.createNewApp.android`;
+        public static IOS: string = `${CommandNames.CommandPrefix}appcenter.createNewApp.ios`;
+        public static Both: string = `${CommandNames.CommandPrefix}appcenter.createNewApp.both`;
+    };
+
     public static Tools = class {
         public static ShowTools: string = `${CommandNames.CommandPrefix}tools`;
         public static SimulateCrashes: string = `${CommandNames.CommandPrefix}tools.simulateCrashes`;

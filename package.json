@@ -63,6 +63,11 @@
                 "category": "AppCenter"
             },
             {
+                "command": "appcenter.createNewApp",
+                "title": "Create new app",
+                "category": "AppCenter"
+            },
+            {
                 "command": "appcenter.settings.loginToAnotherAccount",
                 "title": "Login to another AppCenter account",
                 "category": "AppCenter Settings"
