@@ -1,6 +1,6 @@
 import * as vscode from "vscode";
 import { models } from "../appcenter/apis";
-import { AppCenterBeacons, AppCenterDistributionTabs } from "../constants";
+import { AppCenterBeacons, AppCenterDistributionTabs, CommandNames } from "../constants";
 import { Strings } from "../strings";
 import { AppCenterUrlBuilder } from "./appCenterUrlBuilder";
 import { QuickPickAppItem } from "./interfaces";
@@ -115,6 +115,26 @@ export class MenuHelper {
             target: AppCenterDistributionTabs.Releases
         });
         return getAppCenterDistributeTabMenuItems;
+    }
+
+    public static getCreateAppOptions(): vscode.QuickPickItem[] {
+        const createAppOptions: vscode.QuickPickItem[] = [];
+        createAppOptions.push(<vscode.QuickPickItem>{
+            label: Strings.CreateNewAndroidAppMenuLabel,
+            description: "",
+            target: CommandNames.CreateApp.Android
+        });
+        createAppOptions.push(<vscode.QuickPickItem>{
+            label: Strings.CreateNewIOSAppMenuLabel,
+            description: "",
+            target: CommandNames.CreateApp.IOS
+        });
+        createAppOptions.push(<vscode.QuickPickItem>{
+            label: Strings.CreateNewAppsForBothMenuLabel,
+            description: "",
+            target: CommandNames.CreateApp.Both
+        });
+        return createAppOptions;
     }
 
     public static getQuickPickItemsForAppsList(appsList: models.AppResponse[]) {

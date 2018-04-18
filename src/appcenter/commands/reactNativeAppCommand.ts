@@ -1,6 +1,6 @@
 import { Md5 } from "ts-md5/dist/md5";
 import * as vscode from "vscode";
-import { AppCenterOS, Constants } from '../../constants';
+import { AppCenterOS, CommandNames, Constants } from '../../constants';
 import { AppCenterProfile, CurrentApp, CurrentAppDeployments, QuickPickAppItem } from '../../helpers/interfaces';
 import { MenuHelper } from "../../helpers/menuHelper";
 import { Utils } from '../../helpers/utils';
@@ -90,6 +90,12 @@ export class ReactNativeAppCommand extends Command {
         }
         ReactNativeAppCommand.cachedApps = rnApps;
         const options: QuickPickAppItem[] = MenuHelper.getQuickPickItemsForAppsList(rnApps);
+        const createNewAppItem = {
+            label: Strings.CreateNewAppMenuLabel,
+            description: "",
+            target: CommandNames.CreateApp.CommandName
+        };
+        options.splice(0, 0, createNewAppItem);
         if (includeSelectCurrent) {
             const currentApp: CurrentApp | null = await this.getCurrentApp();
 
