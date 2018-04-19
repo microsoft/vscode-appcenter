@@ -16,23 +16,7 @@ export enum CreateNewAppOption {
 
 export class CreateNewApp extends CreateAppCommand {
 
-    private _androidAppCreator: AndroidAppCenterAppCreator;
-    private _iOSAppCreator: IOSAppCenterAppCreator;
     private userOrOrg: UserOrOrganizationItem;
-
-    public get iOSAppCreator(): AppCenterAppCreator {
-        if (!this._iOSAppCreator) {
-            this._iOSAppCreator = new IOSAppCenterAppCreator(this.client, this.logger);
-        }
-        return this._iOSAppCreator;
-    }
-
-    public get androidAppCreator(): AppCenterAppCreator {
-        if (!this._androidAppCreator) {
-            this._androidAppCreator = new AndroidAppCenterAppCreator(this.client, this.logger);
-        }
-        return this._androidAppCreator;
-    }
 
     constructor(params: CommandParams, private _option: CreateNewAppOption = CreateNewAppOption.Both) {
         super(params);
