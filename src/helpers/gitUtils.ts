@@ -92,7 +92,7 @@ export class GitUtils {
             await gitrepo.add('./*');
             await gitrepo.commit(this.gitFirstCommitName);
             await gitrepo.push(remoteRepoName, branch);
-            logger.info(`Successfully pushed changes to remote repository: "${remoteRepoName}" branchname: "${branch}"`);
+            logger.debug(`Successfully pushed changes to remote repository: "${remoteRepoName}" branchname: "${branch}"`);
             return true;
         } catch (e) {
             logger.error(`failed to push to remote "${remoteRepoName}": ${e.message}`);
@@ -122,7 +122,7 @@ export class GitUtils {
             await gitrepo.removeRemote(Constants.GitDefaultRemoteName);
             await gitrepo.addRemote(Constants.GitDefaultRemoteName);
             await gitrepo.push(Constants.GitDefaultRemoteName, branch);
-            logger.info(`Successfully pushed changes to remote repository: ${remoteRepo} branchname: ${branch}`);
+            logger.debug(`Successfully pushed changes to remote repository: ${remoteRepo} branchname: ${branch}`);
         } catch (e) {
             logger.error(`Failed to configure/push to remote repository: ${e.message}`);
             return false;

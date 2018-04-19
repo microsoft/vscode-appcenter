@@ -30,6 +30,7 @@ export interface CurrentApp {
     os: string;
     type: string;
     currentAppDeployments: CurrentAppDeployments;
+    appSecret: string;
 }
 
 export interface CreatedAppFromAppCenter {

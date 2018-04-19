@@ -31,7 +31,7 @@ export default class Start extends Command {
 
     public async run(): Promise<void> {
         super.run();
-        this.logger.info("Running AppCenter Start New Idea command...");
+        this.logger.info("Building a new App Center project...");
         const rootPath = <string>this.manager.projectRootPath;
 
         if (!FSUtils.IsEmptyDirectoryToStartNewIdea(rootPath)) {
@@ -98,7 +98,6 @@ export default class Start extends Command {
                 const vstsProject: VSTSProject | null = await this.selectVstsProject(vsts);
                 if (!vstsProject) {
                     this.logger.error("Failed to get VSTS Project");
-                    VsCodeUtils.ShowErrorMessage(Strings.FailedToGetVSTSProjects);
                     return;
                 }
 
@@ -142,6 +141,7 @@ export default class Start extends Command {
                     }
 
                     const appCenterAppBuilder = new AppCenterAppBuilder(ideaName, userOrOrgItem, this.repositoryURL, this.client, this.logger);
+                    this.logger.info("Creating your iOS and Android app in App Center...");
                     await appCenterAppBuilder.createApps();
                     const createdApps: CreatedAppFromAppCenter[] = appCenterAppBuilder.getCreatedApps();
 
@@ -157,6 +157,7 @@ export default class Start extends Command {
                     const pathToAndroidStringResources: string = path.join(rootPath, "android", "app", "src", "main", "res", "values", "strings.xml");
                     const appCenterConfig = new AppCenterConfig(pathToAppCenterConfigPlist, pathToMainPlist, pathToAndroidConfig, pathToAndroidStringResources, this.logger);
 
+                    this.logger.info("Configuring App Center SDKs...");
                     if (!this.updateAppSecretKeys(createdApps, appCenterConfig)) {
                         this.logger.error("Failed to update app secret keys!");
                     }
@@ -176,12 +177,17 @@ export default class Start extends Command {
 
                     // We can run npm install in parralel while doing other stuff for appcenter
                     this.runNPMInstall();
-
                     const done = await appCenterAppBuilder.startProcess();
                     if (!done) {
                         VsCodeUtils.ShowErrorMessage(Strings.FailedToCreateAppInAppCenter);
                     } else {
-                        VsCodeUtils.ShowInfoMessage(Strings.FinishedConfigMsg);
+                        const successMessage: string = `
+--------------------------------------------------------
+    Apps Created:
+        ${AppCenterAppBuilder.getAndroidAppName(ideaName)}
+        ${AppCenterAppBuilder.getiOSAppName(ideaName)}
+--------------------------------------------------------`;
+                        this.logger.info(successMessage);
                     }
                 }
             });
@@ -205,16 +211,24 @@ export default class Start extends Command {
 
     private async getUserOrOrganizationItems(): Promise<CustomQuickPickItem[]> {
         let items: CustomQuickPickItem[] = [];
-        this.logger.info("Getting user/organization items...");
+        this.logger.debug("Getting user/organization items...");
         await vscode.window.withProgress({ location: vscode.ProgressLocation.Window, title: Strings.VSCodeProgressLoadingTitle}, p => {
             p.report({message: Strings.LoadingStatusBarMessage });
             return this.client.organizations.list().then((orgList: models.ListOKResponseItem[]) => {
                 const organizations: models.ListOKResponseItem[] = orgList;
                 return organizations.sort((a, b): any => {
                     if (a.displayName && b.displayName) {
-                        return a.displayName > b.displayName; // sort alphabetically
+                        const nameA = a.displayName.toUpperCase();
+                        const nameB = b.displayName.toUpperCase();
+                        if (nameA < nameB) {
+                            return -1;
+                          }
+                          if (nameA > nameB) {
+                            return 1;
+                          }
+                          return 0; // sort alphabetically
                     } else {
-                        return false;
+                        return 0;
                     }
                 });
             });
@@ -243,9 +257,9 @@ export default class Start extends Command {
     private async runNPMInstall(): Promise<boolean> {
         try {
             const installNodeModulesCmd: string = "npm i";
-            this.logger.info("Running npm install...");
+            this.logger.debug("Running npm install...");
             await cpUtils.executeCommand(this.logger, true, this.manager.projectRootPath, installNodeModulesCmd);
-            this.logger.info(Strings.NodeModulesInstalledMessage);
+            this.logger.debug(Strings.NodeModulesInstalledMessage);
             return true;
         } catch (error) {
             this.logger.error("Failed to run npm install");
@@ -273,13 +287,13 @@ export default class Start extends Command {
         if (!apps || apps.length === 0) {
             return saved;
         }
-        this.logger.info("Updating app secrets...");
+        this.logger.debug("Setting app secrets...");
         apps.forEach((app: CreatedAppFromAppCenter) => {
             if (!app || !app.appSecret) {
                 return saved;
             }
 
-            this.logger.info(`App name: ${app.name}, secret: ${app.appSecret}`);
+            this.logger.debug(`App name: ${app.name}, secret: ${app.appSecret}`);
 
             if (app.os.toLowerCase() === AppCenterOS.iOS.toLowerCase()) {
                 appCenterConfig.setConfigPlistValueByKey(Constants.IOSAppSecretKey, app.appSecret);
@@ -300,12 +314,12 @@ export default class Start extends Command {
         if (!deployments || deployments.length === 0) {
             return saved;
         }
-        this.logger.info("Updating CodePush Deployment Keys...");
+        this.logger.info("Setting CodePush deployment keys...");
         deployments.forEach(async (deployment: Deployment) => {
             if (!deployment || !deployment.os || !deployment.key) {
                 return saved;
             }
-            this.logger.info(`Deployment name: ${deployment.name}, secret: ${deployment.key}, OS: ${deployment.os}`);
+            this.logger.debug(`Deployment name: ${deployment.name}, secret: ${deployment.key}, OS: ${deployment.os}`);
 
             if (deployment.os.toLowerCase() === AppCenterOS.iOS.toLowerCase()) {
                 appCenterConfig.setMainPlistValueByKey(Constants.IOSCodePushDeploymentKey, deployment.key);
@@ -363,7 +377,7 @@ export default class Start extends Command {
 
     private async pullAppCenterSampleApp(_rootPath: string): Promise<boolean> {
         let created: boolean = false;
-        this.logger.info("Pull AppCenter sample app into current directory...");
+        this.logger.debug("Pull AppCenter sample app into current directory...");
         await vscode.window.withProgress({ location: vscode.ProgressLocation.Window, title: Strings.VSCodeProgressLoadingTitle}, async p => {
             p.report({message: Strings.CreateRNProjectStatusBarMessage });
             created = await GitUtils.GitPullFromRemoteUrl(Constants.AppCenterSampleGitRemoteName, Constants.AppCenterSampleGitRemoteDefaultBranchName, this.logger, _rootPath);
@@ -392,7 +406,7 @@ export default class Start extends Command {
 
     private async pushToDefaultRemoteRepo(_rootPath: string): Promise<boolean> {
         let pushed: boolean = false;
-        this.logger.info(`Pushing changes to ${this.repositoryURL}...`);
+        this.logger.debug(`Pushing changes to ${this.repositoryURL}...`);
         await vscode.window.withProgress({ location: vscode.ProgressLocation.Window, title: Strings.VSCodeProgressLoadingTitle}, async p => {
             p.report({message: Strings.PushToRemoteRepoStatusBarMessage });
             pushed = await GitUtils.GitPushToRemoteUrl(Constants.GitDefaultRemoteName, SettingsHelper.defaultBranchName(), this.logger, _rootPath);
@@ -402,7 +416,7 @@ export default class Start extends Command {
 
     private async appAlreadyExistInAppCenter(ideaName: string): Promise<boolean> {
         let exist: boolean = false;
-        this.logger.info(`Checkig if idea name "${ideaName}" is not already used before...`);
+        this.logger.debug(`Checkig if idea name "${ideaName}" is not already used before...`);
         await vscode.window.withProgress({ location: vscode.ProgressLocation.Window, title: Strings.VSCodeProgressLoadingTitle}, async p => {
             p.report({message: Strings.CheckIfAppsExistLoadingMessage });
             let apps: models.AppResponse[];
@@ -424,9 +438,17 @@ export default class Start extends Command {
         if (projectList) {
             projectList = projectList.sort((a, b): any => {
                 if (a.name && b.name) {
-                    return a.name > b.name; // sort alphabetically
+                    const nameA = a.name.toUpperCase();
+                    const nameB = b.name.toUpperCase();
+                    if (nameA < nameB) {
+                        return -1;
+                      }
+                      if (nameA > nameB) {
+                        return 1;
+                      }
+                      return 0; // sort alphabetically
                 } else {
-                    return false;
+                    return 0;
                 }
             });
             const options: QuickPickAppItem[] = projectList.map((project: VSTSProject) => {
@@ -436,10 +458,10 @@ export default class Start extends Command {
                     target: `${project.id}`
                 };
             });
-            await vscode.window.showQuickPick(options, { placeHolder: Strings.ProvideCurrentAppPromptMsg })
+            await vscode.window.showQuickPick(options, { placeHolder: Strings.ProvideVSTSProjectPromptMsg })
             .then(async (selected: QuickPickAppItem) => {
                 if (!selected) {
-                    this.logger.info('User cancel selection of vsts project');
+                    this.logger.debug('User cancel selection of vsts project');
                     return null;
                 }
                 if (projectList) {

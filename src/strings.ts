@@ -87,6 +87,7 @@ export class Strings {
     public static ConnectingRepoToBuildServiceStatusBarMessage: string = "Configuring cloud build services...";
     public static CreateBranchConfigAndKickOffBuildStatusBarMessage: string = "Starting a fresh cloud build...";
     public static ProvideCurrentAppPromptMsg: string = "Please specify an App Center app";
+    public static ProvideVSTSProjectPromptMsg: string = "Please specify VSTS Project";
     public static FetchDeploymentsStatusBarMessage: string = "Fetching CodePush deployments for you...";
     public static InvalidCurrentAppNameMsg: string = "Sorry, the app name isn't valid.";
 
@@ -96,6 +97,7 @@ export class Strings {
     public static NoCurrentAppSetMsg: string = "You haven't specified an App Center app for this project.";
     public static NoProjectRootFolderFound: string = "Please open a project before using this command.";
     public static UnknownError: string = "An unknown error has occured. Please check the output window for more details.";
+    public static GenerateCrashesError: string = "An error occurred while generating crashes. Please check the output window for more details.";
     public static SelectCurrentDeploymentMsg: string = "Please specify a CodePush deployment.";
     public static PleaseProvideTargetBinaryVersion: string = "Please provide a target binary version in semver format";
     public static InvalidAppVersionParamMsg: string = "Sorry, the provided app version isn't valid";
@@ -106,12 +108,27 @@ export class Strings {
     public static ReleasingUpdateContentsMessage: string = "Sending update to CodePush...";
     public static ReactNativeInstallHint: string = "Make sure you ran \"npm install\" and that you are inside a React Native project.";
     public static CodePushInstallHint: string = "Make sure you ran \"npm install\" and that you are inside a React Native Code Push project.";
+    public static RepoManualConnectBtnLabel: string = "Connect";
+    public static BuildManualConfigureBtnLabel: string = "Configure build";
 
     public static CreatingAppStatusBarMessage: string = `Creating a new App Center app...`;
     public static FailedToCreateAppInAppCenter: string = `An error occurred while creating the new App Center app`;
     public static FailedToGetVSTSProjects: string = `An error while trying to retrieve your VSTS projects`;
     public static FailedToCreateVSTSGitrepository: string = `An error occurred while creating your new VSTS repository`;
     public static FailedToCreateAppAlreadyExistInAppCenter: string = `An app with that name already exists in App Center. Please choose a new name.`;
+
+    public static SimulateCrashesMessage: string = "Generating crash data for you...";
+    public static SimulateCrashesSendMessage: string = "Sending crash data to App Center...";
+    public static CrashesSimulated: string = "The crash has been successfully generated and sent to App Center!";
+    public static CrashesSimulatedHint: string = "Check it out";
+
+    public static RepoManualConnectMessage(appName: string): string {
+        return `Could not connect ${appName} to the repository. Please try to do it manually.`;
+    }
+
+    public static BuildManualConfigureMessage(appName: string): string {
+        return `Could not configure ${appName} build. Please try to do it manually.`;
+    }
 
     public static FailedToExecuteLoginMsg(provider: AuthProvider): string {
         return `Failed to login to ${provider}`;

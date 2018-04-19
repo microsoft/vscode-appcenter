@@ -65,7 +65,7 @@ export default class AppCenterConfig {
             this.logger.error(`Unable to save ${this.pathToAndroidStringResources}`);
             return false;
         }
-        this.logger.info(`Saved CodePush deployemnt key to ${this.pathToAndroidStringResources}`);
+        this.logger.debug(`Saved CodePush deployemnt key to ${this.pathToAndroidStringResources}`);
         return true;
     }
 
@@ -80,7 +80,7 @@ export default class AppCenterConfig {
     public saveConfigPlist(): boolean {
         const plistContents = plist.build(this.parsedInfoConfigPlist);
         fs.writeFileSync(this.configPlistPath, plistContents);
-        this.logger.info(`Saved App Secret in ${this.configPlistPath}`);
+        this.logger.debug(`Saved App Secret in ${this.configPlistPath}`);
         return true;
     }
 
@@ -95,7 +95,7 @@ export default class AppCenterConfig {
     public saveMainPlist(): boolean {
         const plistContents = plist.build(this.parsedInfoMainPlist);
         fs.writeFileSync(this.mainPlistPath, plistContents);
-        this.logger.info(`Saved CodePush deployemnt key in ${this.mainPlistPath}`);
+        this.logger.debug(`Saved CodePush deployemnt key in ${this.mainPlistPath}`);
         return true;
     }
 
@@ -115,7 +115,7 @@ export default class AppCenterConfig {
             return false;
         }
         fs.writeFileSync(this.pathToAndroidConfig, JSON.stringify(this.androidAppCenterConfig, null, 4));
-        this.logger.info(`Saved App secret to ${this.pathToAndroidConfig}`);
+        this.logger.debug(`Saved App secret to ${this.pathToAndroidConfig}`);
         return true;
     }
 }

@@ -35,7 +35,8 @@ export default class SetTargetBinaryVersion extends RNCPAppCommand {
                             },
                             appVersion,
                             app.type,
-                            app.isMandatory
+                            app.isMandatory,
+                            app.appSecret
                         ).then(() => {
                             if (appVersion) {
                                 VsCodeUtils.ShowInfoMessage(`Changed target binary version to '${appVersion}'`);

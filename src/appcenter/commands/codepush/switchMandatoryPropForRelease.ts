@@ -29,7 +29,8 @@ export default class SwitchMandatoryPropForRelease extends RNCPAppCommand {
                 },
                 app.targetBinaryVersion,
                 app.type,
-                newMandatoryValue
+                newMandatoryValue,
+                app.appSecret
             ).then(() => {
                 VsCodeUtils.ShowInfoMessage(`Changed release to ${newMandatoryValue ? "Mandatory" : "NOT Mandatory"}`);
             });
