@@ -29,10 +29,14 @@ export class CreateNewApp extends CreateAppCommand {
         const appNameFromPackage = Utils.parseJsonFile(this.rootPath + "/package.json", "").name;
 
         let ideaName: string | null = null;
+
+        // ideaName is null if user has entered invalid name. We will give him a chance to correct it instead of 
+        // forcing to do the process again.
         while (ideaName == null) {
             ideaName = await this.getIdeaName(appNameFromPackage);
         }
 
+        // Length is 0 if user cancelled prompt.
         if (ideaName.length === 0) {
             return;
         }
