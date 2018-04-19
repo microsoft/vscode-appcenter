@@ -1,13 +1,12 @@
-import * as vscode from "vscode";
+import { AppCenterOS } from "../../constants";
 import { ExtensionManager } from "../../extensionManager";
-import { AppCenterProfile, CommandParams, Profile } from "../../helpers/interfaces";
-import { MenuHelper } from "../../helpers/menuHelper";
+import { AppCenterProfile, CommandParams, CurrentApp, CurrentAppDeployments } from "../../helpers/interfaces";
 import { SettingsHelper } from "../../helpers/settingsHelper";
 import { Utils } from "../../helpers/utils";
-import { CustomQuickPickItem, VsCodeUtils } from "../../helpers/vsCodeUtils";
+import { VsCodeUtils } from "../../helpers/vsCodeUtils";
 import { ILogger } from "../../log/logHelper";
 import { Strings } from "../../strings";
-import { AppCenterClient, AppCenterClientFactory, createAppCenterClient, models } from "../apis";
+import { AppCenterClient, AppCenterClientFactory, createAppCenterClient } from "../apis";
 import AppCenterAuth from "../auth/appCenterAuth";
 import VstsAuth from "../auth/vstsAuth";
 
@@ -89,19 +88,31 @@ export class Command {
         return this.client;
     }
 
-    protected async getUserOrOrganizationItems(): Promise<CustomQuickPickItem[]> {
-        let items: CustomQuickPickItem[] = [];
-        this.logger.debug("Getting user/organization items...");
-        await vscode.window.withProgress({ location: vscode.ProgressLocation.Window, title: Strings.VSCodeProgressLoadingTitle }, p => {
-            p.report({ message: Strings.LoadingStatusBarMessage });
-            return this.client.organizations.list().then((orgList: models.ListOKResponseItem[]) => {
-                const organizations: models.ListOKResponseItem[] = orgList;
-                return organizations.sort(Utils.sortOrganizations);
-            });
-        }).then(async (orgList: models.ListOKResponseItem[]) => {
-            const myself: Profile | null = await this.appCenterProfile;
-            items = MenuHelper.getQuickPickItemsForOrgList(orgList, myself);
+    protected saveCurrentApp(
+        currentAppName: string,
+        appOS: AppCenterOS,
+        currentAppDeployments: CurrentAppDeployments | null,
+        targetBinaryVersion: string,
+        type: string,
+        isMandatory: boolean,
+        appSecret: string): Promise<CurrentApp | null> {
+        const currentApp = Utils.toCurrentApp(currentAppName, appOS, currentAppDeployments, targetBinaryVersion, type, isMandatory, appSecret);
+        if (!currentApp) {
+            VsCodeUtils.ShowWarningMessage(Strings.InvalidCurrentAppNameMsg);
+            return Promise.resolve(null);
+        }
+
+        return this.appCenterProfile.then((profile: AppCenterProfile | null) => {
+            if (profile) {
+                profile.currentApp = currentApp;
+                return this.appCenterAuth.updateProfile(profile).then(() => {
+                    return currentApp;
+                });
+            } else {
+                // No profile - not logged in?
+                VsCodeUtils.ShowWarningMessage(Strings.UserIsNotLoggedInMsg);
+                return Promise.resolve(null);
+            }
         });
-        return items;
     }
 }

@@ -7,22 +7,20 @@ import { AppCenterOS, Constants } from '../../constants';
 import { cpUtils } from '../../helpers/cpUtils';
 import { FSUtils } from '../../helpers/fsUtils';
 import { GitUtils } from '../../helpers/gitUtils';
-import { CommandParams, CreatedAppFromAppCenter, Deployment, QuickPickAppItem, UserOrOrganizationItem, VstsProfile } from '../../helpers/interfaces';
-import { MenuHelper } from '../../helpers/menuHelper';
+import { CommandParams, CreatedAppFromAppCenter, Deployment, QuickPickAppItem, VstsProfile } from '../../helpers/interfaces';
 import { SettingsHelper } from '../../helpers/settingsHelper';
 import { Validators } from '../../helpers/validators';
-import { CustomQuickPickItem, VsCodeUtils } from '../../helpers/vsCodeUtils';
+import { VsCodeUtils } from '../../helpers/vsCodeUtils';
 import { Strings } from '../../strings';
 import { VSTSGitRepository, VSTSProject } from '../../vsts/types';
 import { VSTSProvider } from '../../vsts/vstsProvider';
-import { models } from '../apis';
 import Auth from '../auth/auth';
-import { Command } from './command';
+import { CreateAppCommand } from './createAppCommand';
 import LoginToVsts from './settings/loginToVsts';
 // tslint:disable-next-line:no-var-requires
 const GitUrlParse = require("git-url-parse");
 
-export default class Start extends Command {
+export default class Start extends CreateAppCommand {
 
     private repositoryURL: string;
     constructor(params: CommandParams) {
@@ -44,22 +42,14 @@ export default class Start extends Command {
             return;
         }
 
-        vscode.window.showInputBox({ prompt: Strings.PleaseEnterIdeaName, ignoreFocusOut: true })
-        .then(async ideaName => {
-            if (!ideaName) {
-                VsCodeUtils.ShowErrorMessage(Strings.NoIdeaNameSelectedMsg);
-                return;
-            }
+        let ideaName: string | null = null;
+        while (ideaName == null) {
+            ideaName = await this.getIdeaName();
+        }
 
-            if (!Validators.ValidateProjectName(ideaName)) {
-                VsCodeUtils.ShowErrorMessage(Strings.IdeaNameIsNotValidMsg);
-                return;
-            }
-
-            if (await this.appAlreadyExistInAppCenter(ideaName)) {
-                VsCodeUtils.ShowErrorMessage(Strings.FailedToCreateAppAlreadyExistInAppCenter);
-                return;
-            }
+        if (ideaName.length === 0) {
+            return;
+        }
 
             // For empty directory we create new VSTS repository
             // For empty git directory (either created with git clone or git init) we just need to be sure that remoteUrl is valid
@@ -129,15 +119,10 @@ export default class Start extends Command {
                 return;
             }
 
-            const userOrOrgQuickPickItems: CustomQuickPickItem[] = await this.getUserOrOrganizationItems();
-            vscode.window.showQuickPick(userOrOrgQuickPickItems, { placeHolder: Strings.PleaseSelectCurrentAppOrgMsg, ignoreFocusOut: true })
-            .then(async (selectedQuickPickItem: CustomQuickPickItem) => {
-                if (selectedQuickPickItem) {
-                    const userOrOrgItem: UserOrOrganizationItem | null = MenuHelper.getSelectedUserOrOrgItem(selectedQuickPickItem, userOrOrgQuickPickItems);
-                    if (!userOrOrgItem) {
-                        VsCodeUtils.ShowErrorMessage(Strings.FailedToGetSelectedUserOrOrganizationMsg);
-                        return;
-                    }
+            const userOrOrgItem = await this.getOrg();
+            if (userOrOrgItem == null) {
+                return;
+            }
 
                     const appCenterAppBuilder = new AppCenterAppBuilder(ideaName, userOrOrgItem, this.repositoryURL, this.client, this.logger);
                     this.logger.info("Creating your iOS and Android app in App Center...");
@@ -188,9 +173,6 @@ export default class Start extends Command {
 --------------------------------------------------------`;
                         this.logger.info(successMessage);
                     }
-                }
-            });
-        });
     }
 
     private async runNPMInstall(): Promise<boolean> {
@@ -351,20 +333,6 @@ export default class Start extends Command {
             pushed = await GitUtils.GitPushToRemoteUrl(Constants.GitDefaultRemoteName, SettingsHelper.defaultBranchName(), this.logger, _rootPath);
          });
         return pushed;
-    }
-
-    private async appAlreadyExistInAppCenter(ideaName: string): Promise<boolean> {
-        let exist: boolean = false;
-        this.logger.debug(`Checkig if idea name "${ideaName}" is not already used before...`);
-        await vscode.window.withProgress({ location: vscode.ProgressLocation.Window, title: Strings.VSCodeProgressLoadingTitle}, async p => {
-            p.report({message: Strings.CheckIfAppsExistLoadingMessage });
-            let apps: models.AppResponse[];
-            apps = await this.client.apps.list();
-            exist = apps.some(item => {
-                return (item.name === AppCenterAppBuilder.getiOSAppName(ideaName) || item.name === AppCenterAppBuilder.getAndroidAppName(ideaName));
-            });
-         });
-        return exist;
     }
 
     private async selectVstsProject(vstsProvider: VSTSProvider): Promise<VSTSProject | null> {

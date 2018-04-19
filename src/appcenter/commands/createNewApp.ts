@@ -1,15 +1,12 @@
-import * as vscode from "vscode";
 import AppCenterAppBuilder from "../../appCenterAppBuilder";
 import AppCenterAppCreator, { AndroidAppCenterAppCreator, IOSAppCenterAppCreator } from "../../appCenterAppCreator";
 import { Constants } from "../../constants";
 import { AppCenterUrlBuilder } from "../../helpers/appCenterUrlBuilder";
 import { CommandParams, CreatedAppFromAppCenter, UserOrOrganizationItem } from '../../helpers/interfaces';
-import { MenuHelper } from '../../helpers/menuHelper';
 import { Utils } from "../../helpers/utils";
-import { CustomQuickPickItem, IButtonMessageItem, VsCodeUtils } from '../../helpers/vsCodeUtils';
+import { IButtonMessageItem, VsCodeUtils } from '../../helpers/vsCodeUtils';
 import { Strings } from '../../strings';
-
-import { ReactNativeAppCommand } from "./reactNativeAppCommand";
+import { CreateAppCommand } from "./createAppCommand";
 
 export enum CreateNewAppOption {
     Android,
@@ -17,7 +14,7 @@ export enum CreateNewAppOption {
     Both
 }
 
-export class CreateNewApp extends ReactNativeAppCommand {
+export class CreateNewApp extends CreateAppCommand {
 
     private _androidAppCreator: AndroidAppCenterAppCreator;
     private _iOSAppCreator: IOSAppCenterAppCreator;
@@ -46,71 +43,42 @@ export class CreateNewApp extends ReactNativeAppCommand {
             return false;
         }
 
-        const userOrOrgQuickPickItems: CustomQuickPickItem[] = await this.getUserOrOrganizationItems();
-        vscode.window.showQuickPick(userOrOrgQuickPickItems, { placeHolder: Strings.PleaseSelectCurrentAppOrgMsg, ignoreFocusOut: true })
-            .then(async (selectedQuickPickItem: CustomQuickPickItem) => {
-                if (!selectedQuickPickItem) {
-                    return;
-                }
-                const userOrOrgItem: UserOrOrganizationItem | null = MenuHelper.getSelectedUserOrOrgItem(selectedQuickPickItem, userOrOrgQuickPickItems);
-                if (!userOrOrgItem) {
-                    VsCodeUtils.ShowErrorMessage(Strings.FailedToGetSelectedUserOrOrganizationMsg);
-                    return;
-                }
-                this.userOrOrg = userOrOrgItem;
+        const appNameFromPackage = Utils.parseJsonFile(this.rootPath + "/package.json", "").name;
 
-                let createdApps: any;
-                await vscode.window.withProgress({ location: vscode.ProgressLocation.Window, title: Strings.VSCodeProgressLoadingTitle }, async p => {
-                    p.report({ message: Strings.CreatingAppStatusBarMessage });
-
-                    const promises: Promise<false | CreatedAppFromAppCenter>[] = this.getCreateAppPromises();
-                    createdApps = await Promise.all(promises);
-                    if (!createdApps.every((val) => {
-                        if (val) {
-                            return val !== null && val !== false;
-                        }
-                        return false;
-                    })) {
-                        VsCodeUtils.ShowErrorMessage(Strings.FailedToCreateAppInAppCenter);
-                        return false;
-                    }
-
-                    switch (this._option) {
-                        case CreateNewAppOption.Android:
-                        case CreateNewAppOption.IOS: {
-                            this.appCreated(createdApps);
-                            return true;
-                        }
-                        case CreateNewAppOption.Both: {
-                            this.pickApp(createdApps);
-                            return true;
-                        }
-
-                        default: return false;
-                    }
-                });
-            });
-    }
-
-    private getCreateAppPromises(): Promise<false | CreatedAppFromAppCenter>[] {
-        const appName = Utils.parseJsonFile(this.rootPath + "/package.json", "").name;
-        const promises: Promise<false | CreatedAppFromAppCenter>[] = [];
-        if (this._option === CreateNewAppOption.IOS || this._option === CreateNewAppOption.Both) {
-            if (this.userOrOrg.isOrganization) {
-                promises.push(this.iOSAppCreator.createAppForOrg(AppCenterAppBuilder.getiOSAppName(appName), AppCenterAppBuilder.getiOSDisplayName(appName), <string>this.userOrOrg.name));
-            } else {
-                promises.push(this.iOSAppCreator.createApp(AppCenterAppBuilder.getiOSAppName(appName), AppCenterAppBuilder.getiOSDisplayName(appName)));
-            }
+        let ideaName: string | null = null;
+        while (ideaName == null) {
+            ideaName = await this.getIdeaName(appNameFromPackage);
         }
 
-        if (this._option === CreateNewAppOption.Android || this._option === CreateNewAppOption.Both) {
-            if (this.userOrOrg.isOrganization) {
-                promises.push(this.androidAppCreator.createAppForOrg(AppCenterAppBuilder.getAndroidAppName(appName), AppCenterAppBuilder.getAndroidDisplayName(appName), <string>this.userOrOrg.name));
-            } else {
-                promises.push(this.androidAppCreator.createApp(AppCenterAppBuilder.getAndroidAppName(appName), AppCenterAppBuilder.getAndroidDisplayName(appName)));
-            }
+        if (ideaName.length === 0) {
+            return;
         }
-        return promises;
+
+        this.userOrOrg = await this.getOrg();
+        if (this.userOrOrg == null) {
+            return;
+        }
+
+        const appCenterAppBuilder = new AppCenterAppBuilder(ideaName, this.userOrOrg, "", this.client, this.logger);
+        await appCenterAppBuilder.createApps(this._option);
+        const createdApps: CreatedAppFromAppCenter[] = appCenterAppBuilder.getCreatedApps();
+        if (!createdApps) {
+            return;
+        }
+
+        switch (this._option) {
+            case CreateNewAppOption.Android:
+            case CreateNewAppOption.IOS: {
+                this.appCreated(createdApps);
+                return true;
+            }
+            case CreateNewAppOption.Both: {
+                this.pickApp(createdApps);
+                return true;
+            }
+
+            default: return false;
+        }
     }
 
     private async appCreated(apps: CreatedAppFromAppCenter[]) {

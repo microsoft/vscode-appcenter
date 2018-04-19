@@ -1,7 +1,7 @@
 import { Md5 } from "ts-md5/dist/md5";
 import * as vscode from "vscode";
-import { AppCenterOS, CommandNames, Constants } from '../../constants';
-import { AppCenterProfile, CurrentApp, CurrentAppDeployments, QuickPickAppItem } from '../../helpers/interfaces';
+import { CommandNames, Constants } from '../../constants';
+import { AppCenterProfile, CurrentApp, QuickPickAppItem } from '../../helpers/interfaces';
 import { MenuHelper } from "../../helpers/menuHelper";
 import { Utils } from '../../helpers/utils';
 import { VsCodeUtils } from '../../helpers/vsCodeUtils';
@@ -48,34 +48,6 @@ export class ReactNativeAppCommand extends Command {
                 return profile.currentApp;
             }
             return null;
-        });
-    }
-
-    protected saveCurrentApp(
-        currentAppName: string,
-        appOS: AppCenterOS,
-        currentAppDeployments: CurrentAppDeployments | null,
-        targetBinaryVersion: string,
-        type: string,
-        isMandatory: boolean,
-        appSecret: string): Promise<CurrentApp | null> {
-        const currentApp = Utils.toCurrentApp(currentAppName, appOS, currentAppDeployments, targetBinaryVersion, type, isMandatory, appSecret);
-        if (!currentApp) {
-            VsCodeUtils.ShowWarningMessage(Strings.InvalidCurrentAppNameMsg);
-            return Promise.resolve(null);
-        }
-
-        return this.appCenterProfile.then((profile: AppCenterProfile | null) => {
-            if (profile) {
-                profile.currentApp = currentApp;
-                return this.appCenterAuth.updateProfile(profile).then(() => {
-                    return currentApp;
-                });
-            } else {
-                // No profile - not logged in?
-                VsCodeUtils.ShowWarningMessage(Strings.UserIsNotLoggedInMsg);
-                return Promise.resolve(null);
-            }
         });
     }
 
