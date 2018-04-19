@@ -32,15 +32,14 @@ export default class Start extends Command {
     public async run(): Promise<void> {
         super.run();
         this.logger.info("Building a new App Center project...");
-        const rootPath = <string>this.manager.projectRootPath;
 
-        if (!FSUtils.IsEmptyDirectoryToStartNewIdea(rootPath)) {
+        if (!FSUtils.IsEmptyDirectoryToStartNewIdea(this.rootPath)) {
             VsCodeUtils.ShowErrorMessage(Strings.DirectoryIsNotEmptyForNewIdea);
             this.logger.error(Strings.DirectoryIsNotEmptyForNewIdea);
             return;
         }
 
-        if (!await GitUtils.IsGitInstalled(rootPath)) {
+        if (!await GitUtils.IsGitInstalled(this.rootPath)) {
             VsCodeUtils.ShowErrorMessage(Strings.GitIsNotInstalledMsg);
             return;
         }
@@ -64,7 +63,7 @@ export default class Start extends Command {
 
             // For empty directory we create new VSTS repository
             // For empty git directory (either created with git clone or git init) we just need to be sure that remoteUrl is valid
-            if (!await GitUtils.IsGitRepo(this.logger, rootPath)) {
+            if (!await GitUtils.IsGitRepo(this.logger, this.rootPath)) {
 
                 let vstsProfile: VstsProfile | null = this.vstsAuth.activeProfile;
                 if (!vstsProfile) {
@@ -109,23 +108,23 @@ export default class Start extends Command {
                 }
 
                 this.repositoryURL = vstsGitRepo.remoteUrl;
-                await GitUtils.GitInit(this.logger, rootPath);
-            } else if (!await this.getGitRemoteUrl(rootPath)) {
+                await GitUtils.GitInit(this.logger, this.rootPath);
+            } else if (!await this.getGitRemoteUrl(this.rootPath)) {
                 VsCodeUtils.ShowErrorMessage(Strings.FailedToProvideRepositoryNameMsg);
                 return;
             }
 
-            if (!await this.ensureRemoteAdded(Constants.GitDefaultRemoteName, this.repositoryURL, rootPath)) {
+            if (!await this.ensureRemoteAdded(Constants.GitDefaultRemoteName, this.repositoryURL, this.rootPath)) {
                 VsCodeUtils.ShowErrorMessage(Strings.FailedToAddRemoteRepositoryMsg);
                 return;
             }
 
-            if (!await this.ensureRemoteAdded(Constants.AppCenterSampleGitRemoteName, SettingsHelper.getAppCenterDemoAppGitRepo(), rootPath)) {
+            if (!await this.ensureRemoteAdded(Constants.AppCenterSampleGitRemoteName, SettingsHelper.getAppCenterDemoAppGitRepo(), this.rootPath)) {
                 VsCodeUtils.ShowErrorMessage(Strings.FailedToAddRemoteRepositoryMsg);
                 return;
             }
 
-            if (!await this.pullAppCenterSampleApp(rootPath)) {
+            if (!await this.pullAppCenterSampleApp(this.rootPath)) {
                 VsCodeUtils.ShowErrorMessage(Strings.FailedToCreateRNProjectMsg);
                 return;
             }
@@ -151,10 +150,10 @@ export default class Start extends Command {
                         return;
                     }
 
-                    const pathToAppCenterConfigPlist: string = path.join(rootPath, "ios", "AppCenterSample", "AppCenter-Config.plist");
-                    const pathToMainPlist: string = path.join(rootPath, "ios", "AppCenterSample", "Info.plist");
-                    const pathToAndroidConfig: string = path.join(rootPath, "android", "app", "src", "main", "assets", "appcenter-config.json");
-                    const pathToAndroidStringResources: string = path.join(rootPath, "android", "app", "src", "main", "res", "values", "strings.xml");
+                    const pathToAppCenterConfigPlist: string = path.join(this.rootPath, "ios", "AppCenterSample", "AppCenter-Config.plist");
+                    const pathToMainPlist: string = path.join(this.rootPath, "ios", "AppCenterSample", "Info.plist");
+                    const pathToAndroidConfig: string = path.join(this.rootPath, "android", "app", "src", "main", "assets", "appcenter-config.json");
+                    const pathToAndroidStringResources: string = path.join(this.rootPath, "android", "app", "src", "main", "res", "values", "strings.xml");
                     const appCenterConfig = new AppCenterConfig(pathToAppCenterConfigPlist, pathToMainPlist, pathToAndroidConfig, pathToAndroidStringResources, this.logger);
 
                     this.logger.info("Configuring App Center SDKs...");
@@ -170,7 +169,7 @@ export default class Start extends Command {
                     }
 
                     // We need to push changes before we configure/start build in AppCenter
-                    if (!await this.pushToDefaultRemoteRepo(rootPath)) {
+                    if (!await this.pushToDefaultRemoteRepo(this.rootPath)) {
                         VsCodeUtils.ShowErrorMessage(Strings.FailedToPushChangesToRemoteRepoMsg(this.repositoryURL));
                         return;
                     }
@@ -258,7 +257,7 @@ export default class Start extends Command {
         try {
             const installNodeModulesCmd: string = "npm i";
             this.logger.debug("Running npm install...");
-            await cpUtils.executeCommand(this.logger, true, this.manager.projectRootPath, installNodeModulesCmd);
+            await cpUtils.executeCommand(this.logger, true, this.rootPath, installNodeModulesCmd);
             this.logger.debug(Strings.NodeModulesInstalledMessage);
             return true;
         } catch (error) {
