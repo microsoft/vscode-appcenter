@@ -69,7 +69,7 @@ export default class AppCenterAppCreator {
             if (error === 409) {
                 this.logger.error(`Distribution group "${SettingsHelper.distribitionGroupTestersName()}" in "${appName}" already exists`);
             } else {
-                this.logger.error(`An unexpected error occurred while creating a distribution group for "${appName}"`);
+                this.logger.error(`An unexpected error occurred while creating a distribution group for "${appName}". ${error}`);
             }
             return false;
         }
@@ -91,7 +91,11 @@ export default class AppCenterAppCreator {
                 name: result.name
             };
         } catch (err) {
-            this.logger.error(`An unexpected error occurred trying to create "${appName}" under "${orgName}"`);
+            if (err.statusCode === 409) {
+                this.logger.error(`The app named "${appName}" already exists`);
+            } else {
+                this.logger.error(`An unexpected error occurred trying to create "${appName}" under "${orgName}". ${(err && err.message) || ""}`);
+            }
             return false;
         }
     }
@@ -111,7 +115,11 @@ export default class AppCenterAppCreator {
                 name: result.name
             };
         } catch (err) {
-            this.logger.error(`An unexpected error occurred trying to create your ${appName} app in App Center`);
+            if (err.statusCode === 409) {
+                this.logger.error(`The app named "${appName}" already exists`);
+            } else {
+                this.logger.error(`An unexpected error occurred trying to create "${appName}". ${(err && err.message) || ""}`);
+            }
             return false;
         }
     }
