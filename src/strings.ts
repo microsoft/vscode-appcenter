@@ -64,6 +64,10 @@ export class Strings {
     public static DirectoryIsNotEmptyForNewIdea: string = "Sorry, you can only start a new project inside an empty folder.";
     public static FailedToProvideRepositoryNameMsg: string = "Sorry, the git url you provided doesn't appear to be valid.";
     public static SelectCurrentAppMenuDescription: string = "SELECT CURRENT APP";
+    public static FetchingDevicesStatusBarMessage: string = "Fetching devices...";
+    public static CleaningBuildStatusBarMessage: string = "Cleaning build directory...";
+    public static MakingBuildStatusBarMessage: string = "Making build for testing...";
+    public static UploadingAndRunningTestsStatusBarMessage: string = "Uploading and running tests on App Center portal...";
 
     public static BuildTabMenuItem: string = "Build";
     public static TestTabMenuItem: string = "Test";

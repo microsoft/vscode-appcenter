@@ -9,8 +9,8 @@ import { Utils } from "./helpers/utils";
 import { CustomQuickPickItem } from "./helpers/vsCodeUtils";
 import { models, AppCenterClient } from "./appcenter/apis";
 import { DeviceConfiguration } from "./appcenter/apis/generated/models";
-import { FSUtils } from "./helpers/fsUtils";
-const rimraf = FSUtils.rimraf;
+//import { FSUtils } from "./helpers/fsUtils";
+//const rimraf = FSUtils.rimraf;
 
 export interface TestRunnerOptions {
     app: CurrentApp,
@@ -39,7 +39,7 @@ export default abstract class AppCenterUITestRunner {
 
     public async runUITests(async: boolean): Promise<boolean> {
         return await vscode.window.withProgress({ location: vscode.ProgressLocation.Window, title: Strings.VSCodeProgressLoadingTitle }, async p => {
-            p.report({ message: "Fetching devices..." });
+            p.report({ message: Strings.FetchingDevicesStatusBarMessage });
             const options: CustomQuickPickItem[] = await this.getDevicesList(this.options.app);
             const selectedDevice: CustomQuickPickItem = await vscode.window.showQuickPick(options, { placeHolder: Strings.SelectTestDeviceTitlePlaceholder });
             if (!selectedDevice) {
@@ -48,27 +48,27 @@ export default abstract class AppCenterUITestRunner {
 
             const shortDeviceId = await this.selectDevice(this.options.app, selectedDevice.target);
 
-            p.report({ message: "Cleaning build directory..." });
-            await rimraf(this.getAbsoluteBuildDirectoryPath());
+            p.report({ message: Strings.CleaningBuildStatusBarMessage });
+            //await rimraf(this.getAbsoluteBuildDirectoryPath());
 
-            p.report({ message: "Making build for testing.." });
-            if (!await this.buildAppForTest()) {
-                return false;
-            }
+            p.report({ message: Strings.MakingBuildStatusBarMessage });
+            //if (!await this.buildAppForTest()) {
+            //    return false;
+            //}
 
-            p.report({ message: "Uploading and running tests on App Center portal..." });
+            p.report({ message: Strings.UploadingAndRunningTestsStatusBarMessage });
             const args = [
                 "test",
                 "run",
                 this.getTestFrameworkName(),
                 "--app",
-                `"${this.options.app.ownerName}/${this.options.app.appName}"`,
+                `${this.options.app.ownerName}/${this.options.app.appName}`,
                 "--devices",
                 shortDeviceId,
                 "--test-series",
-                `"master"`,
+                `master`,
                 "--locale",
-                `"en_US"`,
+                `en_US`,
                 "--build-dir",
                 this.getRelativeBuildBinaryDirectoryPath()
             ];
@@ -76,20 +76,7 @@ export default abstract class AppCenterUITestRunner {
             if (async) {
                 args.push("--async");
             }
-
-            try {
-                await ChildProcess.spawn("appcenter", args, {
-                    cwd: this.nativeAppDirectory,
-                    stdoutListener: this.stdoutListener,
-                    stderrListener: this.stderrListener,
-                    shell: true
-                });
-            } catch (e) {
-                this.options.logger.error(e.message, e, true);
-                return false;
-            }
-
-            return true;
+            return await this.spawnProcess("appcenter", args);
         });
     }
 
@@ -107,6 +94,20 @@ export default abstract class AppCenterUITestRunner {
         return deviceSelection.shortId;
     }
 
+    protected async spawnProcess(command: string, args: string[]): Promise<boolean> {
+        try {
+            await ChildProcess.spawn(command, args, {
+                cwd: this.nativeAppDirectory,
+                stdoutListener: this.stdoutListener,
+                stderrListener: this.stderrListener
+            });
+        } catch (e) {
+            this.options.logger.error(e.message, e, true);
+            return false;
+        }
+        return true;
+    }
+
     abstract buildAppForTest(): Promise<boolean>;
 
     abstract getTestFrameworkName(): string;
@@ -122,7 +123,7 @@ export class IOSTestRunner extends AppCenterUITestRunner {
         return path.join(this.nativeAppDirectory, 'DerivedData');
     }
     getRelativeBuildBinaryDirectoryPath(): string {
-        return "DerivedData/Build/Products/Debug-iphoneos";
+        return "DerivedData/Build/Products/Release-iphoneos";
     }
 
     getTestFrameworkName(): string {
@@ -135,7 +136,7 @@ export class IOSTestRunner extends AppCenterUITestRunner {
             "xcodebuild",
             "build-for-testing",
             "-configuration",
-            "Debug",
+            "Release",
             "-workspace",
             path.join(this.nativeAppDirectory, `${appName}.xcworkspace`),
             "-sdk",
@@ -146,16 +147,6 @@ export class IOSTestRunner extends AppCenterUITestRunner {
             "DerivedData"
         ];
 
-        try {
-            await ChildProcess.spawn("xcrun", args, {
-                cwd: this.nativeAppDirectory,
-                stdoutListener: this.stdoutListener,
-                stderrListener: this.stderrListener
-            });
-        } catch (e) {
-            this.options.logger.error(e.message, e, true);
-            return false;
-        }
-        return true;
+        return await this.spawnProcess("xcrun", args);
     }
 }
