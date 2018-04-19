@@ -28,11 +28,11 @@ export default class SetCurrentApp extends ReactNativeAppCommand {
         this.refreshCachedAppsAndRepaintQuickPickIfNeeded();
     }
 
-    protected async handleShowCurrentAppQuickPickSelection(target: string, rnApps: models.AppResponse[]) {
-        if (target === CommandNames.CreateApp.CommandName) {
+    protected async handleShowCurrentAppQuickPickSelection(selected: QuickPickAppItem, rnApps: models.AppResponse[]) {
+        if (selected.target === CommandNames.CreateApp.CommandName) {
             return this.showCreateAppOptions();
         } else {
-            const selectedApps: models.AppResponse[] = rnApps.filter(app => app.name === target);
+            const selectedApps: models.AppResponse[] = rnApps.filter(app => app.name === selected.target && app.owner.type === selected.description);
             if (!selectedApps || selectedApps.length !== 1) {
                 return;
             }
@@ -78,7 +78,7 @@ export default class SetCurrentApp extends ReactNativeAppCommand {
                     );
                 }).then((app: CurrentApp | null) => {
                     if (app) {
-                        const message = Strings.YourCurrentAppAndDeploymentMsg(target, app.currentAppDeployments.currentDeploymentName);
+                        const message = Strings.YourCurrentAppAndDeploymentMsg(selected.target, app.currentAppDeployments.currentDeploymentName);
                         VsCodeUtils.ShowInfoMessage(message);
                     } else {
                         this.logger.error("Failed to save current app");
