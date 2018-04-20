@@ -11,31 +11,50 @@ _NOTE: Currently it supports only React-Native based apps._
     * git
 
 
-## How does it work
-There are several possible scenarios how this extension could be used:
+## How it works
+There are several possible scenarios of using this extension:
 
-1. You would like to start development from the scratch with the new application already linked and configured to [AppCenter](https://appcenter.ms):
+1. You would like to start development from scratch with the new application already linked and configured to [AppCenter](https://appcenter.ms):
     * You clone new empty repository on your machine with `git clone new-repo-name` and `cd new-repo-name` and open this folder in VS Code.
     * You login to the appcenter from the App Center StatusBar
 
         ![Login to Appcenter](images/appcenter-login.png)
-    * After logged in you click the App Center StatusBar to show App Center Menu options. 
+    * After logging in click the App Center StatusBar to show App Center Menu options. 
 
         ![AppCenter Menu](images/appcenter-start-new-idea.png)
-    * You will be prompted to enter idea name and select user or organization where you would like to create app in appcenter
-        * App Center sample app will be cloned into the repository you have provided (it would also have preconfigured App Center Analytics/Crashes/CodePush stuff)
-        * Two react-native apps (for iOS and Android) will be created in appcenter (`ideaname-ios` and `ideaname-android`)
+    * You will be prompted to enter idea name and select user or organization where you would like to create app in App Center
+        * App Center sample app will be cloned into the repository you have provided (it will also have preconfigured App Center Analytics/Crashes/CodePush stuff)
+        * Two react-native apps (for iOS and Android) will be created in App Center (`ideaname-ios` and `ideaname-android`)
         * CodePush deployments will be created for every app
         * App will be linked with corresponding iOS/Android secret keys and CodePush deployment keys
         * Changes will be pushed to your remote repository
-        * New Testers Distribution Group will be created for every new app in appcenter, app will be connected to your GH repository `master` branch and new build will be started 
+        * New Testers Distribution Group will be created for every new app in App Center, app will be connected to your GH repository `master` branch and new build will be started 
     * You will be notified when finished and also we will automatically run `npm install` for you
-2. You would like to open already existant react-native application with CodePush already installed. When logged in the following App Center Menu options should be avaliable:
+
+2. You would like to link an existing react-native application to App Center. 
+    You will see a "Set Current App" option, when logged in.
+    You can either choose an app from App Center or choose it to be created for you.
+    When you pick "Create an App Center app" option, several options are available:
+    * Create an app for Android
+    * Create an app for iOS
+    * Create apps for both platforms
+    If you choose one of the first two, the app will be created and automatically set as current. If you choose to create two apps, you will have to pick one of them as current when a prompt is shown.
+
+    When the app is linked to App Center, several new options appear in the menu:
+    * Build
+    * Test
+    * Distribute
+    * Crashes
+    * Analytics
+    They all open the corresponding App Center tabs for the applicaiton. "Distribute" also contains CodePush stuff.
+
+3. You would like to open already existing react-native application with CodePush installed. When logged in, the following App Center Menu options should be avaliable under "Distribute > CodePush":
     * Set current app for CodePush
     * Change current Deployment
     * Change target binary verson 
     * Change if release should be mandatory
     * Make new CodePush release
+
 
 
 ## Contributing
