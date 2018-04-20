@@ -46,7 +46,7 @@ There are several possible scenarios of using this extension:
     * Distribute
     * Crashes
     * Analytics
-    They all open the corresponding App Center tabs for the applicaiton. "Distribute" also contains CodePush stuff.
+    They all open the corresponding App Center tabs for the application. "Distribute" also contains CodePush stuff.
 
 3. You would like to open already existing react-native application with CodePush installed. When logged in, the following App Center Menu options should be avaliable under "Distribute > CodePush":
     * Set current app for CodePush
