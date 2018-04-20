@@ -172,8 +172,8 @@ export default class AppCenterAppBuilder {
                 p.report({ message: Strings.ConnectingRepoToBuildServiceStatusBarMessage });
                 const conected: boolean[] = await Promise.all(
                     [
-                        this.iOSAppCreator.connectRepositoryToBuildService(AppCenterAppBuilder.getiOSAppName(this.ideaName), this.ownerName, this.repoUrl),
-                        this.androidAppCreator.connectRepositoryToBuildService(AppCenterAppBuilder.getAndroidAppName(this.ideaName), this.ownerName, this.repoUrl)
+                        this.iOSAppCreator.connectRepositoryToBuildService(AppCenterAppBuilder.getiOSAppName(this.ideaName), this.ownerName, this.repoUrl, this.isCreatedForOrganization()),
+                        this.androidAppCreator.connectRepositoryToBuildService(AppCenterAppBuilder.getAndroidAppName(this.ideaName), this.ownerName, this.repoUrl, this.isCreatedForOrganization())
                     ]
                 );
                 if (!conected.every((val: boolean) => {
@@ -186,8 +186,8 @@ export default class AppCenterAppBuilder {
                         p.report({ message: Strings.CreateBranchConfigAndKickOffBuildStatusBarMessage });
                         const branchConfiguredAndBuildStarted: boolean[] = await Promise.all(
                             [
-                                this.iOSAppCreator.withBranchConfigurationCreatedAndBuildKickOff(AppCenterAppBuilder.getiOSAppName(this.ideaName), this.defaultBranchName, this.ownerName),
-                                this.androidAppCreator.withBranchConfigurationCreatedAndBuildKickOff(AppCenterAppBuilder.getAndroidAppName(this.ideaName), this.defaultBranchName, this.ownerName)
+                                this.iOSAppCreator.withBranchConfigurationCreatedAndBuildKickOff(AppCenterAppBuilder.getiOSAppName(this.ideaName), this.defaultBranchName, this.ownerName, this.isCreatedForOrganization()),
+                                this.androidAppCreator.withBranchConfigurationCreatedAndBuildKickOff(AppCenterAppBuilder.getAndroidAppName(this.ideaName), this.defaultBranchName, this.ownerName, this.isCreatedForOrganization())
                             ]
                         );
                         if (!branchConfiguredAndBuildStarted.every((val: boolean) => {

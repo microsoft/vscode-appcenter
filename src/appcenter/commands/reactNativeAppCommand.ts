@@ -51,7 +51,7 @@ export class ReactNativeAppCommand extends Command {
         });
     }
 
-    protected async handleShowCurrentAppQuickPickSelection(_target: string, _rnApps: models.AppResponse[]) {
+    protected async handleShowCurrentAppQuickPickSelection(_target: QuickPickAppItem, _rnApps: models.AppResponse[]) {
         throw Error("handleShowCurrentAppQuickPickSelection not implemented in base class");
     }
 
@@ -87,7 +87,7 @@ export class ReactNativeAppCommand extends Command {
                 if (!selected) {
                     return;
                 }
-                this.handleShowCurrentAppQuickPickSelection(selected.target, rnApps);
+                this.handleShowCurrentAppQuickPickSelection(selected, rnApps);
             });
         }
     }
