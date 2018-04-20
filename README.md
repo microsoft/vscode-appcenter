@@ -64,8 +64,8 @@ If your React Native application has UI tests you can run it in App Center cloud
 In order to run the tests in App Center cloud you need [App Center CLI](https://github.com/Microsoft/appcenter-cli). To install it run `npm install -g appcenter-cli` in terminal.
 
 #### iOS
+Currently, extension supports running of XCUI tests only. Please, follow [the instructions for App Center portal docs](https://docs.microsoft.com/en-us/appcenter/test-cloud/preparing-for-upload/xcuitest) to prepare tests for uploading to the App Center cloud. 
 
-Currently, extension supports running XCUI tests only. Please, follow [the instructions for App Center portal docs](https://docs.microsoft.com/en-us/appcenter/test-cloud/preparing-for-upload/xcuitest) to prepare tests for uploading to the App Center cloud. 
 
 ### Running tests
 
@@ -82,6 +82,7 @@ TODO image
 TODO image
 
 4. After that, `Output->React Native` window will be opened where you can monitor the progress of the build, upload and run the tests.
+
 
 TODO image
 
