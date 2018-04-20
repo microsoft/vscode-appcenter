@@ -280,7 +280,6 @@
         "test": "^0.6.0",
         "tslint": "^5.9.1",
         "tslint-microsoft-contrib": "^5.0.3",
-        "uni": "0.0.6",
         "xml2js": "^0.4.19"
     }
 }
