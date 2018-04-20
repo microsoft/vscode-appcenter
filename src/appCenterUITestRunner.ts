@@ -30,7 +30,7 @@ export default abstract class AppCenterUITestRunner {
 
     public async runUITests(async: boolean): Promise<boolean> {
 
-        return await vscode.window.withProgress({ location: vscode.ProgressLocation.Window, title: Strings.VSCodeProgressLoadingTitle }, async p => {
+        return vscode.window.withProgress({ location: vscode.ProgressLocation.Window, title: Strings.VSCodeProgressLoadingTitle }, async p => {
             p.report({ message: Strings.CheckingAppCenterCli });
             if (!await Utils.packageInstalledGlobally("appcenter-cli")) {
                 VsCodeUtils.ShowErrorMessage(Strings.packageIsNotInstalledGlobally("appcenter-cli"));
@@ -74,7 +74,7 @@ export default abstract class AppCenterUITestRunner {
             if (async) {
                 args.push("--async");
             }
-            return await this.spawnProcess("appcenter", args);
+            return this.spawnProcess("appcenter", args);
         });
     }
 
@@ -144,6 +144,6 @@ export class IOSTestRunner extends AppCenterUITestRunner {
             "DerivedData"
         ];
 
-        return await this.spawnProcess("xcrun", args);
+        return this.spawnProcess("xcrun", args);
     }
 }
