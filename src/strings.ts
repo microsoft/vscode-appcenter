@@ -41,7 +41,7 @@ export class Strings {
     public static PleaseProvideToken: string = "Please paste your App Center access token";
     public static PleaseLoginViaBrowser: string = "You are about to be redirected to page containing a new App Center access token. Please copy and paste it here after you press Ok.";
     public static UserIsNotLoggedInMsg: string = "You are not logged into App Center";
-    public static MenuTitlePlaceholder: string = "Please select a menu action.";
+    public static MenuTitlePlaceholder: string = "Please make an App Center selection.";
     public static SelectProfileTitlePlaceholder: string = "Please select account.";
     public static SelectTestDeviceTitlePlaceholder: string = "Please select device configuration to test.";
 
