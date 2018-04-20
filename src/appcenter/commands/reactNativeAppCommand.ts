@@ -1,7 +1,7 @@
 import { Md5 } from "ts-md5/dist/md5";
 import * as vscode from "vscode";
-import { AppCenterOS, CommandNames, Constants } from '../../constants';
-import { AppCenterProfile, CurrentApp, CurrentAppDeployments, QuickPickAppItem } from '../../helpers/interfaces';
+import { CommandNames, Constants } from '../../constants';
+import { AppCenterProfile, CurrentApp, QuickPickAppItem } from '../../helpers/interfaces';
 import { MenuHelper } from "../../helpers/menuHelper";
 import { Utils } from '../../helpers/utils';
 import { VsCodeUtils } from '../../helpers/vsCodeUtils';
@@ -51,34 +51,6 @@ export class ReactNativeAppCommand extends Command {
         });
     }
 
-    protected saveCurrentApp(
-        currentAppName: string,
-        appOS: AppCenterOS,
-        currentAppDeployments: CurrentAppDeployments | null,
-        targetBinaryVersion: string,
-        type: string,
-        isMandatory: boolean,
-        appSecret: string): Promise<CurrentApp | null> {
-        const currentApp = Utils.toCurrentApp(currentAppName, appOS, currentAppDeployments, targetBinaryVersion, type, isMandatory, appSecret);
-        if (!currentApp) {
-            VsCodeUtils.ShowWarningMessage(Strings.InvalidCurrentAppNameMsg);
-            return Promise.resolve(null);
-        }
-
-        return this.appCenterProfile.then((profile: AppCenterProfile | null) => {
-            if (profile) {
-                profile.currentApp = currentApp;
-                return this.appCenterAuth.updateProfile(profile).then(() => {
-                    return currentApp;
-                });
-            } else {
-                // No profile - not logged in?
-                VsCodeUtils.ShowWarningMessage(Strings.UserIsNotLoggedInMsg);
-                return Promise.resolve(null);
-            }
-        });
-    }
-
     protected async handleShowCurrentAppQuickPickSelection(_target: QuickPickAppItem, _rnApps: models.AppResponse[]) {
         throw Error("handleShowCurrentAppQuickPickSelection not implemented in base class");
     }
@@ -110,13 +82,13 @@ export class ReactNativeAppCommand extends Command {
         }
         if (!this.userAlreadySelectedApp) {
             vscode.window.showQuickPick(options, { placeHolder: Strings.ProvideCurrentAppPromptMsg })
-            .then((selected: QuickPickAppItem) => {
-                this.userAlreadySelectedApp = true;
-                if (!selected) {
-                    return;
-                }
-                this.handleShowCurrentAppQuickPickSelection(selected, rnApps);
-            });
+                .then((selected: QuickPickAppItem) => {
+                    this.userAlreadySelectedApp = true;
+                    if (!selected) {
+                        return;
+                    }
+                    this.handleShowCurrentAppQuickPickSelection(selected, rnApps);
+                });
         }
     }
 
@@ -142,7 +114,7 @@ export class ReactNativeAppCommand extends Command {
             return true;
         }
         if (cachedApps.length !== appsList.length) {
-           return true;
+            return true;
         }
 
         let differs: boolean = false;

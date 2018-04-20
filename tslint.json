@@ -279,7 +279,7 @@
         ],
         "ban": false,
         "ban-types": true,
-        "cyclomatic-complexity": true,
+        "cyclomatic-complexity": false, //changed
         "file-header": false,
         "import-blacklist": false,
         "interface-over-type-literal": false,
