@@ -1,5 +1,5 @@
 export class Constants {
-    public static ExtensionName: string = "appcenter";
+    public static ExtensionName: string = "App Center";
     public static DefaultAPIEndPoint: string = "https://api.appcenter.ms";
     public static AppCenterPortalURL: string = "https://appcenter.ms";
     public static DefaultLegacyCodePushService: string = "https://codepush-management.azurewebsites.net/";
@@ -29,7 +29,7 @@ export class Constants {
     public static AppCenterTokenFileName = "VSCodeAppCenterTokens.json";
 
     // IMPORTANT: this two items below should stay in sync in terms of xcode projectOrWorkspacePath/scheme values
-    // We should decide how we should handle this (e.g. create manually within AppCenter site)
+    // We should decide how we should handle this (e.g. create manually within App Center site)
     public static AppCenterDemoAppRepository: string = "https://github.com/Microsoft/appcenter-sampleapp-react-native.git";
     public static defaultBuildConfigJSON: string = `{
         "branch": {
@@ -88,6 +88,13 @@ export class CommandNames {
         public static LoginVsts: string = `${CommandNames.CommandPrefix}settings.vsts.login`;
         public static SwitchAccountVsts: string = `${CommandNames.CommandPrefix}settings.vsts.switchAccount`;
         public static LogoutVsts: string = `${CommandNames.CommandPrefix}settings.vsts.logout`;
+    };
+
+    public static CreateApp = class {
+        public static CommandName: string = `${CommandNames.CommandPrefix}appcenter.createNewApp`;
+        public static Android: string = `${CommandNames.CommandPrefix}appcenter.createNewApp.android`;
+        public static IOS: string = `${CommandNames.CommandPrefix}appcenter.createNewApp.ios`;
+        public static Both: string = `${CommandNames.CommandPrefix}appcenter.createNewApp.both`;
     };
 
     public static Tools = class {

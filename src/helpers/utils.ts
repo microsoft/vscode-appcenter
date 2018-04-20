@@ -98,6 +98,19 @@ export class Utils {
         return Utils.projectHaveNpmPackage(projectRoot, 'react-native-code-push', Strings.CodePushInstallHint, showMessageOnError);
     }
 
+    public static toAppCenterOS(codePushOs: string): AppCenterOS | undefined {
+        switch (codePushOs.toLowerCase()) {
+            case 'android':
+                return AppCenterOS.Android;
+            case 'ios':
+                return AppCenterOS.iOS;
+            case 'windows':
+                return AppCenterOS.Windows;
+            default:
+                throw new Error('Unknown App Center OS');
+        }
+    }
+
     public static toCurrentApp(app: string,
         appOS: AppCenterOS,
         appDeployment: CurrentAppDeployments | null,

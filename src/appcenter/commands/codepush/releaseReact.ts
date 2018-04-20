@@ -46,9 +46,9 @@ export default class ReleaseReact extends RNCPAppCommand {
                         return currentApp.targetBinaryVersion;
                     } else {
                         switch (currentApp.os) {
-                            case "android": return reactNative.getAndroidAppVersion(this.manager.projectRootPath);
-                            case "ios": return reactNative.getiOSAppVersion(this.manager.projectRootPath);
-                            case "windows": return reactNative.getWindowsAppVersion(this.manager.projectRootPath);
+                            case "android": return reactNative.getAndroidAppVersion(this.rootPath);
+                            case "ios": return reactNative.getiOSAppVersion(this.rootPath);
+                            case "windows": return reactNative.getWindowsAppVersion(this.rootPath);
                             default: throw new Error(`OS must be "android", "ios", or "windows".`);
                         }
                     }
@@ -57,13 +57,13 @@ export default class ReleaseReact extends RNCPAppCommand {
                     codePushRelaseParams.appVersion = appVersion;
                     return reactNative.makeUpdateContents(<BundleConfig>{
                         os: codePushRelaseParams.app.os,
-                        projectRootPath: this.manager.projectRootPath
+                        projectRootPath: this.rootPath
                     });
                 }).then((pathToUpdateContents: string) => {
                     p.report({ message: Strings.ArchivingUpdateContentsMessage });
                     updateContentsDirectory = pathToUpdateContents;
                     this.logger.log(`CodePush updated contents directory path: ${updateContentsDirectory}`, LogLevel.Debug);
-                    return updateContents.zip(pathToUpdateContents, this.manager.projectRootPath);
+                    return updateContents.zip(pathToUpdateContents, this.rootPath);
                 }).then((pathToZippedBundle: string) => {
                     p.report({ message: Strings.ReleasingUpdateContentsMessage });
                     codePushRelaseParams.updatedContentZipPath = pathToZippedBundle;

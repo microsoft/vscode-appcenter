@@ -90,7 +90,9 @@ export class ExtensionManager implements Disposable {
     public setupAppCenterStatusBar(profile: Profile | null): Promise<void> {
         if (profile && profile.userName) {
             return VsCodeUtils.setStatusBar(this._appCenterStatusBarItem,
-                `AppCenter: ${profile.userName}`,
+                profile.currentApp && profile.currentApp.appName
+                ? `App Center: ${profile.currentApp.appName}`
+                : `App Center: ${profile.userName}`,
                 Strings.YouAreLoggedInMsg(AuthProvider.AppCenter, profile.userName),
                 `${CommandNames.ShowMenu}`
             );

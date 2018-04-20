@@ -4,7 +4,7 @@
         "target": "es6",
         "lib": [
             "es6",
-            //"dom"
+            "dom"
         ],
         "sourceMap": true,
         "rootDir": "./",

@@ -3,17 +3,28 @@ import { CurrentApp } from "./helpers/interfaces";
 
 export class Strings {
 
-    /* Menu labeles */
+    /* Menu labels */
     public static StartAnIdeaMenuLabel: string = "Start a new project";
+    public static StartAnIdeaMenuDescription: string = "";
     public static OrganizationMenuDescriptionLabel: string = "Organization";
     public static UserMenuDescriptionLabel: string = "User";
+    public static MenuCurrentAppDescription: string = "Click here to change current app";
     public static LoginMenuLabel: string = "Login";
+    public static LoginMenuDescription: string = "";
     public static GetCurrentAppMenuLabel: string = "Get current app info";
     public static CodePushMenuLabelItem: string = "CodePush";
+    public static CodePushMenuLabelDescription: string = "";
     public static AppCenterPortalMenuLabel: string = "App Center portal";
+    public static CreateNewAppMenuLabel: string = "Create new app in App Center";
+    public static CreateNewIOSAppMenuLabel: string = "Create an app for iOS";
+    public static CreateNewAndroidAppMenuLabel: string = "Create an app for Android";
+    public static CreateNewAppsForBothMenuLabel: string = "Create apps for both platforms";
+    public static CreateAppPlaceholder: string = "Choose the app to be created";
     public static SettingsMenuLabel: string = "Settings";
+    public static SettingsMenuDescription: string = "";
     public static CrashesMenuLabel: string = "Simulate Crashes";
     public static ToolsMenuLabel: string = "Tools";
+    public static ToolsMenuDescription: string = "";
     public static LoginToAnotherAccountMenuLabel: string = "Add App Center account";
     public static SwitchAccountMenuLabel: string = "Switch App Center account";
     public static LogoutMenuLabel: string = "Logout App Center";
@@ -106,12 +117,13 @@ export class Strings {
     public static DetectingAppVersionMessage: string = "Locating app version...";
     public static RunningBundleCommandMessage: string = "Creating a new bundle...";
     public static ArchivingUpdateContentsMessage: string = "Compressing new bundle...";
-    public static ReleasingUpdateContentsMessage: string = "Sending update to CodePush...";
     public static ReactNativeInstallHint: string = "Make sure you ran \"npm install\" and that you are inside a React Native project.";
     public static CodePushInstallHint: string = "Make sure you ran \"npm install\" and that you are inside a React Native Code Push project.";
+    public static ReleasingUpdateContentsMessage: string = "Sending update to CodePush...";
     public static RepoManualConnectBtnLabel: string = "Connect";
     public static BuildManualConfigureBtnLabel: string = "Configure build";
     public static OnlyIOSError: string = "Running UI tests is supported only for iOS.";
+    public static AppCreatedBtnLabel: string = "Check it out";
 
     public static CreatingAppStatusBarMessage: string = `Creating a new App Center app...`;
     public static FailedToCreateAppInAppCenter: string = `An error occurred while creating the new App Center app`;
@@ -137,7 +149,7 @@ export class Strings {
     }
 
     public static OpenTabInBrowserMsg(tabName: string): string {
-        return `Open '${tabName}' tab for currently selected app`;
+        return `Navigate to '${tabName}' options for current app`;
     }
 
     public static FailedToPushChangesToRemoteRepoMsg: (repoName: string) => string = (repoName: string) => {
@@ -162,9 +174,22 @@ export class Strings {
 
     public static YourCurrentAppAndDeploymentMsg(appName: string, deploymentName: string): string {
         if (deploymentName) {
-            return `The current app is '${appName}', current CodePush deployment is '${deploymentName}'`;
+            return `${appName} (${deploymentName}) is now your current app and deployment`;
         } else {
-            return `The current app is '${appName}', but you have no CodePush deployments specified`;
+            return `${appName} is now your current app`;
+        }
+    }
+
+    // If only one app has been created, pass 1st parameter and squash is true.
+    // If two apps were created, pass their names and squash is true.
+    // If two apps were created and user has chosen one of them as current, pass only current app name.
+    public static AppCreatedMsg(appName: string, squash?: boolean, secondAppName?: string): string {
+        if (secondAppName) {
+            return `Apps ${appName} and ${secondAppName} have been created in App Center. Which one do you want to set as current?`;
+        } else {
+            return squash ?
+                `The app ${appName} has been created in App Center and set as current` :
+                `The current app is ${appName}, go see it in App Center`;
         }
     }
 
@@ -188,7 +213,7 @@ export class Strings {
 
     public static setCurrentAppMenuText(app?: CurrentApp): string {
         if (app) {
-            return `Change current app | ${app.appName}(${app.os})`;
+            return `Current app: "${app.appName}(${app.os})"`;
         } else {
             return `Set current app`;
         }

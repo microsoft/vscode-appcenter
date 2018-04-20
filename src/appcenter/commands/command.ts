@@ -26,6 +26,10 @@ export class Command {
         this.clientFactory = createAppCenterClient();
     }
 
+    public get rootPath(): string {
+        return <string>this.manager.projectRootPath;
+    }
+
     public get appCenterProfile(): Promise<AppCenterProfile | null> {
         const profile = this.appCenterAuth.activeProfile;
         if (!profile) {

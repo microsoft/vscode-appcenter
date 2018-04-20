@@ -1,9 +1,9 @@
 {
     "name": "vscode-appcenter",
-    "displayName": "VSCode AppCenter Tools",
-    "description": "AppCenter extension",
+    "displayName": "VSCode App Center Tools",
+    "description": "App Center extension for VS Code.",
     "version": "0.0.1",
-    "publisher": "vsmobile",
+    "publisher": "Microsoft",
     "engines": {
         "vscode": "^1.21.0"
     },
@@ -29,93 +29,98 @@
         "commands": [
             {
                 "command": "appcenter.showPortalMenu",
-                "title": "AppCenter Portal",
-                "category": "AppCenter"
+                "title": "App Center Portal",
+                "category": "App Center"
             },
             {
                 "command": "appcenter.whoAmI",
                 "title": "Who Am I",
-                "category": "AppCenter"
+                "category": "App Center"
             },
             {
                 "command": "appcenter.login",
                 "title": "Login",
-                "category": "AppCenter"
+                "category": "App Center"
             },
             {
                 "command": "appcenter.menu",
                 "title": "Show Menu",
-                "category": "AppCenter"
+                "category": "App Center"
             },
             {
                 "command": "appcenter.start",
                 "title": "Start An Idea",
-                "category": "AppCenter"
+                "category": "App Center"
             },
             {
                 "command": "appcenter.setCurrentApp",
                 "title": "Set Current App",
-                "category": "AppCenter"
+                "category": "App Center"
             },
             {
                 "command": "appcenter.getCurrentApp",
                 "title": "Get Current App",
-                "category": "AppCenter"
+                "category": "App Center"
+            },
+            {
+                "command": "appcenter.createNewApp",
+                "title": "Create new app",
+                "category": "App Center"
             },
             {
                 "command": "appcenter.settings.loginToAnotherAccount",
-                "title": "Login to another AppCenter account",
-                "category": "AppCenter Settings"
+                "title": "Login to another App Center account",
+                "category": "App Center Settings"
             },
             {
                 "command": "appcenter.settings.switchAccount",
-                "title": "Switch AppCenter account",
-                "category": "AppCenter Settings"
+                "title": "Switch App Center account",
+                "category": "App Center Settings"
             },
             {
                 "command": "appcenter.settings.logout",
                 "title": "Switch Vsts Account",
-                "category": "AppCenter Settings"
+                "category": "App Center Settings"
             },
             {
                 "command": "appcenter.settings.vsts.login",
                 "title": "Login to another Vsts account",
-                "category": "AppCenter Settings"
+                "category": "App Center Settings"
             },
             {
                 "command": "appcenter.settings.vsts.switchAccount",
                 "title": "Logout from Vsts",
-                "category": "AppCenter Settings"
+                "category": "App Center Settings"
             },
             {
                 "command": "appcenter.settings.vsts.logout",
                 "title": "Logout from Vsts",
-                "category": "AppCenter Settings"
+                "category": "App Center Settings"
             },
             {
                 "command": "appcenter.codepush.setCurrentDeployment",
                 "title": "Set Current Deployment",
-                "category": "AppCenter Code Push"
+                "category": "App Center Code Push"
             },
             {
                 "command": "appcenter.codepush.releaseReact",
                 "title": "Release React",
-                "category": "AppCenter Code Push"
+                "category": "App Center Code Push"
             },
             {
                 "command": "appcenter.codepush.switchMandatoryPropForRelease",
                 "title": "Switch Code Push release mandatory property",
-                "category": "AppCenter Code Push"
+                "category": "App Center Code Push"
             },
             {
                 "command": "appcenter.codepush.setTargetBinaryVersion",
                 "title": "Set Code Push release target binary verison",
-                "category": "AppCenter Code Push"
+                "category": "App Center Code Push"
             },
             {
                 "command": "appcenter.tools",
-                "title": "Open AppCenter tools",
-                "category": "AppCenter Tools"
+                "title": "Open App Center tools",
+                "category": "App Center Tools"
             },
             {
                 "command": "appcenter.tools.simulateCrashes",
@@ -140,7 +145,7 @@
         ],
         "configuration": {
             "type": "object",
-            "title": "AppCenter configuration",
+            "title": "App Center Configuration",
             "properties": {
                 "appcenter.demoAppGitRepo": {
                     "description": "RN Demo App GH Repository",
@@ -148,22 +153,22 @@
                     "default": "https://github.com/Microsoft/appcenter-sampleapp-react-native.git"
                 },
                 "appcenter.portalEndpoint": {
-                    "description": "Appcenter portal",
+                    "description": "App Center Portal",
                     "type": "string",
                     "default": "https://appcenter.ms"
                 },
                 "appcenter.loginendpoint": {
-                    "description": "Endpoint to login to appcenter",
+                    "description": "Endpoint to login to App Center",
                     "type": "string",
                     "default": "https://appcenter.ms/cli-login"
                 },
                 "appcenter.api.endpoint": {
-                    "description": "API Endpoint to appcenter",
+                    "description": "API Endpoint to App Center",
                     "type": "string",
                     "default": "https://api.appcenter.ms"
                 },
                 "appcenter.api.distribitiongrouptestersname": {
-                    "description": "AppCenter Distribution Group Testers Name",
+                    "description": "App Center Distribution Group Testers Name",
                     "type": "string",
                     "default": "Beta Testers"
                 },
@@ -183,17 +188,17 @@
                     "default": "true"
                 },
                 "appcenter.api.defaultbranchname": {
-                    "description": "AppCenter Default Branch Name",
+                    "description": "App Center Default Branch Name",
                     "type": "string",
                     "default": "master"
                 },
                 "appcenter.api.createiosapp": {
-                    "description": "Create iOS App In AppCenter",
+                    "description": "Create iOS App In App Center",
                     "type": "boolean",
                     "default": "true"
                 },
                 "appcenter.api.createandroidapp": {
-                    "description": "Create Android App In AppCenter",
+                    "description": "Create Android App In App Center",
                     "type": "boolean",
                     "default": "true"
                 },
@@ -211,12 +216,12 @@
                     "default": "Info"
                 },
                 "appcenter.crashes": {
-                    "description": "Enable menu items to work with AppCenter Crashes",
+                    "description": "Enable menu items to work with App Center Crashes",
                     "type": "boolean",
                     "default": false
                 },
                 "appcenter.environment": {
-                    "description": "Environment to configure AppCenter endpoints",
+                    "description": "Environment to configure App Center endpoints",
                     "type": "enum",
                     "enum": [
                         "prod",
@@ -277,6 +282,7 @@
         "simple-git": "^1.92.0",
         "sinon": "^4.5.0",
         "temp": "^0.8.3",
+        "ts-md5": "^1.2.4",
         "test": "^0.6.0",
         "tslint": "^5.9.1",
         "tslint-microsoft-contrib": "^5.0.3",

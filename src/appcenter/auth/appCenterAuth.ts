@@ -25,7 +25,7 @@ class AppCenterProfileImpl implements AppCenterProfile {
 export default class AppCenterAuth extends Auth<AppCenterProfile> {
 
     protected async getUserInfo(credentials: AppCenterLoginInfo): Promise<AppCenterProfile> {
-        //TODO Handle situation when user had deleted token in appcenter portal already
+        //TODO Handle situation when user had deleted token in App Center portal already
         const client = createAppCenterClient().fromToken(credentials.token, SettingsHelper.getAppCenterAPIEndpoint());
         const userResponse = await client.users.get();
         if (!userResponse) {
