@@ -55,7 +55,35 @@ There are several possible scenarios of using this extension:
     * Change if release should be mandatory
     * Make new CodePush release
 
+## Test
 
+If your React Native application has UI tests you can run it in App Center cloud using extension.
+
+### Preparing tests
+
+In order to run the tests in App Center cloud you need [App Center CLI](https://github.com/Microsoft/appcenter-cli). To install it run `npm install -g appcenter-cli` in terminal.
+
+#### iOS
+
+Currently, extension supports running of XCUI tests only. Please, follow [the instructions for App Center portal docs](https://docs.microsoft.com/en-us/appcenter/test-cloud/preparing-for-upload/xcuitest) to prepare tests for uploading to the App Center cloud. 
+
+### Running tests
+
+1. Open **App Center menu** and then click **Test** button. 
+
+TODO image
+
+2. To run tests you can use two options: `Run UI tests` and `Run UI tests asynchronously`. Command `Run UI tests` will start to build your application for testing, upload it together with tests to App Center cloud and then run it there waiting for tests to be done. Command `Run UI tests asynchronously` does the same thing except it exits the command when tests are uploaded, without waiting for test results. Choose the one you prefer the most. Also, you can track progress of command below in status bar.
+
+TODO image
+
+3. Then select device configuration for tests.
+
+TODO image
+
+4. After that `Output->React Native` window will be opened where you can monitor progress of build, upload and run of the tests.
+
+TODO image
 
 ## Contributing
 There are a couple of ways you can contribute to this repo:
