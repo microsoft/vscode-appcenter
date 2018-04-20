@@ -164,9 +164,9 @@ export class Strings {
 
     public static YourCurrentAppAndDeploymentMsg(appName: string, deploymentName: string): string {
         if (deploymentName) {
-            return `The current app is '${appName}', current CodePush deployment is '${deploymentName}'`;
+            return `${appName} (${deploymentName}) is now your current app and deployment`;
         } else {
-            return `The current app is '${appName}', but you have no CodePush deployments specified`;
+            return `${appName} is now your current app`;
         }
     }
 

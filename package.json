@@ -29,7 +29,7 @@
         "commands": [
             {
                 "command": "appcenter.showPortalMenu",
-                "title": "AppCenter Portal",
+                "title": "App Center Portal",
                 "category": "App Center"
             },
             {
