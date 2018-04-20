@@ -32,13 +32,12 @@ export default class ShowMenu extends RNCPAppCommand {
                 description: Strings.OpenTabInBrowserMsg(Strings.DistributeCodePushTabMenuItem),
                 target: AppCenterDistributionTabs.CodePush
             });
-
-            menuOptions.push(<CustomQuickPickItem>{
-                label: Strings.releaseReactMenuText(currentApp),
-                description: "",
-                target: CommandNames.CodePush.ReleaseReact
-            });
             if (currentApp.currentAppDeployments && currentApp.currentAppDeployments.codePushDeployments && currentApp.currentAppDeployments.codePushDeployments.length) {
+                menuOptions.push(<CustomQuickPickItem>{
+                    label: Strings.releaseReactMenuText(currentApp),
+                    description: "",
+                    target: CommandNames.CodePush.ReleaseReact
+                });
                 menuOptions.push(<CustomQuickPickItem>{
                     label: Strings.setCurrentAppDeploymentText(<CurrentApp>currentApp),
                     description: "",
