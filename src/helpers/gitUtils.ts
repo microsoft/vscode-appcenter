@@ -6,7 +6,7 @@ const git = require('simple-git/promise');
 
 export class GitUtils {
     private static gitCommand: string = 'git';
-    private static gitFirstCommitName: string = 'Configure AppCenter apps';
+    private static gitFirstCommitName: string = 'Configure App Center apps';
 
     public static async IsGitInstalled(workingDirectory: string): Promise<boolean> {
         try {

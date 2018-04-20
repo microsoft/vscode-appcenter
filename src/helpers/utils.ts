@@ -103,7 +103,7 @@ export class Utils {
             case 'windows':
                 return AppCenterOS.Windows;
             default:
-                throw new Error('Unknown AppCenter OS');
+                throw new Error('Unknown App Center OS');
         }
     }
 

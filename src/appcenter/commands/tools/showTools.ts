@@ -47,7 +47,7 @@ export default class ShowTools extends Command {
 
                     default:
                         // Ideally shouldn't be there :)
-                        this.logger.error("Unknown AppCenter menu command");
+                        this.logger.error("Unknown App Center menu command");
                         break;
                 }
                 return;

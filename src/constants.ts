@@ -1,5 +1,5 @@
 export class Constants {
-    public static ExtensionName: string = "appcenter";
+    public static ExtensionName: string = "App Center";
     public static DefaultAPIEndPoint: string = "https://api.appcenter.ms";
     public static AppCenterPortalURL: string = "https://appcenter.ms";
     public static DefaultLegacyCodePushService: string = "https://codepush-management.azurewebsites.net/";
@@ -29,7 +29,7 @@ export class Constants {
     public static AppCenterTokenFileName = "VSCodeAppCenterTokens.json";
 
     // IMPORTANT: this two items below should stay in sync in terms of xcode projectOrWorkspacePath/scheme values
-    // We should decide how we should handle this (e.g. create manually within AppCenter site)
+    // We should decide how we should handle this (e.g. create manually within App Center site)
     public static AppCenterDemoAppRepository: string = "https://github.com/Microsoft/appcenter-sampleapp-react-native.git";
     public static defaultBuildConfigJSON: string = `{
         "branch": {
