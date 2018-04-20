@@ -2,36 +2,37 @@ import { AppCenterBeacons, AppCenterDistributionTabs, AppCenterEnvironment, Cons
 import { SettingsHelper } from "./settingsHelper";
 
 export class AppCenterUrlBuilder {
+
+    private static ownerPrefix(isOrg: boolean): string {
+        return isOrg ? "orgs" : "users";
+    }
+
     public static GetAppCenterLinkByBeacon(ownerName: string, appName: string, beaconName: AppCenterBeacons, isOrg: boolean): string {
-        if (isOrg) {
-            return `${SettingsHelper.getAppCenterPortalEndpoint()}/orgs/${ownerName}/apps/${appName}/${beaconName}/`;
-        } else {
-            return `${SettingsHelper.getAppCenterPortalEndpoint()}/users/${ownerName}/apps/${appName}/${beaconName}/`;
-        }
+        return `${SettingsHelper.getAppCenterPortalEndpoint()}/${this.ownerPrefix(isOrg)}/${ownerName}/apps/${appName}/${beaconName}/`;
     }
 
     public static GetAppCenterDistributeTabLinkByTabName(ownerName: string, appName: string, tabName: AppCenterDistributionTabs, isOrg: boolean): string {
-        if (isOrg) {
-            return `${SettingsHelper.getAppCenterPortalEndpoint()}/orgs/${ownerName}/apps/${appName}/distribute/${tabName}/`;
-        } else {
-            return `${SettingsHelper.getAppCenterPortalEndpoint()}/users/${ownerName}/apps/${appName}/distribute/${tabName}/`;
-        }
+        return `${SettingsHelper.getAppCenterPortalEndpoint()}/${this.ownerPrefix(isOrg)}/${ownerName}/apps/${appName}/distribute/${tabName}/`;
     }
 
-    public static GetPortalBuildConfigureLink(appOwner: string, appName: string, branchName: string): string {
-        return `${SettingsHelper.getAppCenterPortalEndpoint()}/users/${appOwner}/apps/${appName}/build/branches/${branchName}/setup`;
+    public static GetAppCenterAppLink(ownerName: string, appName: string, isOrg: boolean): string {
+        return `${SettingsHelper.getAppCenterPortalEndpoint()}/${this.ownerPrefix(isOrg)}/${ownerName}/apps/${appName}/`;
     }
 
-    public static GetPortalConnectRepoLink(appOwner: string, appName: string): string {
-        return `${SettingsHelper.getAppCenterPortalEndpoint()}/users/${appOwner}/apps/${appName}/build/connect`;
+    public static GetPortalBuildConfigureLink(appOwner: string, appName: string, branchName: string, isOrg: boolean): string {
+        return `${SettingsHelper.getAppCenterPortalEndpoint()}/${this.ownerPrefix(isOrg)}/${appOwner}/apps/${appName}/build/branches/${branchName}/setup`;
     }
 
-    public static GetPortalCrashesLink(appOwner: string, appName: string): string {
-        return `${SettingsHelper.getAppCenterPortalEndpoint()}/users/${appOwner}/apps/${appName}/crashes/`;
+    public static GetPortalConnectRepoLink(appOwner: string, appName: string, isOrg: boolean): string {
+        return `${SettingsHelper.getAppCenterPortalEndpoint()}/${this.ownerPrefix(isOrg)}/${appOwner}/apps/${appName}/build/connect`;
     }
 
-    public static GetPortalBuildLink(appOwner: string, appName: string, branchName: string, buildId: string): string {
-        return `${SettingsHelper.getAppCenterPortalEndpoint()}/users/${appOwner}/apps/${appName}/build/branches/${branchName}/builds/${buildId}`;
+    public static GetPortalCrashesLink(appOwner: string, appName: string, isOrg: boolean): string {
+        return `${SettingsHelper.getAppCenterPortalEndpoint()}/${this.ownerPrefix(isOrg)}/${appOwner}/apps/${appName}/crashes/`;
+    }
+
+    public static GetPortalBuildLink(appOwner: string, appName: string, branchName: string, buildId: string, isOrg: boolean): string {
+        return `${SettingsHelper.getAppCenterPortalEndpoint()}/${this.ownerPrefix(isOrg)}/${appOwner}/apps/${appName}/build/branches/${branchName}/builds/${buildId}`;
     }
 
     public static getCrashesEndpoint(): string {
@@ -42,5 +43,9 @@ export class AppCenterUrlBuilder {
             case AppCenterEnvironment.Staging: return Constants.StagingCrashesEndPoint;
             default: return Constants.ProdCrashesEndPoint;
         }
+    }
+
+    public static getTestLink(appOwner: string, appName: string, isOrg: boolean) {
+        return `${SettingsHelper.getAppCenterPortalEndpoint()}/${this.ownerPrefix(isOrg)}/${appOwner}/apps/${appName}/test/runs`;
     }
 }

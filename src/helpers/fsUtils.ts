@@ -1,4 +1,5 @@
 import * as fs from "fs";
+import * as rimraf from "rimraf";
 
 export class FSUtils {
 
@@ -63,6 +64,19 @@ export class FSUtils {
                 } else {
                     reject(err);
                 }
+            });
+        });
+    }
+    public static rimraf(path: string, options?: rimraf.Options): Promise<void> {
+        return new Promise((resolve, reject) => {
+            if (!options) {
+                options = {};
+            }
+            rimraf(path, options, (error: Error) => {
+                if (error) {
+                    reject(error);
+                }
+                resolve(void 0);
             });
         });
     }

@@ -124,8 +124,23 @@
             },
             {
                 "command": "appcenter.tools.simulateCrashes",
-                "title": "Simulate App Center Crash",
-                "category": "App Center Tools"
+                "title": "Simulate AppCenter Crash",
+                "category": "AppCenter Tools"
+            },
+            {
+                "command": "appcenter.test.runUITests",
+                "title": "Run UI tests",
+                "category": "AppCenter Test"
+            },
+            {
+                "command": "appcenter.test.runUITestsAsync",
+                "title": "Run UI tests asynchronously",
+                "category": "AppCenter Test"
+            },
+            {
+                "command": "appcenter.test.viewResults",
+                "title": "View UI tests results",
+                "category": "AppCenter Test"
             }
         ],
         "configuration": {
@@ -229,6 +244,7 @@
     "devDependencies": {
         "@types/mocha": "^2.2.42",
         "@types/node": "^7.0.43",
+        "@types/rimraf": "^2.0.2",
         "typescript": "^2.7.2",
         "vscode": "^1.1.6"
     },
@@ -256,6 +272,7 @@
         "opener": "^1.4.3",
         "plist": "^3.0.1",
         "properties": "^1.2.1",
+        "rimraf": "^2.6.2",
         "run-sequence": "^2.2.1",
         "rx-lite": "^4.0.8",
         "sandbox": "^0.8.6",

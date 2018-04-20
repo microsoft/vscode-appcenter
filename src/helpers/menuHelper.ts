@@ -1,14 +1,15 @@
 import * as vscode from "vscode";
 import { models } from "../appcenter/apis";
+import * as CodePush from "../appcenter/commands/codepush";
 import { AppCenterBeacons, AppCenterDistributionTabs, CommandNames } from "../constants";
 import { Strings } from "../strings";
 import { AppCenterUrlBuilder } from "./appCenterUrlBuilder";
-import { QuickPickAppItem } from "./interfaces";
+import { CommandParams, Profile, QuickPickAppItem, UserOrOrganizationItem  } from "./interfaces";
 import { Utils } from "./utils";
 import { CustomQuickPickItem } from "./vsCodeUtils";
 
 export class MenuHelper {
-    public static handleMenuPortalQuickPickSelection(selected: string, ownerName: string, appName: string, isOrg: boolean) {
+    public static handleMenuPortalQuickPickSelection(params: CommandParams, selected: string, ownerName: string, appName: string, isOrg: boolean, isCodePushEnabled: boolean) {
         if (!ownerName && !appName) {
             throw new Error("ShowMenu: OwnerName or AppName not specified");
         }
@@ -16,11 +17,8 @@ export class MenuHelper {
             case (AppCenterBeacons.Build):
                 Utils.OpenUrl(AppCenterUrlBuilder.GetAppCenterLinkByBeacon(ownerName, appName, AppCenterBeacons.Build, isOrg));
                 break;
-            case (AppCenterBeacons.Test):
-                Utils.OpenUrl(AppCenterUrlBuilder.GetAppCenterLinkByBeacon(ownerName, appName, AppCenterBeacons.Test, isOrg));
-                break;
             case (AppCenterBeacons.Distribute):
-                vscode.window.showQuickPick(MenuHelper.getAppCenterDistributeTabMenuItems(), { placeHolder: Strings.MenuTitlePlaceholder })
+                vscode.window.showQuickPick(MenuHelper.getAppCenterDistributeTabMenuItems(isCodePushEnabled), { placeHolder: Strings.MenuTitlePlaceholder })
                     .then((selected: QuickPickAppItem) => {
                         if (!selected) {
                             return;
@@ -32,11 +30,11 @@ export class MenuHelper {
                             case (AppCenterDistributionTabs.Stores):
                                 Utils.OpenUrl(AppCenterUrlBuilder.GetAppCenterDistributeTabLinkByTabName(ownerName, appName, AppCenterDistributionTabs.Stores, isOrg));
                                 break;
-                            case (AppCenterDistributionTabs.CodePush):
-                                Utils.OpenUrl(AppCenterUrlBuilder.GetAppCenterDistributeTabLinkByTabName(ownerName, appName, AppCenterDistributionTabs.CodePush, isOrg));
-                                break;
                             case (AppCenterDistributionTabs.Releases):
                                 Utils.OpenUrl(AppCenterUrlBuilder.GetAppCenterDistributeTabLinkByTabName(ownerName, appName, AppCenterDistributionTabs.Releases, isOrg));
+                                break;
+                            case (CommandNames.CodePush.ShowMenu):
+                                new CodePush.ShowMenu(params).runNoClient();
                                 break;
                             default:
                                 break;
@@ -49,17 +47,30 @@ export class MenuHelper {
             case (AppCenterBeacons.Analytics):
                 Utils.OpenUrl(AppCenterUrlBuilder.GetAppCenterLinkByBeacon(ownerName, appName, AppCenterBeacons.Analytics, isOrg));
                 break;
-            case (AppCenterBeacons.Push):
-                Utils.OpenUrl(AppCenterUrlBuilder.GetAppCenterLinkByBeacon(ownerName, appName, AppCenterBeacons.Push, isOrg));
-                break;
             default:
                 break;
+        }
+    }
+
+    public static getSelectedUserOrOrgItem(selected: CustomQuickPickItem, allItems: CustomQuickPickItem[]): UserOrOrganizationItem | null {
+        let userOrOrgItem: UserOrOrganizationItem;
+        const selectedUserOrOrgs: CustomQuickPickItem[] = allItems.filter(item => item.target === selected.target);
+        if (selectedUserOrOrgs && selectedUserOrOrgs.length === 1) {
+            userOrOrgItem = {
+                name: selectedUserOrOrgs[0].target,
+                displayName: selectedUserOrOrgs[0].label,
+                isOrganization: selectedUserOrOrgs[0].description !== Strings.UserMenuDescriptionLabel
+            };
+            return userOrOrgItem;
+        } else {
+            return null;
         }
     }
 
     public static getAppCenterPortalMenuItems(): CustomQuickPickItem[] {
         const appCenterPortalPortalOptions: CustomQuickPickItem[] = [];
         appCenterPortalPortalOptions.push(<CustomQuickPickItem>{
+
             label: Strings.BuildTabMenuItem,
             description: Strings.OpenTabInBrowserMsg(Strings.BuildTabMenuItem),
             target: AppCenterBeacons.Build
@@ -84,15 +95,10 @@ export class MenuHelper {
             description: Strings.OpenTabInBrowserMsg(Strings.AnalyticsTabMenuItem),
             target: AppCenterBeacons.Analytics
         });
-        appCenterPortalPortalOptions.push(<CustomQuickPickItem>{
-            label: Strings.PushTabMenuItem,
-            description: Strings.OpenTabInBrowserMsg(Strings.PushTabMenuItem),
-            target: AppCenterBeacons.Push
-        });
         return appCenterPortalPortalOptions;
     }
 
-    public static getAppCenterDistributeTabMenuItems(): CustomQuickPickItem[] {
+    public static getAppCenterDistributeTabMenuItems(isCodePushEnabled: boolean): CustomQuickPickItem[] {
         const getAppCenterDistributeTabMenuItems: CustomQuickPickItem[] = [];
         getAppCenterDistributeTabMenuItems.push(<CustomQuickPickItem>{
             label: Strings.DistributeGroupsTabMenuItem,
@@ -105,15 +111,17 @@ export class MenuHelper {
             target: AppCenterDistributionTabs.Stores
         });
         getAppCenterDistributeTabMenuItems.push(<CustomQuickPickItem>{
-            label: Strings.DistributeCodePushTabMenuItem,
-            description: Strings.OpenTabInBrowserMsg(Strings.DistributeCodePushTabMenuItem),
-            target: AppCenterDistributionTabs.CodePush
-        });
-        getAppCenterDistributeTabMenuItems.push(<CustomQuickPickItem>{
             label: Strings.DistributeReleasesTabMenuItem,
             description: Strings.OpenTabInBrowserMsg(Strings.DistributeReleasesTabMenuItem),
             target: AppCenterDistributionTabs.Releases
         });
+        if (isCodePushEnabled) {
+            getAppCenterDistributeTabMenuItems.push(<CustomQuickPickItem>{
+                label: Strings.CodePushMenuLabelItem,
+                description: Strings.CodePushMenuLabelDescription,
+                target: CommandNames.CodePush.ShowMenu
+            });
+        }
         return getAppCenterDistributeTabMenuItems;
     }
 
@@ -145,5 +153,24 @@ export class MenuHelper {
                 target: `${app.name}`
             };
         });
+    }
+
+    public static getQuickPickItemsForOrgList(orgList: models.ListOKResponseItem[], myself: Profile | null): CustomQuickPickItem[] {
+        const options: CustomQuickPickItem[] = orgList.map(item => {
+            return {
+                label: `${item.displayName} (${item.name})`,
+                description: Strings.OrganizationMenuDescriptionLabel,
+                target: item.name
+            };
+        });
+        if (myself) {
+            // Insert user at the very 1st position
+            options.splice(0, 0, {
+                label: `${myself.displayName}`,
+                description: Strings.UserMenuDescriptionLabel,
+                target: myself.userName
+            });
+        }
+        return options;
     }
 }

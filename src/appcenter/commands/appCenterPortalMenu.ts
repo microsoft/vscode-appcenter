@@ -11,9 +11,11 @@ export default class AppCenterPortalMenu extends ReactNativeAppCommand {
     private appName: string;
     private ownerName: string;
     private isOrg: boolean;
+    private _params: CommandParams;
 
     constructor(params: CommandParams) {
         super(params);
+        this._params = params;
     }
 
     public async run(): Promise<void> {
@@ -24,13 +26,13 @@ export default class AppCenterPortalMenu extends ReactNativeAppCommand {
         this.refreshCachedAppsAndRepaintQuickPickIfNeeded(true);
     }
 
-    protected async handleShowCurrentAppQuickPickSelection(target: string, rnApps: models.AppResponse[]) {
+    protected async handleShowCurrentAppQuickPickSelection(selected: QuickPickAppItem, rnApps: models.AppResponse[]) {
         let selectedApp: models.AppResponse;
 
-        const selectedApps: models.AppResponse[] = rnApps.filter(app => app.name === target);
+        const selectedApps: models.AppResponse[] = rnApps.filter(app => app.name === selected.target && app.owner.type === selected.description);
 
         // If this is not current app then we can assign current app, otherwise we will use GetCurrentApp method
-        if (target !== this.currentAppMenuTarget) {
+        if (selected.target !== this.currentAppMenuTarget) {
             if (!selectedApps || selectedApps.length !== 1) {
                 return;
             }
@@ -62,7 +64,7 @@ export default class AppCenterPortalMenu extends ReactNativeAppCommand {
                     this.logger.info('Canceled selection of current App Center tabs');
                     return;
                 }
-                MenuHelper.handleMenuPortalQuickPickSelection(selected.target, this.ownerName, this.appName, this.isOrg);
+                MenuHelper.handleMenuPortalQuickPickSelection(this._params, selected.target, this.ownerName, this.appName, this.isOrg, await this.isCodePushEnabled);
         });
     }
 }

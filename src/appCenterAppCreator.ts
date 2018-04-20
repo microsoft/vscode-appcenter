@@ -13,7 +13,7 @@ export default class AppCenterAppCreator {
 
     constructor(private client: AppCenterClient, private logger: ILogger) { }
 
-    public async withBranchConfigurationCreatedAndBuildKickOff(appName: string, branchName: string, ownerName: string): Promise<boolean> {
+    public async withBranchConfigurationCreatedAndBuildKickOff(appName: string, branchName: string, ownerName: string, isOrg: boolean): Promise<boolean> {
         // TODO: get out what to do with this magic with not working of method to create default config!
         try {
             const configJson = Constants.defaultBuildConfigJSON;
@@ -24,10 +24,10 @@ export default class AppCenterAppCreator {
             const buildId = queueBuildRequestResponse.id;
             const realBranchName = queueBuildRequestResponse.sourceBranch;
 
-            const url = AppCenterUrlBuilder.GetPortalBuildLink(ownerName, appName, realBranchName, buildId.toString());
+            const url = AppCenterUrlBuilder.GetPortalBuildLink(ownerName, appName, realBranchName, buildId.toString(), isOrg);
             this.logger.info(`Queued a new build for "${appName}": ${url}`);
         } catch (error) {
-            const configureBuildLink: string = AppCenterUrlBuilder.GetPortalBuildConfigureLink(ownerName, appName, branchName);
+            const configureBuildLink: string = AppCenterUrlBuilder.GetPortalBuildConfigureLink(ownerName, appName, branchName, isOrg);
             if (error.statusCode === 400) {
                 this.logger.error(`An error occurred while configuring your ${appName}" app for build`);
             } else {
@@ -44,12 +44,12 @@ export default class AppCenterAppCreator {
         return true;
     }
 
-    public async connectRepositoryToBuildService(appName: string, ownerName: string, repoUrl: string): Promise<boolean> {
+    public async connectRepositoryToBuildService(appName: string, ownerName: string, repoUrl: string, isOrg: boolean): Promise<boolean> {
         try {
             await this.client.repositoryConfigurations.createOrUpdate(ownerName, appName, repoUrl);
             return true;
         } catch (err) {
-            const connectRepoLink: string = AppCenterUrlBuilder.GetPortalConnectRepoLink(ownerName, appName);
+            const connectRepoLink: string = AppCenterUrlBuilder.GetPortalConnectRepoLink(ownerName, appName, isOrg);
             this.logger.error(`Could not connect your new repository "${repoUrl}" to your "${appName}" App Center project`);
 
             const messageItems: IButtonMessageItem[] = [];
@@ -69,7 +69,7 @@ export default class AppCenterAppCreator {
             if (error === 409) {
                 this.logger.error(`Distribution group "${SettingsHelper.distribitionGroupTestersName()}" in "${appName}" already exists`);
             } else {
-                this.logger.error(`An unexpected error occurred while creating a distribution group for "${appName}"`);
+                this.logger.error(`An unexpected error occurred while creating a distribution group for "${appName}". ${error}`);
             }
             return false;
         }
@@ -91,7 +91,11 @@ export default class AppCenterAppCreator {
                 name: result.name
             };
         } catch (err) {
-            this.logger.error(`An unexpected error occurred trying to create "${appName}" under "${orgName}"`);
+            if (err.statusCode === 409) {
+                this.logger.error(`The app named "${appName}" already exists`);
+            } else {
+                this.logger.error(`An unexpected error occurred trying to create "${appName}" under "${orgName}". ${(err && err.message) || ""}`);
+            }
             return false;
         }
     }
@@ -111,7 +115,11 @@ export default class AppCenterAppCreator {
                 name: result.name
             };
         } catch (err) {
-            this.logger.error(`An unexpected error occurred trying to create your ${appName} app in App Center`);
+            if (err.statusCode === 409) {
+                this.logger.error(`The app named "${appName}" already exists`);
+            } else {
+                this.logger.error(`An unexpected error occurred trying to create "${appName}". ${(err && err.message) || ""}`);
+            }
             return false;
         }
     }

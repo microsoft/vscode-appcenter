@@ -2,6 +2,11 @@ import * as cp from 'child_process';
 import * as os from 'os';
 import { ILogger } from '../log/logHelper';
 
+export class SpawnError extends Error {
+    public exitCode: number;
+    public result: string;
+}
+
 export namespace cpUtils {
     export async function executeCommand(logger: ILogger | undefined, logErrorsOnly: boolean = false, workingDirectory: string | undefined, command: string, ...args: string[]): Promise<string> {
         let cmdOutput: string = '';
@@ -40,8 +45,13 @@ export namespace cpUtils {
             childProc.on('close', (code: number) => {
                 if (code !== 0) {
                     const errMsg: string = `AppCenter.commandError', 'Command "${command} ${formattedArgs}" failed with exit code "${code}":${os.EOL}${cmdOutputIncludingStderr}`;
-                    logger.error(errMsg);
-                    reject(new Error(errMsg));
+                    if (logger) {
+                        logger.error(errMsg);
+                    }
+                    const error = new SpawnError(errMsg);
+                    error.exitCode = code;
+                    error.result = cmdOutput;
+                    reject(error);
                 } else {
                     if (logger && !logErrorsOnly) {
                         logger.info(`finishedRunningCommand', 'Finished running command: "${command} ${formattedArgs}".`);
