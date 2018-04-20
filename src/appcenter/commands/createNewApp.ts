@@ -30,7 +30,7 @@ export class CreateNewApp extends CreateAppCommand {
 
         let ideaName: string | null = null;
 
-        // ideaName is null if user has entered invalid name. We will give him a chance to correct it instead of 
+        // ideaName is null if user has entered invalid name. We will give him a chance to correct it instead of
         // forcing to do the process again.
         while (ideaName == null) {
             ideaName = await this.getIdeaName(appNameFromPackage);

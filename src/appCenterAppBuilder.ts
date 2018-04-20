@@ -111,7 +111,7 @@ export default class AppCenterAppBuilder {
                 const promises: Promise<false | CreatedAppFromAppCenter>[] = [];
                 if (option === CreateNewAppOption.IOS || option === CreateNewAppOption.Both) {
                     if (this.isCreatedForOrganization()) {
-                        promises.push(this.iOSAppCreator.createAppForOrg(AppCenterAppBuilder.getiOSAppName(this.ideaName), AppCenterAppBuilder.getiOSDisplayName(this.ideaName), <string>this.userOrOrg.name));
+                        promises.push(this.iOSAppCreator.createAppForOrg(AppCenterAppBuilder.getiOSAppName(this.ideaName), AppCenterAppBuilder.getiOSDisplayName(this.ideaName), this.ownerName));
                     } else {
                         promises.push(this.iOSAppCreator.createApp(AppCenterAppBuilder.getiOSAppName(this.ideaName), AppCenterAppBuilder.getiOSDisplayName(this.ideaName)));
                     }
@@ -119,7 +119,7 @@ export default class AppCenterAppBuilder {
 
                 if (option === CreateNewAppOption.Android || option === CreateNewAppOption.Both) {
                     if (this.isCreatedForOrganization()) {
-                        promises.push(this.androidAppCreator.createAppForOrg(AppCenterAppBuilder.getAndroidAppName(this.ideaName), AppCenterAppBuilder.getAndroidDisplayName(this.ideaName), <string>this.userOrOrg.name));
+                        promises.push(this.androidAppCreator.createAppForOrg(AppCenterAppBuilder.getAndroidAppName(this.ideaName), AppCenterAppBuilder.getAndroidDisplayName(this.ideaName), this.ownerName));
                     } else {
                         promises.push(this.androidAppCreator.createApp(AppCenterAppBuilder.getAndroidAppName(this.ideaName), AppCenterAppBuilder.getAndroidDisplayName(this.ideaName)));
                     }
