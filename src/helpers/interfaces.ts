@@ -54,6 +54,7 @@ export interface Profile {
     userName: string;
     displayName: string;
     isActive: boolean;
+    currentApp?: CurrentApp;
 }
 
 export interface AppCenterProfile extends Profile {
