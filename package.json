@@ -125,22 +125,22 @@
             {
                 "command": "appcenter.tools.simulateCrashes",
                 "title": "Simulate AppCenter Crash",
-                "category": "AppCenter Tools"
+                "category": "App Center Tools"
             },
             {
                 "command": "appcenter.test.runUITests",
                 "title": "Run UI tests",
-                "category": "AppCenter Test"
+                "category": "App Center Test"
             },
             {
                 "command": "appcenter.test.runUITestsAsync",
                 "title": "Run UI tests asynchronously",
-                "category": "AppCenter Test"
+                "category": "App Center Test"
             },
             {
                 "command": "appcenter.test.viewResults",
                 "title": "View UI tests results",
-                "category": "AppCenter Test"
+                "category": "App Center Test"
             }
         ],
         "configuration": {
