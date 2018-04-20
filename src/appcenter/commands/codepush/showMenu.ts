@@ -1,7 +1,9 @@
 import * as vscode from 'vscode';
 import * as CodePush from ".";
-import { CommandNames } from '../../../constants';
+import { AppCenterDistributionTabs, CommandNames } from '../../../constants';
+import { AppCenterUrlBuilder } from '../../../helpers/appCenterUrlBuilder';
 import { CommandParams, CurrentApp } from "../../../helpers/interfaces";
+import { Utils } from '../../../helpers/utils';
 import { CustomQuickPickItem } from '../../../helpers/vsCodeUtils';
 import { Strings } from '../../../strings';
 import { RNCPAppCommand } from './rncpAppCommand';
@@ -9,6 +11,8 @@ import { RNCPAppCommand } from './rncpAppCommand';
 /* Internal command */
 export default class ShowMenu extends RNCPAppCommand {
     private _params: CommandParams;
+    private currentApp: CurrentApp;
+
     constructor(params: CommandParams) {
         super(params);
         this._params = params;
@@ -20,14 +24,21 @@ export default class ShowMenu extends RNCPAppCommand {
         }
 
         return this.getCurrentApp().then((currentApp: CurrentApp) => {
+            this.currentApp = currentApp;
             const menuOptions: CustomQuickPickItem[] = [];
+
+            menuOptions.push(<CustomQuickPickItem>{
+                label: Strings.DistributeCodePushTabMenuItem,
+                description: Strings.OpenTabInBrowserMsg(Strings.DistributeCodePushTabMenuItem),
+                target: AppCenterDistributionTabs.CodePush
+            });
 
             menuOptions.push(<CustomQuickPickItem>{
                 label: Strings.releaseReactMenuText(currentApp),
                 description: "",
                 target: CommandNames.CodePush.ReleaseReact
             });
-            if (currentApp.currentAppDeployments) {
+            if (currentApp.currentAppDeployments && currentApp.currentAppDeployments.codePushDeployments && currentApp.currentAppDeployments.codePushDeployments.length) {
                 menuOptions.push(<CustomQuickPickItem>{
                     label: Strings.setCurrentAppDeploymentText(<CurrentApp>currentApp),
                     description: "",
@@ -73,6 +84,10 @@ export default class ShowMenu extends RNCPAppCommand {
 
                         case (CommandNames.CodePush.SwitchMandatoryPropForRelease):
                             new CodePush.SwitchMandatoryPropForRelease(this._params).runNoClient();
+                            break;
+
+                        case (AppCenterDistributionTabs.CodePush):
+                            Utils.OpenUrl(AppCenterUrlBuilder.GetAppCenterDistributeTabLinkByTabName(this.currentApp.ownerName, this.currentApp.appName, AppCenterDistributionTabs.CodePush, this.currentApp.type !== "user"));
                             break;
 
                         default:
