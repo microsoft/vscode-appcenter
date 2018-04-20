@@ -14,8 +14,8 @@ import Login from './login';
 import SetCurrentApp from './setCurrentApp';
 import * as Settings from './settings';
 import Start from './start';
-import * as Tools from './tools';
 import * as Test from "./test";
+import * as Tools from './tools';
 
 export default class ShowMenu extends Command {
     private _params: CommandParams;
@@ -101,9 +101,9 @@ export default class ShowMenu extends Command {
                 if (!selected) {
                     return;
                 }
-                
+
                 switch (selected.target) {
-                    case (AppCenterBeacons.Build):                    
+                    case (AppCenterBeacons.Build):
                     case (AppCenterBeacons.Distribute):
                     case (AppCenterBeacons.Analytics):
                     case (AppCenterBeacons.Crashes):

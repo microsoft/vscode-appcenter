@@ -1,10 +1,10 @@
-import { CommandParams, CurrentApp } from "../../../helpers/interfaces";
-import { ReactNativeAppCommand } from '../reactNativeAppCommand';
+import * as os from 'os';
 import { IOSTestRunner } from "../../../appCenterUITestRunner";
 import { ReactNativePlatformDirectory } from "../../../constants";
-import * as os from 'os';
+import { CommandParams, CurrentApp } from "../../../helpers/interfaces";
 import { VsCodeUtils } from "../../../helpers/vsCodeUtils";
 import { Strings } from "../../../strings";
+import { ReactNativeAppCommand } from '../reactNativeAppCommand';
 
 export default class RunUITests extends ReactNativeAppCommand {
 
@@ -40,7 +40,7 @@ export default class RunUITests extends ReactNativeAppCommand {
             logger: this.logger,
             platformDir: ReactNativePlatformDirectory.IOS,
             appDirPath: this.manager.projectRootPath
-        })
+        });
 
         return await testRunner.runUITests(this.async);
     }

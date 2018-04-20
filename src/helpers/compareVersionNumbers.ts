@@ -22,7 +22,8 @@ export namespace CompareVersionNumbers {
   const getDiff = (pre: string, pos: string): number => {
     const segmentsA = getSegments(pre);
     const segmentsB = getSegments(pos);
-    let diff, i;
+    let diff;
+    let i;
     const minLength = Math.min(segmentsA.length, segmentsB.length);
     for (i = 0; i < minLength; i++) {
       diff = segmentsA[i] - segmentsB[i];

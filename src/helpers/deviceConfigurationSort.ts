@@ -1,5 +1,5 @@
-import { CompareVersionNumbers } from "./compareVersionNumbers";
 import { DeviceConfiguration } from "../appcenter/apis/generated/models";
+import { CompareVersionNumbers } from "./compareVersionNumbers";
 
 /**
  * Sort Device Configurations in the order: phone, tablet, os (desc), model (desc).

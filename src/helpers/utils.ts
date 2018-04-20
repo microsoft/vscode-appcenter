@@ -6,10 +6,10 @@ import * as os from 'os';
 import * as path from 'path';
 import { AppCenterOS, Constants } from '../constants';
 import { Strings } from '../strings';
+import { cpUtils, SpawnError } from './cpUtils';
 import { CurrentApp, CurrentAppDeployments } from './interfaces';
 import { Validators } from './validators';
 import { VsCodeUtils } from './vsCodeUtils';
-import { ChildProcess, SpawnError } from './childProcess';
 
 export class Utils {
     public static FormatMessage(message: string): string {
@@ -169,18 +169,13 @@ export class Utils {
     }
 
     public static async packageInstalledGlobally(packageName: string) {
-        let result: string = "";
-
         const resultSignalsThatPackageInstalled = (result) => !/\(empty\)/.test(result);
+        let result: string = "";
         try {
-            await ChildProcess.spawn("npm", ["list", "--depth", "1", "-g", packageName], {
-                stdoutListener: (chunk: string) => {
-                    result += chunk;
-                }
-            });
+            result = await cpUtils.executeCommand(undefined, true, undefined, "npm", ...["list", "--depth", "1", "-g", packageName]);
         } catch (e) {
             if (e instanceof SpawnError) {
-                if (e.exitCode === 1 && !resultSignalsThatPackageInstalled(result)) {
+                if (e.exitCode === 1 && e.result && !resultSignalsThatPackageInstalled(e.result)) {
                     return false;
                 }
                 throw e;

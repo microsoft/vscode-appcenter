@@ -1,11 +1,11 @@
+import * as os from 'os';
 import * as vscode from 'vscode';
+import * as Test from '.';
+import { CommandNames } from "../../../constants";
 import { CommandParams, CurrentApp } from "../../../helpers/interfaces";
 import { CustomQuickPickItem } from "../../../helpers/vsCodeUtils";
 import { Strings } from "../../../strings";
-import { CommandNames } from "../../../constants";
-import * as os from 'os';
 import { ReactNativeAppCommand } from '../reactNativeAppCommand';
-import * as Test from '.';
 
 export default class ShowMenu extends ReactNativeAppCommand {
     private _params: CommandParams;

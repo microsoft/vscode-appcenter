@@ -1,40 +1,30 @@
-import * as vscode from "vscode";
 import * as path from "path";
-import { CurrentApp } from "./helpers/interfaces";
-import { ILogger } from "./log/logHelper";
-import { Strings } from "./strings";
-import { ReactNativePlatformDirectory } from "./constants";
-import { ChildProcess } from "./helpers/childProcess";
-import { Utils } from "./helpers/utils";
-import { CustomQuickPickItem, VsCodeUtils } from "./helpers/vsCodeUtils";
-import { models, AppCenterClient } from "./appcenter/apis";
+import * as vscode from "vscode";
+import { AppCenterClient, models } from "./appcenter/apis";
 import { DeviceConfiguration } from "./appcenter/apis/generated/models";
+import { ReactNativePlatformDirectory } from "./constants";
+import { cpUtils } from "./helpers/cpUtils";
 import { DeviceConfigurationSort } from "./helpers/deviceConfigurationSort";
 import { FSUtils } from "./helpers/fsUtils";
+import { CurrentApp } from "./helpers/interfaces";
+import { Utils } from "./helpers/utils";
+import { CustomQuickPickItem, VsCodeUtils } from "./helpers/vsCodeUtils";
+import { ILogger } from "./log/logHelper";
+import { Strings } from "./strings";
 const rimraf = FSUtils.rimraf;
 
 export interface TestRunnerOptions {
-    app: CurrentApp,
-    logger: ILogger,
-    client: AppCenterClient,
-    platformDir: ReactNativePlatformDirectory,
-    appDirPath: string
+    app: CurrentApp;
+    logger: ILogger;
+    client: AppCenterClient;
+    platformDir: ReactNativePlatformDirectory;
+    appDirPath: string;
 }
 
 export default abstract class AppCenterUITestRunner {
     protected nativeAppDirectory: string;
-    protected stdoutListener: (chunk: Buffer | string) => void;
-    protected stderrListener: (chunk: Buffer | string) => void;
 
     public constructor(protected options: TestRunnerOptions) {
-        this.stdoutListener = (chunk: Buffer | string) => {
-            this.options.logger.info(chunk as string);
-        };
-
-        this.stderrListener = (chunk: Buffer | string) => {
-            this.options.logger.error(chunk as string);
-        };
-
         this.nativeAppDirectory = path.join(options.appDirPath, options.platformDir);
     }
 
@@ -46,7 +36,7 @@ export default abstract class AppCenterUITestRunner {
                 VsCodeUtils.ShowErrorMessage(Strings.packageIsNotInstalledGlobally("appcenter-cli"));
                 return false;
             }
-            
+
             p.report({ message: Strings.FetchingDevicesStatusBarMessage });
             const options: CustomQuickPickItem[] = await this.getDevicesList(this.options.app);
             const selectedDevice: CustomQuickPickItem = await vscode.window.showQuickPick(options, { placeHolder: Strings.SelectTestDeviceTitlePlaceholder });
@@ -106,11 +96,7 @@ export default abstract class AppCenterUITestRunner {
 
     protected async spawnProcess(command: string, args: string[]): Promise<boolean> {
         try {
-            await ChildProcess.spawn(command, args, {
-                cwd: this.nativeAppDirectory,
-                stdoutListener: this.stdoutListener,
-                stderrListener: this.stderrListener
-            });
+            await cpUtils.executeCommand(this.options.logger, false, this.nativeAppDirectory, command, ...args);
         } catch (e) {
             this.options.logger.error(e.message, e, true);
             return false;
@@ -118,29 +104,30 @@ export default abstract class AppCenterUITestRunner {
         return true;
     }
 
-    abstract buildAppForTest(): Promise<boolean>;
+    protected abstract async buildAppForTest(): Promise<boolean>;
 
-    abstract getTestFrameworkName(): string;
+    protected abstract getTestFrameworkName(): string;
 
-    abstract getRelativeBuildBinaryDirectoryPath(): string
+    protected abstract getRelativeBuildBinaryDirectoryPath(): string;
 
-    abstract getAbsoluteBuildDirectoryPath(): string;
+    protected abstract getAbsoluteBuildDirectoryPath(): string;
 }
 
 export class IOSTestRunner extends AppCenterUITestRunner {
 
-    getAbsoluteBuildDirectoryPath(): string {
+    protected getAbsoluteBuildDirectoryPath(): string {
         return path.join(this.nativeAppDirectory, 'DerivedData');
     }
-    getRelativeBuildBinaryDirectoryPath(): string {
+
+    protected getRelativeBuildBinaryDirectoryPath(): string {
         return "DerivedData/Build/Products/Release-iphoneos";
     }
 
-    getTestFrameworkName(): string {
+    protected getTestFrameworkName(): string {
         return "xcuitest";
     }
 
-    async buildAppForTest(): Promise<boolean> {
+    protected async buildAppForTest(): Promise<boolean> {
         const appName = Utils.getAppName(this.options.appDirPath);
         const args = [
             "xcodebuild",
