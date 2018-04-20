@@ -5840,7 +5840,7 @@ export interface HanledErrorLog extends Log {
  * @constructor
  * Describe a AppCenter.Start API call from the SDK.
  *
- * @member {array} [services] The list of services of the AppCenter Start API
+ * @member {array} [services] The list of services of the App Center Start API
  * call.
  */
 export interface StartServiceLog extends Log {
@@ -7446,7 +7446,7 @@ export interface LogFlowStartSessionLog extends LogFlowLog {
  * @constructor
  * Describe a AppCenter.Start API call from the SDK.
  *
- * @member {array} [services] The list of services of the AppCenter Start API
+ * @member {array} [services] The list of services of the App Center Start API
  * call.
  */
 export interface LogFlowStartServiceLog extends LogFlowLog {
