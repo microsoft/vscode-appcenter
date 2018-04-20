@@ -49,7 +49,7 @@ export default abstract class AppCenterUITestRunner {
             p.report({ message: Strings.CleaningBuildStatusBarMessage });
             await rimraf(this.getAbsoluteBuildDirectoryPath());
 
-            p.report({ message: Strings.MakingBuildStatusBarMessage });
+            p.report({ message: Strings.PreparingBuildStatusBarMessage });
             if (!await this.buildAppForTest()) {
                 return false;
             }

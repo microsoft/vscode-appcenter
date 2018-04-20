@@ -77,7 +77,7 @@ export class Strings {
     public static SelectCurrentAppMenuDescription: string = "SELECT CURRENT APP";
     public static FetchingDevicesStatusBarMessage: string = "Fetching devices...";
     public static CleaningBuildStatusBarMessage: string = "Cleaning build directory...";
-    public static MakingBuildStatusBarMessage: string = "Making build for testing...";
+    public static PreparingBuildStatusBarMessage: string = "Preparing build for testing...";
     public static UploadingAndRunningTestsStatusBarMessage: string = "Uploading and running tests on App Center portal...";
     public static CheckingAppCenterCli: string = "Checking AppCenter CLI package installation...";
 
