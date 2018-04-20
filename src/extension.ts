@@ -10,7 +10,7 @@ let _extensionManager: ExtensionManager;
 const outputChannelLogger = OutputChannelLogger.getMainChannel();
 
 export async function activate(context: vscode.ExtensionContext) {
-    // Construct the extension manager that handles AppCenter commands
+    // Construct the extension manager that handles App Center commands
     _extensionManager = new ExtensionManager();
     const rootPath = vscode.workspace.rootPath;
 
@@ -29,7 +29,7 @@ export function deactivate() { }
 
 function registerAppCenterCommands(context: vscode.ExtensionContext): void {
 
-    // General AppCenter commands
+    // General App Center commands
     const appCenterCommandHandler = _extensionManager.commandHandlers.appCenterCommandHandler;
     context.subscriptions.push(vscode.commands.registerCommand(CommandNames.AppCenterPortal,
         () => _extensionManager.RunCommand(() => appCenterCommandHandler.AppCenterPortalMenu())));

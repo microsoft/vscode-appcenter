@@ -77,7 +77,7 @@ export default class ShowMenu extends RNCPAppCommand {
 
                         default:
                             // Ideally shouldn't be there :)
-                            this.logger.error("Unknown AppCenter menu command");
+                            this.logger.error("Unknown App Center menu command");
                             break;
                     }
                     resolve();

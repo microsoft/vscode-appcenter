@@ -376,7 +376,7 @@ export default class Start extends Command {
 
     private async pullAppCenterSampleApp(_rootPath: string): Promise<boolean> {
         let created: boolean = false;
-        this.logger.debug("Pull AppCenter sample app into current directory...");
+        this.logger.debug("Pull App Center sample app into current directory...");
         await vscode.window.withProgress({ location: vscode.ProgressLocation.Window, title: Strings.VSCodeProgressLoadingTitle}, async p => {
             p.report({message: Strings.CreateRNProjectStatusBarMessage });
             created = await GitUtils.GitPullFromRemoteUrl(Constants.AppCenterSampleGitRemoteName, Constants.AppCenterSampleGitRemoteDefaultBranchName, this.logger, _rootPath);
