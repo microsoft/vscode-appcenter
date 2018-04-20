@@ -2,6 +2,9 @@ import { CommandParams, CurrentApp } from "../../../helpers/interfaces";
 import { ReactNativeAppCommand } from '../reactNativeAppCommand';
 import { IOSTestRunner } from "../../../appCenterUITestRunner";
 import { ReactNativePlatformDirectory } from "../../../constants";
+import * as os from 'os';
+import { VsCodeUtils } from "../../../helpers/vsCodeUtils";
+import { Strings } from "../../../strings";
 
 export default class RunUITests extends ReactNativeAppCommand {
 
@@ -22,6 +25,12 @@ export default class RunUITests extends ReactNativeAppCommand {
 
         const app: CurrentApp | null = await this.getCurrentApp();
         if (!app) {
+            return false;
+        }
+
+        // Only iOS is supported for now
+        if (os.platform() !== 'darwin') {
+            VsCodeUtils.ShowWarningMessage(Strings.OnlyIOSError);
             return false;
         }
 

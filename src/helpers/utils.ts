@@ -9,6 +9,7 @@ import { Strings } from '../strings';
 import { CurrentApp, CurrentAppDeployments } from './interfaces';
 import { Validators } from './validators';
 import { VsCodeUtils } from './vsCodeUtils';
+import { ChildProcess, SpawnError } from './childProcess';
 
 export class Utils {
     public static FormatMessage(message: string): string {
@@ -56,7 +57,7 @@ export class Utils {
         try {
             fileContents = fs.readFileSync(path, 'utf8');
         } catch (err) {
-            if(installHint){
+            if (installHint) {
                 installHint = ` ${installHint}`;
             }
             throw new Error(`Cannot find "${path}".${installHint}`);
@@ -152,5 +153,26 @@ export class Utils {
 
         const packageJson = Utils.parseJsonFile(packageJsonPath);
         return packageJson.name;
+    }
+
+    public static async packageInstalledGlobally(packageName: string) {
+        let result: string = "";
+
+        const resultSignalsThatPackageInstalled = (result) => !/\(empty\)/.test(result);
+        try {
+            await ChildProcess.spawn("npm", ["list", "--depth", "1", "-g", packageName], {
+                stdoutListener: (chunk: string) => {
+                    result += chunk;
+                }
+            });
+        } catch (e) {
+            if (e instanceof SpawnError) {
+                if (e.exitCode === 1 && !resultSignalsThatPackageInstalled(result)) {
+                    return false;
+                }
+                throw e;
+            }
+        }
+        return resultSignalsThatPackageInstalled(result);
     }
 }

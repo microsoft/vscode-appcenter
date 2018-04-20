@@ -5,6 +5,10 @@ export interface SpawnOptions extends childProcess.SpawnOptions {
     stderrListener?: (chunk: Buffer | string) => void
 }
 
+export class SpawnError extends Error {
+    exitCode: number;
+}
+
 export class ChildProcess {
 
     public static spawn(command: string, args: string[] = [], options?: SpawnOptions): Promise<void> {
@@ -20,7 +24,8 @@ export class ChildProcess {
             }
             process.on("close", (exitCode: number) => {
                 if (exitCode) {
-                    let error = new Error(`"${command}" command exited with code ${exitCode}.`);
+                    let error = new SpawnError(`"${command}" command exited with code ${exitCode}.`);
+                    error.exitCode = exitCode;
                     reject(error);
                 }
                 resolve();

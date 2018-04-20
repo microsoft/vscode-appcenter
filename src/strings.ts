@@ -22,7 +22,7 @@ export class Strings {
     public static VstsLogoutMenuLabel: string = "Logout VSTS";
     public static RunUITestsMenuLabel: string = "Run UI tests";
     public static RunUITestsAsyncMenuLabel: string = "Run UI tests asynchronously";
-    public static ViewUITestResultOnPortalenuLabel: string = "View results in portal";    
+    public static ViewUITestResultOnPortalenuLabel: string = "View results in portal";
 
     public static SelectLoginTypeMsg: string = "How would you like to authenticate with App Center?";
     public static OkBtnLabel: string = "Ok";
@@ -32,7 +32,7 @@ export class Strings {
     public static UserIsNotLoggedInMsg: string = "You are not logged into App Center";
     public static MenuTitlePlaceholder: string = "Please select a menu action.";
     public static SelectProfileTitlePlaceholder: string = "Please select account.";
-    public static SelectTestDeviceTitlePlaceholder: string = "Please select device.";
+    public static SelectTestDeviceTitlePlaceholder: string = "Please select device configuration to test.";
 
     public static SpecifyTenantTitlePlaceholder: string = "(Step 1). Please specify tenant name";
     public static SpecifyUserNameTitlePlaceholder: string = "(Step 2). Please specify user name";
@@ -68,6 +68,7 @@ export class Strings {
     public static CleaningBuildStatusBarMessage: string = "Cleaning build directory...";
     public static MakingBuildStatusBarMessage: string = "Making build for testing...";
     public static UploadingAndRunningTestsStatusBarMessage: string = "Uploading and running tests on App Center portal...";
+    public static CheckingAppCenterCli: string = "Checking AppCenter CLI package installation...";
 
     public static BuildTabMenuItem: string = "Build";
     public static TestTabMenuItem: string = "Test";
@@ -110,6 +111,7 @@ export class Strings {
     public static CodePushInstallHint: string = "Make sure you ran \"npm install\" and that you are inside a React Native Code Push project.";
     public static RepoManualConnectBtnLabel: string = "Connect";
     public static BuildManualConfigureBtnLabel: string = "Configure build";
+    public static OnlyIOSError: string = "Running UI tests is supported only for iOS.";
 
     public static CreatingAppStatusBarMessage: string = `Creating a new App Center app...`;
     public static FailedToCreateAppInAppCenter: string = `An error occurred while creating the new App Center app`;
@@ -198,5 +200,9 @@ export class Strings {
         } else {
             return `Release react (please specify current app first)`;
         }
+    }
+
+    public static packageIsNotInstalledGlobally(packageName: string) {
+        return `You have not ${packageName} package installed globally. Please run "npm i -g ${packageName}" and try again.`;
     }
 }

@@ -6,11 +6,12 @@ import { Strings } from "./strings";
 import { ReactNativePlatformDirectory } from "./constants";
 import { ChildProcess } from "./helpers/childProcess";
 import { Utils } from "./helpers/utils";
-import { CustomQuickPickItem } from "./helpers/vsCodeUtils";
+import { CustomQuickPickItem, VsCodeUtils } from "./helpers/vsCodeUtils";
 import { models, AppCenterClient } from "./appcenter/apis";
 import { DeviceConfiguration } from "./appcenter/apis/generated/models";
-//import { FSUtils } from "./helpers/fsUtils";
-//const rimraf = FSUtils.rimraf;
+import { DeviceConfigurationSort } from "./helpers/deviceConfigurationSort";
+import { FSUtils } from "./helpers/fsUtils";
+const rimraf = FSUtils.rimraf;
 
 export interface TestRunnerOptions {
     app: CurrentApp,
@@ -38,7 +39,14 @@ export default abstract class AppCenterUITestRunner {
     }
 
     public async runUITests(async: boolean): Promise<boolean> {
+
         return await vscode.window.withProgress({ location: vscode.ProgressLocation.Window, title: Strings.VSCodeProgressLoadingTitle }, async p => {
+            p.report({ message: Strings.CheckingAppCenterCli });
+            if (!await Utils.packageInstalledGlobally("appcenter-cli")) {
+                VsCodeUtils.ShowErrorMessage(Strings.packageIsNotInstalledGlobally("appcenter-cli"));
+                return false;
+            }
+            
             p.report({ message: Strings.FetchingDevicesStatusBarMessage });
             const options: CustomQuickPickItem[] = await this.getDevicesList(this.options.app);
             const selectedDevice: CustomQuickPickItem = await vscode.window.showQuickPick(options, { placeHolder: Strings.SelectTestDeviceTitlePlaceholder });
@@ -49,12 +57,12 @@ export default abstract class AppCenterUITestRunner {
             const shortDeviceId = await this.selectDevice(this.options.app, selectedDevice.target);
 
             p.report({ message: Strings.CleaningBuildStatusBarMessage });
-            //await rimraf(this.getAbsoluteBuildDirectoryPath());
+            await rimraf(this.getAbsoluteBuildDirectoryPath());
 
             p.report({ message: Strings.MakingBuildStatusBarMessage });
-            //if (!await this.buildAppForTest()) {
-            //    return false;
-            //}
+            if (!await this.buildAppForTest()) {
+                return false;
+            }
 
             p.report({ message: Strings.UploadingAndRunningTestsStatusBarMessage });
             const args = [
@@ -66,7 +74,7 @@ export default abstract class AppCenterUITestRunner {
                 "--devices",
                 shortDeviceId,
                 "--test-series",
-                `master`,
+                `"master"`, // IMPORTANT: this parameter should be quoted otherwise tests on a portal will fail to start!
                 "--locale",
                 `en_US`,
                 "--build-dir",
@@ -81,7 +89,9 @@ export default abstract class AppCenterUITestRunner {
     }
 
     private async getDevicesList(app: CurrentApp): Promise<CustomQuickPickItem[]> {
-        const configs: models.DeviceConfiguration[] = await this.options.client.test.getDeviceConfigurations(app.ownerName, app.appName);
+        let configs: models.DeviceConfiguration[] = await this.options.client.test.getDeviceConfigurations(app.ownerName, app.appName);
+        // Sort devices list like it was done on AppCenter Portal
+        configs = configs.sort(DeviceConfigurationSort.compare);
         return configs.map((config: DeviceConfiguration) => <CustomQuickPickItem>{
             label: `${config.name}`,
             description: `${config.osName}`,
