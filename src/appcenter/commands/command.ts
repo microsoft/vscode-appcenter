@@ -1,6 +1,8 @@
+import { AppCenterOS } from "../../constants";
 import { ExtensionManager } from "../../extensionManager";
-import { AppCenterProfile, CommandParams } from "../../helpers/interfaces";
+import { AppCenterProfile, CommandParams, CurrentApp, CurrentAppDeployments } from "../../helpers/interfaces";
 import { SettingsHelper } from "../../helpers/settingsHelper";
+import { Utils } from "../../helpers/utils";
 import { VsCodeUtils } from "../../helpers/vsCodeUtils";
 import { ILogger } from "../../log/logHelper";
 import { Strings } from "../../strings";
@@ -84,5 +86,33 @@ export class Command {
             }
         }
         return this.client;
+    }
+
+    protected saveCurrentApp(
+        currentAppName: string,
+        appOS: AppCenterOS,
+        currentAppDeployments: CurrentAppDeployments | null,
+        targetBinaryVersion: string,
+        type: string,
+        isMandatory: boolean,
+        appSecret: string): Promise<CurrentApp | null> {
+        const currentApp = Utils.toCurrentApp(currentAppName, appOS, currentAppDeployments, targetBinaryVersion, type, isMandatory, appSecret);
+        if (!currentApp) {
+            VsCodeUtils.ShowWarningMessage(Strings.InvalidCurrentAppNameMsg);
+            return Promise.resolve(null);
+        }
+
+        return this.appCenterProfile.then((profile: AppCenterProfile | null) => {
+            if (profile) {
+                profile.currentApp = currentApp;
+                return this.appCenterAuth.updateProfile(profile).then(() => {
+                    return currentApp;
+                });
+            } else {
+                // No profile - not logged in?
+                VsCodeUtils.ShowWarningMessage(Strings.UserIsNotLoggedInMsg);
+                return Promise.resolve(null);
+            }
+        });
     }
 }
