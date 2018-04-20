@@ -61,7 +61,7 @@ export default class AppCenterPortalMenu extends ReactNativeAppCommand {
         return vscode.window.showQuickPick(appCenterMenuOptions, { placeHolder: Strings.MenuTitlePlaceholder })
             .then(async (selected: QuickPickAppItem) => {
                 if (!selected) {
-                    this.logger.info('User cancel selection of current appcenter tab');
+                    this.logger.info('Canceled selection of current App Center tabs');
                     return;
                 }
                 MenuHelper.handleMenuPortalQuickPickSelection(this._params, selected.target, this.ownerName, this.appName, this.isOrg, await this.isCodePushEnabled);
