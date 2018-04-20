@@ -51,7 +51,7 @@ export class ReactNativeAppCommand extends Command {
         });
     }
 
-    protected async handleShowCurrentAppQuickPickSelection(_target: string, _rnApps: models.AppResponse[]) {
+    protected async handleShowCurrentAppQuickPickSelection(_target: QuickPickAppItem, _rnApps: models.AppResponse[]) {
         throw Error("handleShowCurrentAppQuickPickSelection not implemented in base class");
     }
 
@@ -82,13 +82,13 @@ export class ReactNativeAppCommand extends Command {
         }
         if (!this.userAlreadySelectedApp) {
             vscode.window.showQuickPick(options, { placeHolder: Strings.ProvideCurrentAppPromptMsg })
-            .then((selected: QuickPickAppItem) => {
-                this.userAlreadySelectedApp = true;
-                if (!selected) {
-                    return;
-                }
-                this.handleShowCurrentAppQuickPickSelection(selected.target, rnApps);
-            });
+                .then((selected: QuickPickAppItem) => {
+                    this.userAlreadySelectedApp = true;
+                    if (!selected) {
+                        return;
+                    }
+                    this.handleShowCurrentAppQuickPickSelection(selected, rnApps);
+                });
         }
     }
 
@@ -114,7 +114,7 @@ export class ReactNativeAppCommand extends Command {
             return true;
         }
         if (cachedApps.length !== appsList.length) {
-           return true;
+            return true;
         }
 
         let differs: boolean = false;

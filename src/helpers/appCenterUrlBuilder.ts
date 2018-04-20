@@ -19,20 +19,20 @@ export class AppCenterUrlBuilder {
         return `${SettingsHelper.getAppCenterPortalEndpoint()}/${this.ownerPrefix(isOrg)}/${ownerName}/apps/${appName}/`;
     }
 
-    public static GetPortalBuildConfigureLink(appOwner: string, appName: string, branchName: string): string {
-        return `${SettingsHelper.getAppCenterPortalEndpoint()}/users/${appOwner}/apps/${appName}/build/branches/${branchName}/setup`;
+    public static GetPortalBuildConfigureLink(appOwner: string, appName: string, branchName: string, isOrg: boolean): string {
+        return `${SettingsHelper.getAppCenterPortalEndpoint()}/${this.ownerPrefix(isOrg)}/${appOwner}/apps/${appName}/build/branches/${branchName}/setup`;
     }
 
-    public static GetPortalConnectRepoLink(appOwner: string, appName: string): string {
-        return `${SettingsHelper.getAppCenterPortalEndpoint()}/users/${appOwner}/apps/${appName}/build/connect`;
+    public static GetPortalConnectRepoLink(appOwner: string, appName: string, isOrg: boolean): string {
+        return `${SettingsHelper.getAppCenterPortalEndpoint()}/${this.ownerPrefix(isOrg)}/${appOwner}/apps/${appName}/build/connect`;
     }
 
-    public static GetPortalCrashesLink(appOwner: string, appName: string): string {
-        return `${SettingsHelper.getAppCenterPortalEndpoint()}/users/${appOwner}/apps/${appName}/crashes/`;
+    public static GetPortalCrashesLink(appOwner: string, appName: string, isOrg: boolean): string {
+        return `${SettingsHelper.getAppCenterPortalEndpoint()}/${this.ownerPrefix(isOrg)}/${appOwner}/apps/${appName}/crashes/`;
     }
 
-    public static GetPortalBuildLink(appOwner: string, appName: string, branchName: string, buildId: string): string {
-        return `${SettingsHelper.getAppCenterPortalEndpoint()}/users/${appOwner}/apps/${appName}/build/branches/${branchName}/builds/${buildId}`;
+    public static GetPortalBuildLink(appOwner: string, appName: string, branchName: string, buildId: string, isOrg: boolean): string {
+        return `${SettingsHelper.getAppCenterPortalEndpoint()}/${this.ownerPrefix(isOrg)}/${appOwner}/apps/${appName}/build/branches/${branchName}/builds/${buildId}`;
     }
 
     public static getCrashesEndpoint(): string {
