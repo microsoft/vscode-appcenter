@@ -13,6 +13,7 @@ import Login from './login';
 import SetCurrentApp from './setCurrentApp';
 import * as Settings from './settings';
 import Start from './start';
+import * as Test from "./test";
 import * as Tools from './tools';
 
 export default class ShowMenu extends Command {
@@ -94,11 +95,14 @@ export default class ShowMenu extends Command {
 
                 switch (selected.target) {
                     case (AppCenterBeacons.Build):
-                    case (AppCenterBeacons.Test):
                     case (AppCenterBeacons.Distribute):
                     case (AppCenterBeacons.Analytics):
                     case (AppCenterBeacons.Crashes):
                         MenuHelper.handleMenuPortalQuickPickSelection(this._params, selected.target, this.ownerName, this.appName, this.isOrg, await this.isCodePushEnabled);
+                        break;
+
+                    case (AppCenterBeacons.Test):
+                        new Test.ShowMenu(this._params).runNoClient();
                         break;
 
                     case (CommandNames.Start):

@@ -1,5 +1,6 @@
 export class Constants {
     public static ExtensionName: string = "App Center";
+    public static ExtensionCommandPrefix: string = "appcenter";
     public static DefaultAPIEndPoint: string = "https://api.appcenter.ms";
     public static AppCenterPortalURL: string = "https://appcenter.ms";
     public static DefaultLegacyCodePushService: string = "https://codepush-management.azurewebsites.net/";
@@ -68,9 +69,9 @@ export class Constants {
 
     public static AppCenterReactNativePlatformName: string = "React-Native";
 }
-
+// tslint:disable:max-classes-per-file
 export class CommandNames {
-    public static CommandPrefix: string = Constants.ExtensionName + ".";
+    public static CommandPrefix: string = Constants.ExtensionCommandPrefix + ".";
     public static AppCenterPortal: string = CommandNames.CommandPrefix + "showPortalMenu";
     public static WhoAmI: string = CommandNames.CommandPrefix + "whoAmI";
     public static Login: string = CommandNames.CommandPrefix + "login";
@@ -108,6 +109,13 @@ export class CommandNames {
         public static ReleaseReact: string = CommandNames.CommandPrefix + "codepush.releaseReact";
         public static SwitchMandatoryPropForRelease: string = CommandNames.CommandPrefix + "codepush.switchMandatoryPropForRelease";
         public static SetTargetBinaryVersion: string = CommandNames.CommandPrefix + "codepush.setTargetBinaryVersion";
+    };
+
+    public static Test = class {
+        public static ShowMenu: string = CommandNames.CommandPrefix + "test.showMenu";
+        public static RunUITests: string = CommandNames.CommandPrefix + "test.runUITests";
+        public static RunUITestsAsync: string = CommandNames.CommandPrefix + "test.runUITestsAsync";
+        public static ViewResults: string = CommandNames.CommandPrefix + "test.viewResults";
     };
 }
 
@@ -164,4 +172,9 @@ export enum AppCenterEnvironment {
     Prod = 0,
     Staging = 1,
     Int = 2
+}
+
+export enum ReactNativePlatformDirectory {
+    IOS = "ios",
+    Android = "android"
 }

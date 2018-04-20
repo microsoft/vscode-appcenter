@@ -44,4 +44,8 @@ export class AppCenterUrlBuilder {
             default: return Constants.ProdCrashesEndPoint;
         }
     }
+
+    public static getTestLink(appOwner: string, appName: string, isOrg: boolean) {
+        return `${SettingsHelper.getAppCenterPortalEndpoint()}/${this.ownerPrefix(isOrg)}/${appOwner}/apps/${appName}/test/runs`;
+    }
 }

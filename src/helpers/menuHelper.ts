@@ -17,9 +17,6 @@ export class MenuHelper {
             case (AppCenterBeacons.Build):
                 Utils.OpenUrl(AppCenterUrlBuilder.GetAppCenterLinkByBeacon(ownerName, appName, AppCenterBeacons.Build, isOrg));
                 break;
-            case (AppCenterBeacons.Test):
-                Utils.OpenUrl(AppCenterUrlBuilder.GetAppCenterLinkByBeacon(ownerName, appName, AppCenterBeacons.Test, isOrg));
-                break;
             case (AppCenterBeacons.Distribute):
                 vscode.window.showQuickPick(MenuHelper.getAppCenterDistributeTabMenuItems(isCodePushEnabled), { placeHolder: Strings.MenuTitlePlaceholder })
                     .then((selected: QuickPickAppItem) => {

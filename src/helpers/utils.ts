@@ -6,6 +6,7 @@ import * as os from 'os';
 import * as path from 'path';
 import { AppCenterOS, Constants } from '../constants';
 import { Strings } from '../strings';
+import { cpUtils, SpawnError } from './cpUtils';
 import { CurrentApp, CurrentAppDeployments } from './interfaces';
 import { Validators } from './validators';
 import { VsCodeUtils } from './vsCodeUtils';
@@ -51,12 +52,15 @@ export class Utils {
         return yarnVersion;
     }
 
-    public static parseJsonFile(path, installHint) {
+    public static parseJsonFile(path: string, installHint?: string) {
         let fileContents;
         try {
             fileContents = fs.readFileSync(path, 'utf8');
         } catch (err) {
-            throw new Error(`Cannot find "${path}". ${installHint}`);
+            if (installHint) {
+                installHint = ` ${installHint}`;
+            }
+            throw new Error(`Cannot find "${path}".${installHint}`);
         }
         try {
             return JSON.parse(fileContents);
@@ -153,5 +157,30 @@ export class Utils {
 
     public static getAppCenterTokensFileName() {
         return path.join(Utils.getUserDir(), Constants.TokenDir, Constants.AppCenterTokenFileName);
+    }
+
+    public static getAppName(projectRoot: string) {
+        const packageJsonPath = path.resolve(
+            projectRoot, 'package.json'
+        );
+
+        const packageJson = Utils.parseJsonFile(packageJsonPath);
+        return packageJson.name;
+    }
+
+    public static async packageInstalledGlobally(packageName: string) {
+        const resultSignalsThatPackageInstalled = (result) => !/\(empty\)/.test(result);
+        let result: string = "";
+        try {
+            result = await cpUtils.executeCommand(undefined, true, undefined, "npm", ...["list", "--depth", "1", "-g", packageName]);
+        } catch (e) {
+            if (e instanceof SpawnError) {
+                if (e.exitCode === 1 && e.result && !resultSignalsThatPackageInstalled(e.result)) {
+                    return false;
+                }
+                throw e;
+            }
+        }
+        return resultSignalsThatPackageInstalled(result);
     }
 }
