@@ -45,7 +45,7 @@ export class AppCenterUrlBuilder {
         }
     }
 
-    public static getTestLink(appOwner: string, appName: string) {
-        return `${SettingsHelper.getAppCenterPortalEndpoint()}/users/${appOwner}/apps/${appName}/test/runs`;
+    public static getTestLink(appOwner: string, appName: string, isOrg: boolean) {
+        return `${SettingsHelper.getAppCenterPortalEndpoint()}/${this.ownerPrefix(isOrg)}/${appOwner}/apps/${appName}/test/runs`;
     }
 }

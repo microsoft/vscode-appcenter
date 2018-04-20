@@ -1,5 +1,5 @@
 import { AppCenterUrlBuilder } from "../../../helpers/appCenterUrlBuilder";
-import { CurrentApp } from "../../../helpers/interfaces";
+import { AppCenterProfile, CurrentApp } from "../../../helpers/interfaces";
 import { Utils } from "../../../helpers/utils";
 import { ReactNativeAppCommand } from "../reactNativeAppCommand";
 
@@ -14,7 +14,12 @@ export default class ViewResults extends ReactNativeAppCommand {
             return false;
         }
 
-        Utils.OpenUrl(AppCenterUrlBuilder.getTestLink(app.ownerName, app.appName));
+        const profile: AppCenterProfile  | null = await this.appCenterProfile;
+        if (!profile) {
+            return false;
+        }
+
+        Utils.OpenUrl(AppCenterUrlBuilder.getTestLink(app.ownerName, app.appName, profile.currentApp.type !== "user"));
         return true;
     }
 }
