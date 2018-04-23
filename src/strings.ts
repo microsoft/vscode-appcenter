@@ -124,7 +124,7 @@ export class Strings {
     public static CodePushInstallHint: string = "Make sure you ran \"npm install\" and that you are inside a React Native Code Push project.";
     public static ReleasingUpdateContentsMessage: string = "Sending update to CodePush...";
     public static RepoManualConnectBtnLabel: string = "Connect";
-    public static PodInstallBtnLabel: string = "Install Pod";
+    public static PodInstallBtnLabel: string = "Install CocoaPods";
     public static BuildManualConfigureBtnLabel: string = "Configure build";
     public static OnlyIOSError: string = "Running UI tests is supported only for iOS.";
     public static AppCreatedBtnLabel: string = "Check it out";
