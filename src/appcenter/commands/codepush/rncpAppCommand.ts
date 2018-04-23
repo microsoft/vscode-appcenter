@@ -1,3 +1,4 @@
+import { CurrentApp } from "../../../helpers/interfaces";
 import { Utils } from "../../../helpers/utils";
 import { ReactNativeAppCommand } from "../reactNativeAppCommand";
 
@@ -20,5 +21,9 @@ export class RNCPAppCommand extends ReactNativeAppCommand {
             return false;
         }
         return true;
+    }
+
+    protected hasCodePushDeployments(currentApp: CurrentApp): boolean {
+        return currentApp.currentAppDeployments && currentApp.currentAppDeployments.codePushDeployments && currentApp.currentAppDeployments.codePushDeployments.length > 0;
     }
 }

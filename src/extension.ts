@@ -72,6 +72,11 @@ function registerAppCenterCommands(context: vscode.ExtensionContext): void {
     context.subscriptions.push(vscode.commands.registerCommand(CommandNames.CodePush.SetTargetBinaryVersion,
         () => _extensionManager.RunCommand(() => codepushCommandHandler.SetTargetBinaryVersion())));
 
+    // Tools commands
+    const toolsCommandHandler = _extensionManager.commandHandlers.toolsCommandHandler;
+    context.subscriptions.push(vscode.commands.registerCommand(CommandNames.Tools.SimulateCrashes,
+        () => _extensionManager.RunCommand(() => toolsCommandHandler.simulateCrashes())));
+
     // Test commands
     const testCommandHandler = _extensionManager.commandHandlers.testCommandHandler;
     context.subscriptions.push(vscode.commands.registerCommand(CommandNames.Test.ShowMenu,
