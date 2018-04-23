@@ -25,6 +25,7 @@ export default class RunUITests extends ReactNativeAppCommand {
 
         const app: CurrentApp | null = await this.getCurrentApp();
         if (!app) {
+            VsCodeUtils.ShowWarningMessage(Strings.NoCurrentAppSetMsg);
             return false;
         }
 

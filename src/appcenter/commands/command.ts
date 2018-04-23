@@ -120,8 +120,9 @@ export class Command {
                 profile.currentApp = currentApp;
                 return this.appCenterAuth.updateProfile(profile).then(() => {
                     return currentApp;
-                }).then(() => {
+                }).then((app) => {
                     this.manager.setupAppCenterStatusBar(profile);
+                    return app;
                 });
             } else {
                 // No profile - not logged in?

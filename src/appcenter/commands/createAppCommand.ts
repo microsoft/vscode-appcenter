@@ -65,6 +65,11 @@ export class CreateAppCommand extends Command {
     protected getIdeaName(appNameFromPackage: string = ""): Thenable<string | null> {
         return vscode.window.showInputBox({ prompt: Strings.PleaseEnterIdeaName, ignoreFocusOut: true, value: appNameFromPackage })
             .then(async ideaName => {
+                if (ideaName.length === 0) {
+                    VsCodeUtils.ShowErrorMessage(Strings.IdeaNameIsNotValidMsg);
+                    return null;
+                }
+
                 if (!ideaName) {
                     return "";
                 }
