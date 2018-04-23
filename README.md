@@ -22,7 +22,9 @@ There are several possible scenarios this extension solves:
     * After logging in click the App Center status bar to show possible menu options
 
         ![AppCenter Menu](images/appcenter-start-new-idea.png)
-    * You will be prompted to enter a new for your project and select user or organization where you would like to create app in App Center
+    * You will be prompted to enter a new name for your project and select user or organization where you would like to create app in App Center
+
+        ![Enter New Name](images/appcenter-enter-new-name.png)
         * App Center sample app will be cloned into the repository you have provided (it will also have preconfigured for App Center Analytics/Crashes/CodePush SDK's)
         * Two React Native apps (for iOS and Android) will be created in App Center (`project-name-ios` and `project-name-android`)
         * CodePush deployments will be created for both apps
@@ -30,16 +32,22 @@ There are several possible scenarios this extension solves:
         * Changes will be pushed to your remote repository
         * New Testers Distribution Group will be created for every new app in App Center
         * App will be connected to your GH repository `master` branch and new build will be started 
-    * You will be notified when finished and also we will automatically run `npm install` for you
+    * You will be notified when finished and also we will automatically run `npm install` and `pod update` for you
 
 2. Link an existing react-native application to App Center. 
     You will see a "Set Current App" option, when logged in.
+
+    ![Set current app](images/appcenter-set-current-app.png)
+
     You can either choose an app from App Center or choose it to be created for you.
     When you pick "Create an App Center app" option, several options are available:
     * Create an app for Android
     * Create an app for iOS
     * Create apps for both platforms
+
     If you choose one of the first two, the app will be created and automatically set as current. If you choose to create two apps, you will have to pick one of them as current when a prompt is shown.
+
+    ![Choose app](images/appcenter-choose-app.png)
 
     When the app is linked to App Center, several new options appear in the menu:
     * Build
@@ -47,7 +55,10 @@ There are several possible scenarios this extension solves:
     * Distribute
     * Crashes
     * Analytics
+
     They all open the corresponding App Center tabs for the application. "Distribute" also contains CodePush stuff.
+
+    ![App Center portal](images/appcenter-portal.png)
 
 3. You would like to open already existing react-native application with CodePush installed. When logged in, the following App Center Menu options should be avaliable under "Distribute > CodePush":
     * Set current app for CodePush
@@ -55,6 +66,8 @@ There are several possible scenarios this extension solves:
     * Change target binary verson 
     * Change if release should be mandatory
     * Make new CodePush release
+
+    ![Code Push](images/appcenter-code-push.png)
 
 ## Test
 
@@ -65,27 +78,24 @@ If your React Native application has UI tests you can run it in the App Center c
 In order to run the tests in App Center cloud you need [App Center CLI](https://github.com/Microsoft/appcenter-cli). To install it run `npm install -g appcenter-cli` in terminal.
 
 #### iOS
-Currently, extension supports running of XCUI tests only. Please, follow [the instructions for App Center portal docs](https://docs.microsoft.com/en-us/appcenter/test-cloud/preparing-for-upload/xcuitest) to prepare tests for uploading to the App Center cloud. 
+Currently, extension supports running XCUI tests only. Please, follow [the instructions for App Center portal docs](https://docs.microsoft.com/en-us/appcenter/test-cloud/preparing-for-upload/xcuitest) to prepare tests for uploading to the App Center cloud. 
 
 
 ### Running tests
 
 1. Open **App Center menu** and then click **Test** button. 
 
-TODO image
-
 2. To run tests you can use two options: `Run UI tests` and `Run UI tests asynchronously`. Command `Run UI tests` will start to build your application for testing, upload it together with tests to App Center cloud and then run it there waiting for tests to be done. Command `Run UI tests asynchronously` does the same thing except it exits the command when tests are uploaded, without waiting for test results. Choose the one you prefer the most. Also, you can track progress of command below in status bar.
 
-TODO image
+![Test options](images/appcenter-test-options.png)
 
 3. Select device configuration for tests.
 
-TODO image
+![Test devices](images/appcenter-test-devices.png)
 
 4. After that, `Output->React Native` window will be opened where you can monitor the progress of the build, upload and run the tests.
 
-
-TODO image
+![Test output](images/appcenter-test-output.png)
 
 ## Contributing
 There are a couple of ways you can contribute to this repo:

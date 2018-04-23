@@ -19,6 +19,9 @@ export default class AppCenterPortalMenu extends ReactNativeAppCommand {
     }
 
     public async run(): Promise<void> {
+
+        // Disabling the check whether project has react-native package installed cause it's kinda useless here.
+        this.checkForReact = false;
         if (!await super.run()) {
             return;
         }
@@ -65,6 +68,6 @@ export default class AppCenterPortalMenu extends ReactNativeAppCommand {
                     return;
                 }
                 MenuHelper.handleMenuPortalQuickPickSelection(this._params, selected.target, this.ownerName, this.appName, this.isOrg, await this.isCodePushEnabled);
-        });
+            });
     }
 }

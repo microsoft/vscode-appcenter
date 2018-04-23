@@ -20,6 +20,21 @@ export class Utils {
         return message;
     }
 
+    public static FormatAppName(name: string): string {
+        const ELLIPSIZE_LENGTH_WO_HINT = 15;
+        const ELLIPSIZE_LENGTH_WITH_HINT = 10;
+        if (name.length < ELLIPSIZE_LENGTH_WO_HINT) {
+            return name;
+        }
+        let hint: string = "";
+        if (name.endsWith("-ios")) {
+            hint = " (iOS)";
+        } else if (name.endsWith("-android")) {
+            hint = " (android)";
+        }
+        return name.substr(0, hint.length ? ELLIPSIZE_LENGTH_WITH_HINT : ELLIPSIZE_LENGTH_WO_HINT) + "..." + hint;
+    }
+
     public static Delay<T>(millis: number, value?: T): Promise<T> {
         return new Promise((resolve) => setTimeout(() => resolve(value), millis));
     }

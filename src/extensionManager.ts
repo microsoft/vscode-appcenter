@@ -8,6 +8,7 @@ import { VsCodeUtils } from './helpers/vsCodeUtils';
 import { ConsoleLogger } from './log/consoleLogger';
 import { ILogger } from './log/logHelper';
 import { Strings } from './strings';
+import { Utils } from './helpers/utils';
 
 class CommandHandlersContainer {
     private _appCenterCommandHandler: CommandHandlers.AppCenter;
@@ -91,7 +92,7 @@ export class ExtensionManager implements Disposable {
         if (profile && profile.userName) {
             return VsCodeUtils.setStatusBar(this._appCenterStatusBarItem,
                 profile.currentApp && profile.currentApp.appName
-                ? `App Center: ${profile.currentApp.appName}`
+                ? `App Center: ${Utils.FormatAppName(profile.currentApp.appName)}`
                 : `App Center: ${profile.userName}`,
                 Strings.YouAreLoggedInMsg(AuthProvider.AppCenter, profile.userName),
                 `${CommandNames.ShowMenu}`

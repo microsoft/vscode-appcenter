@@ -64,6 +64,7 @@ export class Strings {
     public static CreatingCodePushDeploymentsStatusBarMessage: string = "Creating CodePush deployments for hotfixing...";
     public static RunNPMInstallStatusBarMessage: string = "Installing package dependencies...";
     public static NodeModulesInstalledMessage: string = "Dependencies have been successfully installed";
+    public static PodsInstalledMessage: string = "Pods have been successfully installed";
     public static FinishedConfigMsg: string = "Your project has been successfully configured locally and in the cloud.";
     public static GitIsNotInstalledMsg: string = "It looks like you don't have a local git client installed. ";
     public static FailedToCreateRNProjectMsg: string = "An unexpected error occurred while fetching the project template.";
@@ -121,6 +122,7 @@ export class Strings {
     public static CodePushInstallHint: string = "Make sure you ran \"npm install\" and that you are inside a React Native Code Push project.";
     public static ReleasingUpdateContentsMessage: string = "Sending update to CodePush...";
     public static RepoManualConnectBtnLabel: string = "Connect";
+    public static PodInstallBtnLabel: string = "Install Pod";
     public static BuildManualConfigureBtnLabel: string = "Configure build";
     public static OnlyIOSError: string = "Running UI tests is supported only for iOS.";
     public static AppCreatedBtnLabel: string = "Check it out";
@@ -136,6 +138,7 @@ export class Strings {
     public static CrashesSimulated: string = "The crash has been successfully generated and sent to App Center!";
     public static CrashesSimulatedHint: string = "Check it out";
 
+    public static PodsNotInstalledMessage: string = "It looks like you haven't installed CocoaPods. You need it to run the application on iOS. After the installation, run 'cd ios && pod update'.";
     public static RepoManualConnectMessage(appName: string): string {
         return `Could not connect ${appName} to the repository. Please try to do it manually.`;
     }
