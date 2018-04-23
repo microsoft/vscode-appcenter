@@ -185,7 +185,7 @@
                 "appcenter.api.configurebranchandstartnewbuild": {
                     "description": "Configure branch and start new build",
                     "type": "boolean",
-                    "default": "true"
+                    "default": "false"
                 },
                 "appcenter.api.defaultbranchname": {
                     "description": "App Center Default Branch Name",
