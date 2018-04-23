@@ -61,7 +61,7 @@ export default class LoginToVsts extends Command {
             }, this.logger);
             const isValid: boolean = await vsts.TestVstsConnection();
             if (!isValid) {
-                VsCodeUtils.ShowErrorMessage("Vsts credentials are not valid.");
+                VsCodeUtils.ShowErrorMessage(Strings.VstsCredsNotValidMsg);
                 this.vstsAuth.doLogout(profile.userId);
                 return false;
             } else {
