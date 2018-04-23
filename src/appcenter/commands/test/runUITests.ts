@@ -25,7 +25,6 @@ export default class RunUITests extends ReactNativeAppCommand {
 
         const app: CurrentApp | null = await this.getCurrentApp();
         if (!app) {
-            VsCodeUtils.ShowWarningMessage(Strings.NoCurrentAppSetMsg);
             return false;
         }
 
@@ -40,7 +39,8 @@ export default class RunUITests extends ReactNativeAppCommand {
             client: this.client,
             logger: this.logger,
             platformDir: ReactNativePlatformDirectory.IOS,
-            appDirPath: this.manager.projectRootPath
+            appDirPath: this.manager.projectRootPath,
+            profile: await this.appCenterProfile
         });
 
         return testRunner.runUITests(this.async);
