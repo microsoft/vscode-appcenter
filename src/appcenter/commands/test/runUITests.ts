@@ -42,6 +42,6 @@ export default class RunUITests extends ReactNativeAppCommand {
             appDirPath: this.manager.projectRootPath
         });
 
-        return await testRunner.runUITests(this.async);
+        return testRunner.runUITests(this.async);
     }
 }
