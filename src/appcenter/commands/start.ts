@@ -178,9 +178,9 @@ export default class Start extends CreateAppCommand {
 
     private async runPodUpdate(): Promise<boolean> {
         try {
-            const podUpdateCmd: string = "cd ios && pod install";
+            const podUpdateCmd: string = "pod install";
             this.logger.debug("Installing pods for ios...");
-            await cpUtils.executeCommand(this.logger, true, this.rootPath, podUpdateCmd);
+            await cpUtils.executeCommand(this.logger, true, `${this.rootPath}/ios`, podUpdateCmd);
             this.logger.debug(Strings.PodsInstalledMessage);
             return true;
         } catch (error) {
