@@ -15,8 +15,12 @@ export default class SetCurrentDeployment extends RNCPAppCommand {
             return;
         }
         this.getCurrentApp().then((currentApp: CurrentApp) => {
-            if (!currentApp || !currentApp.currentAppDeployments || !currentApp.currentAppDeployments.codePushDeployments) {
-                VsCodeUtils.ShowInfoMessage(Strings.NoCurrentAppSetMsg);
+            if (!currentApp) {
+                VsCodeUtils.ShowWarningMessage(Strings.NoCurrentAppSetMsg);
+                return;
+            }
+            if (!this.hasCodePushDeployments(currentApp)) {
+                VsCodeUtils.ShowWarningMessage(Strings.NoDeploymentsMsg);
                 return;
             }
             const deploymentOptions: string[] = currentApp.currentAppDeployments.codePushDeployments.map((deployment) => {

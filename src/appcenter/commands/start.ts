@@ -10,7 +10,7 @@ import { GitUtils } from '../../helpers/gitUtils';
 import { CommandParams, CreatedAppFromAppCenter, Deployment, QuickPickAppItem, VstsProfile } from '../../helpers/interfaces';
 import { SettingsHelper } from '../../helpers/settingsHelper';
 import { Validators } from '../../helpers/validators';
-import { VsCodeUtils } from '../../helpers/vsCodeUtils';
+import { IButtonMessageItem, VsCodeUtils } from '../../helpers/vsCodeUtils';
 import { Strings } from '../../strings';
 import { VSTSGitRepository, VSTSProject } from '../../vsts/types';
 import { VSTSProvider } from '../../vsts/vstsProvider';
@@ -161,6 +161,7 @@ export default class Start extends CreateAppCommand {
 
         // We can run npm install in parralel while doing other stuff for appcenter
         this.runNPMInstall();
+        this.runPodUpdate();
         const done = await appCenterAppBuilder.startProcess();
         if (!done) {
             VsCodeUtils.ShowErrorMessage(Strings.FailedToCreateAppInAppCenter);
@@ -172,6 +173,26 @@ export default class Start extends CreateAppCommand {
         ${AppCenterAppBuilder.getiOSAppName(ideaName)}
 --------------------------------------------------------`;
             this.logger.info(successMessage);
+        }
+    }
+
+    private async runPodUpdate(): Promise<boolean> {
+        try {
+            const podUpdateCmd: string = "pod install";
+            this.logger.debug("Installing pods for ios...");
+            await cpUtils.executeCommand(this.logger, true, `${this.rootPath}/ios`, podUpdateCmd);
+            this.logger.debug(Strings.PodsInstalledMessage);
+            return true;
+        } catch (error) {
+            this.logger.error("Failed to run pod update");
+
+            const messageItems: IButtonMessageItem[] = [];
+            messageItems.push({
+                title: Strings.PodInstallBtnLabel,
+                url: "https://cocoapods.org"
+            });
+            VsCodeUtils.ShowInfoMessage(Strings.PodsNotInstalledMessage, ...messageItems);
+            return false;
         }
     }
 

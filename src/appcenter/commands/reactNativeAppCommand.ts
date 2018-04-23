@@ -13,6 +13,7 @@ export class ReactNativeAppCommand extends Command {
     protected currentAppMenuTarget: string = "MenuCurrentApp";
     protected static cachedApps: models.AppResponse[];
     protected userAlreadySelectedApp: boolean;
+    protected checkForReact: boolean = true;
 
     public get CachedApps(): models.AppResponse[] | null {
         if (ReactNativeAppCommand.cachedApps && ReactNativeAppCommand.cachedApps.length > 0) {
@@ -26,7 +27,7 @@ export class ReactNativeAppCommand extends Command {
         if (!await super.runNoClient()) {
             return false;
         }
-        if (!Utils.isReactNativeProject(this.rootPath, true)) {
+        if (this.checkForReact && !Utils.isReactNativeProject(this.rootPath, true)) {
             return false;
         }
         return true;
@@ -36,7 +37,7 @@ export class ReactNativeAppCommand extends Command {
         if (!await super.run()) {
             return false;
         }
-        if (!Utils.isReactNativeProject(this.rootPath, true)) {
+        if (this.checkForReact && !Utils.isReactNativeProject(this.rootPath, true)) {
             return false;
         }
         return true;
