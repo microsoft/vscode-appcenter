@@ -5,11 +5,11 @@ import * as opener from 'opener';
 import * as os from 'os';
 import * as path from 'path';
 import { AppCenterOS, Constants } from '../constants';
+import { ILogger } from '../log/logHelper';
 import { Strings } from '../strings';
 import { cpUtils, SpawnError } from './cpUtils';
 import { CurrentApp, CurrentAppDeployments } from './interfaces';
 import { Validators } from './validators';
-import { VsCodeUtils } from './vsCodeUtils';
 
 export class Utils {
     public static FormatMessage(message: string): string {
@@ -84,7 +84,7 @@ export class Utils {
         }
     }
 
-    public static projectHaveNpmPackage(projectRoot: string | undefined, packageName: string, installHint: string, showMessageOnError?: boolean): boolean {
+    public static projectHaveNpmPackage(logger: ILogger, projectRoot: string | undefined, packageName: string, installHint: string, showMessageOnError?: boolean): boolean {
         if (!projectRoot) {
             return false;
         }
@@ -97,7 +97,7 @@ export class Utils {
             Utils.parseJsonFile(packageJsonPath, installHint);
         } catch (e) {
             if (showMessageOnError) {
-                VsCodeUtils.ShowWarningMessage(e.message);
+                logger.error(e.message);
             }
             return false;
         }
@@ -105,12 +105,12 @@ export class Utils {
         return true;
     }
 
-    public static isReactNativeProject(projectRoot: string | undefined, showMessageOnError?: boolean) {
-        return Utils.projectHaveNpmPackage(projectRoot, 'react-native', Strings.ReactNativeInstallHint, showMessageOnError);
+    public static isReactNativeProject(logger: ILogger, projectRoot: string | undefined, showMessageOnError?: boolean) {
+        return Utils.projectHaveNpmPackage(logger, projectRoot, 'react-native', Strings.ReactNativeInstallHint, showMessageOnError);
     }
 
-    public static isReactNativeCodePushProject(projectRoot: string | undefined, showMessageOnError?: boolean) {
-        return Utils.projectHaveNpmPackage(projectRoot, 'react-native-code-push', Strings.CodePushInstallHint, showMessageOnError);
+    public static isReactNativeCodePushProject(logger: ILogger, projectRoot: string | undefined, showMessageOnError?: boolean) {
+        return Utils.projectHaveNpmPackage(logger, projectRoot, 'react-native-code-push', Strings.CodePushInstallHint, showMessageOnError);
     }
 
     public static toAppCenterOS(codePushOs: string): AppCenterOS | undefined {

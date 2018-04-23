@@ -129,6 +129,8 @@ export class Strings {
     public static BuildManualConfigureBtnLabel: string = "Configure build";
     public static OnlyIOSError: string = "Running UI tests is supported only for iOS.";
     public static AppCreatedBtnLabel: string = "Check it out";
+    public static NotReactProjectMsg: string = "This command can only be executed from a React Native project. Check out the Output window for more details.";
+    public static NotCodePushProjectMsg: string = "This command can only be executed from a React Native project with Code Push installed. Check out the Output window for more details.";
 
     public static CreatingAppStatusBarMessage: string = `Creating a new App Center app...`;
     public static FailedToCreateAppInAppCenter: string = `An error occurred while creating the new App Center app`;
