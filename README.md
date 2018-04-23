@@ -1,5 +1,5 @@
 # VSCode App Center Tools &middot; [![Build Status](https://msmobilecenter.visualstudio.com/_apis/public/build/definitions/d7809725-8fd7-4b76-8022-ebb8720603f6/2854/badge)](https://msmobilecenter.visualstudio.com/Patricks%20Sandbox/_build/index?definitionId=2854)
-This extension provides a development support for App Center projects. 
+This extension provides development support for App Center projects. 
 
 _NOTE: Currently it supports only React-Native based apps._
 
@@ -12,26 +12,27 @@ _NOTE: Currently it supports only React-Native based apps._
 
 
 ## How it works
-There are several possible scenarios of using this extension:
+There are several possible scenarios this extension solves:
 
-1. You would like to start development from scratch with the new application already linked and configured to [AppCenter](https://appcenter.ms):
-    * You clone new empty repository on your machine with `git clone new-repo-name` and `cd new-repo-name` and open this folder in VS Code.
-    * You login to the appcenter from the App Center StatusBar
+1. Start development of a new React Native application with [App Center](https://appcenter.ms) already configured:
+    * Clone a new empty repository to your machine or log into the extension with a VSTS access token.
+    * Login to the App Center using the new status bar icon.
 
-        ![Login to Appcenter](images/appcenter-login.png)
-    * After logging in click the App Center StatusBar to show App Center Menu options. 
+        ![Login to App Center](images/appcenter-login.png)
+    * After logging in click the App Center status bar to show possible menu options
 
         ![AppCenter Menu](images/appcenter-start-new-idea.png)
-    * You will be prompted to enter idea name and select user or organization where you would like to create app in App Center
-        * App Center sample app will be cloned into the repository you have provided (it will also have preconfigured App Center Analytics/Crashes/CodePush stuff)
-        * Two react-native apps (for iOS and Android) will be created in App Center (`ideaname-ios` and `ideaname-android`)
-        * CodePush deployments will be created for every app
-        * App will be linked with corresponding iOS/Android secret keys and CodePush deployment keys
+    * You will be prompted to enter a new for your project and select user or organization where you would like to create app in App Center
+        * App Center sample app will be cloned into the repository you have provided (it will also have preconfigured for App Center Analytics/Crashes/CodePush SDK's)
+        * Two React Native apps (for iOS and Android) will be created in App Center (`project-name-ios` and `project-name-android`)
+        * CodePush deployments will be created for both apps
+        * Apps will be automatically linked with corresponding iOS/Android secret keys and CodePush deployment keys
         * Changes will be pushed to your remote repository
-        * New Testers Distribution Group will be created for every new app in App Center, app will be connected to your GH repository `master` branch and new build will be started 
+        * New Testers Distribution Group will be created for every new app in App Center
+        * App will be connected to your GH repository `master` branch and new build will be started 
     * You will be notified when finished and also we will automatically run `npm install` for you
 
-2. You would like to link an existing react-native application to App Center. 
+2. Link an existing react-native application to App Center. 
     You will see a "Set Current App" option, when logged in.
     You can either choose an app from App Center or choose it to be created for you.
     When you pick "Create an App Center app" option, several options are available:
@@ -57,7 +58,7 @@ There are several possible scenarios of using this extension:
 
 ## Test
 
-If your React Native application has UI tests you can run it in App Center cloud using extension.
+If your React Native application has UI tests you can run it in the App Center cloud using the extension.
 
 ### Preparing tests
 
