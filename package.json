@@ -4,6 +4,7 @@
     "description": "App Center extension for VS Code.",
     "version": "0.0.1",
     "publisher": "Microsoft",
+    "icon": "images/icon.png",
     "engines": {
         "vscode": "^1.21.0"
     },
