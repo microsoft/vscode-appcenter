@@ -27,7 +27,8 @@ export class ReactNativeAppCommand extends Command {
         if (!await super.runNoClient()) {
             return false;
         }
-        if (this.checkForReact && !Utils.isReactNativeProject(this.rootPath, true)) {
+        if (this.checkForReact && !Utils.isReactNativeProject(this.logger, this.rootPath, true)) {
+            VsCodeUtils.ShowWarningMessage(Strings.NotReactProjectMsg);
             return false;
         }
         return true;
@@ -37,7 +38,9 @@ export class ReactNativeAppCommand extends Command {
         if (!await super.run()) {
             return false;
         }
-        if (this.checkForReact && !Utils.isReactNativeProject(this.rootPath, true)) {
+
+        if (this.checkForReact && !Utils.isReactNativeProject(this.logger, this.rootPath, true)) {
+            VsCodeUtils.ShowWarningMessage(Strings.NotReactProjectMsg);
             return false;
         }
         return true;

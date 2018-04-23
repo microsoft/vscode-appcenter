@@ -70,6 +70,7 @@ export class Strings {
     public static FailedToCreateRNProjectMsg: string = "An unexpected error occurred while fetching the project template.";
     public static NotRNProjectMsg: string = "Sorry, this project doesn't appear to be React Native.";
     public static IdeaNameIsNotValidMsg: string = "Sorry, the project name your entered is invalid.";
+    public static VstsCredsNotValidMsg: string = "Vsts credentials are not valid.";
     public static FailedToRemoveRemoteRepositoryMsg: string = "Sorry, failed to remove remote repository!";
     public static FailedToAddRemoteRepositoryMsg: string = "Sorry, failed to add remote repository!";
     public static FailedToGetSelectedUserOrOrganizationMsg: string = "Sorry, failed to get selected account information.";
@@ -128,6 +129,8 @@ export class Strings {
     public static BuildManualConfigureBtnLabel: string = "Configure build";
     public static OnlyIOSError: string = "Running UI tests is supported only for iOS.";
     public static AppCreatedBtnLabel: string = "Check it out";
+    public static NotReactProjectMsg: string = "This command can only be executed from a React Native project. Check out the Output window for more details.";
+    public static NotCodePushProjectMsg: string = "This command can only be executed from a React Native project with Code Push installed. Check out the Output window for more details.";
 
     public static CreatingAppStatusBarMessage: string = `Creating a new App Center app...`;
     public static FailedToCreateAppInAppCenter: string = `An error occurred while creating the new App Center app`;

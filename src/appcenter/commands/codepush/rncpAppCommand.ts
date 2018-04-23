@@ -1,5 +1,7 @@
 import { CurrentApp } from "../../../helpers/interfaces";
 import { Utils } from "../../../helpers/utils";
+import { VsCodeUtils } from "../../../helpers/vsCodeUtils";
+import { Strings } from "../../../strings";
 import { ReactNativeAppCommand } from "../reactNativeAppCommand";
 
 export class RNCPAppCommand extends ReactNativeAppCommand {
@@ -7,7 +9,8 @@ export class RNCPAppCommand extends ReactNativeAppCommand {
         if (!await super.runNoClient()) {
             return false;
         }
-        if (!Utils.isReactNativeCodePushProject(this.rootPath, true)) {
+        if (!Utils.isReactNativeCodePushProject(this.logger, this.rootPath, true)) {
+            VsCodeUtils.ShowWarningMessage(Strings.NotCodePushProjectMsg);
             return false;
         }
         return true;
@@ -17,7 +20,8 @@ export class RNCPAppCommand extends ReactNativeAppCommand {
         if (!await super.run()) {
             return false;
         }
-        if (!Utils.isReactNativeCodePushProject(this.rootPath, true)) {
+        if (!Utils.isReactNativeCodePushProject(this.logger, this.rootPath, true)) {
+            VsCodeUtils.ShowWarningMessage(Strings.NotCodePushProjectMsg);
             return false;
         }
         return true;

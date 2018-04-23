@@ -56,8 +56,9 @@ export default class Start extends CreateAppCommand {
         if (!await GitUtils.IsGitRepo(this.logger, this.rootPath)) {
 
             let vstsProfile: VstsProfile | null = this.vstsAuth.activeProfile;
+            let loggedIn: boolean | void;
             if (!vstsProfile) {
-                await new LoginToVsts(
+                loggedIn = await new LoginToVsts(
                     {
                         manager: this.manager,
                         logger: this.logger,
@@ -65,9 +66,11 @@ export default class Start extends CreateAppCommand {
                         vstsAuth: this.vstsAuth
                     }
                 ).runNoClient();
+            } else {
+                loggedIn = true;
             }
             vstsProfile = this.vstsAuth.activeProfile;
-            if (!vstsProfile) {
+            if (!vstsProfile || !loggedIn) {
                 this.logger.error("Failed to get VSTS profile for command");
                 return;
             }

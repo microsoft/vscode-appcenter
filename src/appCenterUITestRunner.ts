@@ -2,11 +2,12 @@ import * as path from "path";
 import * as vscode from "vscode";
 import { AppCenterClient, models } from "./appcenter/apis";
 import { DeviceConfiguration } from "./appcenter/apis/generated/models";
+import Auth from "./appcenter/auth/auth";
 import { ReactNativePlatformDirectory } from "./constants";
 import { cpUtils } from "./helpers/cpUtils";
 import { DeviceConfigurationSort } from "./helpers/deviceConfigurationSort";
 import { FSUtils } from "./helpers/fsUtils";
-import { CurrentApp } from "./helpers/interfaces";
+import { CurrentApp, Profile } from "./helpers/interfaces";
 import { Utils } from "./helpers/utils";
 import { CustomQuickPickItem, VsCodeUtils } from "./helpers/vsCodeUtils";
 import { ILogger } from "./log/logHelper";
@@ -19,6 +20,7 @@ export interface TestRunnerOptions {
     client: AppCenterClient;
     platformDir: ReactNativePlatformDirectory;
     appDirPath: string;
+    profile: Profile;
 }
 
 export default abstract class AppCenterUITestRunner {
@@ -68,7 +70,9 @@ export default abstract class AppCenterUITestRunner {
                 "--locale",
                 `en_US`,
                 "--build-dir",
-                this.getRelativeBuildBinaryDirectoryPath()
+                this.getRelativeBuildBinaryDirectoryPath(),
+                "--token",
+                await Auth.accessTokenFor(this.options.profile)
             ];
 
             if (async) {

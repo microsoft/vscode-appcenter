@@ -60,7 +60,7 @@ export default class ShowMenu extends Command {
                     target: CommandNames.SetCurrentApp
                 });
 
-                if (Utils.isReactNativeProject(this.rootPath, false) && currentApp) {
+                if (Utils.isReactNativeProject(this.logger, this.rootPath, false) && currentApp) {
                     this.isOrg = currentApp.type.toLowerCase() === AppCenteAppType.Org.toLowerCase();
                     this.appName = currentApp.appName;
                     this.ownerName = currentApp.ownerName;

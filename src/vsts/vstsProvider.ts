@@ -1,5 +1,6 @@
 import { ConsoleLogger } from "../log/consoleLogger";
 import { ILogger } from "../log/logHelper";
+import { Strings } from "../strings";
 import { Config, HTTP_METHODS, VSTSGitRepository, VSTSProject } from "./types";
 // tslint:disable-next-line:no-var-requires
 const btoa = require('btoa');
@@ -17,15 +18,28 @@ export class VSTSProvider {
         this._accessToken = btoa(`${this.configuration.userName}:${this.configuration.accessToken}`);
     }
 
+    public async TestVstsConnection(): Promise<boolean> {
+        const url: string = `${this._baseUrl}_apis/accounts?api-version=${this._apiVersion}`;
+        const requestInfo = this.getRequestInfo(HTTP_METHODS.GET);
+        const res = await fetch(url, requestInfo);
+        if (res.status === 203) {
+            return false;
+        }
+        return true;
+    }
+
     public async GetAllProjects(): Promise<VSTSProject[] | null> {
         try {
             const url: string = `${this._baseUrl}_apis/projects?api-version=${this._apiVersion}`;
             const requestInfo = this.getRequestInfo(HTTP_METHODS.GET);
             const res = await fetch(url, requestInfo);
+            if (res.status === 203) {
+                throw new Error(Strings.VstsCredsNotValidMsg);
+            }
             const response = await res.json();
             return <VSTSProject[]>response.value;
         } catch (e) {
-            this.logger.error("Failed to get VSTS Project list");
+            this.logger.error(`Failed to get VSTS Project list. ${e && e.message || ""}`);
             return null;
         }
     }
