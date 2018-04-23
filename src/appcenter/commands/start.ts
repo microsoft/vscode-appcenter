@@ -10,7 +10,7 @@ import { GitUtils } from '../../helpers/gitUtils';
 import { CommandParams, CreatedAppFromAppCenter, Deployment, QuickPickAppItem, VstsProfile } from '../../helpers/interfaces';
 import { SettingsHelper } from '../../helpers/settingsHelper';
 import { Validators } from '../../helpers/validators';
-import { VsCodeUtils, IButtonMessageItem } from '../../helpers/vsCodeUtils';
+import { IButtonMessageItem, VsCodeUtils } from '../../helpers/vsCodeUtils';
 import { Strings } from '../../strings';
 import { VSTSGitRepository, VSTSProject } from '../../vsts/types';
 import { VSTSProvider } from '../../vsts/vstsProvider';

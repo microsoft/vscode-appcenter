@@ -1,6 +1,6 @@
+import { CurrentApp } from "../../../helpers/interfaces";
 import { Utils } from "../../../helpers/utils";
 import { ReactNativeAppCommand } from "../reactNativeAppCommand";
-import { CurrentApp } from "../../../helpers/interfaces";
 
 export class RNCPAppCommand extends ReactNativeAppCommand {
     public async runNoClient(): Promise<boolean | void> {
