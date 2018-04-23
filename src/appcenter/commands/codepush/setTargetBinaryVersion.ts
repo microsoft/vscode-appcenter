@@ -15,40 +15,52 @@ export default class SetTargetBinaryVersion extends RNCPAppCommand {
         if (!await super.runNoClient()) {
             return;
         }
-        return vscode.window.showInputBox({ prompt: Strings.PleaseProvideTargetBinaryVersion, ignoreFocusOut: true })
-            .then(appVersion => {
-                if (!appVersion) {
-                    // if user press esc do nothing then
-                    return void 0;
-                }
-                if (appVersion !== Constants.AppCenterDefaultTargetBinaryVersion && !validRange(appVersion)) {
-                    VsCodeUtils.ShowWarningMessage(Strings.InvalidAppVersionParamMsg);
-                    return void 0;
-                }
-                return this.getCurrentApp().then((app: CurrentApp) => {
-                    if (app) {
-                        return this.saveCurrentApp(
-                            app.identifier,
-                            AppCenterOS[app.os], {
-                                currentDeploymentName: app.currentAppDeployments.currentDeploymentName,
-                                codePushDeployments: app.currentAppDeployments.codePushDeployments
-                            },
-                            appVersion,
-                            app.type,
-                            app.isMandatory,
-                            app.appSecret
-                        ).then(() => {
-                            if (appVersion) {
-                                VsCodeUtils.ShowInfoMessage(`Changed target binary version to '${appVersion}'`);
-                            } else {
-                                VsCodeUtils.ShowInfoMessage(`Changed target binary version to automatically fetched`);
-                            }
-                        });
-                    } else {
-                        VsCodeUtils.ShowInfoMessage(Strings.NoCurrentAppSetMsg);
+        return this.getCurrentApp().then((app: CurrentApp) => {
+            if (!app) {
+                VsCodeUtils.ShowWarningMessage(Strings.NoCurrentAppSetMsg);
+                return null;
+            }
+            if (!this.hasCodePushDeployments(app)) {
+                VsCodeUtils.ShowWarningMessage(Strings.NoDeploymentsMsg);
+                return null;
+            }
+            return app;
+        }).then((app) => {
+            if (!app) {
+                return void 0;
+            }
+            return vscode.window.showInputBox({ prompt: Strings.PleaseProvideTargetBinaryVersion, ignoreFocusOut: true })
+                .then(appVersion => {
+                    if (!appVersion) {
+                        // if user press esc do nothing then
+                        return void 0;
                     }
-                    return void 0;
+                    if (appVersion !== Constants.AppCenterDefaultTargetBinaryVersion && !validRange(appVersion)) {
+                        VsCodeUtils.ShowWarningMessage(Strings.InvalidAppVersionParamMsg);
+                        return void 0;
+                    }
+
+                    return this.saveCurrentApp(
+                        app.identifier,
+                        AppCenterOS[app.os], {
+                            currentDeploymentName: app.currentAppDeployments.currentDeploymentName,
+                            codePushDeployments: app.currentAppDeployments.codePushDeployments
+                        },
+                        appVersion,
+                        app.type,
+                        app.isMandatory,
+                        app.appSecret
+                    ).then((currentApp) => {
+                        if (!currentApp) {
+                            return;
+                        }
+                        if (appVersion) {
+                            VsCodeUtils.ShowInfoMessage(`Changed target binary version to '${appVersion}'`);
+                        } else {
+                            VsCodeUtils.ShowInfoMessage(`Changed target binary version to automatically fetched`);
+                        }
+                    });
                 });
-            });
+        });
     }
 }

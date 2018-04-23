@@ -1,5 +1,6 @@
 import { Utils } from "../../../helpers/utils";
 import { ReactNativeAppCommand } from "../reactNativeAppCommand";
+import { CurrentApp } from "../../../helpers/interfaces";
 
 export class RNCPAppCommand extends ReactNativeAppCommand {
     public async runNoClient(): Promise<boolean | void> {
@@ -20,5 +21,9 @@ export class RNCPAppCommand extends ReactNativeAppCommand {
             return false;
         }
         return true;
+    }
+
+    protected hasCodePushDeployments(currentApp: CurrentApp): boolean {
+        return currentApp.currentAppDeployments && currentApp.currentAppDeployments.codePushDeployments && currentApp.currentAppDeployments.codePushDeployments.length > 0;
     }
 }

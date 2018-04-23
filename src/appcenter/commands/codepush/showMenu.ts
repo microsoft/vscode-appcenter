@@ -32,7 +32,7 @@ export default class ShowMenu extends RNCPAppCommand {
                 description: Strings.OpenTabInBrowserMsg(Strings.DistributeCodePushTabMenuItem),
                 target: AppCenterDistributionTabs.CodePush
             });
-            if (this.hasCodePushDeployments()) {
+            if (this.hasCodePushDeployments(currentApp)) {
                 menuOptions.push(<CustomQuickPickItem>{
                     label: Strings.releaseReactMenuText(currentApp),
                     description: "",
@@ -56,10 +56,6 @@ export default class ShowMenu extends RNCPAppCommand {
             }
             return this.showQuickPick(menuOptions);
         });
-    }
-
-    private hasCodePushDeployments(): boolean {
-        return this.currentApp.currentAppDeployments && this.currentApp.currentAppDeployments.codePushDeployments && this.currentApp.currentAppDeployments.codePushDeployments.length > 0;
     }
 
     private showQuickPick(menuOptions: CustomQuickPickItem[]): Promise<void> {

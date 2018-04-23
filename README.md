@@ -31,7 +31,7 @@ There are several possible scenarios this extension solves:
         * Apps will be automatically linked with corresponding iOS/Android secret keys and CodePush deployment keys
         * Changes will be pushed to your remote repository
         * New Testers Distribution Group will be created for every new app in App Center
-        * App will be connected to your GH repository `master` branch and new build will be started 
+        * [Optional - can be enabled in extension settings by turning `appcenter.api.configurebranchandstartnewbuild` on] App will be connected to your GH repository `master` branch and new build will be started 
     * You will be notified when finished and also we will automatically run `npm install` and `pod update` for you
 
 2. Link an existing react-native application to App Center. 

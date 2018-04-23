@@ -108,6 +108,8 @@ export class Strings {
     public static FailedToConfigureBranchAndStartNewBuild: string = "Sorry, we failed to configure the branch for build.";
     public static FailedToCreateDistributionGroup: string = "Sorry, we failed to create any distribution groups.";
     public static NoCurrentAppSetMsg: string = "You haven't specified an App Center app for this project.";
+    public static UnsupportedOSMsg: string = `OS must be "android", "ios", or "windows".`;
+    public static NoDeploymentsMsg: string = "There are no deployments for current app.";
     public static NoProjectRootFolderFound: string = "Please open a project before using this command.";
     public static UnknownError: string = "An unknown error has occured. Please check the output window for more details.";
     public static GenerateCrashesError: string = "An error occurred while generating crashes. Please check the output window for more details.";

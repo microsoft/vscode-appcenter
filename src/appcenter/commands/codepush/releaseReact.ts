@@ -33,10 +33,16 @@ export default class ReleaseReact extends RNCPAppCommand {
                 }).then((currentApp: CurrentApp): any => {
                     p.report({ message: Strings.DetectingAppVersionMessage });
                     if (!currentApp) {
-                        throw new Error(`No current app has been specified.`);
+                        VsCodeUtils.ShowWarningMessage(Strings.NoCurrentAppSetMsg);
+                        return;
+                    }
+                    if (!this.hasCodePushDeployments(currentApp)) {
+                        VsCodeUtils.ShowWarningMessage(Strings.NoDeploymentsMsg);
+                        return;
                     }
                     if (!currentApp.os || !reactNative.isValidOS(currentApp.os)) {
-                        throw new Error(`OS must be "android", "ios", or "windows".`);
+                        VsCodeUtils.ShowWarningMessage(Strings.UnsupportedOSMsg);
+                        return;
                     }
                     codePushRelaseParams.app = currentApp;
                     codePushRelaseParams.deploymentName = currentApp.currentAppDeployments.currentDeploymentName;
@@ -49,10 +55,16 @@ export default class ReleaseReact extends RNCPAppCommand {
                             case "android": return reactNative.getAndroidAppVersion(this.rootPath);
                             case "ios": return reactNative.getiOSAppVersion(this.rootPath);
                             case "windows": return reactNative.getWindowsAppVersion(this.rootPath);
-                            default: throw new Error(`OS must be "android", "ios", or "windows".`);
+                            default: {
+                                VsCodeUtils.ShowInfoMessage(Strings.UnsupportedOSMsg);
+                                return;
+                            }
                         }
                     }
                 }).then((appVersion: string) => {
+                    if (!appVersion) {
+                        return null;
+                    }
                     p.report({ message: Strings.RunningBundleCommandMessage });
                     codePushRelaseParams.appVersion = appVersion;
                     return reactNative.makeUpdateContents(<BundleConfig>{
@@ -60,11 +72,17 @@ export default class ReleaseReact extends RNCPAppCommand {
                         projectRootPath: this.rootPath
                     });
                 }).then((pathToUpdateContents: string) => {
+                    if (!pathToUpdateContents) {
+                        return null;
+                    }
                     p.report({ message: Strings.ArchivingUpdateContentsMessage });
                     updateContentsDirectory = pathToUpdateContents;
                     this.logger.log(`CodePush updated contents directory path: ${updateContentsDirectory}`, LogLevel.Debug);
                     return updateContents.zip(pathToUpdateContents, this.rootPath);
                 }).then((pathToZippedBundle: string) => {
+                    if (!pathToZippedBundle) {
+                        return null;
+                    }
                     p.report({ message: Strings.ReleasingUpdateContentsMessage });
                     codePushRelaseParams.updatedContentZipPath = pathToZippedBundle;
                     codePushRelaseParams.isMandatory = isMandatory;
@@ -78,6 +96,9 @@ export default class ReleaseReact extends RNCPAppCommand {
                             .catch((error: any) => publishReject(error));
                     });
                 }).then((response: any) => {
+                    if (!response) {
+                        return;
+                    }
                     if (response.succeeded && response.result) {
                         VsCodeUtils.ShowInfoMessage(`Successfully released an update to the "${codePushRelaseParams.deploymentName}" deployment of the "${codePushRelaseParams.app.appName}" app`);
                         resolve(response.result);

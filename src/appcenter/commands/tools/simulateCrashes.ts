@@ -23,6 +23,8 @@ export default class SimulateCrashes extends Command {
                         } catch {
                             VsCodeUtils.ShowErrorMessage(Strings.GenerateCrashesError);
                         }
+                    } else {
+                        VsCodeUtils.ShowWarningMessage(Strings.NoCurrentAppSetMsg);
                     }
                     return null;
                 });
