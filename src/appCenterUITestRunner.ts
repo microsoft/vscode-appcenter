@@ -70,9 +70,9 @@ export default abstract class AppCenterUITestRunner {
                 "--locale",
                 `en_US`,
                 "--build-dir",
+                this.getRelativeBuildBinaryDirectoryPath(),
                 "--token",
-                await Auth.accessTokenFor(this.options.profile),
-                this.getRelativeBuildBinaryDirectoryPath()
+                await Auth.accessTokenFor(this.options.profile)
             ];
 
             if (async) {
