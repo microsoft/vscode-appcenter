@@ -113,6 +113,10 @@ export class Utils {
         return Utils.projectHaveNpmPackage(logger, projectRoot, 'react-native-code-push', Strings.CodePushInstallHint, showMessageOnError);
     }
 
+    public static isReactNativeAppCenterProject(logger: ILogger, projectRoot: string | undefined, showMessageOnError?: boolean) {
+        return Utils.projectHaveNpmPackage(logger, projectRoot, 'appcenter', Strings.AppCenterInstallHint, showMessageOnError);
+    }
+
     public static toAppCenterOS(codePushOs: string): AppCenterOS | undefined {
         switch (codePushOs.toLowerCase()) {
             case 'android':
