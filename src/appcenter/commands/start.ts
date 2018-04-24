@@ -153,7 +153,7 @@ export default class Start extends CreateAppCommand {
         this.logger.info("Creating CodePush deployments...");
 
         const appCenterAppCreator: AppCenterAppCreator = new AppCenterAppCreator(this.client, this.logger);
-        const codePushLinker: CodePushLinker = new CodePushLinker(appCenterAppCreator, this.logger);
+        const codePushLinker: CodePushLinker = new CodePushLinker(appCenterAppCreator, this.logger, this.rootPath);
         const codePushDeployments: Deployment[] | null = await codePushLinker.createCodePushDeployments(createdApps, <string>userOrOrgItem.name);
         if (codePushDeployments && codePushDeployments.length > 0) {
             if (!await this.updateCodePushDeploymentKeys(codePushDeployments, appCenterConfig)) {

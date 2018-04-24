@@ -26,20 +26,23 @@ export default class LinkCodePush extends Command {
             return;
         }
 
-        if (Utils.isReactNativeCodePushProject(this.logger, this.rootPath, false)) {
-            VsCodeUtils.ShowWarningMessage(Strings.CodePushAlreadyLinked);
-            return;
-        }
-
         const appCenterAppCreator: AppCenterAppCreator = new AppCenterAppCreator(this.client, this.logger);
-        const codePushLinker: CodePushLinker = new CodePushLinker(appCenterAppCreator, this.logger);
+        const codePushLinker: CodePushLinker = new CodePushLinker(appCenterAppCreator, this.logger, this.rootPath);
 
-        const codePushInstalled: boolean = await codePushLinker.installCodePush(this.rootPath);
-        if (!codePushInstalled) {
-            VsCodeUtils.ShowErrorMessage(Strings.FailedToLinkCodePush);
-            return;
+        if (!Utils.isReactNativeCodePushProject(this.logger, this.rootPath, false)) {
+            const codePushInstalled: boolean = await codePushLinker.installCodePush();
+            if (!codePushInstalled) {
+                VsCodeUtils.ShowErrorMessage(Strings.FailedToLinkCodePush);
+                return;
+            }
         }
-        const deployments: Deployment[] = await codePushLinker.createCodePushDeployments([currentApp], currentApp.ownerName);
+
+        let deployments: Deployment[];
+        if (this.hasCodePushDeployments(currentApp)) {
+            deployments = currentApp.currentAppDeployments.codePushDeployments;
+        } else {
+            deployments = await codePushLinker.createCodePushDeployments([currentApp], currentApp.ownerName);
+        }
         if (deployments.length < 1) {
             VsCodeUtils.ShowErrorMessage(Strings.FailedToLinkCodePush);
             return;
@@ -50,5 +53,10 @@ export default class LinkCodePush extends Command {
             VsCodeUtils.ShowErrorMessage(Strings.FailedToLinkCodePush);
             return;
         }
+        VsCodeUtils.ShowInfoMessage(Strings.CodePushLinkedMsg);
+    }
+
+    private hasCodePushDeployments(currentApp: CurrentApp) {
+        return currentApp.currentAppDeployments && currentApp.currentAppDeployments.codePushDeployments && currentApp.currentAppDeployments.codePushDeployments.length;
     }
 }
