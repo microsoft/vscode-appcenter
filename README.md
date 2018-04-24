@@ -62,7 +62,14 @@ There are several possible scenarios this extension solves:
 
     >Tip: If you enable `appcenter.crashes` setting, you will see a "Tools" menu button and "Simulate crashes" under it. It sends test crash data to the linked App Center application.
 
-3. You would like to open already existing react-native application with CodePush installed. When logged in, the following App Center Menu options should be avaliable under "Distribute > CodePush":
+3. Link CodePush to an existing react-native application.
+    When inside of a react-native application, if the current app is set, you will see a "Link Code Push" button under "Tools" menu. Choose it.
+
+    * Code Push SDK for React Native will be installed and saved into your `plugin.json`.
+    * Deployment key for the current application will be fetched or created
+    * We will run `react-native link react-native-code-push` for you and automatically fill all the prompts, and notify you when finished.
+
+4. You would like to open already existing react-native application with CodePush installed. When logged in, the following App Center Menu options should be avaliable under "Distribute > CodePush":
     * Set current app for CodePush
     * Change current Deployment
     * Change target binary verson 
