@@ -24,6 +24,10 @@ export class Strings {
     public static SettingsMenuLabel: string = "Settings";
     public static SettingsMenuDescription: string = "";
     public static CrashesMenuLabel: string = "Simulate Crashes";
+    public static LinkCodePushMenuLabel: string = "Link Code Push";
+    public static LinkAppCenterMenuLabel: string = "Link App Center";
+    public static LinkCodePushMenuDescription: string = "Link Code Push SDK to your application";
+    public static LinkAppCenterMenuDescription: string = "Link App Center SDK to your application";
     public static ToolsMenuLabel: string = "Tools";
     public static ToolsMenuDescription: string = "";
     public static LoginToAnotherAccountMenuLabel: string = "Add App Center account";

@@ -101,6 +101,8 @@ export class CommandNames {
     public static Tools = class {
         public static ShowTools: string = `${CommandNames.CommandPrefix}tools`;
         public static SimulateCrashes: string = `${CommandNames.CommandPrefix}tools.simulateCrashes`;
+        public static LinkCodePush: string = `${CommandNames.CommandPrefix}tools.linkCodePush`;
+        public static LinkAppCenter: string = `${CommandNames.CommandPrefix}tools.linkAppCenter`;
     };
 
     public static CodePush = class {
