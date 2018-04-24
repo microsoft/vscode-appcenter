@@ -74,7 +74,7 @@ export default class CodePushLinker {
             return Promise.resolve(false);
         }
         return await vscode.window.withProgress({ location: vscode.ProgressLocation.Window, title: Strings.LinkCodePushTitle }, async () => {
-            return new Promise<boolean>((resolve) => {
+            return await new Promise<boolean>((resolve) => {
                 nexpect.spawn(linkCmd, { cwd: this.rootPath })
                     .wait("What is your CodePush deployment key for Android (hit <ENTER> to ignore)")
                     .sendline(androidStagingDeploymentKey)
