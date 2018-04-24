@@ -30,18 +30,18 @@ export default class AppCenterLinker {
     }
 
     public async linkAppCenter(appSecret: string, os: AppCenterOS): Promise<boolean> {
-        const isReactNative047: boolean = await this.isReactNative047();
-        if (isReactNative047) {} else {}
         const self = this;
         const iosAppSecret = os === AppCenterOS.iOS ? appSecret : "";
         const androidAppSecret = os === AppCenterOS.Android ? appSecret : "";
-        const linkCmd: string = `react-native link`;
+        const linkCmd: string = `react-native link appcenter`;
         return await vscode.window.withProgress({ location: vscode.ProgressLocation.Window, title: Strings.LinkAppCenterTitle }, async () => {
-            return new Promise<boolean>((resolve) => {
+            const isReactNative047: boolean = await this.isReactNative047();
+            if (isReactNative047) {} else {}
+            return await new Promise<boolean>((resolve) => {
                 nexpect.spawn(linkCmd, { cwd: this.rootPath })
-                    .wait("What secret does your Android app use? [None]")
+                    .wait("What is the Android App secret?")
                     .sendline(androidAppSecret)
-                    .wait("What secret does your Android app use? [None]")
+                    .wait("What is the iOS App secret?")
                     .sendline(iosAppSecret)
                     .wait("For the Android app, should user tracking be enabled automatically? (Use arrow keys)")
                     .sendline()
