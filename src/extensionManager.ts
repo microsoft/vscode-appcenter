@@ -97,7 +97,7 @@ export class ExtensionManager implements Disposable {
     public setupAppCenterStatusBar(profile: Profile | null): Promise<void> {
         if (profile && profile.userName) {
             return VsCodeUtils.setStatusBar(this._appCenterStatusBarItem,
-                profile.currentApp && profile.currentApp.appName
+                profile.currentApp && profile.currentApp.appName && Utils.isReactNativeProject(this._logger, this.projectRootPath, false)
                 ? `App Center: ${Utils.FormatAppName(profile.currentApp.appName)}`
                 : `App Center: ${profile.userName}`,
                 Strings.YouAreLoggedInMsg(AuthProvider.AppCenter, profile.userName),
