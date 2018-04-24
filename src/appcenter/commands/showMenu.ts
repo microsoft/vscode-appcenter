@@ -7,6 +7,7 @@ import { SettingsHelper } from '../../helpers/settingsHelper';
 import { Utils } from '../../helpers/utils';
 import { CustomQuickPickItem } from '../../helpers/vsCodeUtils';
 import { Strings } from '../../strings';
+import AppCenterPortalMenu from './appCenterPortalMenu';
 import { Command } from './command';
 import GetCurrentApp from './getCurrentApp';
 import Login from './login';
@@ -54,12 +55,6 @@ export default class ShowMenu extends Command {
                     target: CommandNames.Start
                 });
             } else {
-                appCenterMenuOptions.push(<CustomQuickPickItem>{
-                    label: Strings.setCurrentAppMenuText(currentApp),
-                    description: Strings.MenuCurrentAppDescription,
-                    target: CommandNames.SetCurrentApp
-                });
-
                 if (Utils.isReactNativeProject(this.logger, this.rootPath, false) && currentApp) {
                     this.isOrg = currentApp.type.toLowerCase() === AppCenteAppType.Org.toLowerCase();
                     this.appName = currentApp.appName;
@@ -73,6 +68,20 @@ export default class ShowMenu extends Command {
                     label: Strings.ToolsMenuLabel,
                     description: Strings.ToolsMenuDescription,
                     target: CommandNames.Tools.ShowTools
+                });
+            }
+
+            appCenterMenuOptions.push(<CustomQuickPickItem>{
+                label: Strings.AppCenterPortalMenuLabel,
+                description: Strings.AppCenterPortalMenuDescription,
+                target: CommandNames.AppCenterPortal
+            });
+
+            if (!FSUtils.IsEmptyDirectoryToStartNewIdea(this.rootPath) && Utils.isReactNativeProject(this.logger, this.rootPath, false)) {
+                appCenterMenuOptions.push(<CustomQuickPickItem>{
+                    label: Strings.setCurrentAppMenuText(currentApp),
+                    description: Strings.MenuCurrentAppDescription,
+                    target: CommandNames.SetCurrentApp
                 });
             }
 
@@ -103,6 +112,10 @@ export default class ShowMenu extends Command {
 
                     case (AppCenterBeacons.Test):
                         new Test.ShowMenu(this._params).runNoClient();
+                        break;
+
+                    case (CommandNames.AppCenterPortal):
+                        new AppCenterPortalMenu(this._params).run();
                         break;
 
                     case (CommandNames.Start):

@@ -14,8 +14,9 @@ export class Strings {
     public static GetCurrentAppMenuLabel: string = "Get current app info";
     public static CodePushMenuLabelItem: string = "CodePush";
     public static CodePushMenuLabelDescription: string = "";
-    public static AppCenterPortalMenuLabel: string = "App Center portal";
-    public static CreateNewAppMenuLabel: string = "Create new app in App Center";
+    public static AppCenterPortalMenuLabel: string = "Portal";
+    public static AppCenterPortalMenuDescription: string = "Quick navigate your App Center apps";
+    public static CreateNewAppMenuLabel: string = "Create a new App Center app";
     public static CreateNewIOSAppMenuLabel: string = "Create an app for iOS";
     public static CreateNewAndroidAppMenuLabel: string = "Create an app for Android";
     public static CreateNewAppsForBothMenuLabel: string = "Create apps for both platforms";
@@ -27,10 +28,10 @@ export class Strings {
     public static ToolsMenuDescription: string = "";
     public static LoginToAnotherAccountMenuLabel: string = "Add App Center account";
     public static SwitchAccountMenuLabel: string = "Switch App Center account";
-    public static LogoutMenuLabel: string = "Logout App Center";
+    public static LogoutMenuLabel: string = "Logout of App Center";
     public static VstsLoginToAnotherAccountMenuLabel: string = "Add VSTS account";
     public static VstsSwitchAccountMenuLabel: string = "Switch VSTS account";
-    public static VstsLogoutMenuLabel: string = "Logout VSTS";
+    public static VstsLogoutMenuLabel: string = "Logout of VSTS";
     public static RunUITestsMenuLabel: string = "Run UI tests";
     public static RunUITestsAsyncMenuLabel: string = "Run UI tests asynchronously";
     public static ViewUITestResultOnPortalenuLabel: string = "View results in portal";
@@ -45,8 +46,8 @@ export class Strings {
     public static SelectProfileTitlePlaceholder: string = "Please select account.";
     public static SelectTestDeviceTitlePlaceholder: string = "Please select device configuration to test.";
 
-    public static SpecifyTenantTitlePlaceholder: string = "(Step 1). Please specify tenant name";
-    public static SpecifyUserNameTitlePlaceholder: string = "(Step 2). Please specify user name";
+    public static SpecifyTenantTitlePlaceholder: string = "(Step 1). Please specify instance name";
+    public static SpecifyUserNameTitlePlaceholder: string = "(Step 2). Please specify username";
     public static SpecifyPATTitlePlaceholder: string = "(Step 3). Please specify personal access token";
 
     public static LoginToAppCenterButton: string = "App Center: Login";
@@ -76,12 +77,12 @@ export class Strings {
     public static FailedToGetSelectedUserOrOrganizationMsg: string = "Sorry, failed to get selected account information.";
     public static DirectoryIsNotEmptyForNewIdea: string = "Sorry, you can only start a new project inside an empty folder.";
     public static FailedToProvideRepositoryNameMsg: string = "Sorry, the git url you provided doesn't appear to be valid.";
-    public static SelectCurrentAppMenuDescription: string = "SELECT CURRENT APP";
+    public static SelectCurrentAppMenuDescription: string = "Use Current App";
     public static FetchingDevicesStatusBarMessage: string = "Fetching devices...";
     public static CleaningBuildStatusBarMessage: string = "Cleaning build directory...";
     public static PreparingBuildStatusBarMessage: string = "Preparing build for testing...";
     public static UploadingAndRunningTestsStatusBarMessage: string = "Uploading and running tests on App Center portal...";
-    public static CheckingAppCenterCli: string = "Checking AppCenter CLI package installation...";
+    public static CheckingAppCenterCli: string = "Checking for AppCenter CLI installation...";
 
     public static BuildTabMenuItem: string = "Build";
     public static TestTabMenuItem: string = "Test";
@@ -221,7 +222,7 @@ export class Strings {
 
     public static setCurrentAppMenuText(app?: CurrentApp): string {
         if (app) {
-            return `Current app: "${app.appName}(${app.os})"`;
+            return `Switch ${app.appName} (${app.os})`;
         } else {
             return `Set current app`;
         }

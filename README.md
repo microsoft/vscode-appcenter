@@ -58,7 +58,7 @@ There are several possible scenarios this extension solves:
 
     They all open the corresponding App Center tabs for the application. "Distribute" also contains CodePush stuff.
 
-    ![App Center portal](images/appcenter-portal.png)
+    ![App Center Portal](images/appcenter-portal.png)
 
 3. You would like to open already existing react-native application with CodePush installed. When logged in, the following App Center Menu options should be avaliable under "Distribute > CodePush":
     * Set current app for CodePush
