@@ -119,13 +119,18 @@
                 "category": "App Center Code Push"
             },
             {
-                "command": "appcenter.tools",
-                "title": "Open App Center tools",
+                "command": "appcenter.tools.simulateCrashes",
+                "title": "Simulate App Center Crash",
                 "category": "App Center Tools"
             },
             {
-                "command": "appcenter.tools.simulateCrashes",
-                "title": "Simulate AppCenter Crash",
+                "command": "appcenter.tools.linkCodePush",
+                "title": "Link Code Push",
+                "category": "App Center Tools"
+            },
+            {
+                "command": "appcenter.tools.linkAppCenter",
+                "title": "Link App Center",
                 "category": "App Center Tools"
             },
             {
