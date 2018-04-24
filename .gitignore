@@ -10,5 +10,6 @@ src/**/nodeDebugLocation.json
 # Compiled files
 src/**/*.js
 !src/appcenter/apis/generated/**/*.js
+!src/helpers/nexpect.js
 test/**/*.js
 **/*.js.map

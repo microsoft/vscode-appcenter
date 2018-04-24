@@ -3,6 +3,7 @@ import * as vscode from 'vscode';
 import AppCenterAppBuilder from '../../appCenterAppBuilder';
 import AppCenterAppCreator from '../../appCenterAppCreator';
 import AppCenterConfig from '../../appCenterConfig';
+import CodePushLinker from '../../codePushLinker';
 import { AppCenterOS, Constants } from '../../constants';
 import { cpUtils } from '../../helpers/cpUtils';
 import { FSUtils } from '../../helpers/fsUtils';
@@ -149,11 +150,18 @@ export default class Start extends CreateAppCommand {
             this.logger.error("Failed to update app secret keys!");
         }
 
-        const codePushDeployments: Deployment[] | null = await this.createCodePushDeployments(createdApps, <string>userOrOrgItem.name);
+        this.logger.info("Creating CodePush deployments...");
+
+        const appCenterAppCreator: AppCenterAppCreator = new AppCenterAppCreator(this.client, this.logger);
+        const codePushLinker: CodePushLinker = new CodePushLinker(appCenterAppCreator, this.logger);
+        const codePushDeployments: Deployment[] | null = await codePushLinker.createCodePushDeployments(createdApps, <string>userOrOrgItem.name);
         if (codePushDeployments && codePushDeployments.length > 0) {
             if (!await this.updateCodePushDeploymentKeys(codePushDeployments, appCenterConfig)) {
                 this.logger.error("Failed to update code push deployment keys!");
             }
+        } else {
+            VsCodeUtils.ShowErrorMessage(Strings.FailedToCreateDeployments);
+            return;
         }
 
         // We need to push changes before we configure/start build in AppCenter
@@ -238,7 +246,7 @@ export default class Start extends CreateAppCommand {
                 return saved;
             }
 
-            this.logger.debug(`App name: ${app.name}, secret: ${app.appSecret}`);
+            this.logger.debug(`App name: ${app.appName}, secret: ${app.appSecret}`);
 
             if (app.os.toLowerCase() === AppCenterOS.iOS.toLowerCase()) {
                 appCenterConfig.setConfigPlistValueByKey(Constants.IOSAppSecretKey, app.appSecret);
@@ -278,25 +286,6 @@ export default class Start extends CreateAppCommand {
             return saved;
         });
         return saved;
-    }
-
-    private async createCodePushDeployments(apps: CreatedAppFromAppCenter[], ownerName: string): Promise<Deployment[] | null> {
-        if (!apps || apps.length === 0) {
-            return null;
-        }
-        this.logger.info("Creating CodePush deployments...");
-        const deployments: Deployment[] = [];
-        await vscode.window.withProgress({ location: vscode.ProgressLocation.Window, title: Strings.VSCodeProgressLoadingTitle }, async p => {
-            p.report({ message: Strings.CreatingCodePushDeploymentsStatusBarMessage });
-            const appCenterAppCreator: AppCenterAppCreator = new AppCenterAppCreator(this.client, this.logger);
-            for (let index = 0; index < apps.length; index++) {
-                const app: CreatedAppFromAppCenter = apps[index];
-                const deployment: Deployment = await appCenterAppCreator.createCodePushDeployment(app.name, ownerName);
-                app.os.toLowerCase() === AppCenterOS.iOS.toLowerCase() ? deployment.os = AppCenterOS.iOS : deployment.os = AppCenterOS.Android;
-                deployments.push(deployment);
-            }
-        });
-        return deployments;
     }
 
     private async getGitRemoteUrl(_rootPath: string): Promise<boolean> {

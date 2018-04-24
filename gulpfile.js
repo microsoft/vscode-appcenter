@@ -38,6 +38,7 @@ gulp.task("tslint", function () {
 gulp.task("clean", function () {
     var pathsToDelete = [
         "src/**/*.js",
+        "!src/helpers/nexpect.js",
         "!src/appcenter/apis/generated/**/*.js",
         "src/**/*.js.map",
         "test/**/*.js",

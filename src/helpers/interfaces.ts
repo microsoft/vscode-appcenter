@@ -21,23 +21,24 @@ export interface UserOrOrganizationItem {
     displayName?: string;
 }
 
-export interface CurrentApp {
-    ownerName: string;
+export interface LinkableApp {
     appName: string;
+    os: string;
+}
+
+export interface CurrentApp extends LinkableApp {
+    ownerName: string;
     identifier: string;
     targetBinaryVersion: string;
     isMandatory: boolean;
-    os: string;
     type: string;
     currentAppDeployments: CurrentAppDeployments;
     appSecret: string;
 }
 
-export interface CreatedAppFromAppCenter {
+export interface CreatedAppFromAppCenter extends LinkableApp {
     appSecret: string;
     platform: string;
-    os: string;
-    name: string;
 }
 
 export interface ProfileStorage<T extends Profile> {
