@@ -120,7 +120,7 @@
             },
             {
                 "command": "appcenter.tools.simulateCrashes",
-                "title": "Simulate AppCenter Crash",
+                "title": "Simulate App Center Crash",
                 "category": "App Center Tools"
             },
             {
