@@ -1,4 +1,4 @@
-# VSCode App Center Tools &middot; [![Build Status](https://msmobilecenter.visualstudio.com/_apis/public/build/definitions/d7809725-8fd7-4b76-8022-ebb8720603f6/2854/badge)](https://msmobilecenter.visualstudio.com/Patricks%20Sandbox/_build/index?definitionId=2854)
+# VSCode App Center Tools
 This extension provides development support for App Center projects. 
 
 _NOTE: Currently it supports only React-Native based apps._
@@ -31,8 +31,8 @@ There are several possible scenarios this extension solves:
         * Apps will be automatically linked with corresponding iOS/Android secret keys and CodePush deployment keys
         * Changes will be pushed to your remote repository
         * New Testers Distribution Group will be created for every new app in App Center
-        * [Optional - can be enabled in extension settings by turning `appcenter.api.configurebranchandstartnewbuild` on] App will be connected to your GH repository `master` branch and new build will be started 
-    * You will be notified when finished and also we will automatically run `npm install` and `pod update` for you
+        > Tip: If you enable `appcenter.api.configurebranchandstartnewbuild` in extension sessings, the app will also be connected to your GH repository `master` branch and new build will be started 
+        * You will be notified when everything's finished and also we will automatically run `npm install` and `pod update` for you
 
 2. Link an existing react-native application to App Center. 
     You will see a "Set Current App" option, when logged in.
@@ -60,7 +60,17 @@ There are several possible scenarios this extension solves:
 
     ![App Center Portal](images/appcenter-portal.png)
 
-3. You would like to open already existing react-native application with CodePush installed. When logged in, the following App Center Menu options should be avaliable under "Distribute > CodePush":
+    >Tip: If you enable `appcenter.crashes` setting, you will see a "Tools" menu button and "Simulate crashes" under it. It sends test crash data to the linked App Center application.
+
+3. Link CodePush to an existing react-native application.
+    When inside of a react-native application, you will see a "Link Code Push" button under "Tools" menu. Choose it.
+
+    * You will be prompted to choose an Android and iOS app to link.
+    * Code Push SDK for React Native will be installed and saved into your `plugin.json`.
+    * Deployment keys for the chosen applications will be fetched or created
+    * We will run `react-native link react-native-code-push` for you and automatically fill all the prompts, and notify you when finished.
+
+4. You would like to open already existing react-native application with CodePush installed. When logged in, the following App Center Menu options should be avaliable under "Distribute > CodePush":
     * Set current app for CodePush
     * Change current Deployment
     * Change target binary verson 
