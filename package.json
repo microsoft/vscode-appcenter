@@ -1,8 +1,8 @@
 {
     "name": "vscode-appcenter",
-    "displayName": "VSCode App Center Tools",
-    "description": "App Center extension for VS Code.",
-    "version": "0.0.8",
+    "displayName": "App Center",
+    "description": "Visual Studio App Center tools and services.",
+    "version": "0.0.10",
     "publisher": "vsmobile",
     "icon": "images/icon.png",
     "engines": {

@@ -25,7 +25,7 @@ export default class SetCurrentApp extends ReactNativeAppCommand {
             return;
         }
         this.showAppsQuickPick(this.CachedApps);
-        this.refreshCachedAppsAndRepaintQuickPickIfNeeded();
+        this.refreshCachedAppsAndRepaintQuickPickIfNeeded(false, true, false);
     }
 
     protected async handleShowCurrentAppQuickPickSelection(selected: QuickPickAppItem, rnApps: models.AppResponse[]) {

@@ -25,7 +25,7 @@ export default class LinkCodePush extends ReactNativeAppCommand {
         if (this.CachedApps) {
             this.showAppsQuickPick(this.CachedApps, true, false, Strings.ProvideSecondAppPromptMsg);
         }
-        this.refreshCachedAppsAndRepaintQuickPickIfNeeded(true, false, Strings.ProvideFirstAppPromptMsg);
+        this.refreshCachedAppsAndRepaintQuickPickIfNeeded(true, false, false, Strings.ProvideFirstAppPromptMsg);
     }
 
     private async linkApps() {
