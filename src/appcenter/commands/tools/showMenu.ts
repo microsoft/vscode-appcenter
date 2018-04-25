@@ -1,11 +1,10 @@
 import * as vscode from 'vscode';
 import * as Tools from '.';
 import { CommandNames } from '../../../constants';
-import { CommandParams, AppCenterProfile } from '../../../helpers/interfaces';
+import { AppCenterProfile, CommandParams } from '../../../helpers/interfaces';
 import { SettingsHelper } from '../../../helpers/settingsHelper';
 import { Strings } from '../../../strings';
 import { Command } from '../command';
-import { Utils } from '../../../helpers/utils';
 
 export default class ShowMenu extends Command {
     private _params: CommandParams;
@@ -32,19 +31,20 @@ export default class ShowMenu extends Command {
 
         const profile: AppCenterProfile = await this.appCenterProfile;
         if (profile) {
-            if (Utils.isReactNativeProject(this.logger, this.rootPath, false) && profile.currentApp) {
-                appCenterMenuOptions.push(<vscode.QuickPickItem>{
-                    label: Strings.LinkCodePushMenuLabel,
-                    description: Strings.LinkCodePushMenuDescription,
-                    target: CommandNames.Tools.LinkCodePush
-                });
+            // We can be sure that the app exists (otherwise the Tools menu won't be opened).
+            // Moved the check for RN to the cmd itself.
+            appCenterMenuOptions.push(<vscode.QuickPickItem>{
+                label: Strings.LinkCodePushMenuLabel,
+                description: Strings.LinkCodePushMenuDescription,
+                target: CommandNames.Tools.LinkCodePush
+            });
 
-                appCenterMenuOptions.push(<vscode.QuickPickItem>{
-                    label: Strings.LinkAppCenterMenuLabel,
-                    description: Strings.LinkAppCenterMenuDescription,
-                    target: CommandNames.Tools.LinkAppCenter
-                });
-            }
+            // appCenterMenuOptions.push(<vscode.QuickPickItem>{
+            //     label: Strings.LinkAppCenterMenuLabel,
+            //     description: Strings.LinkAppCenterMenuDescription,
+            //     target: CommandNames.Tools.LinkAppCenter
+            // });
+
         }
 
         return this.showQuickPick(appCenterMenuOptions);
@@ -66,9 +66,9 @@ export default class ShowMenu extends Command {
                     case (CommandNames.Tools.LinkCodePush):
                         new Tools.LinkCodePush(this._params).run();
                         break;
-                    case (CommandNames.Tools.LinkAppCenter):
-                        new Tools.LinkAppCenter(this._params).run();
-                        break;
+                    // case (CommandNames.Tools.LinkAppCenter):
+                    //     new Tools.LinkAppCenter(this._params).run();
+                    //     break;
 
                     default:
                         // Ideally shouldn't be there :)

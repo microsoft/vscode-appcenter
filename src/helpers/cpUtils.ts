@@ -1,6 +1,7 @@
 import * as cp from 'child_process';
 import * as os from 'os';
 import { ILogger } from '../log/logHelper';
+import { ReactNativeLinkInputValue } from './interfaces';
 
 export class SpawnError extends Error {
     public exitCode: number;
@@ -8,7 +9,7 @@ export class SpawnError extends Error {
 }
 
 export namespace cpUtils {
-    export async function executeCommand(logger: ILogger | undefined, logErrorsOnly: boolean = false, workingDirectory: string | undefined, command: string, ...args: string[]): Promise<string> {
+    export async function executeCommand(logger: ILogger | undefined, logErrorsOnly: boolean = false, workingDirectory: string | undefined, command: string, inputValues: ReactNativeLinkInputValue[] = [], ...args: string[]): Promise<string> {
         let cmdOutput: string = '';
         let cmdOutputIncludingStderr: string = '';
         workingDirectory = workingDirectory || os.tmpdir();
@@ -30,6 +31,23 @@ export namespace cpUtils {
                 cmdOutputIncludingStderr = cmdOutputIncludingStderr.concat(data);
                 if (logger && !logErrorsOnly) {
                     logger.info(data);
+                }
+                if (inputValues.length > 0) {
+                    const lines = data.split('\n').filter(function (line) { return line.length > 0; });
+                    let sentResponse: boolean = false;
+                    for (const line of lines) {
+                        const filtered = inputValues.filter((inputValue) => {
+                            return line.indexOf(inputValue.label) > 0;
+                        });
+                        if (filtered.length > 0 && !filtered[0].sent) {
+                            sentResponse = true;
+                            childProc.stdin.write(filtered[0].input + "\n");
+                            inputValues[inputValues.indexOf(filtered[0])].sent = true;
+                        }
+                    }
+                    if (!sentResponse) {
+                        childProc.stdin.write("\n");
+                    }
                 }
             });
 
