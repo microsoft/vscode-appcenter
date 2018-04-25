@@ -1,8 +1,7 @@
-
 import * as vscode from 'vscode';
 import { AppCenterOS } from './constants';
 import { cpUtils } from './helpers/cpUtils';
-import nexpect = require("./helpers/nexpect");
+import { CurrentApp, ReactNativeLinkInputValue } from './helpers/interfaces';
 import { ILogger } from './log/logHelper';
 import { Strings } from './strings';
 
@@ -29,37 +28,46 @@ export default class AppCenterLinker {
         return versionNumber === 0.47;
     }
 
-    public async linkAppCenter(appSecret: string, os: AppCenterOS): Promise<boolean> {
-        const self = this;
-        const iosAppSecret = os === AppCenterOS.iOS ? appSecret : "";
-        const androidAppSecret = os === AppCenterOS.Android ? appSecret : "";
-        const linkCmd: string = `react-native link appcenter`;
+    public async linkAppCenter(apps: CurrentApp[]): Promise<boolean> {
+        const iosAppSecret = this.findSecretFor(AppCenterOS.iOS, apps);
+        const androidAppSecret = this.findSecretFor(AppCenterOS.Android, apps);
         return await vscode.window.withProgress({ location: vscode.ProgressLocation.Window, title: Strings.LinkAppCenterTitle }, async () => {
             const isReactNative047: boolean = await this.isReactNative047();
-            if (isReactNative047) {} else {}
-            return await new Promise<boolean>((resolve) => {
-                nexpect.spawn(linkCmd, { cwd: this.rootPath })
-                    .wait("What is the Android App secret?")
-                    .sendline(androidAppSecret)
-                    .wait("What is the iOS App secret?")
-                    .sendline(iosAppSecret)
-                    .wait("For the Android app, should user tracking be enabled automatically? (Use arrow keys)")
-                    .sendline()
-                    .wait("For the iOS app, should user tracking be enabled automatically? (Use arrow keys)")
-                    .sendline()
-                    .wait("For the Android app, should crashes be sent automatically or processed in JavaScript before being sent? (Use arrow keys)")
-                    .sendline()
-                    .wait("For the iOS app, should crashes be sent automatically or processed in JavaScript before being sent? (Use arrow keys)")
-                    .sendline()
-                    .run(function (err) {
-                        if (!err) {
-                            resolve(true);
-                        } else {
-                            self.logger.error(`Failed to link App Center: ${err}`);
-                            resolve(false);
-                        }
-                    });
-            });
+            if (isReactNative047) { } else { }
+
+            const inputValues: ReactNativeLinkInputValue[] = [
+                {
+                    label: "secret does your Android app use",
+                    input: androidAppSecret,
+                    sent: false
+                },
+                {
+                    label: "secret does your iOS app use",
+                    input: iosAppSecret,
+                    sent: false
+                }
+            ];
+            try {
+                await cpUtils.executeCommand(this.logger, false, this.rootPath, `react-native link appcenter`, inputValues);
+
+                await cpUtils.executeCommand(this.logger, false, this.rootPath, `react-native link appcenter-analytics`, inputValues);
+                await cpUtils.executeCommand(this.logger, false, this.rootPath, `react-native link appcenter-crashes`, inputValues);
+
+                return true;
+            } catch (err) {
+                this.logger.error(err);
+                return false;
+            }
         });
+    }
+
+    private findSecretFor(os: AppCenterOS, apps: CurrentApp[]): string {
+        const filteredApps: CurrentApp[] = apps.filter((app) => {
+            return app.os.toLowerCase() === os.toLowerCase();
+        });
+        if (filteredApps.length === 0) {
+            return "";
+        }
+        return filteredApps[0].appSecret || "";
     }
 }

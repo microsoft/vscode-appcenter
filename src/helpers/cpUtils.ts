@@ -21,6 +21,9 @@ export namespace cpUtils {
             };
             const childProc: cp.ChildProcess = cp.spawn(command, args, options);
 
+            /* const interval = setInterval(function() {
+                childProc.stdin.write('\n');
+            }, 1000); */
             if (logger && !logErrorsOnly) {
                 logger.info(`runningCommand', 'Running command: "${command} ${formattedArgs}"...`);
             }
@@ -33,20 +36,23 @@ export namespace cpUtils {
                     logger.info(data);
                 }
                 if (inputValues.length > 0) {
+                    let sentResponse: boolean;
                     const lines = data.split('\n').filter(function (line) { return line.length > 0; });
-                    let sentResponse: boolean = false;
                     for (const line of lines) {
                         const filtered = inputValues.filter((inputValue) => {
                             return line.indexOf(inputValue.label) > 0;
                         });
                         if (filtered.length > 0 && !filtered[0].sent) {
                             sentResponse = true;
-                            childProc.stdin.write(filtered[0].input + "\n");
+                            childProc.stdin.write(filtered[0].input + os.EOL);
                             inputValues[inputValues.indexOf(filtered[0])].sent = true;
+                        } else {
+
+                            childProc.stdin.write(os.EOL);
                         }
                     }
                     if (!sentResponse) {
-                        childProc.stdin.write("\n");
+                        childProc.stdin.write(os.EOL);
                     }
                 }
             });
@@ -59,7 +65,23 @@ export namespace cpUtils {
                 }
             });
 
-            childProc.on('error', reject);
+            childProc.on('error', (e) => {
+                reject(e);
+            });
+
+            childProc.on('exit', () => {
+                resolve();
+            });
+
+            childProc.on('disconnect', () => {
+                resolve();
+            });
+            childProc.on('SIGINT', () => {
+                resolve();
+            });
+            childProc.on('SIGTERM', () => {
+                resolve();
+            });
             childProc.on('close', (code: number) => {
                 if (code !== 0) {
                     const errMsg: string = `AppCenter.commandError', 'Command "${command} ${formattedArgs}" failed with exit code "${code}":${os.EOL}${cmdOutputIncludingStderr}`;
