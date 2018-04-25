@@ -39,11 +39,11 @@ export default class ShowMenu extends Command {
                 target: CommandNames.Tools.LinkCodePush
             });
 
-            appCenterMenuOptions.push(<vscode.QuickPickItem>{
-                label: Strings.LinkAppCenterMenuLabel,
-                description: Strings.LinkAppCenterMenuDescription,
-                target: CommandNames.Tools.LinkAppCenter
-            });
+            // appCenterMenuOptions.push(<vscode.QuickPickItem>{
+            //     label: Strings.LinkAppCenterMenuLabel,
+            //     description: Strings.LinkAppCenterMenuDescription,
+            //     target: CommandNames.Tools.LinkAppCenter
+            // });
 
         }
 
@@ -66,9 +66,9 @@ export default class ShowMenu extends Command {
                     case (CommandNames.Tools.LinkCodePush):
                         new Tools.LinkCodePush(this._params).run();
                         break;
-                    case (CommandNames.Tools.LinkAppCenter):
-                        new Tools.LinkAppCenter(this._params).run();
-                        break;
+                    // case (CommandNames.Tools.LinkAppCenter):
+                    //     new Tools.LinkAppCenter(this._params).run();
+                    //     break;
 
                     default:
                         // Ideally shouldn't be there :)
