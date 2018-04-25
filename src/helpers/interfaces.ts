@@ -114,3 +114,9 @@ export interface CommandParams {
     appCenterAuth: AppCenterAuth;
     vstsAuth: VstsAuth;
 }
+
+export interface ReactNativeLinkInputValue {
+    label: string;
+    input: string;
+    sent: boolean;
+}

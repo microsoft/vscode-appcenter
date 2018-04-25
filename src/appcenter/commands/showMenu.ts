@@ -62,13 +62,11 @@ export default class ShowMenu extends Command {
                 }
             }
 
-            if (currentApp) {
-                appCenterMenuOptions.push(<CustomQuickPickItem>{
-                    label: Strings.ToolsMenuLabel,
-                    description: Strings.ToolsMenuDescription,
-                    target: CommandNames.Tools.ShowTools
-                });
-            }
+            appCenterMenuOptions.push(<CustomQuickPickItem>{
+                label: Strings.ToolsMenuLabel,
+                description: Strings.ToolsMenuDescription,
+                target: CommandNames.Tools.ShowTools
+            });
 
             appCenterMenuOptions.push(<CustomQuickPickItem>{
                 label: Strings.AppCenterPortalMenuLabel,
@@ -145,7 +143,7 @@ export default class ShowMenu extends Command {
                         // Ideally shouldn't be there :)
                         this.logger.error("Unknown App Center menu command");
                         break;
-            }
-        });
+                }
+            });
     }
 }
