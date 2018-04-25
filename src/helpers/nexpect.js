@@ -5,14 +5,13 @@
  *
  */
 
+
 var spawn = require('cross-spawn');
 var util = require('util');
-var AssertionError = require('assert').AssertionError;
-
-function chain (context) {
+function chain(context) {
   return {
     expect: function (expectation) {
-      var _expect = function _expect (data) {
+      var _expect = function _expect(data) {
         return testExpectation(data, expectation);
       };
 
@@ -25,7 +24,7 @@ function chain (context) {
       return chain(context);
     },
     wait: function (expectation, callback) {
-      var _wait = function _wait (data) {
+      var _wait = function _wait(data) {
         var val = testExpectation(data, expectation);
         if (val === true && typeof callback === 'function') {
           callback(data);
@@ -41,7 +40,7 @@ function chain (context) {
       return chain(context);
     },
     sendline: function (line) {
-      var _sendline = function _sendline () {
+      var _sendline = function _sendline() {
         context.process.stdin.write(line + '\n');
 
         if (context.verbose) {
@@ -55,8 +54,8 @@ function chain (context) {
       context.queue.push(_sendline);
       return chain(context);
     },
-    sendEof: function() {
-      var _sendEof = function _sendEof () {
+    sendEof: function () {
+      var _sendEof = function _sendEof() {
         context.process.stdin.destroy();
       };
       _sendEof.shift = true;
@@ -67,9 +66,9 @@ function chain (context) {
     },
     run: function (callback) {
       var errState = null,
-          responded = false,
-          stdout = [],
-          options;
+        responded = false,
+        stdout = [],
+        options;
 
       //
       // **onError**
@@ -77,7 +76,7 @@ function chain (context) {
       // Helper function to respond to the callback with a
       // specified error. Kills the child process if necessary.
       //
-      function onError (err, kill) {
+      function onError(err, kill) {
         if (errState || responded) {
           return;
         }
@@ -99,7 +98,7 @@ function chain (context) {
       // Helper function to validate the `currentFn` in the
       // `context.queue` for the target chain.
       //
-      function validateFnType (currentFn) {
+      function validateFnType(currentFn) {
         if (typeof currentFn !== 'function') {
           //
           // If the `currentFn` is not a function, short-circuit with an error.
@@ -126,7 +125,7 @@ function chain (context) {
       // `context.queue` against the specified `data` where the last
       // function run had `name`.
       //
-      function evalContext (data, name) {
+      function evalContext(data, name) {
         var currentFn = context.queue[0];
 
         if (!currentFn || (name === '_expect' && currentFn.name === '_expect')) {
@@ -187,8 +186,18 @@ function chain (context) {
       // 2. Removing case sensitivity (if necessary)
       // 3. Splitting `data` into multiple lines.
       //
-      function onLine (data) {
+      function onLine(data) {
         data = data.toString();
+        //context.process.stdout.write(data);
+        if (data.indexOf("Analytics") > 0) {
+        context.process.stdin.write("fsdfds\n");
+        } else 
+
+        if (data.indexOf("app secret") > 0) {
+          context.process.stdin.write("gggggg\n");
+          } else {
+            context.process.stdin.write("\n");
+          }
 
         if (context.stripColors) {
           data = data.replace(/\u001b\[\d{0,2}m/g, '');
@@ -212,10 +221,10 @@ function chain (context) {
       // Helper function which flushes any remaining functions from
       // `context.queue` and responds to the `callback` accordingly.
       //
-      function flushQueue () {
+      function flushQueue() {
         var remainingQueue = context.queue.slice(),
-            currentFn = context.queue.shift(),
-            lastLine = stdout[stdout.length - 1];
+          currentFn = context.queue.shift(),
+          lastLine = stdout[stdout.length - 1];
 
         if (!lastLine) {
           onError(createUnexpectedEndError(
@@ -251,7 +260,7 @@ function chain (context) {
       // Helper function for writing any data from a stream
       // to `process.stdout`.
       //
-      function onData (data) {
+      function onData(data) {
         process.stdout.write(data);
       }
 
@@ -264,11 +273,10 @@ function chain (context) {
       // Spawn the child process and begin processing the target
       // stream for this chain.
       //
-      context.process = spawn(context.command, context.params, options);
-      
-        context.process.stdout.on('data', onLine);
-        context.process.stderr.on('data', onLine);
-      
+      context.process = spawn(context.command, context.params, { cwd: "D:\\TestApps\\rn_15"});
+
+      context.process.stdout.on('data', onLine);
+      context.process.stderr.on('data', onLine);
 
       context.process.on('error', onError);
 
@@ -310,7 +318,7 @@ function testExpectation(data, expectation) {
 }
 
 function createUnexpectedEndError(message, remainingQueue) {
-  var desc = remainingQueue.map(function(it) { return it.description; });
+  var desc = remainingQueue.map(function (it) { return it.description; });
   var msg = message + '\n' + desc.join('\n');
   return new AssertionError({
     message: msg,
@@ -334,7 +342,7 @@ function createExpectationError(expected, actual) {
   return err;
 }
 
-function nspawn (command, params, options) {
+function nspawn(command, params, options) {
   if (arguments.length === 2) {
     if (Array.isArray(arguments[1])) {
       options = {};
@@ -346,12 +354,12 @@ function nspawn (command, params, options) {
   }
 
   if (Array.isArray(command)) {
-    params  = command;
+    params = command;
     command = params.shift();
   }
   else if (typeof command === 'string') {
     command = command.split(' ');
-    params  = params || command.slice(1);
+    params = params || command.slice(1);
     command = command[0];
   }
 
@@ -375,7 +383,7 @@ function nspawn (command, params, options) {
 // Export the core `nspawn` function as well as `nexpect.nspawn` for
 // backwards compatibility.
 //
-module.exports.spawn  = nspawn;
+module.exports.spawn = nspawn;
 module.exports.nspawn = {
   spawn: nspawn
 };

@@ -10,7 +10,7 @@ export class GitUtils {
 
     public static async IsGitInstalled(workingDirectory: string): Promise<boolean> {
         try {
-            await cpUtils.executeCommand(undefined, true, workingDirectory, this.gitCommand, '--version');
+            await cpUtils.executeCommand(undefined, true, workingDirectory, this.gitCommand, [], '--version');
             return true;
         } catch (error) {
             return false;

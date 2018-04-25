@@ -3,8 +3,7 @@ import * as vscode from 'vscode';
 import AppCenterAppCreator from './appCenterAppCreator';
 import { AppCenterOS } from './constants';
 import { cpUtils } from './helpers/cpUtils';
-import { Deployment, LinkableApp } from './helpers/interfaces';
-import nexpect = require("./helpers/nexpect");
+import { Deployment, LinkableApp, ReactNativeLinkInputValue } from './helpers/interfaces';
 import { ILogger } from './log/logHelper';
 import { Strings } from './strings';
 
@@ -12,7 +11,8 @@ export default class CodePushLinker {
 
     private useRNPM: boolean = false;
 
-    constructor(private appCenterAppCreator: AppCenterAppCreator, private logger: ILogger, private rootPath: string) { }
+    constructor(private appCenterAppCreator: AppCenterAppCreator, private logger: ILogger, private rootPath: string) {
+     }
 
     public async createCodePushDeployments(apps: LinkableApp[], ownerName: string): Promise<Deployment[] | null> {
         if (!apps || apps.length === 0) {
@@ -66,29 +66,33 @@ export default class CodePushLinker {
 
     public async linkCodePush(deployments: Deployment[]): Promise<boolean> {
         const self = this;
+        const cmd = this.useRNPM ? "rnpm" : "react-native";
         const iosStagingDeploymentKey = this.findDeploymentKeyFor(AppCenterOS.iOS, deployments);
         const androidStagingDeploymentKey = this.findDeploymentKeyFor(AppCenterOS.Android, deployments);
-        const linkCmd: string = this.useRNPM ? `rnpm link react-native-code-push` : `react-native link react-native-code-push`;
         if (!iosStagingDeploymentKey && !androidStagingDeploymentKey) {
             self.logger.error('Deployment keys are missing.');
             return Promise.resolve(false);
         }
         return await vscode.window.withProgress({ location: vscode.ProgressLocation.Window, title: Strings.LinkCodePushTitle }, async () => {
-            return await new Promise<boolean>((resolve) => {
-                nexpect.spawn(linkCmd, { cwd: this.rootPath })
-                    .wait("What is your CodePush deployment key for Android (hit <ENTER> to ignore)")
-                    .sendline(androidStagingDeploymentKey)
-                    .wait("What is your CodePush deployment key for iOS (hit <ENTER> to ignore)")
-                    .sendline(iosStagingDeploymentKey)
-                    .run(function (err) {
-                        if (!err) {
-                            resolve(true);
-                        } else {
-                            self.logger.error(`Failed to link Code Push: ${err}`);
-                            resolve(false);
-                        }
-                    });
-            });
+            const inputValues: ReactNativeLinkInputValue[] = [
+                {
+                    label: "deployment key for Android",
+                    input: androidStagingDeploymentKey,
+                    sent: false
+                },
+                {
+                    label: "deployment key for iOS",
+                    input: iosStagingDeploymentKey,
+                    sent: false
+                }
+            ];
+            try {
+                await cpUtils.executeCommand(this.logger, true, this.rootPath, `${cmd} link react-native-code-push`, inputValues);
+                return true;
+            } catch (err) {
+                this.logger.error(err);
+                return false;
+            }
         });
     }
 

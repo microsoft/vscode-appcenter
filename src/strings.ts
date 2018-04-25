@@ -107,6 +107,8 @@ export class Strings {
     public static ConnectingRepoToBuildServiceStatusBarMessage: string = "Configuring cloud build services...";
     public static CreateBranchConfigAndKickOffBuildStatusBarMessage: string = "Starting a fresh cloud build...";
     public static ProvideCurrentAppPromptMsg: string = "Please specify an App Center app";
+    public static ProvideFirstAppPromptMsg: string = "Choose the first app to be linked";
+    public static ProvideSecondAppPromptMsg: string = "Choose the second app to be linked";
     public static ProvideVSTSProjectPromptMsg: string = "Please specify VSTS Project";
     public static FetchDeploymentsStatusBarMessage: string = "Fetching CodePush deployments for you...";
     public static InvalidCurrentAppNameMsg: string = "Sorry, the app name isn't valid.";
