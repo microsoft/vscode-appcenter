@@ -15,14 +15,14 @@ _NOTE: Currently it supports only React-Native based apps._
 There are several possible scenarios this extension solves:
 
 1. Start development of a new React Native application with [App Center](https://appcenter.ms) already configured:
-    * Clone a new empty repository to your machine or log into the extension with a VSTS access token.
-    * Login to the App Center using the new status bar icon.
+    * Open an empty folder where you would like to create a new application.
+    * Login to App Center using the status bar icon.
 
         ![Login to App Center](images/appcenter-login.png)
-    * After logging in click the App Center status bar to show possible menu options
+    * After logging in, click the App Center status bar to show possible menu options and shoose `Start new project`.
 
         ![AppCenter Menu](images/appcenter-start-new-idea.png)
-    * You will be prompted to enter a new name for your project and select user or organization where you would like to create app in App Center
+    * You will be prompted to enter a new name for your project and select user or organization where you would like to create app in App Center.
 
         ![Enter New Name](images/appcenter-enter-new-name.png)
         * App Center sample app will be cloned into the repository you have provided (it will also have preconfigured for App Center Analytics/Crashes/CodePush SDK's)
@@ -34,13 +34,13 @@ There are several possible scenarios this extension solves:
         > Tip: If you enable `appcenter.api.configurebranchandstartnewbuild` in extension sessings, the app will also be connected to your GH repository `master` branch and new build will be started 
         * You will be notified when everything's finished and also we will automatically run `npm install` and `pod update` for you
 
-2. Link an existing react-native application to App Center. 
-    You will see a "Set Current App" option, when logged in.
+2. Link an existing React Native application to App Center. 
+    You will see a `Set Current App` option, when logged in.
 
     ![Set current app](images/appcenter-set-current-app.png)
 
     You can either choose an app from App Center or choose it to be created for you.
-    When you pick "Create an App Center app" option, several options are available:
+    When you pick `Create an App Center app` option, several options are available:
     * Create an app for Android
     * Create an app for iOS
     * Create apps for both platforms
@@ -49,28 +49,39 @@ There are several possible scenarios this extension solves:
 
     ![Choose app](images/appcenter-choose-app.png)
 
-    When the app is linked to App Center, several new options appear in the menu:
+    When the current app is set, several new options appear in the menu:
     * Build
-    * Test
+    * Test (only for iOS)
     * Distribute
     * Crashes
     * Analytics
+    * Code Push
 
-    They all open the corresponding App Center tabs for the application. "Distribute" also contains CodePush stuff.
+    They all open the corresponding App Center tabs for the application. `Code Push` also contains CodePush stuff.
 
     ![App Center Portal](images/appcenter-portal.png)
 
-    >Tip: If you enable `appcenter.crashes` setting, you will see a "Tools" menu button and "Simulate crashes" under it. It sends test crash data to the linked App Center application.
+    >Tip: If you enable `appcenter.crashes` setting, you will see `Simulate crashes` menu option under `Tools`. It sends test crash data to the linked App Center application.
 
-3. Link CodePush to an existing react-native application.
-    When inside of a react-native application, you will see a "Link Code Push" button under "Tools" menu. Choose it.
+3. Link CodePush module to an existing React Native application.
+    When inside of a React Native application, you will see a `Link Code Push` button under `Code Push` menu. Choose it.
 
     * You will be prompted to choose an Android and iOS app to link.
     * Code Push SDK for React Native will be installed and saved into your `plugin.json`.
     * Deployment keys for the chosen applications will be fetched or created
     * We will run `react-native link react-native-code-push` for you and automatically fill all the prompts, and notify you when finished.
 
-4. You would like to open already existing react-native application with CodePush installed. When logged in, the following App Center Menu options should be avaliable under "Distribute > CodePush":
+4. Link App Center to an existing React Native application.
+    When inside of a React Native application, you will see a `Link App Center` button under `Tools` menu. Choose it.
+
+    * You will be prompted to choose an Android and iOS app to link.
+    * App Center SDK for React Native will be installed and saved into your `plugin.json`.
+    * App secrets for the chosen applications will be fetched
+    * We will run `react-native link appcenter` for you and show you the secrets to be pasted.
+    > Pay attention: Unlike linking Code Push, you will have to paste these secrets in the Terminal yourself when prompted. 
+
+5. You would like to open already existing React Native application with CodePush installed. When logged in, the following App Center Menu options should be avaliable under `CodePush`:
+    * Link Code Push
     * Set current app for CodePush
     * Change current Deployment
     * Change target binary verson 
@@ -81,11 +92,11 @@ There are several possible scenarios this extension solves:
 
 ## Test
 
-If your React Native application has UI tests you can run it in the App Center cloud using the extension.
+If your React Native application has UI tests, you can run it in the App Center cloud using the extension.
 
 ### Preparing tests
 
-In order to run the tests in App Center cloud you need [App Center CLI](https://github.com/Microsoft/appcenter-cli). To install it run `npm install -g appcenter-cli` in terminal.
+In order to run the tests in App Center cloud, you need [App Center CLI](https://github.com/Microsoft/appcenter-cli). To install it, run `npm install -g appcenter-cli` in terminal.
 
 #### iOS
 Currently, extension supports running XCUI tests only. Please, follow [the instructions for App Center portal docs](https://docs.microsoft.com/en-us/appcenter/test-cloud/preparing-for-upload/xcuitest) to prepare tests for uploading to the App Center cloud. 
@@ -93,9 +104,9 @@ Currently, extension supports running XCUI tests only. Please, follow [the instr
 
 ### Running tests
 
-1. Open **App Center menu** and then click **Test** button. 
+1. Open **App Center menu** and then click `Test` button. 
 
-2. To run tests you can use two options: `Run UI tests` and `Run UI tests asynchronously`. Command `Run UI tests` will start to build your application for testing, upload it together with tests to App Center cloud and then run it there waiting for tests to be done. Command `Run UI tests asynchronously` does the same thing except it exits the command when tests are uploaded, without waiting for test results. Choose the one you prefer the most. Also, you can track progress of command below in status bar.
+2. To run tests, you can use two options: `Run UI tests` and `Run UI tests asynchronously`. Command `Run UI tests` will start to build your application for testing, upload it together with tests to App Center cloud and then run it there waiting for tests to be done. Command `Run UI tests asynchronously` does the same thing except it exits the command when tests are uploaded, without waiting for test results. Choose the one you prefer the most. Also, you can track progress of command below in status bar.
 
 ![Test options](images/appcenter-test-options.png)
 
@@ -103,7 +114,7 @@ Currently, extension supports running XCUI tests only. Please, follow [the instr
 
 ![Test devices](images/appcenter-test-devices.png)
 
-4. After that, `Output->React Native` window will be opened where you can monitor the progress of the build, upload and run the tests.
+4. After that, `Output > React Native` window will be opened,  where you can monitor the progress of the build, upload and run the tests.
 
 ![Test output](images/appcenter-test-output.png)
 
