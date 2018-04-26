@@ -3,7 +3,6 @@ import { AppCenteAppType, AppCenterBeacons, CommandNames } from '../../constants
 import { FSUtils } from '../../helpers/fsUtils';
 import { AppCenterProfile, CommandParams, CurrentApp } from '../../helpers/interfaces';
 import { MenuHelper } from '../../helpers/menuHelper';
-import { SettingsHelper } from '../../helpers/settingsHelper';
 import { Utils } from '../../helpers/utils';
 import { CustomQuickPickItem } from '../../helpers/vsCodeUtils';
 import { Strings } from '../../strings';
@@ -64,19 +63,11 @@ export default class ShowMenu extends Command {
                 }
             }
 
-            if (Utils.isReactNativeCodePushProject(this.logger, this.rootPath, false)) {
+            if (Utils.isReactNativeProject(this.logger, this.rootPath, false)) {
                 appCenterMenuOptions.push(<CustomQuickPickItem>{
                     label: Strings.CodePushMenuLabelItem,
                     description: Strings.CodePushMenuLabelDescription,
                     target: CommandNames.CodePush.ShowMenu
-                });
-            }
-
-            if (SettingsHelper.isCrashesEnabled()) {
-                appCenterMenuOptions.push(<CustomQuickPickItem>{
-                    label: Strings.ToolsMenuLabel,
-                    description: Strings.ToolsMenuDescription,
-                    target: CommandNames.Tools.ShowTools
                 });
             }
 
@@ -93,6 +84,12 @@ export default class ShowMenu extends Command {
                     target: CommandNames.SetCurrentApp
                 });
             }
+
+            appCenterMenuOptions.push(<CustomQuickPickItem>{
+                label: Strings.ToolsMenuLabel,
+                description: Strings.ToolsMenuDescription,
+                target: CommandNames.Tools.ShowTools
+            });
 
             appCenterMenuOptions.push(<CustomQuickPickItem>{
                 label: Strings.SettingsMenuLabel,

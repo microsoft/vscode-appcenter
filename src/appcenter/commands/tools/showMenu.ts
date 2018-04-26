@@ -34,11 +34,11 @@ export default class ShowMenu extends Command {
             // We can be sure that the app exists (otherwise the Tools menu won't be opened).
             // Moved the check for RN to the cmd itself.
 
-            // appCenterMenuOptions.push(<vscode.QuickPickItem>{
-            //     label: Strings.LinkAppCenterMenuLabel,
-            //     description: Strings.LinkAppCenterMenuDescription,
-            //     target: CommandNames.Tools.LinkAppCenter
-            // });
+            appCenterMenuOptions.push(<vscode.QuickPickItem>{
+                label: Strings.LinkAppCenterMenuLabel,
+                description: Strings.LinkAppCenterMenuDescription,
+                target: CommandNames.Tools.LinkAppCenter
+            });
 
         }
 
@@ -58,9 +58,9 @@ export default class ShowMenu extends Command {
                         new Tools.SimulateCrashes(this._params).run();
                         break;
 
-                    // case (CommandNames.Tools.LinkAppCenter):
-                    //     new Tools.LinkAppCenter(this._params).run();
-                    //     break;
+                    case (CommandNames.Tools.LinkAppCenter):
+                        new Tools.LinkAppCenter(this._params).run();
+                        break;
 
                     default:
                         // Ideally shouldn't be there :)

@@ -33,8 +33,8 @@ export namespace cpUtils {
                     logger.info(data);
                 }
                 if (inputValues.length > 0) {
+                    let sentResponse: boolean;
                     const lines = data.split('\n').filter(function (line) { return line.length > 0; });
-                    let sentResponse: boolean = false;
                     for (const line of lines) {
                         const filtered = inputValues.filter((inputValue) => {
                             return line.indexOf(inputValue.label) > 0;
@@ -59,7 +59,10 @@ export namespace cpUtils {
                 }
             });
 
-            childProc.on('error', reject);
+            childProc.on('error', (e) => {
+                reject(e);
+            });
+
             childProc.on('close', (code: number) => {
                 if (code !== 0) {
                     const errMsg: string = `AppCenter.commandError', 'Command "${command} ${formattedArgs}" failed with exit code "${code}":${os.EOL}${cmdOutputIncludingStderr}`;

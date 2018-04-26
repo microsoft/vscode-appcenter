@@ -1,18 +1,13 @@
 
 import AppCenterAppCreator from '../../../appCenterAppCreator';
 import CodePushLinker from '../../../codePushLinker';
-import { AppCenterOS, Constants } from '../../../constants';
-import { CurrentApp, Deployment, QuickPickAppItem } from '../../../helpers/interfaces';
+import { Deployment } from '../../../helpers/interfaces';
 import { Utils } from '../../../helpers/utils';
 import { VsCodeUtils } from '../../../helpers/vsCodeUtils';
 import { Strings } from '../../../strings';
-import { models } from '../../apis';
-import { ReactNativeAppCommand } from '../reactNativeAppCommand';
+import { LinkCommand } from '../linkCommand';
 
-export default class LinkCodePush extends ReactNativeAppCommand {
-    private showedCount: number = 0;
-    private pickedApps: CurrentApp[] = [];
-
+export default class LinkCodePush extends LinkCommand {
     public async run(): Promise<void> {
         if (!await super.run()) {
             return;
@@ -28,7 +23,7 @@ export default class LinkCodePush extends ReactNativeAppCommand {
         this.refreshCachedAppsAndRepaintQuickPickIfNeeded(true, false, false, Strings.ProvideFirstAppPromptMsg);
     }
 
-    private async linkApps() {
+    protected async linkApps(): Promise<boolean> {
         const appCenterAppCreator: AppCenterAppCreator = new AppCenterAppCreator(this.client, this.logger);
         const codePushLinker: CodePushLinker = new CodePushLinker(appCenterAppCreator, this.logger, this.rootPath);
 
@@ -36,7 +31,7 @@ export default class LinkCodePush extends ReactNativeAppCommand {
             const codePushInstalled: boolean = await codePushLinker.installCodePush();
             if (!codePushInstalled) {
                 VsCodeUtils.ShowErrorMessage(Strings.FailedToLinkCodePush);
-                return;
+                return false;
             }
         }
 
@@ -46,50 +41,15 @@ export default class LinkCodePush extends ReactNativeAppCommand {
 
         if (deployments.length < 1) {
             VsCodeUtils.ShowErrorMessage(Strings.FailedToLinkCodePush);
-            return;
+            return false;
         }
 
         const linked = await codePushLinker.linkCodePush(deployments);
         if (!linked) {
             VsCodeUtils.ShowErrorMessage(Strings.FailedToLinkCodePush);
-            return;
+            return false;
         }
         VsCodeUtils.ShowInfoMessage(Strings.CodePushLinkedMsg);
-    }
-
-    protected async handleShowCurrentAppQuickPickSelection(selected: QuickPickAppItem, _rnApps: models.AppResponse[]) {
-        this.userAlreadySelectedApp = false;
-
-        let currentApp: CurrentApp | null;
-        if (selected.target === this.currentAppMenuTarget) {
-            currentApp = await this.getCurrentApp();
-        } else {
-            const selectedApps: models.AppResponse[] = _rnApps.filter(app => app.name === selected.target && app.owner.type === selected.description);
-            if (!selectedApps || selectedApps.length !== 1) {
-                this.showedCount = 0;
-                this.pickedApps = [];
-                return;
-            }
-            const selectedApp: models.AppResponse = selectedApps[0];
-            const selectedAppName: string = `${selectedApp.owner.name}/${selectedApp.name}`;
-            const selectedAppSecret: string = selectedApp.appSecret;
-            const type: string = selectedApp.owner.type;
-
-            const OS: AppCenterOS | undefined = Utils.toAppCenterOS(selectedApp.os);
-            currentApp = Utils.toCurrentApp(selectedAppName, OS, null, Constants.AppCenterDefaultTargetBinaryVersion, type, Constants.AppCenterDefaultIsMandatoryParam, selectedAppSecret);
-        }
-        this.pickedApps.push(currentApp);
-        if (this.showedCount < 1) {
-            this.showedCount++;
-            const missingOS: AppCenterOS = currentApp.os.toLowerCase() === AppCenterOS.Android.toLowerCase() ? AppCenterOS.iOS : AppCenterOS.Android;
-            const cachedFilteredApps = this.CachedApps.filter((cachedApp) => {
-                return cachedApp.os.toLowerCase() === missingOS.toLowerCase();
-            });
-            const current: CurrentApp | null = await this.getCurrentApp();
-            const showCurrentApp: boolean = current.os.toLowerCase() !== currentApp.os.toLowerCase();
-            this.showAppsQuickPick(cachedFilteredApps, showCurrentApp, false, Strings.ProvideSecondAppPromptMsg);
-        } else {
-            this.linkApps();
-        }
+        return true;
     }
 }
