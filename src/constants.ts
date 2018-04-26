@@ -89,6 +89,8 @@ export class CommandNames {
         public static LoginVsts: string = `${CommandNames.CommandPrefix}settings.vsts.login`;
         public static SwitchAccountVsts: string = `${CommandNames.CommandPrefix}settings.vsts.switchAccount`;
         public static LogoutVsts: string = `${CommandNames.CommandPrefix}settings.vsts.logout`;
+        public static ShowStatusBar: string = `${CommandNames.CommandPrefix}settings.showStatusBar`;
+        public static HideStatusBar: string = `${CommandNames.CommandPrefix}settings.hideStatusBar`;
     };
 
     public static CreateApp = class {

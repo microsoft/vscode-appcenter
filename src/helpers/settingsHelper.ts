@@ -137,4 +137,27 @@ export class SettingsHelper {
         }
         return false;
     }
+
+    public static shouldStatusBarBeShown(): boolean {
+        const workspaceConfiguration = vscode.workspace.getConfiguration();
+        if (workspaceConfiguration.has("appcenter.showStatusBar")) {
+            const showStatusBar: boolean = ConfigurationReader.readBoolean(workspaceConfiguration.get("appcenter.showStatusBar"));
+            return showStatusBar;
+        }
+        return true;
+    }
+
+    public static showStatusBar(): void {
+        const workspaceConfiguration = vscode.workspace.getConfiguration();
+        if (workspaceConfiguration.has("appcenter.showStatusBar")) {
+            workspaceConfiguration.update("appcenter.showStatusBar", true);
+        }
+    }
+
+    public static hideStatusBar(): void {
+        const workspaceConfiguration = vscode.workspace.getConfiguration();
+        if (workspaceConfiguration.has("appcenter.showStatusBar")) {
+            workspaceConfiguration.update("appcenter.showStatusBar", false);
+        }
+    }
 }

@@ -36,6 +36,8 @@ export class Strings {
     public static VstsLoginToAnotherAccountMenuLabel: string = "Add VSTS account";
     public static VstsSwitchAccountMenuLabel: string = "Switch VSTS account";
     public static VstsLogoutMenuLabel: string = "Logout of VSTS";
+    public static HideStatusBarMenuLabel: string = "Hide status bar";
+    public static HideStatusBarMenuDescription: string = "Hide status bar from the bottom left corner. You can enable it with 'Show status bar' cmd.";
     public static RunUITestsMenuLabel: string = "Run UI tests";
     public static RunUITestsAsyncMenuLabel: string = "Run UI tests asynchronously";
     public static ViewUITestResultOnPortalenuLabel: string = "View results in portal";
@@ -112,6 +114,10 @@ export class Strings {
     public static ProvideVSTSProjectPromptMsg: string = "Please specify VSTS Project";
     public static FetchDeploymentsStatusBarMessage: string = "Fetching CodePush deployments for you...";
     public static InvalidCurrentAppNameMsg: string = "Sorry, the app name isn't valid.";
+    public static StatusBarAlreadyShown: string = "The status bar is already shown. Look, it's in the bottom left corner of the window, with your name/app name on it!";
+    public static StatusBarAlreadyHidden: string = "You've already hidden the status bar.";
+    public static StatusBarShown: string = "Status bar is now visible.";
+    public static StatusBarHidden: string = "Status bar is now hidden.";
 
     public static FailedToConnectRepoToBuildService: string = "Sorry, we failed to connect the repository to the build service.";
     public static FailedToConfigureBranchAndStartNewBuild: string = "Sorry, we failed to configure the branch for build.";

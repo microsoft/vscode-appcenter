@@ -3,6 +3,7 @@ import { AppCenteAppType, AppCenterBeacons, CommandNames } from '../../constants
 import { FSUtils } from '../../helpers/fsUtils';
 import { AppCenterProfile, CommandParams, CurrentApp } from '../../helpers/interfaces';
 import { MenuHelper } from '../../helpers/menuHelper';
+import { SettingsHelper } from '../../helpers/settingsHelper';
 import { Utils } from '../../helpers/utils';
 import { CustomQuickPickItem } from '../../helpers/vsCodeUtils';
 import { Strings } from '../../strings';
@@ -16,7 +17,6 @@ import * as Settings from './settings';
 import Start from './start';
 import * as Test from "./test";
 import * as Tools from './tools';
-import { SettingsHelper } from '../../helpers/settingsHelper';
 
 export default class ShowMenu extends Command {
     private _params: CommandParams;
