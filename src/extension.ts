@@ -60,6 +60,10 @@ function registerAppCenterCommands(context: vscode.ExtensionContext): void {
         () => _extensionManager.RunCommand(() => settingsCommandHandler.SwitchVstsAcc())));
     context.subscriptions.push(vscode.commands.registerCommand(CommandNames.Settings.LogoutVsts,
         () => _extensionManager.RunCommand(() => settingsCommandHandler.LogoutVsts())));
+    context.subscriptions.push(vscode.commands.registerCommand(CommandNames.Settings.ShowStatusBar,
+        () => _extensionManager.RunCommand(() => settingsCommandHandler.ShowStatusBar())));
+    context.subscriptions.push(vscode.commands.registerCommand(CommandNames.Settings.HideStatusBar,
+        () => _extensionManager.RunCommand(() => settingsCommandHandler.HideStatusBar())));
 
     // CodePush commands
     const codepushCommandHandler = _extensionManager.commandHandlers.codePushCommandHandler;
@@ -71,15 +75,15 @@ function registerAppCenterCommands(context: vscode.ExtensionContext): void {
         () => _extensionManager.RunCommand(() => codepushCommandHandler.SwitchMandatoryPropForRelease())));
     context.subscriptions.push(vscode.commands.registerCommand(CommandNames.CodePush.SetTargetBinaryVersion,
         () => _extensionManager.RunCommand(() => codepushCommandHandler.SetTargetBinaryVersion())));
+    context.subscriptions.push(vscode.commands.registerCommand(CommandNames.CodePush.LinkCodePush,
+        () => _extensionManager.RunCommand(() => codepushCommandHandler.LinkCodePush())));
 
     // Tools commands
     const toolsCommandHandler = _extensionManager.commandHandlers.toolsCommandHandler;
     context.subscriptions.push(vscode.commands.registerCommand(CommandNames.Tools.SimulateCrashes,
         () => _extensionManager.RunCommand(() => toolsCommandHandler.simulateCrashes())));
-    context.subscriptions.push(vscode.commands.registerCommand(CommandNames.Tools.LinkCodePush,
-        () => _extensionManager.RunCommand(() => toolsCommandHandler.linkCodePush())));
-    context.subscriptions.push(vscode.commands.registerCommand(CommandNames.Tools.LinkAppCenter,
-        () => _extensionManager.RunCommand(() => toolsCommandHandler.linkAppCenter())));
+    // context.subscriptions.push(vscode.commands.registerCommand(CommandNames.Tools.LinkAppCenter,
+    //    () => _extensionManager.RunCommand(() => toolsCommandHandler.linkAppCenter())));
 
     // Test commands
     const testCommandHandler = _extensionManager.commandHandlers.testCommandHandler;

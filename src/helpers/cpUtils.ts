@@ -44,15 +44,12 @@ export namespace cpUtils {
                         });
                         if (filtered.length > 0 && !filtered[0].sent) {
                             sentResponse = true;
-                            childProc.stdin.write(filtered[0].input + os.EOL);
+                            childProc.stdin.write(filtered[0].input + "\n");
                             inputValues[inputValues.indexOf(filtered[0])].sent = true;
-                        } else {
-
-                            childProc.stdin.write(os.EOL);
                         }
                     }
                     if (!sentResponse) {
-                        childProc.stdin.write(os.EOL);
+                        childProc.stdin.write("\n");
                     }
                 }
             });

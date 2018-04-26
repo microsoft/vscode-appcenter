@@ -1,8 +1,8 @@
 {
     "name": "vscode-appcenter",
-    "displayName": "VSCode App Center Tools",
-    "description": "App Center extension for VS Code.",
-    "version": "0.0.8",
+    "displayName": "App Center",
+    "description": "Visual Studio App Center tools and services.",
+    "version": "0.0.10",
     "publisher": "vsmobile",
     "icon": "images/icon.png",
     "engines": {
@@ -99,6 +99,16 @@
                 "category": "App Center Settings"
             },
             {
+                "command": "appcenter.settings.showStatusBar",
+                "title": "Show status bar",
+                "category": "App Center Settings"
+            },
+            {
+                "command": "appcenter.settings.hideStatusBar",
+                "title": "Hide status bar",
+                "category": "App Center Settings"
+            },
+            {
                 "command": "appcenter.codepush.setCurrentDeployment",
                 "title": "Set Current Deployment",
                 "category": "App Center Code Push"
@@ -119,13 +129,13 @@
                 "category": "App Center Code Push"
             },
             {
-                "command": "appcenter.tools.simulateCrashes",
-                "title": "Simulate App Center Crash",
-                "category": "App Center Tools"
+                "command": "appcenter.codepush.linkCodePush",
+                "title": "Link Code Push",
+                "category": "App Center Code Push"
             },
             {
-                "command": "appcenter.tools.linkCodePush",
-                "title": "Link Code Push",
+                "command": "appcenter.tools.simulateCrashes",
+                "title": "Simulate App Center Crash",
                 "category": "App Center Tools"
             },
             {
@@ -235,6 +245,11 @@
                         "int"
                     ],
                     "default": "prod"
+                },                
+                "appcenter.showStatusBar": {
+                    "description": "Enable this if you want the status bar with app name/user name always be shown in the bottom left corner of the window",
+                    "type": "boolean",
+                    "default": true
                 }
             }
         }

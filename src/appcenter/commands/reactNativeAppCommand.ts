@@ -98,12 +98,12 @@ export class ReactNativeAppCommand extends Command {
         }
     }
 
-    protected refreshCachedAppsAndRepaintQuickPickIfNeeded(includeSelectCurrent: boolean = false, includeCreateNew: boolean = true, prompt: string = Strings.ProvideCurrentAppPromptMsg) {
+    protected refreshCachedAppsAndRepaintQuickPickIfNeeded(includeSelectCurrent: boolean = false, includeCreateNew: boolean = true, includeAllApps: boolean = true, prompt: string = Strings.ProvideCurrentAppPromptMsg) {
         vscode.window.withProgress({ location: vscode.ProgressLocation.Window, title: Strings.GetAppsListMessage }, () => {
             return this.client.apps.list({
                 orderBy: "name"
             }).then((apps: models.AppResponse[]) => {
-                const rnApps: models.AppResponse[] = apps.filter(app => app.platform === Constants.AppCenterReactNativePlatformName);
+                const rnApps: models.AppResponse[] = includeAllApps ? apps : apps.filter(app => app.platform === Constants.AppCenterReactNativePlatformName);
                 // we repaint menu only in case we have changed apps
                 if (this.cachedAppsItemsDiffer(rnApps, ReactNativeAppCommand.cachedApps)) {
                     this.showAppsQuickPick(rnApps, includeSelectCurrent, includeCreateNew, prompt);

@@ -2,6 +2,7 @@ import * as vscode from "vscode";
 import * as Settings from ".";
 import { CommandNames } from "../../../constants";
 import { CommandParams } from "../../../helpers/interfaces";
+import { SettingsHelper } from "../../../helpers/settingsHelper";
 import { CustomQuickPickItem } from "../../../helpers/vsCodeUtils";
 import { Strings } from "../../../strings";
 import { Command } from '../command';
@@ -63,6 +64,14 @@ export default class ShowMenu extends Command {
             target: CommandNames.Settings.LogoutVsts
         });
 
+        if (SettingsHelper.shouldStatusBarBeShown()) {
+            menuOptions.push(<CustomQuickPickItem>{
+                label: Strings.HideStatusBarMenuLabel,
+                description: Strings.HideStatusBarMenuDescription,
+                target: CommandNames.Settings.HideStatusBar
+            });
+        }
+
         return this.showQuickPick(menuOptions);
     }
 
@@ -99,6 +108,9 @@ export default class ShowMenu extends Command {
 
                         case (CommandNames.Settings.LogoutVsts):
                             new Settings.LogoutVsts(this._params).runNoClient();
+                            break;
+                        case (CommandNames.Settings.HideStatusBar):
+                            new Settings.ToggleStatusBar(this._params).runNoClient();
                             break;
 
                         default:

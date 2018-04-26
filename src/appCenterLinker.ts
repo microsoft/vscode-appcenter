@@ -31,7 +31,7 @@ export default class AppCenterLinker {
     public async linkAppCenter(apps: CurrentApp[]): Promise<boolean> {
         const iosAppSecret = this.findSecretFor(AppCenterOS.iOS, apps);
         const androidAppSecret = this.findSecretFor(AppCenterOS.Android, apps);
-        return await vscode.window.withProgress({ location: vscode.ProgressLocation.Window, title: Strings.LinkAppCenterTitle }, async () => {
+        return await vscode.window.withProgress({ location: vscode.ProgressLocation.Window, title: "" }, async () => {
             const isReactNative047: boolean = await this.isReactNative047();
             if (isReactNative047) { } else { }
 

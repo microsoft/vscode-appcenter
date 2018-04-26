@@ -24,7 +24,7 @@ export default class LinkAppCenter extends ReactNativeAppCommand {
         if (this.CachedApps) {
             this.showAppsQuickPick(this.CachedApps, true, false, Strings.ProvideSecondAppPromptMsg);
         }
-        this.refreshCachedAppsAndRepaintQuickPickIfNeeded(true, false, Strings.ProvideFirstAppPromptMsg);
+        this.refreshCachedAppsAndRepaintQuickPickIfNeeded(true, false, false, Strings.ProvideFirstAppPromptMsg);
     }
 
     private async linkApps() {
@@ -38,12 +38,7 @@ export default class LinkAppCenter extends ReactNativeAppCommand {
             }
         }
 
-        const linked = await appCenterLinker.linkAppCenter(this.pickedApps);
-        if (!linked) {
-            VsCodeUtils.ShowErrorMessage(Strings.FailedToLinkAppCenter);
-            return;
-        }
-        VsCodeUtils.ShowInfoMessage(Strings.AppCenterLinkedMsg);
+        await appCenterLinker.linkAppCenter(this.pickedApps);
     }
 
     protected async handleShowCurrentAppQuickPickSelection(selected: QuickPickAppItem, _rnApps: models.AppResponse[]) {

@@ -89,6 +89,8 @@ export class CommandNames {
         public static LoginVsts: string = `${CommandNames.CommandPrefix}settings.vsts.login`;
         public static SwitchAccountVsts: string = `${CommandNames.CommandPrefix}settings.vsts.switchAccount`;
         public static LogoutVsts: string = `${CommandNames.CommandPrefix}settings.vsts.logout`;
+        public static ShowStatusBar: string = `${CommandNames.CommandPrefix}settings.showStatusBar`;
+        public static HideStatusBar: string = `${CommandNames.CommandPrefix}settings.hideStatusBar`;
     };
 
     public static CreateApp = class {
@@ -101,7 +103,6 @@ export class CommandNames {
     public static Tools = class {
         public static ShowTools: string = `${CommandNames.CommandPrefix}tools`;
         public static SimulateCrashes: string = `${CommandNames.CommandPrefix}tools.simulateCrashes`;
-        public static LinkCodePush: string = `${CommandNames.CommandPrefix}tools.linkCodePush`;
         public static LinkAppCenter: string = `${CommandNames.CommandPrefix}tools.linkAppCenter`;
     };
 
@@ -111,6 +112,7 @@ export class CommandNames {
         public static ReleaseReact: string = CommandNames.CommandPrefix + "codepush.releaseReact";
         public static SwitchMandatoryPropForRelease: string = CommandNames.CommandPrefix + "codepush.switchMandatoryPropForRelease";
         public static SetTargetBinaryVersion: string = CommandNames.CommandPrefix + "codepush.setTargetBinaryVersion";
+        public static LinkCodePush: string = `${CommandNames.CommandPrefix}codePush.linkCodePush`;
     };
 
     public static Test = class {
