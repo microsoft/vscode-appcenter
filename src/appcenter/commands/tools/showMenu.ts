@@ -58,9 +58,9 @@ export default class ShowMenu extends Command {
                         new Tools.SimulateCrashes(this._params).run();
                         break;
 
-                    // case (CommandNames.Tools.LinkAppCenter):
-                    //     new Tools.LinkAppCenter(this._params).run();
-                    //     break;
+                    case (CommandNames.Tools.LinkAppCenter):
+                        new Tools.LinkAppCenter(this._params).run();
+                        break;
 
                     default:
                         // Ideally shouldn't be there :)

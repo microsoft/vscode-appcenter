@@ -1,7 +1,9 @@
 import * as vscode from 'vscode';
 import { AppCenterOS } from './constants';
 import { cpUtils } from './helpers/cpUtils';
-import { CurrentApp, ReactNativeLinkInputValue } from './helpers/interfaces';
+import { CurrentApp } from './helpers/interfaces';
+import { TerminalHelper } from './helpers/terminalHelper';
+import { IButtonMessageItem, VsCodeUtils } from './helpers/vsCodeUtils';
 import { ILogger } from './log/logHelper';
 import { Strings } from './strings';
 
@@ -22,43 +24,30 @@ export default class AppCenterLinker {
         });
     }
 
-    private async isReactNative047(): Promise<boolean> {
-        const version = await cpUtils.executeCommand(this.logger, true, this.rootPath, "npm view react-native version");
-        const versionNumber: number = Number.parseFloat(version);
-        return versionNumber === 0.47;
-    }
-
     public async linkAppCenter(apps: CurrentApp[]): Promise<boolean> {
         const iosAppSecret = this.findSecretFor(AppCenterOS.iOS, apps);
         const androidAppSecret = this.findSecretFor(AppCenterOS.Android, apps);
-        return await vscode.window.withProgress({ location: vscode.ProgressLocation.Window, title: "" }, async () => {
-            const isReactNative047: boolean = await this.isReactNative047();
-            if (isReactNative047) { } else { }
+        const terminalHelper: TerminalHelper = new TerminalHelper();
+        terminalHelper.show();
 
-            const inputValues: ReactNativeLinkInputValue[] = [
-                {
-                    label: "secret does your Android app use",
-                    input: androidAppSecret,
-                    sent: false
-                },
-                {
-                    label: "secret does your iOS app use",
-                    input: iosAppSecret,
-                    sent: false
-                }
-            ];
-            try {
-                await cpUtils.executeCommand(this.logger, false, this.rootPath, `react-native link appcenter`, inputValues);
-
-                await cpUtils.executeCommand(this.logger, false, this.rootPath, `react-native link appcenter-analytics`, inputValues);
-                await cpUtils.executeCommand(this.logger, false, this.rootPath, `react-native link appcenter-crashes`, inputValues);
-
-                return true;
-            } catch (err) {
-                this.logger.error(err);
-                return false;
-            }
+        const messageItems: IButtonMessageItem[] = [];
+        messageItems.push({
+            title: Strings.OkBtnLabel
         });
+
+        return await VsCodeUtils.ShowInfoMessage(Strings.AppCenterBeforeLinkMsg, ...messageItems)
+            .then(async (selection: IButtonMessageItem | undefined) => {
+                if (selection) {
+                    terminalHelper.run('react-native link');
+                    const messageItems: IButtonMessageItem[] = [];
+                    messageItems.push({
+                        title: "Done"
+                    });
+                    await VsCodeUtils.ShowInfoMessage(Strings.AppCenterSecretsHint(androidAppSecret, iosAppSecret), ...messageItems);
+                    return true;
+                }
+                return false;
+            });
     }
 
     private findSecretFor(os: AppCenterOS, apps: CurrentApp[]): string {

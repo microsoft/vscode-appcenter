@@ -86,6 +86,12 @@ export default class ShowMenu extends Command {
             }
 
             appCenterMenuOptions.push(<CustomQuickPickItem>{
+                label: Strings.ToolsMenuLabel,
+                description: Strings.ToolsMenuDescription,
+                target: CommandNames.Tools.ShowTools
+            });
+
+            appCenterMenuOptions.push(<CustomQuickPickItem>{
                 label: Strings.SettingsMenuLabel,
                 description: Strings.SettingsMenuDescription,
                 target: CommandNames.Settings.ShowMenu

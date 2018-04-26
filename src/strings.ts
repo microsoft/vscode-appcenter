@@ -149,6 +149,8 @@ export class Strings {
     public static CodePushAlreadyLinked: string = "Code Push has already been linked to this application.";
     public static NotCodePushProjectMsg: string = "This command can only be executed from a React Native project with Code Push installed. Check out the Output window for more details.";
     public static CodePushLinkedMsg: string = "Code Push has been successfully linked to your application!";
+    public static AppCenterLinkedMsg: string = "App Center has been successfully linked to your application!";
+    public static AppCenterBeforeLinkMsg: string = "We will run 'react-native link' command for you. When you press OK, you will see a message with your app secrets.";
 
     public static CreatingAppStatusBarMessage: string = `Creating a new App Center app...`;
     public static FailedToCreateAppInAppCenter: string = `An error occurred while creating the new App Center app`;
@@ -199,6 +201,12 @@ export class Strings {
 
     public static YourCurrentAppMsg(appName: string): string {
         return `The current app is '${appName}'`;
+    }
+
+    public static AppCenterSecretsHint(androidSecret: string, iosSecret: string): string {
+        return `Paste these app secrets when needed:
+        Android app secret: ${androidSecret}
+        iOS app secret: ${iosSecret}`;
     }
 
     public static YourCurrentAppAndDeploymentMsg(appName: string, deploymentName: string): string {

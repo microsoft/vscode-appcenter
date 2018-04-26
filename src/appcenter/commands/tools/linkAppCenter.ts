@@ -34,11 +34,11 @@ export default class LinkAppCenter extends ReactNativeAppCommand {
             const appCenterInstalled: boolean = await appCenterLinker.installAppcenter();
             if (!appCenterInstalled) {
                 VsCodeUtils.ShowErrorMessage(Strings.FailedToLinkAppCenter);
-                return;
+                return void 0;
             }
         }
 
-        await appCenterLinker.linkAppCenter(this.pickedApps);
+        return await appCenterLinker.linkAppCenter(this.pickedApps);
     }
 
     protected async handleShowCurrentAppQuickPickSelection(selected: QuickPickAppItem, _rnApps: models.AppResponse[]) {
