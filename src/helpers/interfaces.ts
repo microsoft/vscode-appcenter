@@ -116,7 +116,7 @@ export interface CommandParams {
 }
 
 export interface ReactNativeLinkInputValue {
-    label: string;
-    input: string;
-    sent: boolean;
+    label: string; // a part of the string preceding the input.
+    input: string; // the value we should paste into input.
+    sent: boolean; // whether this value has been already sent.
 }

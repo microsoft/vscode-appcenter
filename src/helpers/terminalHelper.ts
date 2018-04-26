@@ -8,10 +8,10 @@ export class TerminalHelper {
     }
 
     public show() {
-        this.terminal.show(false);
+        this.terminal.show(false); // Should gain focus.
     }
 
     public run(command: string): void {
-        this.terminal.sendText(command);
+        this.terminal.sendText(command); //Should run automatically.
     }
 }
