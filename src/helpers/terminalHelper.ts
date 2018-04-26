@@ -8,7 +8,7 @@ export class TerminalHelper {
     }
 
     public show() {
-        this.terminal.show();
+        this.terminal.show(false);
     }
 
     public run(command: string): void {
