@@ -55,6 +55,7 @@ export class ReactNativeAppCommand extends Command {
                             const result: models.Deployment = await this.client.codePushDeployments.get(Constants.CodePushStagingDeploymentName, profile.currentApp.ownerName, profile.currentApp.appName);
                             if (result) {
                                 profile.currentApp.currentAppDeployments.codePushDeployments.push(result);
+                                profile.currentApp.currentAppDeployments.currentDeploymentName = Constants.CodePushStagingDeploymentName;
                             }
                         } catch (err) { }
                     }
