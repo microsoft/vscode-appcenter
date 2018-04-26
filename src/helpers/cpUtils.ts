@@ -21,9 +21,6 @@ export namespace cpUtils {
             };
             const childProc: cp.ChildProcess = cp.spawn(command, args, options);
 
-            /* const interval = setInterval(function() {
-                childProc.stdin.write('\n');
-            }, 1000); */
             if (logger && !logErrorsOnly) {
                 logger.info(`runningCommand', 'Running command: "${command} ${formattedArgs}"...`);
             }
@@ -66,19 +63,6 @@ export namespace cpUtils {
                 reject(e);
             });
 
-            childProc.on('exit', () => {
-                resolve();
-            });
-
-            childProc.on('disconnect', () => {
-                resolve();
-            });
-            childProc.on('SIGINT', () => {
-                resolve();
-            });
-            childProc.on('SIGTERM', () => {
-                resolve();
-            });
             childProc.on('close', (code: number) => {
                 if (code !== 0) {
                     const errMsg: string = `AppCenter.commandError', 'Command "${command} ${formattedArgs}" failed with exit code "${code}":${os.EOL}${cmdOutputIncludingStderr}`;
