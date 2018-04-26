@@ -40,7 +40,6 @@ export default class ShowMenu extends RNCPAppCommand {
             });
 
             if (this.hasCodePushDeployments(this.currentApp)) {
-                this.currentApp = await this.getCurrentApp();
                 menuOptions.push(<CustomQuickPickItem>{
                     label: Strings.releaseReactMenuText(this.currentApp),
                     description: "",
