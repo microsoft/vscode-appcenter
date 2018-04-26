@@ -3,7 +3,6 @@ import { AppCenteAppType, AppCenterBeacons, CommandNames } from '../../constants
 import { FSUtils } from '../../helpers/fsUtils';
 import { AppCenterProfile, CommandParams, CurrentApp } from '../../helpers/interfaces';
 import { MenuHelper } from '../../helpers/menuHelper';
-import { SettingsHelper } from '../../helpers/settingsHelper';
 import { Utils } from '../../helpers/utils';
 import { CustomQuickPickItem } from '../../helpers/vsCodeUtils';
 import { Strings } from '../../strings';
@@ -63,13 +62,11 @@ export default class ShowMenu extends Command {
                 }
             }
 
-            if (SettingsHelper.isCrashesEnabled() && currentApp) {
-                appCenterMenuOptions.push(<CustomQuickPickItem>{
-                    label: Strings.ToolsMenuLabel,
-                    description: Strings.ToolsMenuDescription,
-                    target: CommandNames.Tools.ShowTools
-                });
-            }
+            appCenterMenuOptions.push(<CustomQuickPickItem>{
+                label: Strings.ToolsMenuLabel,
+                description: Strings.ToolsMenuDescription,
+                target: CommandNames.Tools.ShowTools
+            });
 
             appCenterMenuOptions.push(<CustomQuickPickItem>{
                 label: Strings.AppCenterPortalMenuLabel,
@@ -139,14 +136,14 @@ export default class ShowMenu extends Command {
                         break;
 
                     case (CommandNames.Tools.ShowTools):
-                        new Tools.ShowTools(this._params).runNoClient();
+                        new Tools.ShowMenu(this._params).runNoClient();
                         break;
 
                     default:
                         // Ideally shouldn't be there :)
                         this.logger.error("Unknown App Center menu command");
                         break;
-            }
-        });
+                }
+            });
     }
 }

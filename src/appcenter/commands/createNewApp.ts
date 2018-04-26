@@ -75,12 +75,12 @@ export class CreateNewApp extends CreateAppCommand {
         }
         await this.setCurrentApp(apps[0]);
         const messageItems: IButtonMessageItem[] = [];
-        const appUrl = AppCenterUrlBuilder.GetAppCenterAppLink(this.userOrOrg.name, apps[0].name, this.userOrOrg.isOrganization);
+        const appUrl = AppCenterUrlBuilder.GetAppCenterAppLink(this.userOrOrg.name, apps[0].appName, this.userOrOrg.isOrganization);
         messageItems.push({
             title: Strings.AppCreatedBtnLabel,
             url: appUrl
         });
-        VsCodeUtils.ShowInfoMessage(Strings.AppCreatedMsg(apps[0].name, true), ...messageItems);
+        VsCodeUtils.ShowInfoMessage(Strings.AppCreatedMsg(apps[0].appName, true), ...messageItems);
     }
 
     private async pickApp(apps: CreatedAppFromAppCenter[]) {
@@ -91,26 +91,26 @@ export class CreateNewApp extends CreateAppCommand {
         const messageItems: IButtonMessageItem[] = [];
 
         messageItems.push({
-            title: apps[0].name,
+            title: apps[0].appName,
             command: "0"
         });
 
         messageItems.push({
-            title: apps[1].name,
+            title: apps[1].appName,
             command: "1"
         });
 
-        VsCodeUtils.ShowInfoMessage(Strings.AppCreatedMsg(apps[0].name, false, apps[1].name), ...messageItems)
+        VsCodeUtils.ShowInfoMessage(Strings.AppCreatedMsg(apps[0].appName, false, apps[1].appName), ...messageItems)
             .then(async (selection: IButtonMessageItem | undefined) => {
                 if (selection) {
                     await this.setCurrentApp(apps[+selection.command]);
                     const messageItems: IButtonMessageItem[] = [];
-                    const appUrl = AppCenterUrlBuilder.GetAppCenterAppLink(this.userOrOrg.name, apps[+selection.command].name, this.userOrOrg.isOrganization);
+                    const appUrl = AppCenterUrlBuilder.GetAppCenterAppLink(this.userOrOrg.name, apps[+selection.command].appName, this.userOrOrg.isOrganization);
                     messageItems.push({
                         title: Strings.AppCreatedBtnLabel,
                         url: appUrl
                     });
-                    return VsCodeUtils.ShowInfoMessage(Strings.AppCreatedMsg(apps[+selection.command].name), ...messageItems);
+                    return VsCodeUtils.ShowInfoMessage(Strings.AppCreatedMsg(apps[+selection.command].appName), ...messageItems);
                 } else {
                     return false;
                 }
@@ -119,7 +119,7 @@ export class CreateNewApp extends CreateAppCommand {
 
     private async setCurrentApp(app: CreatedAppFromAppCenter) {
         return this.saveCurrentApp(
-            `${this.userOrOrg.name}/${app.name}`,
+            `${this.userOrOrg.name}/${app.appName}`,
             Utils.toAppCenterOS(app.os),
             null,
             Constants.AppCenterDefaultTargetBinaryVersion,

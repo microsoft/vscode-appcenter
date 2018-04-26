@@ -1,8 +1,8 @@
 {
     "name": "vscode-appcenter",
-    "displayName": "VSCode App Center Tools",
-    "description": "App Center extension for VS Code.",
-    "version": "0.0.8",
+    "displayName": "App Center",
+    "description": "Visual Studio App Center tools and services.",
+    "version": "0.0.10",
     "publisher": "vsmobile",
     "icon": "images/icon.png",
     "engines": {
@@ -119,13 +119,18 @@
                 "category": "App Center Code Push"
             },
             {
-                "command": "appcenter.tools",
-                "title": "Open App Center tools",
+                "command": "appcenter.tools.simulateCrashes",
+                "title": "Simulate App Center Crash",
                 "category": "App Center Tools"
             },
             {
-                "command": "appcenter.tools.simulateCrashes",
-                "title": "Simulate AppCenter Crash",
+                "command": "appcenter.tools.linkCodePush",
+                "title": "Link Code Push",
+                "category": "App Center Tools"
+            },
+            {
+                "command": "appcenter.tools.linkAppCenter",
+                "title": "Link App Center",
                 "category": "App Center Tools"
             },
             {

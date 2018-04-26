@@ -59,19 +59,21 @@ export class ReactNativeAppCommand extends Command {
         throw Error("handleShowCurrentAppQuickPickSelection not implemented in base class");
     }
 
-    protected async showAppsQuickPick(rnApps: models.AppResponse[], includeSelectCurrent: boolean = false) {
+    protected async showAppsQuickPick(rnApps: models.AppResponse[], includeSelectCurrent: boolean = false, includeCreateNew: boolean = true, prompt: string = Strings.ProvideCurrentAppPromptMsg) {
         if (!rnApps) {
             this.logger.debug("Do not show apps quick pick due to no apps (either in cache or fetched from server");
             return;
         }
         ReactNativeAppCommand.cachedApps = rnApps;
         const options: QuickPickAppItem[] = MenuHelper.getQuickPickItemsForAppsList(rnApps);
-        const createNewAppItem = {
-            label: Strings.CreateNewAppMenuLabel,
-            description: "",
-            target: CommandNames.CreateApp.CommandName
-        };
-        options.splice(0, 0, createNewAppItem);
+        if (includeCreateNew) {
+            const createNewAppItem = {
+                label: Strings.CreateNewAppMenuLabel,
+                description: "",
+                target: CommandNames.CreateApp.CommandName
+            };
+            options.splice(0, 0, createNewAppItem);
+        }
         if (includeSelectCurrent) {
             const currentApp: CurrentApp | null = await this.getCurrentApp();
 
@@ -85,7 +87,7 @@ export class ReactNativeAppCommand extends Command {
             }
         }
         if (!this.userAlreadySelectedApp) {
-            vscode.window.showQuickPick(options, { placeHolder: Strings.ProvideCurrentAppPromptMsg })
+            vscode.window.showQuickPick(options, { placeHolder: prompt })
                 .then((selected: QuickPickAppItem) => {
                     this.userAlreadySelectedApp = true;
                     if (!selected) {
@@ -96,15 +98,15 @@ export class ReactNativeAppCommand extends Command {
         }
     }
 
-    protected refreshCachedAppsAndRepaintQuickPickIfNeeded(includeSelectCurrent: boolean = false) {
+    protected refreshCachedAppsAndRepaintQuickPickIfNeeded(includeSelectCurrent: boolean = false, includeCreateNew: boolean = true, includeAllApps: boolean = true, prompt: string = Strings.ProvideCurrentAppPromptMsg) {
         vscode.window.withProgress({ location: vscode.ProgressLocation.Window, title: Strings.GetAppsListMessage }, () => {
             return this.client.apps.list({
                 orderBy: "name"
             }).then((apps: models.AppResponse[]) => {
-                const rnApps: models.AppResponse[] = apps.filter(app => app.platform === Constants.AppCenterReactNativePlatformName);
+                const rnApps: models.AppResponse[] = includeAllApps ? apps : apps.filter(app => app.platform === Constants.AppCenterReactNativePlatformName);
                 // we repaint menu only in case we have changed apps
                 if (this.cachedAppsItemsDiffer(rnApps, ReactNativeAppCommand.cachedApps)) {
-                    this.showAppsQuickPick(rnApps, includeSelectCurrent);
+                    this.showAppsQuickPick(rnApps, includeSelectCurrent, includeCreateNew, prompt);
                 }
             }).catch((e) => {
                 VsCodeUtils.ShowErrorMessage(Strings.UnknownError);

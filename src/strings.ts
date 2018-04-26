@@ -24,6 +24,10 @@ export class Strings {
     public static SettingsMenuLabel: string = "Settings";
     public static SettingsMenuDescription: string = "";
     public static CrashesMenuLabel: string = "Simulate Crashes";
+    public static LinkCodePushMenuLabel: string = "Link Code Push";
+    public static LinkAppCenterMenuLabel: string = "Link App Center";
+    public static LinkCodePushMenuDescription: string = "Link Code Push SDK to your application";
+    public static LinkAppCenterMenuDescription: string = "Link App Center SDK to your application";
     public static ToolsMenuLabel: string = "Tools";
     public static ToolsMenuDescription: string = "";
     public static LoginToAnotherAccountMenuLabel: string = "Add App Center account";
@@ -57,19 +61,20 @@ export class Strings {
 
     public static NoIdeaNameSelectedMsg: string = "Please enter a name for your project.";
     public static VSCodeProgressLoadingTitle: string = "Loading...";
+    public static InstallCodePushTitle: string = "Installing Code Push...";
+    public static LinkCodePushTitle: string = "Linking React Native Module for CodePush...";
     public static CheckIfAppsExistLoadingMessage: string = "Checking if project name is already in use...";
     public static LoadingVSTSProjectsMessage: string = "Loading VSTS projects for you...";
     public static LoadingStatusBarMessage: string = "Loading some information for you...";
     public static CreateRNProjectStatusBarMessage: string = "Creating a starting point for your project...";
     public static PushToRemoteRepoStatusBarMessage: string = "Pushing changes to your new repository...";
-    public static CreatingCodePushDeploymentsStatusBarMessage: string = "Creating CodePush deployments for hotfixing...";
+    public static CreatingCodePushDeploymentsStatusBarMessage: string = "Creating CodePush deployments...";
     public static RunNPMInstallStatusBarMessage: string = "Installing package dependencies...";
     public static NodeModulesInstalledMessage: string = "Dependencies have been successfully installed";
     public static PodsInstalledMessage: string = "Pods have been successfully installed";
     public static FinishedConfigMsg: string = "Your project has been successfully configured locally and in the cloud.";
     public static GitIsNotInstalledMsg: string = "It looks like you don't have a local git client installed. ";
     public static FailedToCreateRNProjectMsg: string = "An unexpected error occurred while fetching the project template.";
-    public static NotRNProjectMsg: string = "Sorry, this project doesn't appear to be React Native.";
     public static IdeaNameIsNotValidMsg: string = "Sorry, the project name your entered is invalid.";
     public static VstsCredsNotValidMsg: string = "Vsts credentials are not valid.";
     public static FailedToRemoveRemoteRepositoryMsg: string = "Sorry, failed to remove remote repository!";
@@ -102,6 +107,8 @@ export class Strings {
     public static ConnectingRepoToBuildServiceStatusBarMessage: string = "Configuring cloud build services...";
     public static CreateBranchConfigAndKickOffBuildStatusBarMessage: string = "Starting a fresh cloud build...";
     public static ProvideCurrentAppPromptMsg: string = "Please specify an App Center app";
+    public static ProvideFirstAppPromptMsg: string = "Choose the first app to be linked";
+    public static ProvideSecondAppPromptMsg: string = "Choose the second app to be linked";
     public static ProvideVSTSProjectPromptMsg: string = "Please specify VSTS Project";
     public static FetchDeploymentsStatusBarMessage: string = "Fetching CodePush deployments for you...";
     public static InvalidCurrentAppNameMsg: string = "Sorry, the app name isn't valid.";
@@ -131,13 +138,18 @@ export class Strings {
     public static OnlyIOSError: string = "Running UI tests is supported only for iOS.";
     public static AppCreatedBtnLabel: string = "Check it out";
     public static NotReactProjectMsg: string = "This command can only be executed from a React Native project. Check out the Output window for more details.";
+    public static CodePushAlreadyLinked: string = "Code Push has already been linked to this application.";
     public static NotCodePushProjectMsg: string = "This command can only be executed from a React Native project with Code Push installed. Check out the Output window for more details.";
+    public static CodePushLinkedMsg: string = "Code Push has been successfully linked to your application!";
 
     public static CreatingAppStatusBarMessage: string = `Creating a new App Center app...`;
     public static FailedToCreateAppInAppCenter: string = `An error occurred while creating the new App Center app`;
     public static FailedToGetVSTSProjects: string = `An error while trying to retrieve your VSTS projects`;
     public static FailedToCreateVSTSGitrepository: string = `An error occurred while creating your new VSTS repository`;
     public static FailedToCreateAppAlreadyExistInAppCenter: string = `An app with that name already exists in App Center. Please choose a new name.`;
+    public static FailedToCreateDeployments: string = `Failed to create deployments for the app. Check out the output window for more details.`;
+    public static FailedToLinkCodePush: string = `Failed to link Code Push to the application. Check out the Output window for more details.`;
+    public static FailedToLinkAppCenter: string = `Failed to link App Center to the application. Check out the Output window for more details.`;
 
     public static SimulateCrashesMessage: string = "Generating crash data for you...";
     public static SimulateCrashesSendMessage: string = "Sending crash data to App Center...";

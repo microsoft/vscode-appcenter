@@ -88,7 +88,7 @@ export default class AppCenterAppCreator {
                 appSecret: result.appSecret,
                 platform: result.platform,
                 os: result.os,
-                name: result.name
+                appName: result.name
             };
         } catch (err) {
             if (err.statusCode === 409) {
@@ -112,7 +112,7 @@ export default class AppCenterAppCreator {
                 appSecret: result.appSecret,
                 platform: result.platform,
                 os: result.os,
-                name: result.name
+                appName: result.name
             };
         } catch (err) {
             if (err.statusCode === 409) {
@@ -124,13 +124,23 @@ export default class AppCenterAppCreator {
         }
     }
 
-    public async createCodePushDeployment(appName: string, ownerName: string): Promise<models.Deployment> {
+    public async createCodePushDeployment(appName: string, ownerName: string): Promise<models.Deployment | null> {
         try {
             const result: models.Deployment = await this.client.codePushDeployments.create(ownerName, appName, Constants.CodePushStagingDeplymentName);
             return result;
         } catch (err) {
-            this.logger.error(`An unexpected error occurred trying to create CodePush deployments for ${appName}`);
-            throw new Error(`An unexpected error occurred trying to create CodePush deployments for ${appName}`);
+            if (err.statusCode === 409) {
+                this.logger.info(`A CodePush deployment with the name ${appName} already exists, fetching the keys...`);
+                try {
+                    const result: models.Deployment = await this.client.codePushDeployments.get(Constants.CodePushStagingDeplymentName, ownerName, appName);
+                    return result;
+                } catch (err) {
+                    this.logger.error(`An unexpected error occurred trying to create CodePush deployments for ${appName}. ${err && err.message || ""}`);
+                }
+            } else {
+                this.logger.error(`An unexpected error occurred trying to create CodePush deployments for ${appName}. ${err && err.message || ""}`);
+            }
+            return null;
         }
     }
 }
