@@ -1,10 +1,7 @@
 import AppCenterLinker from '../../../appCenterLinker';
-import { AppCenterOS, Constants } from '../../../constants';
-import { CurrentApp, QuickPickAppItem } from '../../../helpers/interfaces';
 import { Utils } from '../../../helpers/utils';
 import { VsCodeUtils } from '../../../helpers/vsCodeUtils';
 import { Strings } from '../../../strings';
-import { models } from '../../apis';
 import { LinkCommand } from '../linkCommand';
 
 export default class LinkAppCenter extends LinkCommand {
