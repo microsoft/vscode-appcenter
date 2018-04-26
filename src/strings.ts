@@ -187,6 +187,13 @@ export class Strings {
         return `Failed to push local changes to remote repository '${repoName}'`;
     }
 
+    public static ChangedTargetBinaryVersion(version?: string): string {
+        if (!version) {
+            version = "automatically fetched";
+        }
+        return `Changed target binary version to '${version}'`;
+    }
+
     public static YouAreLoggedInMsg(provider: AuthProvider, name: string): string {
         return `You are logged into ${provider} as '${name}'`;
     }

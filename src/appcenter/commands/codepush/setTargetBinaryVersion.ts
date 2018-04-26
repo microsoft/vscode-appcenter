@@ -50,9 +50,9 @@ export default class SetTargetBinaryVersion extends RNCPAppCommand {
                         return;
                     }
                     if (appVersion) {
-                        VsCodeUtils.ShowInfoMessage(`Changed target binary version to '${appVersion}'`);
+                        VsCodeUtils.ShowInfoMessage(Strings.ChangedTargetBinaryVersion(appVersion));
                     } else {
-                        VsCodeUtils.ShowInfoMessage(`Changed target binary version to automatically fetched`);
+                        VsCodeUtils.ShowInfoMessage(Strings.ChangedTargetBinaryVersion());
                     }
                 });
             });
