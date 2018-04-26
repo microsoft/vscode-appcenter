@@ -16,46 +16,54 @@ export default class ShowMenu extends RNCPAppCommand {
     constructor(params: CommandParams) {
         super(params);
         this._params = params;
+        this.checkForCodePush = false;
     }
 
-    public async runNoClient(): Promise<boolean | void> {
-        if (!await super.runNoClient()) {
+    public async run(): Promise<boolean | void> {
+        if (!await super.run()) {
             return false;
         }
+        const menuOptions: CustomQuickPickItem[] = [];
 
-        return this.getCurrentApp().then((currentApp: CurrentApp) => {
-            this.currentApp = currentApp;
-            const menuOptions: CustomQuickPickItem[] = [];
+        menuOptions.push(<CustomQuickPickItem>{
+            label: Strings.LinkCodePushMenuLabel,
+            description: Strings.LinkCodePushMenuDescription,
+            target: CommandNames.CodePush.LinkCodePush
+        });
 
+        this.currentApp = await this.getCurrentApp(true);
+        if (this.currentApp) {
             menuOptions.push(<CustomQuickPickItem>{
                 label: Strings.DistributeCodePushTabMenuItem,
                 description: Strings.OpenTabInBrowserMsg(Strings.DistributeCodePushTabMenuItem),
                 target: AppCenterDistributionTabs.CodePush
             });
-            if (this.hasCodePushDeployments(currentApp)) {
+
+            if (this.hasCodePushDeployments(this.currentApp)) {
+                this.currentApp = await this.getCurrentApp();
                 menuOptions.push(<CustomQuickPickItem>{
-                    label: Strings.releaseReactMenuText(currentApp),
+                    label: Strings.releaseReactMenuText(this.currentApp),
                     description: "",
                     target: CommandNames.CodePush.ReleaseReact
                 });
                 menuOptions.push(<CustomQuickPickItem>{
-                    label: Strings.setCurrentAppDeploymentText(<CurrentApp>currentApp),
+                    label: Strings.setCurrentAppDeploymentText(<CurrentApp>this.currentApp),
                     description: "",
                     target: CommandNames.CodePush.SetCurrentDeployment
                 });
                 menuOptions.push(<CustomQuickPickItem>{
-                    label: Strings.setCurrentAppTargetBinaryVersionText(<CurrentApp>currentApp),
+                    label: Strings.setCurrentAppTargetBinaryVersionText(<CurrentApp>this.currentApp),
                     description: "",
                     target: CommandNames.CodePush.SetTargetBinaryVersion
                 });
                 menuOptions.push(<CustomQuickPickItem>{
-                    label: Strings.setCurrentAppIsMandatoryText(<CurrentApp>currentApp),
+                    label: Strings.setCurrentAppIsMandatoryText(<CurrentApp>this.currentApp),
                     description: "",
                     target: CommandNames.CodePush.SwitchMandatoryPropForRelease
                 });
             }
-            return this.showQuickPick(menuOptions);
-        });
+        }
+        return this.showQuickPick(menuOptions);
     }
 
     private showQuickPick(menuOptions: CustomQuickPickItem[]): Promise<void> {
@@ -70,7 +78,7 @@ export default class ShowMenu extends RNCPAppCommand {
 
                     switch (selected.target) {
                         case (CommandNames.CodePush.SetCurrentDeployment):
-                            new CodePush.SetCurrentDeployment(this._params).runNoClient();
+                            new CodePush.SetCurrentDeployment(this._params).run();
                             break;
 
                         case (CommandNames.CodePush.ReleaseReact):
@@ -78,11 +86,15 @@ export default class ShowMenu extends RNCPAppCommand {
                             break;
 
                         case (CommandNames.CodePush.SetTargetBinaryVersion):
-                            new CodePush.SetTargetBinaryVersion(this._params).runNoClient();
+                            new CodePush.SetTargetBinaryVersion(this._params).run();
                             break;
 
                         case (CommandNames.CodePush.SwitchMandatoryPropForRelease):
-                            new CodePush.SwitchMandatoryPropForRelease(this._params).runNoClient();
+                            new CodePush.SwitchMandatoryPropForRelease(this._params).run();
+                            break;
+
+                        case (CommandNames.CodePush.LinkCodePush):
+                            new CodePush.LinkCodePush(this._params).run();
                             break;
 
                         case (AppCenterDistributionTabs.CodePush):

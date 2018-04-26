@@ -9,35 +9,34 @@ export default class SwitchMandatoryPropForRelease extends RNCPAppCommand {
         super(params);
     }
 
-    public async runNoClient(): Promise<void> {
-        if (!await super.runNoClient()) {
+    public async run(): Promise<void> {
+        if (!await super.run()) {
             return;
         }
 
-        this.getCurrentApp().then((app: CurrentApp) => {
-            if (!app) {
-                VsCodeUtils.ShowWarningMessage(Strings.NoCurrentAppSetMsg);
-                return;
-            }
-            if (!this.hasCodePushDeployments(app)) {
-                VsCodeUtils.ShowWarningMessage(Strings.NoDeploymentsMsg);
-                return;
-            }
-            const newMandatoryValue = !!!app.isMandatory;
-            this.saveCurrentApp(
-                app.identifier,
-                AppCenterOS[app.os],
-                {
-                    currentDeploymentName: app.currentAppDeployments.currentDeploymentName,
-                    codePushDeployments: app.currentAppDeployments.codePushDeployments
-                },
-                app.targetBinaryVersion,
-                app.type,
-                newMandatoryValue,
-                app.appSecret
-            ).then(() => {
-                VsCodeUtils.ShowInfoMessage(`Changed release to ${newMandatoryValue ? "Mandatory" : "NOT Mandatory"}`);
-            });
+        const app: CurrentApp = await this.getCurrentApp(true);
+        if (!app) {
+            VsCodeUtils.ShowWarningMessage(Strings.NoCurrentAppSetMsg);
+            return;
+        }
+        if (!this.hasCodePushDeployments(app)) {
+            VsCodeUtils.ShowWarningMessage(Strings.NoDeploymentsMsg);
+            return;
+        }
+        const newMandatoryValue = !!!app.isMandatory;
+        return this.saveCurrentApp(
+            app.identifier,
+            AppCenterOS[app.os],
+            {
+                currentDeploymentName: app.currentAppDeployments.currentDeploymentName,
+                codePushDeployments: app.currentAppDeployments.codePushDeployments
+            },
+            app.targetBinaryVersion,
+            app.type,
+            newMandatoryValue,
+            app.appSecret
+        ).then(() => {
+            VsCodeUtils.ShowInfoMessage(`Changed release to ${newMandatoryValue ? "Mandatory" : "NOT Mandatory"}`);
         });
     }
 }

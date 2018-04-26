@@ -46,12 +46,22 @@ export class ReactNativeAppCommand extends Command {
         return true;
     }
 
-    protected async getCurrentApp(): Promise<CurrentApp | null> {
-        return this.appCenterProfile.then((profile: AppCenterProfile | null) => {
-            if (profile && profile.currentApp) {
-                return profile.currentApp;
-            }
-            return null;
+    protected async getCurrentApp(refreshDeployments: boolean = false): Promise<CurrentApp | null> {
+        return vscode.window.withProgress({ location: vscode.ProgressLocation.Window, title: Strings.VSCodeProgressLoadingTitle }, () => {
+            return this.appCenterProfile.then(async (profile: AppCenterProfile | null) => {
+                if (profile && profile.currentApp) {
+                    if (refreshDeployments) {
+                        try {
+                            const result: models.Deployment = await this.client.codePushDeployments.get(Constants.CodePushStagingDeploymentName, profile.currentApp.ownerName, profile.currentApp.appName);
+                            if (result) {
+                                profile.currentApp.currentAppDeployments.codePushDeployments.push(result);
+                            }
+                        } catch (err) { }
+                    }
+                    return profile.currentApp;
+                }
+                return null;
+            });
         });
     }
 

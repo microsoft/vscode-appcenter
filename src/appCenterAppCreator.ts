@@ -126,13 +126,13 @@ export default class AppCenterAppCreator {
 
     public async createCodePushDeployment(appName: string, ownerName: string): Promise<models.Deployment | null> {
         try {
-            const result: models.Deployment = await this.client.codePushDeployments.create(ownerName, appName, Constants.CodePushStagingDeplymentName);
+            const result: models.Deployment = await this.client.codePushDeployments.create(ownerName, appName, Constants.CodePushStagingDeploymentName);
             return result;
         } catch (err) {
             if (err.statusCode === 409) {
                 this.logger.info(`A CodePush deployment with the name ${appName} already exists, fetching the keys...`);
                 try {
-                    const result: models.Deployment = await this.client.codePushDeployments.get(Constants.CodePushStagingDeplymentName, ownerName, appName);
+                    const result: models.Deployment = await this.client.codePushDeployments.get(Constants.CodePushStagingDeploymentName, ownerName, appName);
                     return result;
                 } catch (err) {
                     this.logger.error(`An unexpected error occurred trying to create CodePush deployments for ${appName}. ${err && err.message || ""}`);
