@@ -147,14 +147,14 @@ export class SettingsHelper {
         return true;
     }
 
-    public static showStatusBar(): void {
+    public static setShowStatusBar(): void {
         const workspaceConfiguration = vscode.workspace.getConfiguration();
         if (workspaceConfiguration.has("appcenter.showStatusBar")) {
             workspaceConfiguration.update("appcenter.showStatusBar", true);
         }
     }
 
-    public static hideStatusBar(): void {
+    public static setHideStatusBar(): void {
         const workspaceConfiguration = vscode.workspace.getConfiguration();
         if (workspaceConfiguration.has("appcenter.showStatusBar")) {
             workspaceConfiguration.update("appcenter.showStatusBar", false);
