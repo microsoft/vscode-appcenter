@@ -11,7 +11,7 @@ export class Constants {
     public static IntCrashesEndPoint: string = "https://in-integration.dev.avalanch.es/logs";
     public static StagingCrashesEndPoint: string = "https://in-staging-south-centralus.staging.avalanch.es/logs";
     public static AppCenterCodePushStatusBarColor: string = "#ffffff";
-    public static CodePushStagingDeplymentName: string = "Staging";
+    public static CodePushStagingDeploymentName: string = "Staging";
     public static iOSAppSuffix: string = "-ios";
     public static AndroidAppSuffix: string = "-android";
     public static AppCenterDefaultTargetBinaryVersion: string = "";

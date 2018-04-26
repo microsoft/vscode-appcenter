@@ -27,22 +27,22 @@ export default class ReleaseReact extends RNCPAppCommand {
             vscode.window.withProgress({ location: vscode.ProgressLocation.Window, title: "Get Apps" }, p => {
                 return new Promise<CurrentApp>((appResolve, appReject) => {
                     p.report({ message: Strings.GettingAppInfoMessage });
-                    this.getCurrentApp()
+                    this.getCurrentApp(true)
                         .then((currentApp: CurrentApp) => appResolve(currentApp))
                         .catch(err => appReject(err));
-                }).then((currentApp: CurrentApp): any => {
+                }).then(async (currentApp: CurrentApp) => {
                     p.report({ message: Strings.DetectingAppVersionMessage });
                     if (!currentApp) {
                         VsCodeUtils.ShowWarningMessage(Strings.NoCurrentAppSetMsg);
-                        return;
+                        return void 0;
                     }
                     if (!this.hasCodePushDeployments(currentApp)) {
                         VsCodeUtils.ShowWarningMessage(Strings.NoDeploymentsMsg);
-                        return;
+                        return void 0;
                     }
                     if (!currentApp.os || !reactNative.isValidOS(currentApp.os)) {
                         VsCodeUtils.ShowWarningMessage(Strings.UnsupportedOSMsg);
-                        return;
+                        return void 0;
                     }
                     codePushRelaseParams.app = currentApp;
                     codePushRelaseParams.deploymentName = currentApp.currentAppDeployments.currentDeploymentName;
@@ -57,7 +57,7 @@ export default class ReleaseReact extends RNCPAppCommand {
                             case "windows": return reactNative.getWindowsAppVersion(this.rootPath);
                             default: {
                                 VsCodeUtils.ShowInfoMessage(Strings.UnsupportedOSMsg);
-                                return;
+                                return void 0;
                             }
                         }
                     }

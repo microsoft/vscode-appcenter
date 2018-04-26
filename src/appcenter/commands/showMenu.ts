@@ -149,7 +149,7 @@ export default class ShowMenu extends Command {
                         break;
 
                     case (CommandNames.CodePush.ShowMenu):
-                        new CodePush.ShowMenu(this._params).runNoClient();
+                        new CodePush.ShowMenu(this._params).run();
                         break;
 
                     default:
