@@ -11,11 +11,9 @@ export default class AppCenterPortalMenu extends ReactNativeAppCommand {
     private appName: string;
     private ownerName: string;
     private isOrg: boolean;
-    private _params: CommandParams;
 
     constructor(params: CommandParams) {
         super(params);
-        this._params = params;
     }
 
     public async run(): Promise<void> {
@@ -67,7 +65,7 @@ export default class AppCenterPortalMenu extends ReactNativeAppCommand {
                     this.logger.info('Canceled selection of current App Center tabs');
                     return;
                 }
-                MenuHelper.handleMenuPortalQuickPickSelection(this._params, selected.target, this.ownerName, this.appName, this.isOrg, await this.isCodePushEnabled);
+                MenuHelper.handleMenuPortalQuickPickSelection(selected.target, this.ownerName, this.appName, this.isOrg);
             });
     }
 }

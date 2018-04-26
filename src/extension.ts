@@ -71,13 +71,13 @@ function registerAppCenterCommands(context: vscode.ExtensionContext): void {
         () => _extensionManager.RunCommand(() => codepushCommandHandler.SwitchMandatoryPropForRelease())));
     context.subscriptions.push(vscode.commands.registerCommand(CommandNames.CodePush.SetTargetBinaryVersion,
         () => _extensionManager.RunCommand(() => codepushCommandHandler.SetTargetBinaryVersion())));
+    context.subscriptions.push(vscode.commands.registerCommand(CommandNames.CodePush.LinkCodePush,
+        () => _extensionManager.RunCommand(() => codepushCommandHandler.LinkCodePush())));
 
     // Tools commands
     const toolsCommandHandler = _extensionManager.commandHandlers.toolsCommandHandler;
     context.subscriptions.push(vscode.commands.registerCommand(CommandNames.Tools.SimulateCrashes,
         () => _extensionManager.RunCommand(() => toolsCommandHandler.simulateCrashes())));
-    context.subscriptions.push(vscode.commands.registerCommand(CommandNames.Tools.LinkCodePush,
-        () => _extensionManager.RunCommand(() => toolsCommandHandler.linkCodePush())));
     // context.subscriptions.push(vscode.commands.registerCommand(CommandNames.Tools.LinkAppCenter,
     //    () => _extensionManager.RunCommand(() => toolsCommandHandler.linkAppCenter())));
 

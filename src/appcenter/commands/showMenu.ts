@@ -7,6 +7,7 @@ import { Utils } from '../../helpers/utils';
 import { CustomQuickPickItem } from '../../helpers/vsCodeUtils';
 import { Strings } from '../../strings';
 import AppCenterPortalMenu from './appCenterPortalMenu';
+import * as CodePush from "./codepush";
 import { Command } from './command';
 import GetCurrentApp from './getCurrentApp';
 import Login from './login';
@@ -15,6 +16,7 @@ import * as Settings from './settings';
 import Start from './start';
 import * as Test from "./test";
 import * as Tools from './tools';
+import { SettingsHelper } from '../../helpers/settingsHelper';
 
 export default class ShowMenu extends Command {
     private _params: CommandParams;
@@ -62,11 +64,21 @@ export default class ShowMenu extends Command {
                 }
             }
 
-            appCenterMenuOptions.push(<CustomQuickPickItem>{
-                label: Strings.ToolsMenuLabel,
-                description: Strings.ToolsMenuDescription,
-                target: CommandNames.Tools.ShowTools
-            });
+            if (Utils.isReactNativeCodePushProject(this.logger, this.rootPath, false)) {
+                appCenterMenuOptions.push(<CustomQuickPickItem>{
+                    label: Strings.CodePushMenuLabelItem,
+                    description: Strings.CodePushMenuLabelDescription,
+                    target: CommandNames.CodePush.ShowMenu
+                });
+            }
+
+            if (SettingsHelper.isCrashesEnabled()) {
+                appCenterMenuOptions.push(<CustomQuickPickItem>{
+                    label: Strings.ToolsMenuLabel,
+                    description: Strings.ToolsMenuDescription,
+                    target: CommandNames.Tools.ShowTools
+                });
+            }
 
             appCenterMenuOptions.push(<CustomQuickPickItem>{
                 label: Strings.AppCenterPortalMenuLabel,
@@ -104,7 +116,7 @@ export default class ShowMenu extends Command {
                     case (AppCenterBeacons.Distribute):
                     case (AppCenterBeacons.Analytics):
                     case (AppCenterBeacons.Crashes):
-                        MenuHelper.handleMenuPortalQuickPickSelection(this._params, selected.target, this.ownerName, this.appName, this.isOrg, await this.isCodePushEnabled);
+                        MenuHelper.handleMenuPortalQuickPickSelection(selected.target, this.ownerName, this.appName, this.isOrg);
                         break;
 
                     case (AppCenterBeacons.Test):
@@ -137,6 +149,10 @@ export default class ShowMenu extends Command {
 
                     case (CommandNames.Tools.ShowTools):
                         new Tools.ShowMenu(this._params).runNoClient();
+                        break;
+
+                    case (CommandNames.CodePush.ShowMenu):
+                        new CodePush.ShowMenu(this._params).runNoClient();
                         break;
 
                     default:

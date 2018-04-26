@@ -32,19 +32,6 @@ export class Command {
         return <string>this.manager.projectRootPath;
     }
 
-    public get isCodePushEnabled(): Promise<boolean> {
-        return this.appCenterProfile.then((profile: AppCenterProfile | null) => {
-            if (profile) {
-                if (Utils.isReactNativeProject(this.logger, this.rootPath, false) && profile.currentApp) {
-                    if (Utils.isReactNativeCodePushProject(this.logger, this.rootPath, false)) {
-                        return true;
-                    }
-                }
-            }
-            return false;
-        });
-    }
-
     public get appCenterProfile(): Promise<AppCenterProfile | null> {
         const profile = this.appCenterAuth.activeProfile;
         if (!profile) {

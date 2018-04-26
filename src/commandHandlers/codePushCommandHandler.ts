@@ -21,4 +21,8 @@ export default class CodePushCommandHandler extends BaseCommandHandler {
     public async SetTargetBinaryVersion(): Promise<void> {
         await new CodePush.SetTargetBinaryVersion(this.getCommandParams()).runNoClient();
     }
+
+    public async LinkCodePush(): Promise<void> {
+        await new CodePush.LinkCodePush(this.getCommandParams()).run();
+    }
 }
