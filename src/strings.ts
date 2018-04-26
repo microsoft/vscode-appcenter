@@ -204,9 +204,7 @@ export class Strings {
     }
 
     public static AppCenterSecretsHint(androidSecret: string, iosSecret: string): string {
-        return `Paste these app secrets when needed:
-        Android app secret: ${androidSecret}
-        iOS app secret: ${iosSecret}`;
+        return `Paste these app secrets when needed. Android app secret:< ${androidSecret}   > iOS app secret:<   ${iosSecret}   >`;
     }
 
     public static YourCurrentAppAndDeploymentMsg(appName: string, deploymentName: string): string {

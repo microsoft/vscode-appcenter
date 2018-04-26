@@ -63,7 +63,7 @@ export default class ShowMenu extends Command {
                 }
             }
 
-            if (Utils.isReactNativeCodePushProject(this.logger, this.rootPath, false)) {
+            if (Utils.isReactNativeProject(this.logger, this.rootPath, false)) {
                 appCenterMenuOptions.push(<CustomQuickPickItem>{
                     label: Strings.CodePushMenuLabelItem,
                     description: Strings.CodePushMenuLabelDescription,

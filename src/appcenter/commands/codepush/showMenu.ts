@@ -16,6 +16,7 @@ export default class ShowMenu extends RNCPAppCommand {
     constructor(params: CommandParams) {
         super(params);
         this._params = params;
+        this.checkForCodePush = false;
     }
 
     public async runNoClient(): Promise<boolean | void> {
