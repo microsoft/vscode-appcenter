@@ -1,5 +1,6 @@
 import { commands, MessageItem, QuickPickItem, StatusBarAlignment, StatusBarItem, window } from "vscode";
 import { Constants, MessageTypes } from "../constants";
+import { SettingsHelper } from "./settingsHelper";
 import { Utils } from "./utils";
 
 "use strict";
@@ -39,7 +40,9 @@ export class VsCodeUtils {
             statusBar.text = text;
             statusBar.tooltip = tooltip;
             statusBar.color = Constants.AppCenterCodePushStatusBarColor;
-            statusBar.show();
+            if (SettingsHelper.shouldStatusBarBeShown()) {
+                statusBar.show();
+            }
         }
         return Promise.resolve(void 0);
     }

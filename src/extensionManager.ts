@@ -113,6 +113,17 @@ export class ExtensionManager implements Disposable {
         return Promise.resolve(void 0);
     }
 
+    public showStatusBar() {
+        if (this._appCenterStatusBarItem) {
+            this._appCenterStatusBarItem.show();
+        }
+    }
+    public hideStatusBar() {
+        if (this._appCenterStatusBarItem) {
+            this._appCenterStatusBarItem.hide();
+        }
+    }
+
     public async dispose(): Promise<void> {
         this.cleanup();
     }

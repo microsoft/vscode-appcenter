@@ -1,4 +1,7 @@
 import * as Settings from "../appcenter/commands/settings";
+import { SettingsHelper } from "../helpers/settingsHelper";
+import { VsCodeUtils } from "../helpers/vsCodeUtils";
+import { Strings } from "../strings";
 import BaseCommandHandler from "./baseCommandHandler";
 
 export default class SettingsCommandHandler extends BaseCommandHandler {
@@ -28,5 +31,21 @@ export default class SettingsCommandHandler extends BaseCommandHandler {
 
     public async SwitchVstsAcc(): Promise<void> {
         await new Settings.SwitchVstsAccount(this.getCommandParams()).runNoClient();
+    }
+
+    public async ShowStatusBar(): Promise<void> {
+        if (SettingsHelper.shouldStatusBarBeShown()) {
+            VsCodeUtils.ShowInfoMessage(Strings.StatusBarAlreadyShown);
+            return;
+        }
+        await new Settings.ToggleStatusBar(this.getCommandParams()).runNoClient();
+    }
+
+    public async HideStatusBar(): Promise<void> {
+        if (!SettingsHelper.shouldStatusBarBeShown()) {
+            VsCodeUtils.ShowInfoMessage(Strings.StatusBarAlreadyHidden);
+            return;
+        }
+        await new Settings.ToggleStatusBar(this.getCommandParams()).runNoClient();
     }
 }
