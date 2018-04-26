@@ -3,11 +3,11 @@ import BaseCommandHandler from "./baseCommandHandler";
 
 export default class CodePushCommandHandler extends BaseCommandHandler {
     public async ShowMenu(): Promise<void> {
-        await new CodePush.ShowMenu(this.getCommandParams()).runNoClient();
+        await new CodePush.ShowMenu(this.getCommandParams()).run();
     }
 
     public async SetCurrentDeployment(): Promise<void> {
-        await new CodePush.SetCurrentDeployment(this.getCommandParams()).runNoClient();
+        await new CodePush.SetCurrentDeployment(this.getCommandParams()).run();
     }
 
     public async ReleaseReact(): Promise<void> {
@@ -15,11 +15,11 @@ export default class CodePushCommandHandler extends BaseCommandHandler {
     }
 
     public async SwitchMandatoryPropForRelease(): Promise<void> {
-        await new CodePush.SwitchMandatoryPropForRelease(this.getCommandParams()).runNoClient();
+        await new CodePush.SwitchMandatoryPropForRelease(this.getCommandParams()).run();
     }
 
     public async SetTargetBinaryVersion(): Promise<void> {
-        await new CodePush.SetTargetBinaryVersion(this.getCommandParams()).runNoClient();
+        await new CodePush.SetTargetBinaryVersion(this.getCommandParams()).run();
     }
 
     public async LinkCodePush(): Promise<void> {
