@@ -1,16 +1,13 @@
 
 import AppCenterAppCreator from '../../../appCenterAppCreator';
 import CodePushLinker from '../../../codePushLinker';
-import { AppCenterOS, Constants } from '../../../constants';
-import { CurrentApp, Deployment, QuickPickAppItem } from '../../../helpers/interfaces';
+import { Deployment } from '../../../helpers/interfaces';
 import { Utils } from '../../../helpers/utils';
 import { VsCodeUtils } from '../../../helpers/vsCodeUtils';
 import { Strings } from '../../../strings';
-import { models } from '../../apis';
 import { LinkCommand } from '../linkCommand';
 
 export default class LinkCodePush extends LinkCommand {
-
     public async run(): Promise<void> {
         if (!await super.run()) {
             return;
