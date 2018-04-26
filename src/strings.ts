@@ -36,6 +36,8 @@ export class Strings {
     public static VstsLoginToAnotherAccountMenuLabel: string = "Add VSTS account";
     public static VstsSwitchAccountMenuLabel: string = "Switch VSTS account";
     public static VstsLogoutMenuLabel: string = "Logout of VSTS";
+    public static HideStatusBarMenuLabel: string = "Hide status bar";
+    public static HideStatusBarMenuDescription: string = "Hide status bar from the bottom left corner. You can enable it with 'Show status bar' cmd.";
     public static RunUITestsMenuLabel: string = "Run UI tests";
     public static RunUITestsAsyncMenuLabel: string = "Run UI tests asynchronously";
     public static ViewUITestResultOnPortalenuLabel: string = "View results in portal";
@@ -62,6 +64,7 @@ export class Strings {
     public static NoIdeaNameSelectedMsg: string = "Please enter a name for your project.";
     public static VSCodeProgressLoadingTitle: string = "Loading...";
     public static InstallCodePushTitle: string = "Installing Code Push...";
+    public static InstallAppCenterTitle: string = "Installing App Center modules...";
     public static LinkCodePushTitle: string = "Linking React Native Module for CodePush...";
     public static CheckIfAppsExistLoadingMessage: string = "Checking if project name is already in use...";
     public static LoadingVSTSProjectsMessage: string = "Loading VSTS projects for you...";
@@ -112,6 +115,10 @@ export class Strings {
     public static ProvideVSTSProjectPromptMsg: string = "Please specify VSTS Project";
     public static FetchDeploymentsStatusBarMessage: string = "Fetching CodePush deployments for you...";
     public static InvalidCurrentAppNameMsg: string = "Sorry, the app name isn't valid.";
+    public static StatusBarAlreadyShown: string = "The status bar is already shown. Look, it's in the bottom left corner of the window, with your name/app name on it!";
+    public static StatusBarAlreadyHidden: string = "You've already hidden the status bar.";
+    public static StatusBarShown: string = "Status bar is now visible.";
+    public static StatusBarHidden: string = "Status bar is now hidden.";
 
     public static FailedToConnectRepoToBuildService: string = "Sorry, we failed to connect the repository to the build service.";
     public static FailedToConfigureBranchAndStartNewBuild: string = "Sorry, we failed to configure the branch for build.";
@@ -131,6 +138,7 @@ export class Strings {
     public static ArchivingUpdateContentsMessage: string = "Compressing new bundle...";
     public static ReactNativeInstallHint: string = "Make sure you ran \"npm install\" and that you are inside a React Native project.";
     public static CodePushInstallHint: string = "Make sure you ran \"npm install\" and that you are inside a React Native Code Push project.";
+    public static AppCenterInstallHint: string = "Make sure you ran \"npm install\" and that you are inside a React Native App Center project.";
     public static ReleasingUpdateContentsMessage: string = "Sending update to CodePush...";
     public static RepoManualConnectBtnLabel: string = "Connect";
     public static PodInstallBtnLabel: string = "Install CocoaPods";
@@ -141,6 +149,8 @@ export class Strings {
     public static CodePushAlreadyLinked: string = "Code Push has already been linked to this application.";
     public static NotCodePushProjectMsg: string = "This command can only be executed from a React Native project with Code Push installed. Check out the Output window for more details.";
     public static CodePushLinkedMsg: string = "Code Push has been successfully linked to your application!";
+    public static AppCenterLinkedMsg: string = "App Center has been successfully linked to your application!";
+    public static AppCenterBeforeLinkMsg: string = "We will run 'react-native link' command for you. When you press OK, you will see a message with your app secrets.";
 
     public static CreatingAppStatusBarMessage: string = `Creating a new App Center app...`;
     public static FailedToCreateAppInAppCenter: string = `An error occurred while creating the new App Center app`;
@@ -191,6 +201,10 @@ export class Strings {
 
     public static YourCurrentAppMsg(appName: string): string {
         return `The current app is '${appName}'`;
+    }
+
+    public static AppCenterSecretsHint(androidSecret: string, iosSecret: string): string {
+        return `Paste these app secrets when needed. Android app secret:< ${androidSecret}   > iOS app secret:<   ${iosSecret}   >`;
     }
 
     public static YourCurrentAppAndDeploymentMsg(appName: string, deploymentName: string): string {

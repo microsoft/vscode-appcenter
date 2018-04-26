@@ -11,11 +11,6 @@ export default class TolsCommandHandler extends BaseCommandHandler {
         await cmd.run();
     }
 
-    public async linkCodePush(): Promise<void> {
-        const cmd = new Tools.LinkCodePush(this.getCommandParams());
-        await cmd.run();
-    }
-
     public async linkAppCenter(): Promise<void> {
         const cmd = new Tools.LinkAppCenter(this.getCommandParams());
         await cmd.run();

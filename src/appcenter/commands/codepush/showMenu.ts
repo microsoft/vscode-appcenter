@@ -16,6 +16,7 @@ export default class ShowMenu extends RNCPAppCommand {
     constructor(params: CommandParams) {
         super(params);
         this._params = params;
+        this.checkForCodePush = false;
     }
 
     public async runNoClient(): Promise<boolean | void> {
@@ -32,6 +33,13 @@ export default class ShowMenu extends RNCPAppCommand {
                 description: Strings.OpenTabInBrowserMsg(Strings.DistributeCodePushTabMenuItem),
                 target: AppCenterDistributionTabs.CodePush
             });
+
+            menuOptions.push(<CustomQuickPickItem>{
+                label: Strings.LinkCodePushMenuLabel,
+                description: Strings.LinkCodePushMenuDescription,
+                target: CommandNames.CodePush.LinkCodePush
+            });
+
             if (this.hasCodePushDeployments(currentApp)) {
                 menuOptions.push(<CustomQuickPickItem>{
                     label: Strings.releaseReactMenuText(currentApp),
@@ -83,6 +91,10 @@ export default class ShowMenu extends RNCPAppCommand {
 
                         case (CommandNames.CodePush.SwitchMandatoryPropForRelease):
                             new CodePush.SwitchMandatoryPropForRelease(this._params).runNoClient();
+                            break;
+
+                        case (CommandNames.CodePush.LinkCodePush):
+                            new CodePush.LinkCodePush(this._params).run();
                             break;
 
                         case (AppCenterDistributionTabs.CodePush):
