@@ -1,10 +1,10 @@
 import * as vscode from 'vscode';
-import { AppCenterUrlBuilder } from '../../../helpers/appCenterUrlBuilder';
-import { AppCenterProfile } from '../../../helpers/interfaces';
-import { IButtonMessageItem, VsCodeUtils } from '../../../helpers/vsCodeUtils';
-import { Strings } from '../../../strings';
-import { CrashGenerator } from '../../crashes/crashGenerator';
-import { Command } from '../command';
+import { AppCenterUrlBuilder } from '../../helpers/appCenterUrlBuilder';
+import { AppCenterProfile } from '../../helpers/interfaces';
+import { IButtonMessageItem, VsCodeUtils } from '../../helpers/vsCodeUtils';
+import { Strings } from '../../strings';
+import { CrashGenerator } from '../crashes/crashGenerator';
+import { Command } from './command';
 
 export default class SimulateCrashes extends Command {
 

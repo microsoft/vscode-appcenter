@@ -1,15 +1,17 @@
 import * as os from "os";
 import * as vscode from "vscode";
 import { models } from "../appcenter/apis";
-import { AppCenterBeacons, AppCenterDistributionTabs, CommandNames } from "../constants";
+import SimulateCrashes from "../appcenter/commands/simulateCrashes";
+import { AppCenterBeacons, AppCenterCrashesTabs, AppCenterDistributionTabs, CommandNames } from "../constants";
 import { Strings } from "../strings";
 import { AppCenterUrlBuilder } from "./appCenterUrlBuilder";
-import { Profile, QuickPickAppItem, UserOrOrganizationItem } from "./interfaces";
+import { CommandParams, Profile, QuickPickAppItem, UserOrOrganizationItem } from "./interfaces";
+import { SettingsHelper } from "./settingsHelper";
 import { Utils } from "./utils";
 import { CustomQuickPickItem } from "./vsCodeUtils";
 
 export class MenuHelper {
-    public static handleMenuPortalQuickPickSelection(selected: string, ownerName: string, appName: string, isOrg: boolean) {
+    public static handleMenuPortalQuickPickSelection(params: CommandParams, selected: string, ownerName: string, appName: string, isOrg: boolean) {
         if (!ownerName && !appName) {
             throw new Error("ShowMenu: OwnerName or AppName not specified");
         }
@@ -39,7 +41,21 @@ export class MenuHelper {
                     });
                 break;
             case (AppCenterBeacons.Crashes):
-                Utils.OpenUrl(AppCenterUrlBuilder.GetAppCenterLinkByBeacon(ownerName, appName, AppCenterBeacons.Crashes, isOrg));
+                vscode.window.showQuickPick(MenuHelper.getAppCenterCrashesTabMenuItems(), { placeHolder: Strings.MenuTitlePlaceholder })
+                    .then((selected: QuickPickAppItem) => {
+                        if (!selected) {
+                            return;
+                        }
+                        switch (selected.target) {
+                            case (AppCenterCrashesTabs.Crashes):
+                                Utils.OpenUrl(AppCenterUrlBuilder.GetAppCenterLinkByBeacon(ownerName, appName, AppCenterBeacons.Crashes, isOrg));
+                                break;
+                            case (AppCenterCrashesTabs.Simulate):
+                                new SimulateCrashes(params).run();
+                            default:
+                                break;
+                        }
+                    });
                 break;
             case (AppCenterBeacons.Analytics):
                 Utils.OpenUrl(AppCenterUrlBuilder.GetAppCenterLinkByBeacon(ownerName, appName, AppCenterBeacons.Analytics, isOrg));
@@ -115,6 +131,23 @@ export class MenuHelper {
             target: AppCenterDistributionTabs.Releases
         });
         return getAppCenterDistributeTabMenuItems;
+    }
+
+    public static getAppCenterCrashesTabMenuItems(): CustomQuickPickItem[] {
+        const getAppCenterCrashesTabMenuItems: CustomQuickPickItem[] = [];
+        getAppCenterCrashesTabMenuItems.push(<CustomQuickPickItem>{
+            label: Strings.CrashesTabMenuItem,
+            description: Strings.OpenTabInBrowserMsg(Strings.CrashesTabMenuItem),
+            target: AppCenterCrashesTabs.Crashes
+        });
+        if (SettingsHelper.isCrashesEnabled()) {
+            getAppCenterCrashesTabMenuItems.push(<CustomQuickPickItem>{
+                label: Strings.SimulateCrashesMenuLabel,
+                description: Strings.SimulateCrashesMenuDescription,
+                target: AppCenterCrashesTabs.Simulate
+            });
+        }
+        return getAppCenterCrashesTabMenuItems;
     }
 
     public static getCreateAppOptions(): vscode.QuickPickItem[] {

@@ -23,7 +23,8 @@ export class Strings {
     public static CreateAppPlaceholder: string = "Choose the app to be created";
     public static SettingsMenuLabel: string = "Settings";
     public static SettingsMenuDescription: string = "";
-    public static CrashesMenuLabel: string = "Simulate Crashes";
+    public static SimulateCrashesMenuLabel: string = "Simulate Crashes";
+    public static SimulateCrashesMenuDescription: string = "Send test crash data to your current application in App Center";
     public static LinkCodePushMenuLabel: string = "Link Code Push";
     public static LinkAppCenterMenuLabel: string = "Link App Center";
     public static LinkCodePushMenuDescription: string = "Link Code Push SDK to your application";

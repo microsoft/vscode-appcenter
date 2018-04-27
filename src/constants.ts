@@ -79,6 +79,7 @@ export class CommandNames {
     public static Start: string = CommandNames.CommandPrefix + "start";
     public static GetCurrentApp: string = CommandNames.CommandPrefix + "getCurrentApp";
     public static SetCurrentApp: string = CommandNames.CommandPrefix + "setCurrentApp";
+    public static SimulateCrashes: string = CommandNames.CommandPrefix + "simulateCrashes";
 
     public static Settings = class {
         public static ShowMenu: string = `${CommandNames.CommandPrefix}settings.showMenu`;
@@ -102,7 +103,6 @@ export class CommandNames {
 
     public static Tools = class {
         public static ShowTools: string = `${CommandNames.CommandPrefix}tools`;
-        public static SimulateCrashes: string = `${CommandNames.CommandPrefix}tools.simulateCrashes`;
         public static LinkAppCenter: string = `${CommandNames.CommandPrefix}tools.linkAppCenter`;
     };
 
@@ -160,6 +160,11 @@ export enum AppCenterDistributionTabs {
     Groups = "distribution-groups",
     CodePush = "code-push",
     Releases = "releases"
+}
+
+export enum AppCenterCrashesTabs {
+    Crashes = "crashes-portal",
+    Simulate = "simulate-crashes"
 }
 
 export enum AppCenteAppType {
