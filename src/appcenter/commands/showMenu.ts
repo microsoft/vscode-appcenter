@@ -113,7 +113,7 @@ export default class ShowMenu extends Command {
                     case (AppCenterBeacons.Distribute):
                     case (AppCenterBeacons.Analytics):
                     case (AppCenterBeacons.Crashes):
-                        MenuHelper.handleMenuPortalQuickPickSelection(selected.target, this.ownerName, this.appName, this.isOrg);
+                        MenuHelper.handleMenuPortalQuickPickSelection(this._params, selected.target, this.ownerName, this.appName, this.isOrg);
                         break;
 
                     case (AppCenterBeacons.Test):
