@@ -19,7 +19,7 @@ There are several possible scenarios this extension solves:
     * Login to App Center using the status bar icon.
 
         ![Login to App Center](images/appcenter-login.png)
-    * After logging in, click the App Center status bar to show possible menu options and shoose `Start new project`.
+    * After logging in, click the App Center status bar to show possible menu options and shoose `Start a new project`.
 
         ![AppCenter Menu](images/appcenter-start-new-idea.png)
     * You will be prompted to enter a new name for your project and select user or organization where you would like to create app in App Center.
@@ -52,43 +52,43 @@ There are several possible scenarios this extension solves:
     When the current app is set, several new options appear in the menu:
     * Build
     * Test (only for iOS)
+    * CodePush
     * Distribute
     * Crashes
     * Analytics
-    * Code Push
 
-    They all open the corresponding App Center tabs for the application. `Code Push` also contains CodePush stuff.
+    They all open the corresponding App Center tabs for the application. `CodePush` also contains CodePush stuff.
 
     ![App Center Portal](images/appcenter-portal.png)
 
-    >Tip: If you enable `appcenter.crashes` setting, you will see `Simulate crashes` menu option under `Tools`. It sends test crash data to the linked App Center application.
+    >Tip: If you enable `appcenter.crashes` setting, you will see `Simulate crashes` menu option under `Crashes`. It sends test crash data to the linked App Center application.
 
 3. Link CodePush module to an existing React Native application.
-    When inside of a React Native application, you will see a `Link Code Push` button under `Code Push` menu. Choose it.
+    When inside of a React Native application, you will see a `Link CodePush` button under `CodePush` menu. Choose it.
 
     * You will be prompted to choose an Android and iOS app to link.
-    * Code Push SDK for React Native will be installed and saved into your `plugin.json`.
+    * CodePush SDK for React Native will be installed and saved into your `plugin.json`.
     * Deployment keys for the chosen applications will be fetched or created
     * We will run `react-native link react-native-code-push` for you and automatically fill all the prompts, and notify you when finished.
 
 4. Link App Center to an existing React Native application.
-    When inside of a React Native application, you will see a `Link App Center` button under `Tools` menu. Choose it.
+    When inside of a React Native application, you will see an `Install SDK` button in menu. Choose it.
 
     * You will be prompted to choose an Android and iOS app to link.
     * App Center SDK for React Native will be installed and saved into your `plugin.json`.
     * App secrets for the chosen applications will be fetched
     * We will run `react-native link appcenter` for you and show you the secrets to be pasted.
-    > Pay attention: Unlike linking Code Push, you will have to paste these secrets in the Terminal yourself when prompted. 
+    > Pay attention: Unlike linking CodePush, you will have to paste these secrets in the Terminal yourself when prompted. 
 
 5. You would like to open already existing React Native application with CodePush installed. When logged in, the following App Center Menu options should be avaliable under `CodePush`:
-    * Link Code Push
-    * Set current app for CodePush
+    * Link CodePush
+    * Navigate to CodePush tab in App Center
+    * Make a new CodePush release
     * Change current Deployment
     * Change target binary verson 
     * Change if release should be mandatory
-    * Make new CodePush release
 
-    ![Code Push](images/appcenter-code-push.png)
+    ![CodePush](images/appcenter-code-push.png)
 
 ## Test
 

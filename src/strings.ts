@@ -25,9 +25,9 @@ export class Strings {
     public static SettingsMenuDescription: string = "";
     public static SimulateCrashesMenuLabel: string = "Simulate Crashes";
     public static SimulateCrashesMenuDescription: string = "Send test crash data to your current application in App Center";
-    public static LinkCodePushMenuLabel: string = "Link Code Push";
+    public static LinkCodePushMenuLabel: string = "Link CodePush";
     public static LinkAppCenterMenuLabel: string = "Link App Center";
-    public static LinkCodePushMenuDescription: string = "Link Code Push SDK to your application";
+    public static LinkCodePushMenuDescription: string = "Link CodePush SDK to your application";
     public static LinkAppCenterMenuDescription: string = "Link App Center SDK to your application";
     public static InstallSDKMenuLabel: string = "Install SDK";
     public static InstallSDKMenuDescription: string = "Link the App Center or CodePush SDK to your project";
@@ -68,7 +68,7 @@ export class Strings {
 
     public static NoIdeaNameSelectedMsg: string = "Please enter a name for your project.";
     public static VSCodeProgressLoadingTitle: string = "Loading...";
-    public static InstallCodePushTitle: string = "Installing Code Push...";
+    public static InstallCodePushTitle: string = "Installing CodePush...";
     public static InstallAppCenterTitle: string = "Installing App Center modules...";
     public static LinkCodePushTitle: string = "Linking React Native Module for CodePush...";
     public static CheckIfAppsExistLoadingMessage: string = "Checking if project name is already in use...";
@@ -142,7 +142,7 @@ export class Strings {
     public static RunningBundleCommandMessage: string = "Creating a new bundle...";
     public static ArchivingUpdateContentsMessage: string = "Compressing new bundle...";
     public static ReactNativeInstallHint: string = "Make sure you ran \"npm install\" and that you are inside a React Native project.";
-    public static CodePushInstallHint: string = "Make sure you ran \"npm install\" and that you are inside a React Native Code Push project.";
+    public static CodePushInstallHint: string = "Make sure you ran \"npm install\" and that you are inside a React Native CodePush project.";
     public static AppCenterInstallHint: string = "Make sure you ran \"npm install\" and that you are inside a React Native App Center project.";
     public static ReleasingUpdateContentsMessage: string = "Sending update to CodePush...";
     public static RepoManualConnectBtnLabel: string = "Connect";
@@ -151,9 +151,9 @@ export class Strings {
     public static OnlyIOSError: string = "Running UI tests is supported only for iOS.";
     public static AppCreatedBtnLabel: string = "Check it out";
     public static NotReactProjectMsg: string = "This command can only be executed from a React Native project. Check out the Output window for more details.";
-    public static CodePushAlreadyLinked: string = "Code Push has already been linked to this application.";
-    public static NotCodePushProjectMsg: string = "This command can only be executed from a React Native project with Code Push installed. Check out the Output window for more details.";
-    public static CodePushLinkedMsg: string = "Code Push has been successfully linked to your application!";
+    public static CodePushAlreadyLinked: string = "CodePush has already been linked to this application.";
+    public static NotCodePushProjectMsg: string = "This command can only be executed from a React Native project with CodePush installed. Check out the Output window for more details.";
+    public static CodePushLinkedMsg: string = "CodePush has been successfully linked to your application!";
     public static AppCenterLinkedMsg: string = "App Center has been successfully linked to your application!";
     public static AppCenterBeforeLinkMsg: string = "We will run 'react-native link' command for you. When you press OK, you will see a message with your app secrets.";
 
@@ -163,7 +163,7 @@ export class Strings {
     public static FailedToCreateVSTSGitrepository: string = `An error occurred while creating your new VSTS repository`;
     public static FailedToCreateAppAlreadyExistInAppCenter: string = `An app with that name already exists in App Center. Please choose a new name.`;
     public static FailedToCreateDeployments: string = `Failed to create deployments for the app. Check out the output window for more details.`;
-    public static FailedToLinkCodePush: string = `Failed to link Code Push to the application. Check out the Output window for more details.`;
+    public static FailedToLinkCodePush: string = `Failed to link CodePush to the application. Check out the Output window for more details.`;
     public static FailedToLinkAppCenter: string = `Failed to link App Center to the application. Check out the Output window for more details.`;
 
     public static SimulateCrashesMessage: string = "Generating crash data for you...";
