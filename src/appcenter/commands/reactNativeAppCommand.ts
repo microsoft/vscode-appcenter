@@ -52,9 +52,10 @@ export class ReactNativeAppCommand extends Command {
                 if (profile && profile.currentApp) {
                     if (refreshDeployments) {
                         try {
-                            const result: models.Deployment = await this.client.codePushDeployments.get(Constants.CodePushStagingDeploymentName, profile.currentApp.ownerName, profile.currentApp.appName);
+                            const result: models.Deployment[] = await this.client.codePushDeployments.list(profile.currentApp.ownerName, profile.currentApp.appName);
                             if (result) {
-                                profile.currentApp.currentAppDeployments.codePushDeployments.push(result);
+                                profile.currentApp.currentAppDeployments.codePushDeployments = [];
+                                profile.currentApp.currentAppDeployments.codePushDeployments.push(...result);
                                 profile.currentApp.currentAppDeployments.currentDeploymentName = Constants.CodePushStagingDeploymentName;
                             }
                         } catch (err) { }
@@ -70,12 +71,14 @@ export class ReactNativeAppCommand extends Command {
         throw Error("handleShowCurrentAppQuickPickSelection not implemented in base class");
     }
 
-    protected async showAppsQuickPick(rnApps: models.AppResponse[], includeSelectCurrent: boolean = false, includeCreateNew: boolean = true, prompt: string = Strings.ProvideCurrentAppPromptMsg) {
+    protected async showAppsQuickPick(rnApps: models.AppResponse[], includeSelectCurrent: boolean = false, includeCreateNew: boolean = true, prompt: string = Strings.ProvideCurrentAppPromptMsg, force: boolean = false) {
         if (!rnApps) {
             this.logger.debug("Do not show apps quick pick due to no apps (either in cache or fetched from server");
             return;
         }
-        ReactNativeAppCommand.cachedApps = rnApps;
+        if (!force) {
+            ReactNativeAppCommand.cachedApps = rnApps;
+        }
         const options: QuickPickAppItem[] = MenuHelper.getQuickPickItemsForAppsList(rnApps);
         if (includeCreateNew) {
             const createNewAppItem = {
@@ -97,7 +100,7 @@ export class ReactNativeAppCommand extends Command {
                 options.splice(0, 0, currentAppItem);
             }
         }
-        if (!this.userAlreadySelectedApp) {
+        if (!this.userAlreadySelectedApp || force) {
             vscode.window.showQuickPick(options, { placeHolder: prompt })
                 .then((selected: QuickPickAppItem) => {
                     this.userAlreadySelectedApp = true;
