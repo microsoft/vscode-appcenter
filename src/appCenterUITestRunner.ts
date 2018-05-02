@@ -100,7 +100,7 @@ export default abstract class AppCenterUITestRunner {
 
     protected async spawnProcess(command: string, args: string[]): Promise<boolean> {
         try {
-            await cpUtils.executeCommand(this.options.logger, false, this.nativeAppDirectory, command, [], ...args);
+            await cpUtils.executeCommand(this.options.logger, false, this.nativeAppDirectory, command, [], false, ...args);
         } catch (e) {
             this.options.logger.error(e.message, e, true);
             return false;

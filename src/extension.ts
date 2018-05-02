@@ -47,6 +47,8 @@ function registerAppCenterCommands(context: vscode.ExtensionContext): void {
         () => _extensionManager.RunCommand(() => appCenterCommandHandler.SetCurrentApp())));
     context.subscriptions.push(vscode.commands.registerCommand(CommandNames.SimulateCrashes,
         () => _extensionManager.RunCommand(() => appCenterCommandHandler.SimulateCrashes())));
+    context.subscriptions.push(vscode.commands.registerCommand(CommandNames.InstallSDK,
+        () => _extensionManager.RunCommand(() => appCenterCommandHandler.InstallSDK())));
 
     // Settings commands
     const settingsCommandHandler = _extensionManager.commandHandlers.settingsCommandHandler;
@@ -79,11 +81,6 @@ function registerAppCenterCommands(context: vscode.ExtensionContext): void {
         () => _extensionManager.RunCommand(() => codepushCommandHandler.SetTargetBinaryVersion())));
     context.subscriptions.push(vscode.commands.registerCommand(CommandNames.CodePush.LinkCodePush,
         () => _extensionManager.RunCommand(() => codepushCommandHandler.LinkCodePush())));
-
-    // Tools commands
-    const toolsCommandHandler = _extensionManager.commandHandlers.toolsCommandHandler;
-    context.subscriptions.push(vscode.commands.registerCommand(CommandNames.Tools.LinkAppCenter,
-        () => _extensionManager.RunCommand(() => toolsCommandHandler.linkAppCenter())));
 
     // Test commands
     const testCommandHandler = _extensionManager.commandHandlers.testCommandHandler;

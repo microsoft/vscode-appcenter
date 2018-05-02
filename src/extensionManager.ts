@@ -15,14 +15,12 @@ class CommandHandlersContainer {
     private _settingsCommandHandler: CommandHandlers.Settings;
     private _codePushCommandHandler: CommandHandlers.CodePush;
     private _testCommandHandler: CommandHandlers.Test;
-    private _toolsCommandHandler: CommandHandlers.Tools;
 
     constructor(private manager: ExtensionManager, private logger: ILogger, private appCenterAuth: AppCenterAuth, private vstsAuth: VstsAuth) {
         this._appCenterCommandHandler = new CommandHandlers.AppCenter(this.manager, this.logger, this.appCenterAuth, this.vstsAuth);
         this._settingsCommandHandler = new CommandHandlers.Settings(this.manager, this.logger, this.appCenterAuth, this.vstsAuth);
         this._codePushCommandHandler = new CommandHandlers.CodePush(this.manager, this.logger, this.appCenterAuth, this.vstsAuth);
         this._testCommandHandler = new CommandHandlers.Test(this.manager, this.logger, this.appCenterAuth, this.vstsAuth);
-        this._toolsCommandHandler = new CommandHandlers.Tools(this.manager, this.logger, this.appCenterAuth, this.vstsAuth);
     }
 
     public get appCenterCommandHandler(): CommandHandlers.AppCenter {
@@ -39,10 +37,6 @@ class CommandHandlersContainer {
 
     public get testCommandHandler(): CommandHandlers.Test {
         return this._testCommandHandler;
-    }
-
-    public get toolsCommandHandler(): CommandHandlers.Tools {
-        return this._toolsCommandHandler;
     }
 }
 

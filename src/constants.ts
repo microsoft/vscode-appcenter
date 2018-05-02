@@ -80,6 +80,7 @@ export class CommandNames {
     public static GetCurrentApp: string = CommandNames.CommandPrefix + "getCurrentApp";
     public static SetCurrentApp: string = CommandNames.CommandPrefix + "setCurrentApp";
     public static SimulateCrashes: string = CommandNames.CommandPrefix + "simulateCrashes";
+    public static InstallSDK: string = `${CommandNames.CommandPrefix}installSDK`;
 
     public static Settings = class {
         public static ShowMenu: string = `${CommandNames.CommandPrefix}settings.showMenu`;
@@ -99,11 +100,6 @@ export class CommandNames {
         public static Android: string = `${CommandNames.CommandPrefix}appcenter.createNewApp.android`;
         public static IOS: string = `${CommandNames.CommandPrefix}appcenter.createNewApp.ios`;
         public static Both: string = `${CommandNames.CommandPrefix}appcenter.createNewApp.both`;
-    };
-
-    public static Tools = class {
-        public static ShowTools: string = `${CommandNames.CommandPrefix}tools`;
-        public static LinkAppCenter: string = `${CommandNames.CommandPrefix}tools.linkAppCenter`;
     };
 
     public static CodePush = class {

@@ -1,5 +1,6 @@
 import AppCenterPortalMenu from "../appcenter/commands/appCenterPortalMenu";
 import GetCurrentApp from "../appcenter/commands/getCurrentApp";
+import LinkAppCenter from "../appcenter/commands/linkAppCenter";
 import Login from "../appcenter/commands/login";
 import SetCurrentApp from "../appcenter/commands/setCurrentApp";
 import ShowMenu from "../appcenter/commands/showMenu";
@@ -39,5 +40,9 @@ export default class AppCenterCommandHandler extends BaseCommandHandler {
 
     public async SimulateCrashes(): Promise<void> {
         await new SimulateCrashes(this.getCommandParams()).run();
+    }
+
+    public async InstallSDK(): Promise<void> {
+        await new LinkAppCenter(this.getCommandParams()).run();
     }
 }
