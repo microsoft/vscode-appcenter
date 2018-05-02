@@ -7,15 +7,14 @@ import { Utils } from '../../helpers/utils';
 import { CustomQuickPickItem } from '../../helpers/vsCodeUtils';
 import { Strings } from '../../strings';
 import AppCenterPortalMenu from './appCenterPortalMenu';
-import * as CodePush from "./codepush";
 import { Command } from './command';
 import GetCurrentApp from './getCurrentApp';
+import LinkAppCenter from './linkAppCenter';
 import Login from './login';
 import SetCurrentApp from './setCurrentApp';
 import * as Settings from './settings';
 import Start from './start';
 import * as Test from "./test";
-import * as Tools from './tools';
 
 export default class ShowMenu extends Command {
     private _params: CommandParams;
@@ -63,14 +62,6 @@ export default class ShowMenu extends Command {
                 }
             }
 
-            if (Utils.isReactNativeProject(this.logger, this.rootPath, false)) {
-                appCenterMenuOptions.push(<CustomQuickPickItem>{
-                    label: Strings.CodePushMenuLabelItem,
-                    description: Strings.CodePushMenuLabelDescription,
-                    target: CommandNames.CodePush.ShowMenu
-                });
-            }
-
             appCenterMenuOptions.push(<CustomQuickPickItem>{
                 label: Strings.AppCenterPortalMenuLabel,
                 description: Strings.AppCenterPortalMenuDescription,
@@ -83,13 +74,13 @@ export default class ShowMenu extends Command {
                     description: Strings.MenuCurrentAppDescription,
                     target: CommandNames.SetCurrentApp
                 });
-            }
 
-            appCenterMenuOptions.push(<CustomQuickPickItem>{
-                label: Strings.ToolsMenuLabel,
-                description: Strings.ToolsMenuDescription,
-                target: CommandNames.Tools.ShowTools
-            });
+                appCenterMenuOptions.push(<CustomQuickPickItem>{
+                    label: Strings.InstallSDKMenuLabel,
+                    description: Strings.InstallSDKMenuDescription,
+                    target: CommandNames.InstallSDK
+                });
+            }
 
             appCenterMenuOptions.push(<CustomQuickPickItem>{
                 label: Strings.SettingsMenuLabel,
@@ -113,7 +104,7 @@ export default class ShowMenu extends Command {
                     case (AppCenterBeacons.Distribute):
                     case (AppCenterBeacons.Analytics):
                     case (AppCenterBeacons.Crashes):
-                        MenuHelper.handleMenuPortalQuickPickSelection(this._params, selected.target, this.ownerName, this.appName, this.isOrg);
+                        MenuHelper.handleMenuPortalQuickPickSelection(this._params, selected.target, this.ownerName, this.appName, this.isOrg, Utils.isReactNativeProject(this.logger, this.rootPath, false));
                         break;
 
                     case (AppCenterBeacons.Test):
@@ -144,12 +135,8 @@ export default class ShowMenu extends Command {
                         new Settings.ShowMenu(this._params).run();
                         break;
 
-                    case (CommandNames.Tools.ShowTools):
-                        new Tools.ShowMenu(this._params).runNoClient();
-                        break;
-
-                    case (CommandNames.CodePush.ShowMenu):
-                        new CodePush.ShowMenu(this._params).run();
+                    case (CommandNames.InstallSDK):
+                        new LinkAppCenter(this._params).run();
                         break;
 
                     default:

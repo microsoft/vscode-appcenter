@@ -74,6 +74,11 @@
                 "category": "App Center"
             },
             {
+                "command": "appcenter.installSDK",
+                "title": "Install SDK",
+                "category": "App Center"
+            },
+            {
                 "command": "appcenter.settings.loginToAnotherAccount",
                 "title": "Login to another App Center account",
                 "category": "App Center Settings"
@@ -137,11 +142,6 @@
                 "command": "appcenter.codepush.linkCodePush",
                 "title": "Link Code Push",
                 "category": "App Center Code Push"
-            },
-            {
-                "command": "appcenter.tools.linkAppCenter",
-                "title": "Link App Center",
-                "category": "App Center Tools"
             },
             {
                 "command": "appcenter.test.runUITests",

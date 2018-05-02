@@ -26,42 +26,30 @@ export default class ShowMenu extends Command {
         if (profiles.length > 1) {
             menuOptions.push(<CustomQuickPickItem>{
                 label: Strings.SwitchAccountMenuLabel,
-                description: "",
+                description: Strings.SwitchAccountMenuDescription,
                 target: CommandNames.Settings.SwitchAccount
             });
         }
 
         menuOptions.push(<CustomQuickPickItem>{
             label: Strings.LoginToAnotherAccountMenuLabel,
-            description: "",
+            description: Strings.LoginToAnotherAccountMenuDescription,
             target: CommandNames.Settings.LoginToAnotherAccount
-        });
-
-        menuOptions.push(<CustomQuickPickItem>{
-            label: Strings.LogoutMenuLabel,
-            description: "",
-            target: CommandNames.Settings.Logout
         });
 
         const vstsProfiles = await this.vstsAuth.getProfiles();
         if (vstsProfiles.length > 1) {
             menuOptions.push(<CustomQuickPickItem>{
                 label: Strings.VstsSwitchAccountMenuLabel,
-                description: "",
+                description: Strings.VstsSwitchAccountMenuDescription,
                 target: CommandNames.Settings.SwitchAccountVsts
             });
         }
 
         menuOptions.push(<CustomQuickPickItem>{
             label: Strings.VstsLoginToAnotherAccountMenuLabel,
-            description: "",
+            description: Strings.VstsLoginToAnotherAccountMenuDescription,
             target: CommandNames.Settings.LoginVsts
-        });
-
-        menuOptions.push(<CustomQuickPickItem>{
-            label: Strings.VstsLogoutMenuLabel,
-            description: "",
-            target: CommandNames.Settings.LogoutVsts
         });
 
         if (SettingsHelper.shouldStatusBarBeShown()) {

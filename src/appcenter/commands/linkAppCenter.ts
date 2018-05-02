@@ -1,8 +1,8 @@
-import AppCenterLinker from '../../../appCenterLinker';
-import { Utils } from '../../../helpers/utils';
-import { VsCodeUtils } from '../../../helpers/vsCodeUtils';
-import { Strings } from '../../../strings';
-import { LinkCommand } from '../linkCommand';
+import AppCenterLinker from '../../appCenterLinker';
+import { Utils } from '../../helpers/utils';
+import { VsCodeUtils } from '../../helpers/vsCodeUtils';
+import { Strings } from '../../strings';
+import { LinkCommand } from './linkCommand';
 
 export default class LinkAppCenter extends LinkCommand {
 
