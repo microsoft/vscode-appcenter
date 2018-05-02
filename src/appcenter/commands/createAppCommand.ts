@@ -1,14 +1,19 @@
 import * as vscode from "vscode";
 import AppCenterAppBuilder from "../../appCenterAppBuilder";
-import { Profile, UserOrOrganizationItem } from '../../helpers/interfaces';
+import { Constants } from "../../constants";
+import { AppCenterUrlBuilder } from "../../helpers/appCenterUrlBuilder";
+import { CreatedAppFromAppCenter, Profile, QuickPickAppItem, UserOrOrganizationItem } from '../../helpers/interfaces';
 import { MenuHelper } from "../../helpers/menuHelper";
+import { Utils } from "../../helpers/utils";
 import { Validators } from "../../helpers/validators";
-import { CustomQuickPickItem, VsCodeUtils } from '../../helpers/vsCodeUtils';
+import { CustomQuickPickItem, IButtonMessageItem, VsCodeUtils  } from '../../helpers/vsCodeUtils';
 import { Strings } from '../../strings';
 import { models } from '../apis';
 import { Command } from './command';
 
 export class CreateAppCommand extends Command {
+
+    protected userOrOrg: UserOrOrganizationItem;
 
     public async run(): Promise<boolean | void> {
         if (!await super.run()) {
@@ -100,6 +105,67 @@ export class CreateAppCommand extends Command {
                     return userOrOrgItem;
                 } else {
                     return null;
+                }
+            });
+    }
+
+    protected async setCurrentApp(app: CreatedAppFromAppCenter) {
+        return this.saveCurrentApp(
+            `${this.userOrOrg.name}/${app.appName}`,
+            Utils.toAppCenterOS(app.os),
+            null,
+            Constants.AppCenterDefaultTargetBinaryVersion,
+            this.userOrOrg.isOrganization ? "organization" : "user",
+            Constants.AppCenterDefaultIsMandatoryParam,
+            app.appSecret
+        );
+    }
+
+    protected async pickApp(apps: CreatedAppFromAppCenter[]) {
+        if (apps.length < 2) {
+            VsCodeUtils.ShowErrorMessage(Strings.FailedToCreateAppInAppCenter);
+            return;
+        }
+
+        const messageItems: IButtonMessageItem[] = [];
+
+        messageItems.push({
+            title: `Go to ${apps[0].appName}`,
+            url: AppCenterUrlBuilder.GetAppCenterAppLink(this.userOrOrg.name, apps[0].appName, this.userOrOrg.isOrganization)
+        });
+
+        messageItems.push({
+            title: `Go to ${apps[1].appName}`,
+            url: AppCenterUrlBuilder.GetAppCenterAppLink(this.userOrOrg.name, apps[1].appName, this.userOrOrg.isOrganization)
+        });
+
+        VsCodeUtils.ShowInfoMessage(Strings.AppCreatedMsg(apps[0].appName, false, apps[1].appName), ...messageItems);
+
+        const options: QuickPickAppItem[] = [
+            {
+                label: apps[0].appName,
+                description: "",
+                target: `0`
+            },
+            {
+                label: apps[1].appName,
+                description: "",
+                target: `1`
+            }
+        ];
+        await vscode.window.showQuickPick(options, { placeHolder: Strings.ChooseAppToBeSet })
+            .then(async (selected: QuickPickAppItem) => {
+                if (selected) {
+                    await this.setCurrentApp(apps[+selected.target]);
+                    const messageItems: IButtonMessageItem[] = [];
+                    const appUrl = AppCenterUrlBuilder.GetAppCenterAppLink(this.userOrOrg.name, apps[+selected.target].appName, this.userOrOrg.isOrganization);
+                    messageItems.push({
+                        title: Strings.AppCreatedBtnLabel,
+                        url: appUrl
+                    });
+                    return VsCodeUtils.ShowInfoMessage(Strings.AppCreatedMsg(apps[+selected.target].appName), ...messageItems);
+                } else {
+                    return false;
                 }
             });
     }
