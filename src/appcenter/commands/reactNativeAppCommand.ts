@@ -1,19 +1,27 @@
 import { Md5 } from "ts-md5/dist/md5";
 import * as vscode from "vscode";
 import { CommandNames, Constants } from '../../constants';
-import { AppCenterProfile, CurrentApp, QuickPickAppItem } from '../../helpers/interfaces';
+import { AppCenterProfile, CommandParams, CurrentApp, QuickPickAppItem } from '../../helpers/interfaces';
 import { MenuHelper } from "../../helpers/menuHelper";
 import { Utils } from '../../helpers/utils';
 import { VsCodeUtils } from '../../helpers/vsCodeUtils';
 import { Strings } from '../../strings';
 import { models } from '../apis';
 import { Command } from './command';
+import { CreateNewApp, CreateNewAppOption } from "./createNewApp";
 
 export class ReactNativeAppCommand extends Command {
     protected currentAppMenuTarget: string = "MenuCurrentApp";
     protected static cachedApps: models.AppResponse[];
     protected userAlreadySelectedApp: boolean;
     protected checkForReact: boolean = true;
+
+    protected _params: CommandParams;
+
+    constructor(params: CommandParams) {
+        super(params);
+        this._params = params;
+    }
 
     public get CachedApps(): models.AppResponse[] | null {
         if (ReactNativeAppCommand.cachedApps && ReactNativeAppCommand.cachedApps.length > 0) {
@@ -156,5 +164,33 @@ export class ReactNativeAppCommand extends Command {
         const hashOfTheCachedObject = Md5.hashStr(JSON.stringify(cachedItem));
         const hashOfTheIncomingObject = Md5.hashStr(JSON.stringify(item));
         return hashOfTheCachedObject === hashOfTheIncomingObject;
+    }
+
+    protected showCreateAppOptions() {
+        const appCenterPortalTabOptions: vscode.QuickPickItem[] = MenuHelper.getCreateAppOptions();
+
+        return vscode.window.showQuickPick(appCenterPortalTabOptions, { placeHolder: Strings.CreateAppPlaceholder })
+            .then(async (selected: QuickPickAppItem) => {
+                if (!selected) {
+                    this.logger.debug('User cancel selection of create app tab');
+                    return;
+                }
+
+                switch (selected.target) {
+                    case (CommandNames.CreateApp.Android):
+                        new CreateNewApp(this._params, CreateNewAppOption.Android).run();
+                        break;
+                    case (CommandNames.CreateApp.IOS):
+                        new CreateNewApp(this._params, CreateNewAppOption.IOS).run();
+                        break;
+                    case (CommandNames.CreateApp.Both):
+                        new CreateNewApp(this._params, CreateNewAppOption.Both).run();
+                        break;
+                    default:
+                        // Ideally shouldn't be there :)
+                        this.logger.error("Unknown create app option");
+                        break;
+                }
+            });
     }
 }

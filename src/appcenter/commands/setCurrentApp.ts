@@ -1,23 +1,17 @@
 import * as vscode from "vscode";
 import { AppCenterOS, CommandNames, Constants } from "../../constants";
 import { CommandParams, CurrentApp, CurrentAppDeployments, QuickPickAppItem } from "../../helpers/interfaces";
-import { MenuHelper } from "../../helpers/menuHelper";
-
 import { Utils } from "../../helpers/utils";
 
 import { VsCodeUtils } from "../../helpers/vsCodeUtils";
 import { Strings } from "../../strings";
 import { models } from "../apis";
 import { Deployment } from "../apis/generated/models";
-import { CreateNewApp, CreateNewAppOption } from "./createNewApp";
 import { ReactNativeAppCommand } from './reactNativeAppCommand';
 
 export default class SetCurrentApp extends ReactNativeAppCommand {
-
-    private _params: CommandParams;
     constructor(params: CommandParams) {
         super(params);
-        this._params = params;
     }
 
     public async run(): Promise<void> {
@@ -88,33 +82,5 @@ export default class SetCurrentApp extends ReactNativeAppCommand {
                 this.logger.error("Failed to save current app");
             }
         }
-    }
-
-    private showCreateAppOptions() {
-        const appCenterPortalTabOptions: vscode.QuickPickItem[] = MenuHelper.getCreateAppOptions();
-
-        return vscode.window.showQuickPick(appCenterPortalTabOptions, { placeHolder: Strings.CreateAppPlaceholder })
-            .then(async (selected: QuickPickAppItem) => {
-                if (!selected) {
-                    this.logger.debug('User cancel selection of create app tab');
-                    return;
-                }
-
-                switch (selected.target) {
-                    case (CommandNames.CreateApp.Android):
-                        new CreateNewApp(this._params, CreateNewAppOption.Android).run();
-                        break;
-                    case (CommandNames.CreateApp.IOS):
-                        new CreateNewApp(this._params, CreateNewAppOption.IOS).run();
-                        break;
-                    case (CommandNames.CreateApp.Both):
-                        new CreateNewApp(this._params, CreateNewAppOption.Both).run();
-                        break;
-                    default:
-                        // Ideally shouldn't be there :)
-                        this.logger.error("Unknown create app option");
-                        break;
-                }
-            });
     }
 }
