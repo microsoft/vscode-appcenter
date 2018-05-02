@@ -217,7 +217,14 @@ export class Strings {
     }
 
     public static AppCenterSecretsHint(androidSecret: string, iosSecret: string): string {
-        return `Paste these app secrets when needed. Android app secret:< ${androidSecret}   > iOS app secret:<   ${iosSecret}   >`;
+        let secretsHint = "Paste these app secrets when needed. ";
+        if (androidSecret) {
+            secretsHint += ` Android app secret:< ${androidSecret}   > `;
+        }
+        if (iosSecret) {
+            secretsHint += ` iOS app secret:<   ${iosSecret}   > `;
+        }
+        return secretsHint;
     }
 
     public static YourCurrentAppAndDeploymentMsg(appName: string, deploymentName: string): string {
