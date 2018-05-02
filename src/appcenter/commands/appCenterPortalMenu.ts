@@ -1,17 +1,10 @@
-import * as vscode from "vscode";
-import { AppCenteAppType, CommandNames } from "../../constants";
-import { CommandParams, CurrentApp, QuickPickAppItem } from "../../helpers/interfaces";
-import { MenuHelper } from "../../helpers/menuHelper";
-import { Utils } from "../../helpers/utils";
-import { CustomQuickPickItem } from "../../helpers/vsCodeUtils";
-import { Strings } from "../../strings";
+import { CommandNames } from "../../constants";
+import { CommandParams, QuickPickAppItem } from "../../helpers/interfaces";
 import { models } from "../apis";
+import * as AppCenterPortal from "./portal";
 import { ReactNativeAppCommand } from "./reactNativeAppCommand";
 
 export default class AppCenterPortalMenu extends ReactNativeAppCommand {
-    private appName: string;
-    private ownerName: string;
-    private isOrg: boolean;
 
     constructor(params: CommandParams) {
         super(params);
@@ -45,33 +38,7 @@ export default class AppCenterPortalMenu extends ReactNativeAppCommand {
                 selectedApp = selectedApps[0];
             }
 
-            if (selectedApp) {
-                this.isOrg = selectedApp.owner.type.toLowerCase() === AppCenteAppType.Org.toLowerCase();
-                this.appName = selectedApp.name;
-                this.ownerName = selectedApp.owner.name;
-            } else {
-                const currentApp: CurrentApp | null = await this.getCurrentApp();
-                if (currentApp) {
-                    this.isOrg = currentApp.type.toLowerCase() === AppCenteAppType.Org.toLowerCase();
-                    this.appName = currentApp.appName;
-                    this.ownerName = currentApp.ownerName;
-                } else {
-                    this.logger.error("Current app is undefiend");
-                    throw new Error("Current app is undefiend");
-                }
-            }
-            this.showAppCenterPortalMenuQuickPick(MenuHelper.getAppCenterPortalMenuItems(Utils.isReactNativeProject(this.logger, this.rootPath, false)));
+            new AppCenterPortal.ShowMenu(this._params, selectedApp).run();
         }
-    }
-
-    private async showAppCenterPortalMenuQuickPick(appCenterMenuOptions: CustomQuickPickItem[]): Promise<void> {
-        return vscode.window.showQuickPick(appCenterMenuOptions, { placeHolder: Strings.MenuTitlePlaceholder })
-            .then(async (selected: QuickPickAppItem) => {
-                if (!selected) {
-                    this.logger.info('Canceled selection of current App Center tabs');
-                    return;
-                }
-                MenuHelper.handleMenuPortalQuickPickSelection(this._params, selected.target, this.ownerName, this.appName, this.isOrg);
-            });
     }
 }

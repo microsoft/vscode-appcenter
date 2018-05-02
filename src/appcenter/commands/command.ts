@@ -19,6 +19,7 @@ export class Command {
     protected manager: ExtensionManager;
     protected logger: ILogger;
     protected vstsAuth: VstsAuth;
+    protected _params: CommandParams;
 
     constructor(commandParams: CommandParams) {
         this.manager = commandParams.manager;
@@ -26,6 +27,7 @@ export class Command {
         this.appCenterAuth = commandParams.appCenterAuth;
         this.vstsAuth = commandParams.vstsAuth;
         this.clientFactory = createAppCenterClient();
+        this._params = commandParams;
     }
 
     public get rootPath(): string {

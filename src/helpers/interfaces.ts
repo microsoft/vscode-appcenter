@@ -1,3 +1,4 @@
+import { QuickPickItem } from "vscode";
 import AppCenterAuth from "../appcenter/auth/appCenterAuth";
 import VstsAuth from "../appcenter/auth/vstsAuth";
 import { AppCenterOS } from "../constants";
@@ -119,4 +120,8 @@ export interface ReactNativeLinkInputValue {
     label: string; // a part of the string preceding the input.
     input: string; // the value we should paste into input.
     sent: boolean; // whether this value has been already sent.
+}
+
+export interface MenuItem extends QuickPickItem {
+    command: string;
 }

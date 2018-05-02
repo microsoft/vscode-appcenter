@@ -1,7 +1,7 @@
 import { Md5 } from "ts-md5/dist/md5";
 import * as vscode from "vscode";
 import { CommandNames, Constants } from '../../constants';
-import { AppCenterProfile, CommandParams, CurrentApp, QuickPickAppItem } from '../../helpers/interfaces';
+import { AppCenterProfile, CurrentApp, QuickPickAppItem } from '../../helpers/interfaces';
 import { MenuHelper } from "../../helpers/menuHelper";
 import { Utils } from '../../helpers/utils';
 import { VsCodeUtils } from '../../helpers/vsCodeUtils';
@@ -15,13 +15,6 @@ export class ReactNativeAppCommand extends Command {
     protected static cachedApps: models.AppResponse[];
     protected userAlreadySelectedApp: boolean;
     protected checkForReact: boolean = true;
-
-    protected _params: CommandParams;
-
-    constructor(params: CommandParams) {
-        super(params);
-        this._params = params;
-    }
 
     public get CachedApps(): models.AppResponse[] | null {
         if (ReactNativeAppCommand.cachedApps && ReactNativeAppCommand.cachedApps.length > 0) {
