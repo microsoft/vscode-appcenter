@@ -2,6 +2,7 @@ import * as vscode from "vscode";
 import { models } from "../appcenter/apis";
 import * as CodePush from "../appcenter/commands/codepush";
 import SimulateCrashes from "../appcenter/commands/simulateCrashes";
+import * as Test from "../appcenter/commands/test";
 import { AppCenterBeacons, AppCenterCrashesTabs, AppCenterDistributionTabs, CommandNames } from "../constants";
 import { Strings } from "../strings";
 import { AppCenterUrlBuilder } from "./appCenterUrlBuilder";
@@ -64,6 +65,8 @@ export class MenuHelper {
                 break;
             case (AppCenterBeacons.CodePush):
                 new CodePush.ShowMenu(params).run();
+            case (AppCenterBeacons.Test):
+                new Test.ShowMenu(params).runNoClient();
             default:
                 break;
         }
