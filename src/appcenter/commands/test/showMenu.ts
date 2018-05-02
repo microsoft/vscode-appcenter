@@ -7,10 +7,8 @@ import { Strings } from "../../../strings";
 import { ReactNativeAppCommand } from '../reactNativeAppCommand';
 
 export default class ShowMenu extends ReactNativeAppCommand {
-    private _params: CommandParams;
     constructor(params: CommandParams) {
         super(params);
-        this._params = params;
     }
 
     public async runNoClient(): Promise<boolean | void> {
