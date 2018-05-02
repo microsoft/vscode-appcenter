@@ -18,8 +18,9 @@ export default class LinkAppCenter extends LinkCommand {
 
         if (this.CachedApps) {
             this.showAppsQuickPick(this.CachedApps, true, false, Strings.ProvideSecondAppPromptMsg);
+        } else {
+            this.refreshCachedAppsAndRepaintQuickPickIfNeeded(true, false, false, Strings.ProvideFirstAppPromptMsg);
         }
-        this.refreshCachedAppsAndRepaintQuickPickIfNeeded(true, false, false, Strings.ProvideFirstAppPromptMsg);
     }
 
     protected async linkApps(): Promise<boolean> {

@@ -36,8 +36,6 @@ export default abstract class Auth<T extends Profile> {
         // TODO: Probably we need to delete token from server also?
         await tokenStore.remove(profile.userId);
 
-        // Remove saved profile if exists
-        await this.profileStorage.delete(profile.userId);
         await tokenStore.set(profile.userId, { token: token });
 
         // Make it active

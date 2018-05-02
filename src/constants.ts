@@ -145,6 +145,7 @@ export enum AppCenterPlatform {
 export enum AppCenterBeacons {
     Build = "Build",
     Test = "Test",
+    CodePush = "CodePush",
     Distribute = "Distribute",
     Crashes = "Crashes",
     Analytics = "Analytics",

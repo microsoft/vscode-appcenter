@@ -21,7 +21,7 @@ export default class SwitchAccount extends Command {
         profiles.forEach(profile => {
             if (!profile.isActive) {
                 menuOptions.push(<ProfileQuickPickItem>{
-                    label: profile.userName,
+                    label: profile.userId,
                     description: "",
                     profile: profile
                 });

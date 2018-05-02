@@ -2,6 +2,7 @@ import * as vscode from "vscode";
 import { AppCenteAppType } from "../../constants";
 import { CommandParams, CurrentApp, QuickPickAppItem } from "../../helpers/interfaces";
 import { MenuHelper } from "../../helpers/menuHelper";
+import { Utils } from "../../helpers/utils";
 import { CustomQuickPickItem } from "../../helpers/vsCodeUtils";
 import { Strings } from "../../strings";
 import { models } from "../apis";
@@ -57,7 +58,7 @@ export default class AppCenterPortalMenu extends ReactNativeAppCommand {
                 throw new Error("Current app is undefiend");
             }
         }
-        this.showAppCenterPortalMenuQuickPick(MenuHelper.getAppCenterPortalMenuItems());
+        this.showAppCenterPortalMenuQuickPick(MenuHelper.getAppCenterPortalMenuItems(Utils.isReactNativeProject(this.logger, this.rootPath, false)));
     }
 
     private async showAppCenterPortalMenuQuickPick(appCenterMenuOptions: CustomQuickPickItem[]): Promise<void> {

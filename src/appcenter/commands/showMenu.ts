@@ -58,7 +58,7 @@ export default class ShowMenu extends Command {
                     this.isOrg = currentApp.type.toLowerCase() === AppCenteAppType.Org.toLowerCase();
                     this.appName = currentApp.appName;
                     this.ownerName = currentApp.ownerName;
-                    appCenterMenuOptions = appCenterMenuOptions.concat(MenuHelper.getAppCenterPortalMenuItems());
+                    appCenterMenuOptions = appCenterMenuOptions.concat(MenuHelper.getAppCenterPortalMenuItems(Utils.isReactNativeProject(this.logger, this.rootPath, false)));
                 }
             }
 
@@ -104,7 +104,8 @@ export default class ShowMenu extends Command {
                     case (AppCenterBeacons.Distribute):
                     case (AppCenterBeacons.Analytics):
                     case (AppCenterBeacons.Crashes):
-                        MenuHelper.handleMenuPortalQuickPickSelection(this._params, selected.target, this.ownerName, this.appName, this.isOrg, Utils.isReactNativeProject(this.logger, this.rootPath, false));
+                    case (AppCenterBeacons.CodePush):
+                        MenuHelper.handleMenuPortalQuickPickSelection(this._params, selected.target, this.ownerName, this.appName, this.isOrg);
                         break;
 
                     case (AppCenterBeacons.Test):

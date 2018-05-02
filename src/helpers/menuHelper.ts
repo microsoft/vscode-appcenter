@@ -63,6 +63,8 @@ export class MenuHelper {
             case (AppCenterBeacons.Analytics):
                 Utils.OpenUrl(AppCenterUrlBuilder.GetAppCenterLinkByBeacon(ownerName, appName, AppCenterBeacons.Analytics, isOrg));
                 break;
+            case (AppCenterBeacons.CodePush):
+                new CodePush.ShowMenu(params).run();
             default:
                 break;
         }
@@ -83,10 +85,9 @@ export class MenuHelper {
         }
     }
 
-    public static getAppCenterPortalMenuItems(): CustomQuickPickItem[] {
+    public static getAppCenterPortalMenuItems(isCodePush: boolean): CustomQuickPickItem[] {
         const appCenterPortalPortalOptions: CustomQuickPickItem[] = [];
         appCenterPortalPortalOptions.push(<CustomQuickPickItem>{
-
             label: Strings.BuildTabMenuItem,
             description: Strings.OpenTabInBrowserMsg(Strings.BuildTabMenuItem),
             target: AppCenterBeacons.Build
@@ -96,6 +97,13 @@ export class MenuHelper {
                 label: Strings.TestTabMenuItem,
                 description: Strings.OpenTabInBrowserMsg(Strings.TestTabMenuItem),
                 target: AppCenterBeacons.Test
+            });
+        }
+        if (isCodePush) {
+            appCenterPortalPortalOptions.push(<CustomQuickPickItem>{
+                label: Strings.CodePushMenuLabelItem,
+                description: Strings.CodePushMenuLabelDescription,
+                target: AppCenterBeacons.CodePush
             });
         }
         appCenterPortalPortalOptions.push(<CustomQuickPickItem>{
