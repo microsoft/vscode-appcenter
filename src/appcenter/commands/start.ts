@@ -127,6 +127,7 @@ export default class Start extends CreateAppCommand {
         if (userOrOrgItem == null) {
             return;
         }
+        this.userOrOrg = userOrOrgItem;
 
         const appCenterAppBuilder = new AppCenterAppBuilder(ideaName, userOrOrgItem, this.repositoryURL, this.client, this.logger);
         this.logger.info("Creating your iOS and Android app in App Center...");
@@ -184,6 +185,8 @@ export default class Start extends CreateAppCommand {
         ${AppCenterAppBuilder.getiOSAppName(ideaName)}
 --------------------------------------------------------`;
             this.logger.info(successMessage);
+
+            this.pickApp(appCenterAppBuilder.getCreatedApps());
         }
     }
 

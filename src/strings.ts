@@ -118,6 +118,7 @@ export class Strings {
     public static ProvideFirstAppPromptMsg: string = "Choose the first app to be linked";
     public static ProvideSecondAppPromptMsg: string = "Choose the second app to be linked";
     public static ProvideVSTSProjectPromptMsg: string = "Please specify VSTS Project";
+    public static ChooseAppToBeSet: string = "Choose which app you want to set as current";
     public static FetchDeploymentsStatusBarMessage: string = "Fetching CodePush deployments for you...";
     public static InvalidCurrentAppNameMsg: string = "Sorry, the app name isn't valid.";
     public static StatusBarAlreadyShown: string = "The status bar is already shown. Look, it's in the bottom left corner of the window, with your name/app name on it!";
@@ -232,7 +233,7 @@ export class Strings {
     // If two apps were created and user has chosen one of them as current, pass only current app name.
     public static AppCreatedMsg(appName: string, squash?: boolean, secondAppName?: string): string {
         if (secondAppName) {
-            return `Apps ${appName} and ${secondAppName} have been created in App Center. Which one do you want to set as current?`;
+            return `Apps ${appName} and ${secondAppName} have been created in App Center.`;
         } else {
             return squash ?
                 `The app ${appName} has been created in App Center and set as current` :
