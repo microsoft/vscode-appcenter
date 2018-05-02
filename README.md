@@ -129,9 +129,10 @@ There are a couple of ways you can contribute to this repo:
 
 Here is the list of common known issues you may experience while using the extension:
 
-| Issue        | Description            |
-| ------------- |:-------------:|
-| You received error "`failed to push to remote ... Device not configured`" when starting new idea and pushing to remote repo      | Install [Git Credential Manager](https://docs.microsoft.com/en-us/vsts/git/set-up-credential-managers?view=vsts#install-the-git-credential-manager) and try again |
+| Issue         | Description |
+| ------------- |-------------|
+| You received error '`failed to push to remote ... Device not configured`' when starting new idea and pushing to remote repo      | Install [Git Credential Manager](https://docs.microsoft.com/en-us/vsts/git/set-up-credential-managers?view=vsts#install-the-git-credential-manager) and try again |
+| You received error '`CocoaPods was not able to update the master repo`' when running '`pod repo update`' while linking App Center| Delete and recreate your specs for repo by running `pod repo remove master` and `pod setup` commands
                         
 
 ## Legal
