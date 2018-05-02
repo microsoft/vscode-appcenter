@@ -17,8 +17,6 @@ export class LinkCommand extends ReactNativeAppCommand {
     }
 
     protected async handleShowCurrentAppQuickPickSelection(selected: QuickPickAppItem, _rnApps: models.AppResponse[]) {
-        this.userAlreadySelectedApp = false;
-
         let currentApp: CurrentApp | null;
         if (selected.target === this.currentAppMenuTarget) {
             currentApp = await this.getCurrentApp();
@@ -46,7 +44,7 @@ export class LinkCommand extends ReactNativeAppCommand {
             });
             const current: CurrentApp | null = await this.getCurrentApp();
             const showCurrentApp: boolean = current.os.toLowerCase() !== currentApp.os.toLowerCase();
-            this.showAppsQuickPick(cachedFilteredApps, showCurrentApp, false, Strings.ProvideSecondAppPromptMsg);
+            this.showAppsQuickPick(cachedFilteredApps, showCurrentApp, false, Strings.ProvideSecondAppPromptMsg, true);
         } else {
             this.linkApps();
         }
