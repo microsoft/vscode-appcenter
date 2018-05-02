@@ -9,8 +9,8 @@ export class Strings {
     public static OrganizationMenuDescriptionLabel: string = "Organization";
     public static UserMenuDescriptionLabel: string = "User";
     public static MenuCurrentAppDescription: string = "Click here to change current app";
-    public static LoginMenuLabel: string = "Login";
     public static LoginMenuDescription: string = "";
+    public static LoginMenuLabel: string = "Login";
     public static GetCurrentAppMenuLabel: string = "Get current app info";
     public static CodePushMenuLabelItem: string = "CodePush";
     public static CodePushMenuLabelDescription: string = "Release a new CodePush update";
