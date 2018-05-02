@@ -1,8 +1,8 @@
-import AppCenterLinker from '../../../appCenterLinker';
-import { Utils } from '../../../helpers/utils';
-import { VsCodeUtils } from '../../../helpers/vsCodeUtils';
-import { Strings } from '../../../strings';
-import { LinkCommand } from '../linkCommand';
+import AppCenterLinker from '../../appCenterLinker';
+import { Utils } from '../../helpers/utils';
+import { VsCodeUtils } from '../../helpers/vsCodeUtils';
+import { Strings } from '../../strings';
+import { LinkCommand } from './linkCommand';
 
 export default class LinkAppCenter extends LinkCommand {
 
@@ -18,8 +18,9 @@ export default class LinkAppCenter extends LinkCommand {
 
         if (this.CachedApps) {
             this.showAppsQuickPick(this.CachedApps, true, false, Strings.ProvideSecondAppPromptMsg);
+        } else {
+            this.refreshCachedAppsAndRepaintQuickPickIfNeeded(true, false, false, Strings.ProvideFirstAppPromptMsg);
         }
-        this.refreshCachedAppsAndRepaintQuickPickIfNeeded(true, false, false, Strings.ProvideFirstAppPromptMsg);
     }
 
     protected async linkApps(): Promise<boolean> {

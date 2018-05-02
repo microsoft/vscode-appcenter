@@ -9,11 +9,11 @@ export class Strings {
     public static OrganizationMenuDescriptionLabel: string = "Organization";
     public static UserMenuDescriptionLabel: string = "User";
     public static MenuCurrentAppDescription: string = "Click here to change current app";
-    public static LoginMenuLabel: string = "Login";
     public static LoginMenuDescription: string = "";
+    public static LoginMenuLabel: string = "Login";
     public static GetCurrentAppMenuLabel: string = "Get current app info";
     public static CodePushMenuLabelItem: string = "CodePush";
-    public static CodePushMenuLabelDescription: string = "";
+    public static CodePushMenuLabelDescription: string = "Release a new CodePush update";
     public static AppCenterPortalMenuLabel: string = "Portal";
     public static AppCenterPortalMenuDescription: string = "Quick navigate your App Center apps";
     public static CreateNewAppMenuLabel: string = "Create a new App Center app";
@@ -29,13 +29,17 @@ export class Strings {
     public static LinkAppCenterMenuLabel: string = "Link App Center";
     public static LinkCodePushMenuDescription: string = "Link Code Push SDK to your application";
     public static LinkAppCenterMenuDescription: string = "Link App Center SDK to your application";
-    public static ToolsMenuLabel: string = "Tools";
-    public static ToolsMenuDescription: string = "";
+    public static InstallSDKMenuLabel: string = "Install SDK";
+    public static InstallSDKMenuDescription: string = "Link the App Center or CodePush SDK to your project";
     public static LoginToAnotherAccountMenuLabel: string = "Add App Center account";
+    public static LoginToAnotherAccountMenuDescription: string = "Log in to another App Center account";
     public static SwitchAccountMenuLabel: string = "Switch App Center account";
+    public static SwitchAccountMenuDescription: string = "Switch to an App Center account you've previously logged in to";
     public static LogoutMenuLabel: string = "Logout of App Center";
     public static VstsLoginToAnotherAccountMenuLabel: string = "Add VSTS account";
+    public static VstsLoginToAnotherAccountMenuDescription: string = "Log in to another VSTS account";
     public static VstsSwitchAccountMenuLabel: string = "Switch VSTS account";
+    public static VstsSwitchAccountMenuDescription: string = "Switch to a VSTS account you've previously logged in to";
     public static VstsLogoutMenuLabel: string = "Logout of VSTS";
     public static HideStatusBarMenuLabel: string = "Hide status bar";
     public static HideStatusBarMenuDescription: string = "Hide status bar from the bottom left corner. You can enable it with 'Show status bar' cmd.";
@@ -58,7 +62,7 @@ export class Strings {
     public static SpecifyPATTitlePlaceholder: string = "(Step 3). Please specify personal access token";
 
     public static LoginToAppCenterButton: string = "App Center: Login";
-    public static PleaseEnterIdeaName: string = "Please enter idea name";
+    public static PleaseEnterIdeaName: string = "Please enter a project name";
     public static PleaseEnterNewRepositoryUrl: string = "Please enter repository url";
     public static PleaseSelectCurrentAppOrgMsg: string = "Please select user/organization where to create an App";
 

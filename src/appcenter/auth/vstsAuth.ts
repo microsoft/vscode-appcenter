@@ -9,7 +9,7 @@ class VstsProfileImpl implements VstsProfile {
     public tenantName: string;
 
     constructor(loginInfo: VstsLoginInfo) {
-        this.userId = loginInfo.userName;
+        this.userId = `${loginInfo.tenantName}/${loginInfo.userName}`;
         this.userName = loginInfo.userName;
         this.displayName = loginInfo.userName;
         this.isActive = false;

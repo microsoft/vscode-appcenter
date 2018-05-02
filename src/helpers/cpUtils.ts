@@ -9,11 +9,11 @@ export class SpawnError extends Error {
 }
 
 export namespace cpUtils {
-    export async function executeCommand(logger: ILogger | undefined, logErrorsOnly: boolean = false, workingDirectory: string | undefined, command: string, inputValues: ReactNativeLinkInputValue[] = [], ...args: string[]): Promise<string> {
+    export async function executeCommand(logger: ILogger | undefined, logErrorsOnly: boolean = false, workingDirectory: string | undefined, command: string, inputValues: ReactNativeLinkInputValue[] = [], exposeArgs: boolean = true, ...args: string[]): Promise<string> {
         let cmdOutput: string = '';
         let cmdOutputIncludingStderr: string = '';
         workingDirectory = workingDirectory || os.tmpdir();
-        const formattedArgs: string = args.join(' ');
+        const formattedArgs: string = exposeArgs ? args.join(' ') : "";
         await new Promise((resolve: () => void, reject: (e: Error) => void): void => {
             const options: cp.SpawnOptions = {
                 cwd: workingDirectory,
