@@ -1,4 +1,3 @@
-import * as os from "os";
 import * as vscode from "vscode";
 import { models } from "../appcenter/apis";
 import * as CodePush from "../appcenter/commands/codepush";
@@ -92,13 +91,11 @@ export class MenuHelper {
             description: Strings.OpenTabInBrowserMsg(Strings.BuildTabMenuItem),
             target: AppCenterBeacons.Build
         });
-        if (os.platform() === 'darwin') {
-            appCenterPortalPortalOptions.push(<CustomQuickPickItem>{
-                label: Strings.TestTabMenuItem,
-                description: Strings.OpenTabInBrowserMsg(Strings.TestTabMenuItem),
-                target: AppCenterBeacons.Test
-            });
-        }
+        appCenterPortalPortalOptions.push(<CustomQuickPickItem>{
+            label: Strings.TestTabMenuItem,
+            description: Strings.OpenTabInBrowserMsg(Strings.TestTabMenuItem),
+            target: AppCenterBeacons.Test
+        });
         if (isCodePush) {
             appCenterPortalPortalOptions.push(<CustomQuickPickItem>{
                 label: Strings.CodePushMenuLabelItem,
