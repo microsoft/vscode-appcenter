@@ -1,7 +1,6 @@
-import * as os from 'os';
 import * as vscode from 'vscode';
 import * as Test from '.';
-import { CommandNames } from "../../../constants";
+import { AppCenterOS, CommandNames } from "../../../constants";
 import { CommandParams, CurrentApp } from "../../../helpers/interfaces";
 import { CustomQuickPickItem } from "../../../helpers/vsCodeUtils";
 import { Strings } from "../../../strings";
@@ -26,7 +25,7 @@ export default class ShowMenu extends ReactNativeAppCommand {
 
         const menuOptions: CustomQuickPickItem[] = [];
         // For now running tests supported only for iOS platform
-        if (os.platform() === 'darwin') {
+        if (currentApp.os.toLowerCase() === AppCenterOS.iOS.toLowerCase()) {
             menuOptions.push(<CustomQuickPickItem>{
                 label: Strings.RunUITestsMenuLabel,
                 description: "",
