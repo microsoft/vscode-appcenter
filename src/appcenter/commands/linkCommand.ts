@@ -1,5 +1,6 @@
 import { AppCenterOS, Constants } from "../../constants";
 import { CurrentApp, QuickPickAppItem } from '../../helpers/interfaces';
+import { SettingsHelper } from "../../helpers/settingsHelper";
 import { Utils } from "../../helpers/utils";
 import { Strings } from '../../strings';
 import { models } from '../apis';
@@ -36,7 +37,7 @@ export class LinkCommand extends ReactNativeAppCommand {
             currentApp = Utils.toCurrentApp(selectedAppName, OS, null, Constants.AppCenterDefaultTargetBinaryVersion, type, Constants.AppCenterDefaultIsMandatoryParam, selectedAppSecret);
         }
         this.pickedApps.push(currentApp);
-        if (this.showedCount < 1) {
+        if (this.showedCount < 1 && SettingsHelper.linkTwoApps()) {
             this.showedCount++;
             const missingOS: AppCenterOS = currentApp.os.toLowerCase() === AppCenterOS.Android.toLowerCase() ? AppCenterOS.iOS : AppCenterOS.Android;
             const cachedFilteredApps = this.CachedApps.filter((cachedApp) => {
