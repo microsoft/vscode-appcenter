@@ -22,7 +22,7 @@ export class Command {
 
     constructor(commandParams: CommandParams) {
         this.manager = commandParams.manager;
-        this.logger = commandParams.logger;
+        this.logger = commandParams.manager._logger;
         this.appCenterAuth = commandParams.appCenterAuth;
         this.vstsAuth = commandParams.vstsAuth;
         this.clientFactory = createAppCenterClient();
