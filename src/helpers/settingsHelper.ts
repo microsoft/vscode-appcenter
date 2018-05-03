@@ -160,4 +160,13 @@ export class SettingsHelper {
             workspaceConfiguration.update("appcenter.showStatusBar", false);
         }
     }
+
+    public static linkTwoApps(): boolean {
+        const workspaceConfiguration = vscode.workspace.getConfiguration();
+        if (workspaceConfiguration.has("appcenter.linkTwoApps")) {
+            const linkTwoApps: boolean = ConfigurationReader.readBoolean(workspaceConfiguration.get("appcenter.linkTwoApps"));
+            return linkTwoApps;
+        }
+        return false;
+    }
 }
