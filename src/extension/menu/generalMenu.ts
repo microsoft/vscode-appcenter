@@ -31,9 +31,8 @@ export class GeneralMenu extends Menu {
         } else {
             if (this.isRNproject() && currentApp) {
                 menuItems.push(MenuItems.TestTab);
-                if (this.isCodePushProject()) {
-                    menuItems.push(MenuItems.CodePushTab);
-                }
+                menuItems.push(MenuItems.CodePushTab);
+
                 if (SettingsHelper.isCrashesEnabled()) {
                     menuItems.push(MenuItems.SimulateCrashes);
                 }
