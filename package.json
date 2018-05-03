@@ -25,7 +25,7 @@
     "activationEvents": [
         "*"
     ],
-    "main": "./src/extension",
+    "main": "./src/extension/extension",
     "contributes": {
         "commands": [
             {
@@ -50,7 +50,7 @@
             },
             {
                 "command": "appcenter.start",
-                "title": "Start a new projects",
+                "title": "Start a new project",
                 "category": "App Center"
             },
             {
@@ -90,7 +90,7 @@
             },
             {
                 "command": "appcenter.settings.logout",
-                "title": "Switch Vsts Account",
+                "title": "Logout App Center",
                 "category": "App Center Settings"
             },
             {
@@ -100,7 +100,7 @@
             },
             {
                 "command": "appcenter.settings.vsts.switchAccount",
-                "title": "Logout from Vsts",
+                "title": "Switch Vsts Account",
                 "category": "App Center Settings"
             },
             {

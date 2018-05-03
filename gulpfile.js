@@ -22,7 +22,7 @@ var lintSources = [
     testPath
 ].map(function (tsFolder) { return tsFolder + "/**/*.ts"; });
 lintSources = lintSources.concat([
-    "!src/appcenter/apis/generated/**"
+    "!src/api/appcenter/generated/**"
 ]);
 
 gulp.task("tslint", function () {
@@ -38,7 +38,7 @@ gulp.task("tslint", function () {
 gulp.task("clean", function () {
     var pathsToDelete = [
         "src/**/*.js",
-        "!src/appcenter/apis/generated/**/*.js",
+        "!src/api/appcenter/generated/**/*.js",
         "src/**/*.js.map",
         "test/**/*.js",
         "test/**/*.js.map",
