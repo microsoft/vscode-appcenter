@@ -1,4 +1,4 @@
-import AppCenterPortalMenu from "../appcenter/commands/appCenterPortalMenu";
+import AppCenterPortal from "../appcenter/commands/appCenterPortal";
 import GetCurrentApp from "../appcenter/commands/getCurrentApp";
 import LinkAppCenter from "../appcenter/commands/linkAppCenter";
 import Login from "../appcenter/commands/login";
@@ -11,7 +11,7 @@ import BaseCommandHandler from "./baseCommandHandler";
 
 export default class AppCenterCommandHandler extends BaseCommandHandler {
     public async AppCenterPortalMenu(): Promise<void> {
-        await new AppCenterPortalMenu(this.getCommandParams()).run();
+        await new AppCenterPortal(this.getCommandParams()).run();
     }
 
     public async WhoAmI(): Promise<void> {

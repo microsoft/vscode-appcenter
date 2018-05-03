@@ -1,76 +1,11 @@
 import * as vscode from "vscode";
 import { models } from "../appcenter/apis";
-import * as CodePush from "../appcenter/commands/codepush";
-import SimulateCrashes from "../appcenter/commands/simulateCrashes";
-import * as Test from "../appcenter/commands/test";
-import { AppCenterBeacons, AppCenterCrashesTabs, AppCenterDistributionTabs, CommandNames } from "../constants";
+import { CommandNames } from "../constants";
 import { Strings } from "../strings";
-import { AppCenterUrlBuilder } from "./appCenterUrlBuilder";
-import { CommandParams, Profile, QuickPickAppItem, UserOrOrganizationItem } from "./interfaces";
-import { SettingsHelper } from "./settingsHelper";
-import { Utils } from "./utils";
+import { Profile, UserOrOrganizationItem } from "./interfaces";
 import { CustomQuickPickItem } from "./vsCodeUtils";
 
 export class MenuHelper {
-    public static handleMenuPortalQuickPickSelection(params: CommandParams, selected: string, ownerName: string, appName: string, isOrg: boolean, isCodePush?: boolean) {
-        if (!ownerName && !appName) {
-            throw new Error("ShowMenu: OwnerName or AppName not specified");
-        }
-        switch (selected) {
-            case (AppCenterBeacons.Build):
-                Utils.OpenUrl(AppCenterUrlBuilder.GetAppCenterLinkByBeacon(ownerName, appName, AppCenterBeacons.Build, isOrg));
-                break;
-            case (AppCenterBeacons.Distribute):
-                vscode.window.showQuickPick(MenuHelper.getAppCenterDistributeTabMenuItems(isCodePush), { placeHolder: Strings.MenuTitlePlaceholder })
-                    .then((selected: QuickPickAppItem) => {
-                        if (!selected) {
-                            return;
-                        }
-                        switch (selected.target) {
-                            case (AppCenterDistributionTabs.Groups):
-                                Utils.OpenUrl(AppCenterUrlBuilder.GetAppCenterDistributeTabLinkByTabName(ownerName, appName, AppCenterDistributionTabs.Groups, isOrg));
-                                break;
-                            case (AppCenterDistributionTabs.Stores):
-                                Utils.OpenUrl(AppCenterUrlBuilder.GetAppCenterDistributeTabLinkByTabName(ownerName, appName, AppCenterDistributionTabs.Stores, isOrg));
-                                break;
-                            case (AppCenterDistributionTabs.Releases):
-                                Utils.OpenUrl(AppCenterUrlBuilder.GetAppCenterDistributeTabLinkByTabName(ownerName, appName, AppCenterDistributionTabs.Releases, isOrg));
-                                break;
-                            case (CommandNames.CodePush.ShowMenu):
-                                new CodePush.ShowMenu(params).run();
-                            default:
-                                break;
-                        }
-                    });
-                break;
-            case (AppCenterBeacons.Crashes):
-                vscode.window.showQuickPick(MenuHelper.getAppCenterCrashesTabMenuItems(), { placeHolder: Strings.MenuTitlePlaceholder })
-                    .then((selected: QuickPickAppItem) => {
-                        if (!selected) {
-                            return;
-                        }
-                        switch (selected.target) {
-                            case (AppCenterCrashesTabs.Crashes):
-                                Utils.OpenUrl(AppCenterUrlBuilder.GetAppCenterLinkByBeacon(ownerName, appName, AppCenterBeacons.Crashes, isOrg));
-                                break;
-                            case (AppCenterCrashesTabs.Simulate):
-                                new SimulateCrashes(params).run();
-                            default:
-                                break;
-                        }
-                    });
-                break;
-            case (AppCenterBeacons.Analytics):
-                Utils.OpenUrl(AppCenterUrlBuilder.GetAppCenterLinkByBeacon(ownerName, appName, AppCenterBeacons.Analytics, isOrg));
-                break;
-            case (AppCenterBeacons.CodePush):
-                new CodePush.ShowMenu(params).run();
-            case (AppCenterBeacons.Test):
-                new Test.ShowMenu(params).runNoClient();
-            default:
-                break;
-        }
-    }
 
     public static getSelectedUserOrOrgItem(selected: CustomQuickPickItem, allItems: CustomQuickPickItem[]): UserOrOrganizationItem | null {
         let userOrOrgItem: UserOrOrganizationItem;
@@ -85,88 +20,6 @@ export class MenuHelper {
         } else {
             return null;
         }
-    }
-
-    public static getAppCenterPortalMenuItems(isCodePush: boolean): CustomQuickPickItem[] {
-        const appCenterPortalPortalOptions: CustomQuickPickItem[] = [];
-        appCenterPortalPortalOptions.push(<CustomQuickPickItem>{
-            label: Strings.BuildTabMenuItem,
-            description: Strings.OpenTabInBrowserMsg(Strings.BuildTabMenuItem),
-            target: AppCenterBeacons.Build
-        });
-        appCenterPortalPortalOptions.push(<CustomQuickPickItem>{
-            label: Strings.TestTabMenuItem,
-            description: Strings.OpenTabInBrowserMsg(Strings.TestTabMenuItem),
-            target: AppCenterBeacons.Test
-        });
-        if (isCodePush) {
-            appCenterPortalPortalOptions.push(<CustomQuickPickItem>{
-                label: Strings.CodePushMenuLabelItem,
-                description: Strings.CodePushMenuLabelDescription,
-                target: AppCenterBeacons.CodePush
-            });
-        }
-        appCenterPortalPortalOptions.push(<CustomQuickPickItem>{
-            label: Strings.DistributeTabMenuItem,
-            description: Strings.OpenTabInBrowserMsg(Strings.DistributeTabMenuItem),
-            target: AppCenterBeacons.Distribute
-        });
-        appCenterPortalPortalOptions.push(<CustomQuickPickItem>{
-            label: Strings.CrashesTabMenuItem,
-            description: Strings.OpenTabInBrowserMsg(Strings.CrashesTabMenuItem),
-            target: AppCenterBeacons.Crashes
-        });
-        appCenterPortalPortalOptions.push(<CustomQuickPickItem>{
-            label: Strings.AnalyticsTabMenuItem,
-            description: Strings.OpenTabInBrowserMsg(Strings.AnalyticsTabMenuItem),
-            target: AppCenterBeacons.Analytics
-        });
-        return appCenterPortalPortalOptions;
-    }
-
-    public static getAppCenterDistributeTabMenuItems(isCodePush?: boolean): CustomQuickPickItem[] {
-        const getAppCenterDistributeTabMenuItems: CustomQuickPickItem[] = [];
-        getAppCenterDistributeTabMenuItems.push(<CustomQuickPickItem>{
-            label: Strings.DistributeGroupsTabMenuItem,
-            description: Strings.OpenTabInBrowserMsg(Strings.DistributeGroupsTabMenuItem),
-            target: AppCenterDistributionTabs.Groups
-        });
-        getAppCenterDistributeTabMenuItems.push(<CustomQuickPickItem>{
-            label: Strings.DistributeStoresTabMenuItem,
-            description: Strings.OpenTabInBrowserMsg(Strings.DistributeStoresTabMenuItem),
-            target: AppCenterDistributionTabs.Stores
-        });
-        getAppCenterDistributeTabMenuItems.push(<CustomQuickPickItem>{
-            label: Strings.DistributeReleasesTabMenuItem,
-            description: Strings.OpenTabInBrowserMsg(Strings.DistributeReleasesTabMenuItem),
-            target: AppCenterDistributionTabs.Releases
-        });
-
-        if (isCodePush) {
-            getAppCenterDistributeTabMenuItems.push(<CustomQuickPickItem>{
-                label: Strings.CodePushMenuLabelItem,
-                description: Strings.CodePushMenuLabelDescription,
-                target: CommandNames.CodePush.ShowMenu
-            });
-        }
-        return getAppCenterDistributeTabMenuItems;
-    }
-
-    public static getAppCenterCrashesTabMenuItems(): CustomQuickPickItem[] {
-        const getAppCenterCrashesTabMenuItems: CustomQuickPickItem[] = [];
-        getAppCenterCrashesTabMenuItems.push(<CustomQuickPickItem>{
-            label: Strings.CrashesTabMenuItem,
-            description: Strings.OpenTabInBrowserMsg(Strings.CrashesTabMenuItem),
-            target: AppCenterCrashesTabs.Crashes
-        });
-        if (SettingsHelper.isCrashesEnabled()) {
-            getAppCenterCrashesTabMenuItems.push(<CustomQuickPickItem>{
-                label: Strings.SimulateCrashesMenuLabel,
-                description: Strings.SimulateCrashesMenuDescription,
-                target: AppCenterCrashesTabs.Simulate
-            });
-        }
-        return getAppCenterCrashesTabMenuItems;
     }
 
     public static getCreateAppOptions(): vscode.QuickPickItem[] {

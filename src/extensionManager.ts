@@ -16,11 +16,11 @@ class CommandHandlersContainer {
     private _codePushCommandHandler: CommandHandlers.CodePush;
     private _testCommandHandler: CommandHandlers.Test;
 
-    constructor(private manager: ExtensionManager, private logger: ILogger, private appCenterAuth: AppCenterAuth, private vstsAuth: VstsAuth) {
-        this._appCenterCommandHandler = new CommandHandlers.AppCenter(this.manager, this.logger, this.appCenterAuth, this.vstsAuth);
-        this._settingsCommandHandler = new CommandHandlers.Settings(this.manager, this.logger, this.appCenterAuth, this.vstsAuth);
-        this._codePushCommandHandler = new CommandHandlers.CodePush(this.manager, this.logger, this.appCenterAuth, this.vstsAuth);
-        this._testCommandHandler = new CommandHandlers.Test(this.manager, this.logger, this.appCenterAuth, this.vstsAuth);
+    constructor(private manager: ExtensionManager, private appCenterAuth: AppCenterAuth, private vstsAuth: VstsAuth) {
+        this._appCenterCommandHandler = new CommandHandlers.AppCenter(this.manager, this.appCenterAuth, this.vstsAuth);
+        this._settingsCommandHandler = new CommandHandlers.Settings(this.manager, this.appCenterAuth, this.vstsAuth);
+        this._codePushCommandHandler = new CommandHandlers.CodePush(this.manager, this.appCenterAuth, this.vstsAuth);
+        this._testCommandHandler = new CommandHandlers.Test(this.manager, this.appCenterAuth, this.vstsAuth);
     }
 
     public get appCenterCommandHandler(): CommandHandlers.AppCenter {
@@ -44,7 +44,7 @@ export class ExtensionManager implements Disposable {
     private _commandHandlersContainer: CommandHandlersContainer;
     private _appCenterStatusBarItem: StatusBarItem;
     private _projectRootPath: string | undefined;
-    private _logger: ILogger;
+    public _logger: ILogger;
 
     public get commandHandlers(): CommandHandlersContainer {
         return this._commandHandlersContainer;
@@ -62,7 +62,7 @@ export class ExtensionManager implements Disposable {
         this._logger = logger;
         this._projectRootPath = projectRootPath;
 
-        this._commandHandlersContainer = new CommandHandlersContainer(this, this._logger, appCenterAuth, vstsAuth);
+        this._commandHandlersContainer = new CommandHandlersContainer(this, appCenterAuth, vstsAuth);
         await this.initializeExtension();
     }
 

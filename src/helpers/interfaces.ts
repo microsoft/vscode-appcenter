@@ -1,8 +1,8 @@
+import { QuickPickItem } from "vscode";
 import AppCenterAuth from "../appcenter/auth/appCenterAuth";
 import VstsAuth from "../appcenter/auth/vstsAuth";
 import { AppCenterOS } from "../constants";
 import { ExtensionManager } from "../extensionManager";
-import { ILogger } from "../log/logHelper";
 
 export interface Deployment {
     name: string;
@@ -110,7 +110,6 @@ export interface ProfileQuickPickItem {
 
 export interface CommandParams {
     manager: ExtensionManager;
-    logger: ILogger;
     appCenterAuth: AppCenterAuth;
     vstsAuth: VstsAuth;
 }
@@ -119,4 +118,8 @@ export interface ReactNativeLinkInputValue {
     label: string; // a part of the string preceding the input.
     input: string; // the value we should paste into input.
     sent: boolean; // whether this value has been already sent.
+}
+
+export interface MenuQuickPickItem extends QuickPickItem {
+    command: string;
 }

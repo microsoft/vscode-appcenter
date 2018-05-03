@@ -15,7 +15,6 @@ export class ReactNativeAppCommand extends Command {
     protected static cachedApps: models.AppResponse[];
     protected userAlreadySelectedApp: boolean;
     protected checkForReact: boolean = true;
-
     protected _params: CommandParams;
 
     constructor(params: CommandParams) {

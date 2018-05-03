@@ -236,6 +236,11 @@
                     "type": "boolean",
                     "default": false
                 },
+                "appcenter.linkTwoApps": {
+                    "description": "Make user choose both iOS and Android apps when linking SDKs",
+                    "type": "boolean",
+                    "default": false
+                },
                 "appcenter.environment": {
                     "description": "Environment to configure App Center endpoints",
                     "type": "enum",
