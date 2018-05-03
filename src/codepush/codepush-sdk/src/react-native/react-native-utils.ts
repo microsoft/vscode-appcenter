@@ -235,7 +235,7 @@ export function runReactNativeBundleCommand(projectRootPath: string, bundleName:
   }
 
   console.log(chalk.cyan(`Running "react-native bundle" command:\n`));
-  const reactNativeBundleProcess = spawn("node", reactNativeBundleArgs);
+  const reactNativeBundleProcess = spawn("node", reactNativeBundleArgs, { cwd: projectRootPath });
   console.log(`node ${reactNativeBundleArgs.join(" ")}`);
 
   return new Promise<void>((resolve, reject) => {

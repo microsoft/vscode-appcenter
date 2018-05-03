@@ -23,7 +23,7 @@ export class CodePushMenu extends Menu {
         if (this.currentApp) {
             menuItems.push(MenuItems.OpenCodePush);
 
-            if (this.hasCodePushDeployments()) {
+            if (this.hasCodePushDeployments() && this.isCodePushProject()) {
                 menuItems.push(MenuItems.ReleaseReact(this.currentApp));
                 menuItems.push(MenuItems.SetCurrentDeployment(this.currentApp));
                 menuItems.push(MenuItems.SetTargetBinaryVersion(this.currentApp));
