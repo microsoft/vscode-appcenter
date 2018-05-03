@@ -1,4 +1,5 @@
-import { AppCenterBeacons, AppCenterDistributionTabs, AppCenterEnvironment, Constants } from "../constants";
+
+import { AppCenterBeacons, AppCenterDistributionTabs, AppCenterEnvironment, Constants } from "../extension/resources/constants";
 import { SettingsHelper } from "./settingsHelper";
 
 export class AppCenterUrlBuilder {
