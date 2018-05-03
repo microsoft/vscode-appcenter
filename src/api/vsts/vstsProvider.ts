@@ -22,7 +22,7 @@ export class VSTSProvider {
         const url: string = `${this._baseUrl}_apis/accounts?api-version=${this._apiVersion}`;
         const requestInfo = this.getRequestInfo(HTTP_METHODS.GET);
         const res = await fetch(url, requestInfo);
-        if (res.status === 203) {
+        if (res.status === 203 || res.status === 401) {
             return false;
         }
         return true;

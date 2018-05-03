@@ -33,7 +33,7 @@ export default class Logout extends Command {
         const menuOptions: ProfileQuickPickItem[] = [];
         profiles.forEach(profile => {
             menuOptions.push(<ProfileQuickPickItem>{
-                label: profile.userName,
+                label: profile.userId,
                 description: "",
                 profile: profile
             });
