@@ -1,17 +1,16 @@
 import * as Test from "../appcenter/commands/test";
 import { AppCenterOS, CommandNames } from "../constants";
-import { CommandParams, MenuItem } from "../helpers/interfaces";
-import { ILogger } from "../log/logHelper";
+import { CommandParams, MenuQuickPickItem } from "../helpers/interfaces";
 import { Menu, MenuItems } from "./menu";
 
 export class TestMenu extends Menu {
 
-    constructor(private appOS: string, rootPath: string, logger: ILogger, params: CommandParams) {
-        super(rootPath, logger, params);
+    constructor(private appOS: string, params: CommandParams) {
+        super(params);
     }
 
-    protected getMenuItems(): MenuItem[] {
-        const menuItems: MenuItem[] = [];
+    protected getMenuItems(): MenuQuickPickItem[] {
+        const menuItems: MenuQuickPickItem[] = [];
         // For now running tests supported only for iOS platform
         if (this.appOS.toLowerCase() === AppCenterOS.iOS.toLowerCase()) {
             menuItems.push(MenuItems.RunUITests);
@@ -21,7 +20,7 @@ export class TestMenu extends Menu {
         return menuItems;
     }
 
-    protected handleMenuSelection(menuItem: MenuItem): Promise<void> {
+    protected handleMenuSelection(menuItem: MenuQuickPickItem): Promise<void> {
         switch (menuItem.command) {
             case (CommandNames.Test.RunUITests):
                 const runUiTests = new Test.RunUITests(this._params);

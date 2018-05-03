@@ -1,4 +1,4 @@
-import AppCenterPortalMenu from "../appcenter/commands/appCenterPortalMenu";
+import AppCenterPortal from "../appcenter/commands/appCenterPortal";
 import * as CodePush from "../appcenter/commands/codePush";
 import GetCurrentApp from "../appcenter/commands/getCurrentApp";
 import LinkAppCenter from "../appcenter/commands/linkAppCenter";
@@ -9,19 +9,18 @@ import SimulateCrashes from "../appcenter/commands/simulateCrashes";
 import Start from "../appcenter/commands/start";
 import * as Test from "../appcenter/commands/test";
 import { AppCenterBeacons, AppCenterCrashesTabs, CommandNames } from "../constants";
-import { CommandParams, CurrentApp, MenuItem, Profile } from "../helpers/interfaces";
+import { CommandParams, CurrentApp, MenuQuickPickItem, Profile } from "../helpers/interfaces";
 import { SettingsHelper } from "../helpers/settingsHelper";
-import { ILogger } from "../log/logHelper";
 import { Menu, MenuItems } from "./menu";
 
 export class GeneralMenu extends Menu {
 
-    constructor(private profile: Profile | undefined, rootPath: string, logger: ILogger, params: CommandParams) {
-        super(rootPath, logger, params);
+    constructor(private profile: Profile | undefined, params: CommandParams) {
+        super(params);
     }
 
-    protected getMenuItems(): MenuItem[] {
-        const menuItems: MenuItem[] = [];
+    protected getMenuItems(): MenuQuickPickItem[] {
+        const menuItems: MenuQuickPickItem[] = [];
         if (!this.profile) {
             menuItems.push(MenuItems.Login);
             return menuItems;
@@ -58,7 +57,7 @@ export class GeneralMenu extends Menu {
         return menuItems;
     }
 
-    protected handleMenuSelection(menuItem: MenuItem): Promise<void> {
+    protected handleMenuSelection(menuItem: MenuQuickPickItem): Promise<void> {
         switch (menuItem.command) {
             case (AppCenterBeacons.CodePush):
                 new CodePush.ShowMenu(this._params).run();
@@ -73,7 +72,7 @@ export class GeneralMenu extends Menu {
                 break;
 
             case (CommandNames.AppCenterPortal):
-                new AppCenterPortalMenu(this._params).run();
+                new AppCenterPortal(this._params).run();
                 break;
 
             case (CommandNames.Start):

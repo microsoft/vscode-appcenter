@@ -1,18 +1,17 @@
 import * as Settings from "../appcenter/commands/settings";
 import { CommandNames } from "../constants";
-import { CommandParams, MenuItem } from "../helpers/interfaces";
+import { CommandParams, MenuQuickPickItem } from "../helpers/interfaces";
 import { SettingsHelper } from "../helpers/settingsHelper";
-import { ILogger } from "../log/logHelper";
 import { Menu, MenuItems } from "./menu";
 
 export class SettingsMenu extends Menu {
 
-    constructor(private appCenterProfilesCount: number, private vstsProfilesCount: number, rootPath: string, logger: ILogger, params: CommandParams) {
-        super(rootPath, logger, params);
+    constructor(private appCenterProfilesCount: number, private vstsProfilesCount: number, params: CommandParams) {
+        super(params);
     }
 
-    protected getMenuItems(): MenuItem[] {
-        const menuItems: MenuItem[] = [];
+    protected getMenuItems(): MenuQuickPickItem[] {
+        const menuItems: MenuQuickPickItem[] = [];
         if (this.appCenterProfilesCount > 1) {
             menuItems.push(MenuItems.SwitchAccount);
         }
@@ -31,7 +30,7 @@ export class SettingsMenu extends Menu {
         return menuItems;
     }
 
-    protected handleMenuSelection(menuItem: MenuItem): Promise<void> {
+    protected handleMenuSelection(menuItem: MenuQuickPickItem): Promise<void> {
         switch (menuItem.command) {
             case (CommandNames.Settings.SwitchAccount):
                 new Settings.SwitchAccount(this._params).runNoClient();

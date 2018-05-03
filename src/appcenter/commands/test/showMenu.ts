@@ -15,6 +15,6 @@ export default class ShowMenu extends ReactNativeAppCommand {
         if (!currentApp) {
             return false;
         }
-        return new TestMenu(currentApp.os, this.rootPath, this.logger, this._params).show();
+        return new TestMenu(currentApp.os, this._params).show();
     }
 }

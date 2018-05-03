@@ -4,21 +4,20 @@ import SimulateCrashes from "../appcenter/commands/simulateCrashes";
 import * as Test from "../appcenter/commands/test";
 import { AppCenterBeacons, AppCenterCrashesTabs, AppCenterDistributionTabs, CommandNames } from "../constants";
 import { AppCenterUrlBuilder } from "../helpers/appCenterUrlBuilder";
-import { CommandParams, MenuItem } from "../helpers/interfaces";
+import { CommandParams, MenuQuickPickItem } from "../helpers/interfaces";
 import { SettingsHelper } from "../helpers/settingsHelper";
 import { Utils } from "../helpers/utils";
-import { ILogger } from "../log/logHelper";
 import { Strings } from "../strings";
 import { Menu, MenuItems } from "./menu";
 
 export class AppCenterPortalMenu extends Menu {
 
-    constructor(private isOrg: boolean, private appName: string, private ownerName: string, rootPath: string, logger: ILogger, params: CommandParams) {
-        super(rootPath, logger, params);
+    constructor(private isOrg: boolean, private appName: string, private ownerName: string, params: CommandParams) {
+        super(params);
     }
 
-    protected getMenuItems(): MenuItem[] {
-        const menuItems: MenuItem[] = [];
+    protected getMenuItems(): MenuQuickPickItem[] {
+        const menuItems: MenuQuickPickItem[] = [];
         menuItems.push(MenuItems.BuildTab);
         menuItems.push(MenuItems.TestTab);
         if (this.isRNproject()) {
@@ -31,14 +30,14 @@ export class AppCenterPortalMenu extends Menu {
         return menuItems;
     }
 
-    protected handleMenuSelection(menuItem: MenuItem): Promise<void> {
+    protected handleMenuSelection(menuItem: MenuQuickPickItem): Promise<void> {
         switch (menuItem.command) {
             case (AppCenterBeacons.Build):
                 Utils.OpenUrl(AppCenterUrlBuilder.GetAppCenterLinkByBeacon(this.ownerName, this.appName, AppCenterBeacons.Build, this.isOrg));
                 break;
             case (AppCenterBeacons.Distribute):
                 vscode.window.showQuickPick(this.getAppCenterDistributeTabMenuItems(), { placeHolder: Strings.MenuTitlePlaceholder })
-                    .then((selected: MenuItem) => {
+                    .then((selected: MenuQuickPickItem) => {
                         if (!selected) {
                             return;
                         }
@@ -61,7 +60,7 @@ export class AppCenterPortalMenu extends Menu {
                 break;
             case (AppCenterBeacons.Crashes):
                 vscode.window.showQuickPick(this.getAppCenterCrashesTabMenuItems(), { placeHolder: Strings.MenuTitlePlaceholder })
-                    .then((selected: MenuItem) => {
+                    .then((selected: MenuQuickPickItem) => {
                         if (!selected) {
                             return;
                         }
@@ -91,16 +90,16 @@ export class AppCenterPortalMenu extends Menu {
         return void 0;
     }
 
-    private getAppCenterDistributeTabMenuItems(): MenuItem[] {
-        const getAppCenterDistributeTabMenuItems: MenuItem[] = [];
+    private getAppCenterDistributeTabMenuItems(): MenuQuickPickItem[] {
+        const getAppCenterDistributeTabMenuItems: MenuQuickPickItem[] = [];
         getAppCenterDistributeTabMenuItems.push(MenuItems.DistributeGroupsTab);
         getAppCenterDistributeTabMenuItems.push(MenuItems.DistributeStoresTab);
         getAppCenterDistributeTabMenuItems.push(MenuItems.DistributeReleasesTab);
         return getAppCenterDistributeTabMenuItems;
     }
 
-    private getAppCenterCrashesTabMenuItems(): MenuItem[] {
-        const getAppCenterCrashesTabMenuItems: MenuItem[] = [];
+    private getAppCenterCrashesTabMenuItems(): MenuQuickPickItem[] {
+        const getAppCenterCrashesTabMenuItems: MenuQuickPickItem[] = [];
         getAppCenterCrashesTabMenuItems.push(MenuItems.CrashesTab);
         if (SettingsHelper.isCrashesEnabled()) {
             getAppCenterCrashesTabMenuItems.push(MenuItems.SimulateCrashes);

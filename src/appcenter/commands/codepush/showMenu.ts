@@ -19,7 +19,7 @@ export default class ShowMenu extends RNCPAppCommand {
         if (!currentApp) {
             return false;
         }
-        return new CodePushMenu(currentApp, this.rootPath, this.logger, this._params).show();
+        return new CodePushMenu(currentApp, this._params).show();
     }
 
 }

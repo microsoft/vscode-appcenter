@@ -1,23 +1,22 @@
 import * as CodePush from "../appcenter/commands/codepush";
 import { AppCenterDistributionTabs, CommandNames } from "../constants";
 import { AppCenterUrlBuilder } from "../helpers/appCenterUrlBuilder";
-import { CommandParams, CurrentApp, MenuItem } from "../helpers/interfaces";
+import { CommandParams, CurrentApp, MenuQuickPickItem } from "../helpers/interfaces";
 import { Utils } from "../helpers/utils";
-import { ILogger } from "../log/logHelper";
 import { Menu, MenuItems } from "./menu";
 
 export class CodePushMenu extends Menu {
 
-    constructor(private currentApp: CurrentApp, rootPath: string, logger: ILogger, params: CommandParams) {
-        super(rootPath, logger, params);
+    constructor(private currentApp: CurrentApp, params: CommandParams) {
+        super(params);
     }
 
     private hasCodePushDeployments(): boolean {
         return this.currentApp.currentAppDeployments && this.currentApp.currentAppDeployments.codePushDeployments && this.currentApp.currentAppDeployments.codePushDeployments.length > 0;
     }
 
-    protected getMenuItems(): MenuItem[] {
-        const menuItems: MenuItem[] = [];
+    protected getMenuItems(): MenuQuickPickItem[] {
+        const menuItems: MenuQuickPickItem[] = [];
 
         menuItems.push(MenuItems.LinkCodePush);
 
@@ -34,7 +33,7 @@ export class CodePushMenu extends Menu {
         return menuItems;
     }
 
-    protected handleMenuSelection(menuItem: MenuItem): Promise<void> {
+    protected handleMenuSelection(menuItem: MenuQuickPickItem): Promise<void> {
         switch (menuItem.command) {
             case (CommandNames.CodePush.SetCurrentDeployment):
                 new CodePush.SetCurrentDeployment(this._params).run();

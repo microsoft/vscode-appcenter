@@ -1,14 +1,10 @@
-import { CommandNames } from "../../constants";
-import { CommandParams, QuickPickAppItem } from "../../helpers/interfaces";
+import { AppCenteAppType, CommandNames } from "../../constants";
+import { CurrentApp, QuickPickAppItem } from "../../helpers/interfaces";
+import { AppCenterPortalMenu } from "../../menu/appCenterPortalMenu";
 import { models } from "../apis";
-import * as AppCenterPortal from "./portal";
 import { ReactNativeAppCommand } from "./reactNativeAppCommand";
 
-export default class AppCenterPortalMenu extends ReactNativeAppCommand {
-
-    constructor(params: CommandParams) {
-        super(params);
-    }
+export default class AppCenterPortal extends ReactNativeAppCommand {
 
     public async run(): Promise<void> {
 
@@ -38,7 +34,27 @@ export default class AppCenterPortalMenu extends ReactNativeAppCommand {
                 selectedApp = selectedApps[0];
             }
 
-            new AppCenterPortal.ShowMenu(this._params, selectedApp).run();
+            let isOrg: boolean;
+            let appName: string;
+            let ownerName: string;
+
+            if (selectedApp) {
+                isOrg = selectedApp.owner.type.toLowerCase() === AppCenteAppType.Org.toLowerCase();
+                appName = selectedApp.name;
+                ownerName = selectedApp.owner.name;
+            } else {
+                const currentApp: CurrentApp | null = await this.getCurrentApp();
+                if (currentApp) {
+                    isOrg = currentApp.type.toLowerCase() === AppCenteAppType.Org.toLowerCase();
+                    appName = currentApp.appName;
+                    ownerName = currentApp.ownerName;
+                } else {
+                    this.logger.error("Current app is undefiend");
+                    throw new Error("Current app is undefined");
+                }
+            }
+
+            return new AppCenterPortalMenu(isOrg, appName, ownerName, this._params).show();
         }
     }
 }

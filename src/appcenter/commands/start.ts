@@ -62,7 +62,6 @@ export default class Start extends CreateAppCommand {
                 loggedIn = await new LoginToVsts(
                     {
                         manager: this.manager,
-                        logger: this.logger,
                         appCenterAuth: this.appCenterAuth,
                         vstsAuth: this.vstsAuth
                     }

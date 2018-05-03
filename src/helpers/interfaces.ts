@@ -3,7 +3,6 @@ import AppCenterAuth from "../appcenter/auth/appCenterAuth";
 import VstsAuth from "../appcenter/auth/vstsAuth";
 import { AppCenterOS } from "../constants";
 import { ExtensionManager } from "../extensionManager";
-import { ILogger } from "../log/logHelper";
 
 export interface Deployment {
     name: string;
@@ -111,7 +110,6 @@ export interface ProfileQuickPickItem {
 
 export interface CommandParams {
     manager: ExtensionManager;
-    logger: ILogger;
     appCenterAuth: AppCenterAuth;
     vstsAuth: VstsAuth;
 }
@@ -122,6 +120,6 @@ export interface ReactNativeLinkInputValue {
     sent: boolean; // whether this value has been already sent.
 }
 
-export interface MenuItem extends QuickPickItem {
+export interface MenuQuickPickItem extends QuickPickItem {
     command: string;
 }

@@ -9,7 +9,6 @@ export default class LoginToAnotherAccount extends Command {
         }
         const params: CommandParams = {
             manager: this.manager,
-            logger: this.logger,
             appCenterAuth: this.appCenterAuth,
             vstsAuth: this.vstsAuth
         };
