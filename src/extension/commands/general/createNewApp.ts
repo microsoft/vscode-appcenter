@@ -23,7 +23,7 @@ export default class CreateNewApp extends CreateAppCommand {
             return false;
         }
 
-        if (!Utils.isReactNativeAppCenterProject(this.logger, this.rootPath, false)) {
+        if (!Utils.isReactNativeProject(this.logger, this.rootPath, false)) {
             VsCodeUtils.ShowErrorMessage(Strings.NotReactProjectMsg);
             return;
         }

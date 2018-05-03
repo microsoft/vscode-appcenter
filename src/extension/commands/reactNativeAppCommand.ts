@@ -88,7 +88,7 @@ export class ReactNativeAppCommand extends Command {
             ReactNativeAppCommand.cachedApps = rnApps;
         }
         const options: QuickPickAppItem[] = Menu.getQuickPickItemsForAppsList(rnApps);
-        if (includeCreateNew) {
+        if (includeCreateNew && Utils.isReactNativeProject(this.logger, this.rootPath, false)) {
             const createNewAppItem = {
                 label: Strings.CreateNewAppMenuLabel,
                 description: "",
