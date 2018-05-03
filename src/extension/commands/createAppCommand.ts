@@ -3,10 +3,10 @@ import { models } from "../../api/appcenter";
 import AppCenterAppBuilder from "../../createApp/appCenterAppBuilder";
 import { AppCenterUrlBuilder } from "../../helpers/appCenterUrlBuilder";
 import { CreatedAppFromAppCenter, Profile, QuickPickAppItem, UserOrOrganizationItem } from '../../helpers/interfaces';
-import { MenuHelper } from "../../helpers/menuHelper";
 import { Utils } from "../../helpers/utils/utils";
 import { Validators } from "../../helpers/utils/validators";
 import { CustomQuickPickItem, IButtonMessageItem, VsCodeUtils } from "../../helpers/utils/vsCodeUtils";
+import * as Menu from "../menu/menu";
 import { Constants } from "../resources/constants";
 import { Strings } from "../resources/strings";
 import { Command } from './command';
@@ -48,7 +48,7 @@ export class CreateAppCommand extends Command {
             });
         }).then(async (orgList: models.ListOKResponseItem[]) => {
             const myself: Profile | null = await this.appCenterProfile;
-            items = MenuHelper.getQuickPickItemsForOrgList(orgList, myself);
+            items = Menu.getQuickPickItemsForOrgList(orgList, myself);
         });
         return items;
     }
@@ -97,7 +97,7 @@ export class CreateAppCommand extends Command {
         return vscode.window.showQuickPick(userOrOrgQuickPickItems, { placeHolder: Strings.PleaseSelectCurrentAppOrgMsg, ignoreFocusOut: true })
             .then(async (selectedQuickPickItem: CustomQuickPickItem) => {
                 if (selectedQuickPickItem) {
-                    const userOrOrgItem: UserOrOrganizationItem | null = MenuHelper.getSelectedUserOrOrgItem(selectedQuickPickItem, userOrOrgQuickPickItems);
+                    const userOrOrgItem: UserOrOrganizationItem | null = Menu.getSelectedUserOrOrgItem(selectedQuickPickItem, userOrOrgQuickPickItems);
                     if (!userOrOrgItem) {
                         VsCodeUtils.ShowErrorMessage(Strings.FailedToGetSelectedUserOrOrganizationMsg);
                         return null;

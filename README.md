@@ -49,13 +49,9 @@ There are several possible scenarios this extension solves:
 
     ![Choose app](images/appcenter-choose-app.png)
 
-    When the current app is set, several new options appear in the menu:
-    * Build
+    When the current app is set, several new options appear in the menu:    
     * Test (only for iOS)
     * CodePush
-    * Distribute
-    * Crashes
-    * Analytics
 
     They all open the corresponding App Center tabs for the application. `CodePush` also contains CodePush stuff.
 
