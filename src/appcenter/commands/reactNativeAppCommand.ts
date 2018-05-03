@@ -2,9 +2,9 @@ import { Md5 } from "ts-md5/dist/md5";
 import * as vscode from "vscode";
 import { CommandNames, Constants } from '../../constants';
 import { AppCenterProfile, CommandParams, CurrentApp, QuickPickAppItem } from '../../helpers/interfaces';
-import { MenuHelper } from "../../helpers/menuHelper";
 import { Utils } from '../../helpers/utils';
 import { VsCodeUtils } from '../../helpers/vsCodeUtils';
+import * as Menu from "../../menu/menu";
 import { Strings } from '../../strings';
 import { models } from '../apis';
 import { Command } from './command';
@@ -86,7 +86,7 @@ export class ReactNativeAppCommand extends Command {
         if (!force) {
             ReactNativeAppCommand.cachedApps = rnApps;
         }
-        const options: QuickPickAppItem[] = MenuHelper.getQuickPickItemsForAppsList(rnApps);
+        const options: QuickPickAppItem[] = Menu.getQuickPickItemsForAppsList(rnApps);
         if (includeCreateNew) {
             const createNewAppItem = {
                 label: Strings.CreateNewAppMenuLabel,
@@ -166,7 +166,7 @@ export class ReactNativeAppCommand extends Command {
     }
 
     protected showCreateAppOptions() {
-        const appCenterPortalTabOptions: vscode.QuickPickItem[] = MenuHelper.getCreateAppOptions();
+        const appCenterPortalTabOptions: vscode.QuickPickItem[] = Menu.getCreateAppOptions();
 
         return vscode.window.showQuickPick(appCenterPortalTabOptions, { placeHolder: Strings.CreateAppPlaceholder })
             .then(async (selected: QuickPickAppItem) => {
