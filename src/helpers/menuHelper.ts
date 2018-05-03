@@ -1,9 +1,9 @@
 import * as vscode from "vscode";
-import { models } from "../appcenter/apis";
-import { CommandNames } from "../constants";
-import { Strings } from "../strings";
+import { models } from "../api/appcenter";
+import { CommandNames } from "../extension/resources/constants";
+import { Strings } from "../extension/resources/strings";
 import { Profile, UserOrOrganizationItem } from "./interfaces";
-import { CustomQuickPickItem } from "./vsCodeUtils";
+import { CustomQuickPickItem } from "./utils/vsCodeUtils";
 
 export class MenuHelper {
 

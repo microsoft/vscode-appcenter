@@ -1,7 +1,7 @@
 {
     "linterOptions": {
         "exclude": [
-            "src/appcenter/apis/generated"
+            "src/api/appcenter/generated"
         ]
     },
     "rules": {

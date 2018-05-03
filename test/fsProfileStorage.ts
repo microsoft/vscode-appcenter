@@ -1,10 +1,10 @@
 import should = require('should');
 import sinon = require('sinon');
 
-import FsProfileStorage from '../src/helpers/fsProfileStorage';
-import { FSUtils } from '../src/helpers/fsUtils';
+import FsProfileStorage from '../src/data/fsProfileStorage';
+import { ConsoleLogger } from '../src/extension/log/consoleLogger';
 import { VstsProfile } from '../src/helpers/interfaces';
-import { ConsoleLogger } from '../src/log/consoleLogger';
+import { FSUtils } from '../src/helpers/utils/fsUtils';
 
 describe('FsProfileStorage', function () {
 
