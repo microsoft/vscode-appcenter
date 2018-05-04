@@ -25,7 +25,7 @@ export class IOSTestRunner extends AppCenterUITestRunner {
     }
 
     protected getRelativeBuildBinaryDirectoryPath(): string {
-        return "DerivedData/Build/Products/Debug-iphoneos";
+        return "DerivedData/Build/Products/Release-iphoneos";
     }
 
     protected getTestFrameworkName(): string {
@@ -38,7 +38,7 @@ export class IOSTestRunner extends AppCenterUITestRunner {
             "xcodebuild",
             "build-for-testing",
             "-configuration",
-            "Debug",
+            "Release",
             "-workspace",
             path.join(this.nativeAppDirectory, `${appName}.xcworkspace`),
             "-sdk",

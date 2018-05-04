@@ -80,13 +80,6 @@ export default abstract class AppCenterUITestRunner {
                 return false;
             }
 
-            if (this.options.app.os.toLowerCase() === AppCenterOS.iOS.toLowerCase()) {
-                p.report({ message: Strings.MakingBundleStatusBarMessage });
-                if (!await this.makeBundle()) {
-                    return false;
-                }
-            }
-
             p.report({ message: Strings.UploadingAndRunningTestsStatusBarMessage });
             const args = [
                 "test",
