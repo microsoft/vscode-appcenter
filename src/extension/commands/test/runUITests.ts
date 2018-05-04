@@ -28,7 +28,8 @@ export default class RunUITests extends ReactNativeAppCommand {
         }
 
         let testRunner;
-        const platformDir = app.os.toLowerCase() === AppCenterOS.iOS.toLowerCase() ? ReactNativePlatformDirectory.IOS : ReactNativePlatformDirectory.Android;
+        const isIOSplatform: boolean = app.os.toLowerCase() === AppCenterOS.iOS.toLowerCase();
+        const platformDir = isIOSplatform ? ReactNativePlatformDirectory.IOS : ReactNativePlatformDirectory.Android;
         const testRunnerOptions: TestRunnerOptions = {
             app: app,
             client: this.client,
@@ -38,7 +39,7 @@ export default class RunUITests extends ReactNativeAppCommand {
             profile: await this.appCenterProfile
         };
 
-        if (app.os.toLowerCase() === AppCenterOS.iOS.toLowerCase()) {
+        if (isIOSplatform) {
             testRunner = new IOSTestRunner(testRunnerOptions);
         } else {
             testRunner = new AndroidTestRunner(testRunnerOptions);
