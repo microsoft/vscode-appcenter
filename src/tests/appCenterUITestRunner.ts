@@ -3,6 +3,7 @@ import * as vscode from "vscode";
 import { AppCenterClient, models } from "../api/appcenter";
 import { DeviceConfiguration } from "../api/appcenter/generated/models";
 import Auth from "../auth/auth";
+import { fileUtils } from "../codepush/codepush-sdk/src";
 import { ILogger } from "../extension/log/logHelper";
 import { ReactNativePlatformDirectory } from "../extension/resources/constants";
 import { Strings } from "../extension/resources/strings";
@@ -67,6 +68,11 @@ export default abstract class AppCenterUITestRunner {
             p.report({ message: Strings.CleaningBuildStatusBarMessage });
             await rimraf(this.getAbsoluteBuildDirectoryPath());
 
+            p.report({ message: Strings.MakingBundleStatusBarMessage });
+            if (!await this.makeBundle()) {
+                return false;
+            }
+
             p.report({ message: Strings.PreparingBuildStatusBarMessage });
             if (!await this.buildAppForTest()) {
                 return false;
@@ -93,6 +99,12 @@ export default abstract class AppCenterUITestRunner {
 
             if (async) {
                 args.push("--async");
+            }
+
+            const additionalArgs: string[] = this.getAdditionalArgs();
+
+            if (additionalArgs.length) {
+                args.push(...additionalArgs);
             }
             return this.spawnProcess("appcenter", args);
         });
@@ -137,9 +149,9 @@ export default abstract class AppCenterUITestRunner {
         return deviceSelection.shortId;
     }
 
-    protected async spawnProcess(command: string, args: string[]): Promise<boolean> {
+    protected async spawnProcess(command: string, args: string[], dir?: string): Promise<boolean> {
         try {
-            await cpUtils.executeCommand(this.options.logger, false, this.nativeAppDirectory, command, [], false, ...args);
+            await cpUtils.executeCommand(this.options.logger, false, dir || this.nativeAppDirectory, command, [], false, ...args);
         } catch (e) {
             this.options.logger.error(e.message, e, true);
             return false;
@@ -149,44 +161,43 @@ export default abstract class AppCenterUITestRunner {
 
     protected abstract async buildAppForTest(): Promise<boolean>;
 
+    protected makeBundle(): Promise<boolean> {
+        const args = [
+            "bundle",
+            "--assets-dest", this.getAssetsFolder(),
+            "--bundle-output", `${this.getAssetsFolder()}/${this.getBundleName()}`,
+            "--dev", "true",
+            "--entry-file", this.getDefautEntryFileName(),
+            "--platform", this.getAppOsString()
+        ];
+
+        return this.spawnProcess("react-native", args, this.options.appDirPath);
+    }
+
+    private getDefautEntryFileName(): string {
+        const entryFilePath: string = path.join(this.options.appDirPath, `index.${this.getAppOsString()}.js`);
+        if (fileUtils.fileDoesNotExistOrIsDirectory(entryFilePath)) {
+            return "index.js";
+        } else {
+            return `index.${this.getAppOsString()}.js`;
+        }
+    }
+
+    private getAppOsString(): string {
+        return this.options.app.os.toLowerCase();
+    }
+
+    private getBundleName(): string {
+        return `index.${this.getAppOsString()}.bundle`;
+    }
+
+    protected abstract getAssetsFolder(): string;
+
     protected abstract getTestFrameworkName(): string;
 
     protected abstract getRelativeBuildBinaryDirectoryPath(): string;
 
     protected abstract getAbsoluteBuildDirectoryPath(): string;
-}
 
-export class IOSTestRunner extends AppCenterUITestRunner {
-
-    protected getAbsoluteBuildDirectoryPath(): string {
-        return path.join(this.nativeAppDirectory, 'DerivedData');
-    }
-
-    protected getRelativeBuildBinaryDirectoryPath(): string {
-        return "DerivedData/Build/Products/Release-iphoneos";
-    }
-
-    protected getTestFrameworkName(): string {
-        return "xcuitest";
-    }
-
-    protected async buildAppForTest(): Promise<boolean> {
-        const appName = Utils.getAppName(this.options.appDirPath);
-        const args = [
-            "xcodebuild",
-            "build-for-testing",
-            "-configuration",
-            "Release",
-            "-workspace",
-            path.join(this.nativeAppDirectory, `${appName}.xcworkspace`),
-            "-sdk",
-            "iphoneos",
-            "-scheme",
-            appName,
-            "-derivedDataPath",
-            "DerivedData"
-        ];
-
-        return this.spawnProcess("xcrun", args);
-    }
+    protected abstract getAdditionalArgs(): string[];
 }
