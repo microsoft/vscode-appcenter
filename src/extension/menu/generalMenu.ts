@@ -25,6 +25,8 @@ export class GeneralMenu extends Menu {
             currentApp = this.profile.currentApp;
         }
 
+        menuItems.push(MenuItems.AppCenterPortal);
+
         // For empty directory show only `Start New Idea`
         if (this.isEmptyDir()) {
             menuItems.push(MenuItems.StartAnIdea);
@@ -38,8 +40,6 @@ export class GeneralMenu extends Menu {
                 }
             }
         }
-
-        menuItems.push(MenuItems.AppCenterPortal);
 
         if (!this.isEmptyDir() && this.isRNproject()) {
             menuItems.push(MenuItems.SetCurrentApp(currentApp));
