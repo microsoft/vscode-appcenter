@@ -61,7 +61,7 @@ export default abstract class AppCenterUITestRunner {
             if (selectedDevice.type === TestDeviceType.Device) {
                 shortDeviceId = await this.selectDevice(this.options.app, selectedDevice.id);
             } else {
-                shortDeviceId = selectedDevice.id;
+                shortDeviceId = `${this.options.app.ownerName}/${selectedDevice.label}`;
             }
 
             p.report({ message: Strings.CleaningBuildStatusBarMessage });
