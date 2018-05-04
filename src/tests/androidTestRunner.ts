@@ -33,7 +33,7 @@ export class AndroidTestRunner extends AppCenterUITestRunner {
     }
 
     protected async buildAppForTest(): Promise<boolean> {
-        const gradlewCmd = os.platform() === "darwin" ? "./gradlew" : "gradlew";
+        const gradlewCmd = os.platform() !== "win32" ? "./gradlew" : "gradlew";
         await this.spawnProcess(gradlewCmd, ["assembleDebug"]);
         return this.spawnProcess(gradlewCmd, ["assembleDebugAndroidTest"]);
     }
