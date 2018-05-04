@@ -55,7 +55,6 @@ export class Strings {
     public static UserIsNotLoggedInMsg: string = "You are not logged into App Center";
     public static MenuTitlePlaceholder: string = "Please make an App Center selection.";
     public static SelectProfileTitlePlaceholder: string = "Please select account.";
-    public static SelectTestDeviceTitlePlaceholder: string = "Please select device configuration to test.";
 
     public static SpecifyTenantTitlePlaceholder: string = "(Step 1). Please specify instance name";
     public static SpecifyUserNameTitlePlaceholder: string = "(Step 2). Please specify username";
@@ -180,6 +179,10 @@ export class Strings {
 
     public static BuildManualConfigureMessage(appName: string): string {
         return `Could not configure ${appName} build. Please try to do it manually.`;
+    }
+
+    public static SelectTestDeviceTitlePlaceholder(appName: string): string {
+        return `Please select device configuration to test ${appName}`;
     }
 
     public static FailedToExecuteLoginMsg(provider: AuthProvider): string {

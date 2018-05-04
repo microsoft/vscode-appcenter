@@ -1,3 +1,4 @@
+import * as os from "os";
 import * as path from "path";
 import AppCenterUITestRunner from "./appCenterUITestRunner";
 
@@ -32,7 +33,8 @@ export class AndroidTestRunner extends AppCenterUITestRunner {
     }
 
     protected async buildAppForTest(): Promise<boolean> {
-        await this.spawnProcess("gradlew", ["assembleDebug"]);
-        return this.spawnProcess("gradlew", ["assembleDebugAndroidTest"]);
+        const gradlewCmd = os.platform() !== "win32" ? "./gradlew" : "gradlew";
+        await this.spawnProcess(gradlewCmd, ["assembleDebug"]);
+        return this.spawnProcess(gradlewCmd, ["assembleDebugAndroidTest"]);
     }
 }

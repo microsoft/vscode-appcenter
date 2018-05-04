@@ -122,6 +122,9 @@ export class ReactNativeAppCommand extends Command {
     }
 
     protected getRnApps(apps: models.AppResponse[]): models.AppResponse[] {
+        if (!apps) {
+            return [];
+        }
         return apps.filter(app => app.platform === Constants.AppCenterReactNativePlatformName);
     }
 

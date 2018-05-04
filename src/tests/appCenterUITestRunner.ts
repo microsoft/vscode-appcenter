@@ -31,6 +31,7 @@ enum TestDeviceType {
 
 class TestQuickPickItem extends BaseQuickPickItem {
     public type: TestDeviceType;
+    public slug: string;
 }
 
 export default abstract class AppCenterUITestRunner {
@@ -53,7 +54,7 @@ export default abstract class AppCenterUITestRunner {
             const devices: TestQuickPickItem[] = await this.getDevicesList(this.options.app);
             const deviceSets: TestQuickPickItem[] = await this.getDeviceSetsList(this.options.app);
             devices.unshift(...deviceSets);
-            const selectedDevice: TestQuickPickItem = await vscode.window.showQuickPick(devices, { placeHolder: Strings.SelectTestDeviceTitlePlaceholder });
+            const selectedDevice: TestQuickPickItem = await vscode.window.showQuickPick(devices, { placeHolder: Strings.SelectTestDeviceTitlePlaceholder(this.options.app.appName) });
             if (!selectedDevice) {
                 return false;
             }
@@ -62,7 +63,7 @@ export default abstract class AppCenterUITestRunner {
             if (selectedDevice.type === TestDeviceType.Device) {
                 shortDeviceId = await this.selectDevice(this.options.app, selectedDevice.id);
             } else {
-                shortDeviceId = `${this.options.app.ownerName}/${selectedDevice.label}`;
+                shortDeviceId = `${this.options.app.ownerName}/${selectedDevice.slug}`;
             }
 
             p.report({ message: Strings.CleaningBuildStatusBarMessage });
@@ -120,7 +121,8 @@ export default abstract class AppCenterUITestRunner {
             label: `${config.name}`,
             description: `${config.osName}`,
             id: config.id,
-            type: TestDeviceType.Device
+            type: TestDeviceType.Device,
+            slug: ""
         });
     }
 
@@ -142,7 +144,8 @@ export default abstract class AppCenterUITestRunner {
             label: `${config.name}`,
             description: Strings.DeviceSetsDescription(config.owner.type),
             id: config.id,
-            type: TestDeviceType.DeviceSet
+            type: TestDeviceType.DeviceSet,
+            slug: config.slug
         });
     }
 
