@@ -5,7 +5,7 @@ import { DeviceConfiguration } from "../api/appcenter/generated/models";
 import Auth from "../auth/auth";
 import { fileUtils } from "../codepush/codepush-sdk/src";
 import { ILogger } from "../extension/log/logHelper";
-import { ReactNativePlatformDirectory, AppCenterOS } from "../extension/resources/constants";
+import { AppCenterOS, ReactNativePlatformDirectory } from "../extension/resources/constants";
 import { Strings } from "../extension/resources/strings";
 import { CurrentApp, Profile } from "../helpers/interfaces";
 import { cpUtils } from "../helpers/utils/cpUtils";
