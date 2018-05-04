@@ -49,10 +49,10 @@ export default abstract class AppCenterUITestRunner {
             }
 
             p.report({ message: Strings.FetchingDevicesStatusBarMessage });
-            const options: TestQuickPickItem[] = await this.getDevicesList(this.options.app);
-            const dsoptions: TestQuickPickItem[] = await this.getDeviceSetsList(this.options.app);
-            options.unshift(...dsoptions);
-            const selectedDevice: TestQuickPickItem = await vscode.window.showQuickPick(options, { placeHolder: Strings.SelectTestDeviceTitlePlaceholder });
+            const devices: TestQuickPickItem[] = await this.getDevicesList(this.options.app);
+            const deviceSets: TestQuickPickItem[] = await this.getDeviceSetsList(this.options.app);
+            devices.unshift(...deviceSets);
+            const selectedDevice: TestQuickPickItem = await vscode.window.showQuickPick(devices, { placeHolder: Strings.SelectTestDeviceTitlePlaceholder });
             if (!selectedDevice) {
                 return false;
             }
@@ -126,7 +126,7 @@ export default abstract class AppCenterUITestRunner {
         configs = configs.sort(this.sortDeviceSets);
         return configs.map((config: models.DeviceSet) => <TestQuickPickItem>{
             label: `${config.name}`,
-            description: `configured device set (${config.owner.type})`,
+            description: Strings.DeviceSetsDescription(config.owner.type),
             id: config.id,
             type: TestDeviceType.DeviceSet
         });
