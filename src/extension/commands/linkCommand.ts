@@ -41,12 +41,12 @@ export class LinkCommand extends ReactNativeAppCommand {
         if (this.showedCount < 1 && SettingsHelper.linkTwoApps()) {
             this.showedCount++;
             const missingOS: AppCenterOS = currentApp.os.toLowerCase() === AppCenterOS.Android.toLowerCase() ? AppCenterOS.iOS : AppCenterOS.Android;
-            const cachedFilteredApps = this.CachedApps.filter((cachedApp) => {
+            const cachedFilteredApps = this.getRnApps(this.CachedAllApps).filter((cachedApp) => {
                 return cachedApp.os.toLowerCase() === missingOS.toLowerCase();
             });
             const current: CurrentApp | null = await this.getCurrentApp();
             const showCurrentApp: boolean = current.os.toLowerCase() !== currentApp.os.toLowerCase();
-            this.showAppsQuickPick(cachedFilteredApps, showCurrentApp, false, Strings.ProvideSecondAppPromptMsg, true);
+            this.showAppsQuickPick(cachedFilteredApps, false, showCurrentApp, false, Strings.ProvideSecondAppPromptMsg, true);
         } else {
             this.linkApps();
         }

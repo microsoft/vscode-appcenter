@@ -16,7 +16,7 @@ export default class SetCurrentApp extends ReactNativeAppCommand {
         if (!await super.run()) {
             return;
         }
-        this.showAppsQuickPick(this.CachedApps);
+        this.showAppsQuickPick(this.CachedAllApps);
         this.refreshCachedAppsAndRepaintQuickPickIfNeeded(false, true, false);
     }
 

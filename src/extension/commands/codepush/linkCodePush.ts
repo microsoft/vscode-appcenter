@@ -16,8 +16,8 @@ export default class LinkCodePush extends LinkCommand {
             VsCodeUtils.ShowWarningMessage(Strings.NotReactProjectMsg);
             return;
         }
-        if (this.CachedApps) {
-            this.showAppsQuickPick(this.CachedApps, true, false, Strings.ProvideSecondAppPromptMsg);
+        if (this.CachedAllApps) {
+            this.showAppsQuickPick(this.CachedAllApps, false, true, false, Strings.ProvideSecondAppPromptMsg);
         } else {
             this.refreshCachedAppsAndRepaintQuickPickIfNeeded(true, false, false, Strings.ProvideFirstAppPromptMsg);
         }
