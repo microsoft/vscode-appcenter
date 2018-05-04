@@ -5,7 +5,7 @@ import { DeviceConfiguration } from "../api/appcenter/generated/models";
 import Auth from "../auth/auth";
 import { fileUtils } from "../codepush/codepush-sdk/src";
 import { ILogger } from "../extension/log/logHelper";
-import { ReactNativePlatformDirectory } from "../extension/resources/constants";
+import { ReactNativePlatformDirectory, AppCenterOS } from "../extension/resources/constants";
 import { Strings } from "../extension/resources/strings";
 import { CurrentApp, Profile } from "../helpers/interfaces";
 import { cpUtils } from "../helpers/utils/cpUtils";
@@ -68,14 +68,23 @@ export default abstract class AppCenterUITestRunner {
             p.report({ message: Strings.CleaningBuildStatusBarMessage });
             await rimraf(this.getAbsoluteBuildDirectoryPath());
 
-            p.report({ message: Strings.MakingBundleStatusBarMessage });
-            if (!await this.makeBundle()) {
-                return false;
+            if (this.options.app.os.toLowerCase() === AppCenterOS.Android.toLowerCase()) {
+                p.report({ message: Strings.MakingBundleStatusBarMessage });
+                if (!await this.makeBundle()) {
+                    return false;
+                }
             }
 
             p.report({ message: Strings.PreparingBuildStatusBarMessage });
             if (!await this.buildAppForTest()) {
                 return false;
+            }
+
+            if (this.options.app.os.toLowerCase() === AppCenterOS.iOS.toLowerCase()) {
+                p.report({ message: Strings.MakingBundleStatusBarMessage });
+                if (!await this.makeBundle()) {
+                    return false;
+                }
             }
 
             p.report({ message: Strings.UploadingAndRunningTestsStatusBarMessage });
@@ -165,7 +174,7 @@ export default abstract class AppCenterUITestRunner {
         const args = [
             "bundle",
             "--assets-dest", this.getAssetsFolder(),
-            "--bundle-output", `${this.getAssetsFolder()}/${this.getBundleName()}`,
+            "--bundle-output", this.getBundleOutputDir(),
             "--dev", "true",
             "--entry-file", this.getDefautEntryFileName(),
             "--platform", this.getAppOsString()
@@ -187,11 +196,11 @@ export default abstract class AppCenterUITestRunner {
         return this.options.app.os.toLowerCase();
     }
 
-    private getBundleName(): string {
-        return `index.${this.getAppOsString()}.bundle`;
-    }
+    protected abstract getBundleName(): string;
 
     protected abstract getAssetsFolder(): string;
+
+    protected abstract getBundleOutputDir(): string;
 
     protected abstract getTestFrameworkName(): string;
 

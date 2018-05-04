@@ -3,6 +3,14 @@ import AppCenterUITestRunner from "./appCenterUITestRunner";
 
 export class AndroidTestRunner extends AppCenterUITestRunner {
 
+    protected getBundleName(): string {
+        return `index.android.bundle`;
+    }
+
+    protected getBundleOutputDir(): string {
+        return `${this.getAssetsFolder()}/${this.getBundleName()}`;
+    }
+
     protected getAssetsFolder(): string {
         return "android/app/src/main/assets";
     }

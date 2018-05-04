@@ -4,6 +4,14 @@ import AppCenterUITestRunner from "./appCenterUITestRunner";
 
 export class IOSTestRunner extends AppCenterUITestRunner {
 
+    protected getBundleName(): string {
+        return "main.jsbundle";
+    }
+
+    protected getBundleOutputDir(): string {
+        return `${this.getRelativeBuildBinaryDirectoryPath()}/${this.getBundleName()}`;
+    }
+
     protected getAssetsFolder(): string {
         return `./ios/${Utils.getAppName(this.options.appDirPath)}`;
     }
