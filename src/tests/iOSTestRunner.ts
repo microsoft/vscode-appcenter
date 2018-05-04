@@ -17,7 +17,7 @@ export class IOSTestRunner extends AppCenterUITestRunner {
     }
 
     protected getRelativeBuildBinaryDirectoryPath(): string {
-        return "DerivedData/Build/Products/Release-iphoneos";
+        return "DerivedData/Build/Products/Debug-iphoneos";
     }
 
     protected getTestFrameworkName(): string {
