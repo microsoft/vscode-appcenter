@@ -1,8 +1,8 @@
 import { CommandParams, CurrentApp } from "../../../helpers/interfaces";
-import { VsCodeUtils } from '../../../helpers/utils/vsCodeUtils';
-import { IOSTestRunner } from '../../../tests/appCenterUITestRunner';
+import { AndroidTestRunner } from "../../../tests/androidTestRunner";
+import { TestRunnerOptions } from '../../../tests/appCenterUITestRunner';
+import { IOSTestRunner } from "../../../tests/iOSTestRunner";
 import { AppCenterOS, ReactNativePlatformDirectory } from '../../resources/constants';
-import { Strings } from '../../resources/strings';
 import { ReactNativeAppCommand } from '../reactNativeAppCommand';
 
 export default class RunUITests extends ReactNativeAppCommand {
@@ -27,20 +27,23 @@ export default class RunUITests extends ReactNativeAppCommand {
             return false;
         }
 
-        // Only iOS is supported for now
-        if (app.os.toLowerCase() !== AppCenterOS.iOS.toLowerCase()) {
-            VsCodeUtils.ShowWarningMessage(Strings.OnlyIOSError);
-            return false;
-        }
-
-        const testRunner = new IOSTestRunner({
+        let testRunner;
+        const isIOSplatform: boolean = app.os.toLowerCase() === AppCenterOS.iOS.toLowerCase();
+        const platformDir = isIOSplatform ? ReactNativePlatformDirectory.IOS : ReactNativePlatformDirectory.Android;
+        const testRunnerOptions: TestRunnerOptions = {
             app: app,
             client: this.client,
             logger: this.logger,
-            platformDir: ReactNativePlatformDirectory.IOS,
+            platformDir: platformDir,
             appDirPath: this.manager.projectRootPath,
             profile: await this.appCenterProfile
-        });
+        };
+
+        if (isIOSplatform) {
+            testRunner = new IOSTestRunner(testRunnerOptions);
+        } else {
+            testRunner = new AndroidTestRunner(testRunnerOptions);
+        }
 
         return testRunner.runUITests(this.async);
     }
