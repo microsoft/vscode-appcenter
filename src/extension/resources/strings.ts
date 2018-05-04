@@ -252,6 +252,10 @@ export class Strings {
         return `The current CodePush deployment selected is '${deploymentName}'`;
     }
 
+    public static DeviceSetsDescription(ownerType: string): string {
+        return `configured device set (${ownerType})`;
+    }
+
     public static setCurrentAppDeploymentText(app: CurrentApp): string {
         return `Change '${app.currentAppDeployments.currentDeploymentName}' to a different deployment`;
     }

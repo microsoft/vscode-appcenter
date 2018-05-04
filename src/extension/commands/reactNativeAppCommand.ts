@@ -13,7 +13,7 @@ import { CreateNewAppOption } from "./general/createNewApp";
 
 export class ReactNativeAppCommand extends Command {
     protected currentAppMenuTarget: string = "MenuCurrentApp";
-    protected static cachedApps: models.AppResponse[];
+    protected static cachedAllApps: models.AppResponse[];
     protected userAlreadySelectedApp: boolean;
     protected checkForReact: boolean = true;
     protected _params: CommandParams;
@@ -23,9 +23,9 @@ export class ReactNativeAppCommand extends Command {
         this._params = params;
     }
 
-    public get CachedApps(): models.AppResponse[] | null {
-        if (ReactNativeAppCommand.cachedApps && ReactNativeAppCommand.cachedApps.length > 0) {
-            return ReactNativeAppCommand.cachedApps;
+    public get CachedAllApps(): models.AppResponse[] | null {
+        if (ReactNativeAppCommand.cachedAllApps && ReactNativeAppCommand.cachedAllApps.length > 0) {
+            return ReactNativeAppCommand.cachedAllApps;
         } else {
             return null;
         }
@@ -79,15 +79,16 @@ export class ReactNativeAppCommand extends Command {
         throw Error("handleShowCurrentAppQuickPickSelection not implemented in base class");
     }
 
-    protected async showAppsQuickPick(rnApps: models.AppResponse[], includeSelectCurrent: boolean = false, includeCreateNew: boolean = true, prompt: string = Strings.ProvideCurrentAppPromptMsg, force: boolean = false) {
-        if (!rnApps) {
+    protected async showAppsQuickPick(apps: models.AppResponse[], includeAllApps: boolean = false, includeSelectCurrent: boolean = false, includeCreateNew: boolean = true, prompt: string = Strings.ProvideCurrentAppPromptMsg, force: boolean = false) {
+        if (!apps) {
             this.logger.debug("Do not show apps quick pick due to no apps (either in cache or fetched from server");
             return;
         }
+        const rnApps: models.AppResponse[] = this.getRnApps(apps);
         if (!force) {
-            ReactNativeAppCommand.cachedApps = rnApps;
+            ReactNativeAppCommand.cachedAllApps = apps;
         }
-        const options: QuickPickAppItem[] = Menu.getQuickPickItemsForAppsList(rnApps);
+        const options: QuickPickAppItem[] = Menu.getQuickPickItemsForAppsList(includeAllApps ? apps : rnApps);
         if (includeCreateNew && Utils.isReactNativeProject(this.logger, this.rootPath, false)) {
             const createNewAppItem = {
                 label: Strings.CreateNewAppMenuLabel,
@@ -120,15 +121,19 @@ export class ReactNativeAppCommand extends Command {
         }
     }
 
+    protected getRnApps(apps: models.AppResponse[]): models.AppResponse[] {
+        return apps.filter(app => app.platform === Constants.AppCenterReactNativePlatformName);
+    }
+
     protected refreshCachedAppsAndRepaintQuickPickIfNeeded(includeSelectCurrent: boolean = false, includeCreateNew: boolean = true, includeAllApps: boolean = true, prompt: string = Strings.ProvideCurrentAppPromptMsg) {
         vscode.window.withProgress({ location: vscode.ProgressLocation.Window, title: Strings.GetAppsListMessage }, () => {
             return this.client.apps.list({
                 orderBy: "name"
             }).then((apps: models.AppResponse[]) => {
-                const rnApps: models.AppResponse[] = includeAllApps ? apps : apps.filter(app => app.platform === Constants.AppCenterReactNativePlatformName);
+                const rnApps: models.AppResponse[] = includeAllApps ? apps : this.getRnApps(apps);
                 // we repaint menu only in case we have changed apps
-                if (this.cachedAppsItemsDiffer(rnApps, ReactNativeAppCommand.cachedApps)) {
-                    this.showAppsQuickPick(rnApps, includeSelectCurrent, includeCreateNew, prompt);
+                if (this.cachedAppsItemsDiffer(rnApps, includeAllApps ? ReactNativeAppCommand.cachedAllApps : this.getRnApps(ReactNativeAppCommand.cachedAllApps))) {
+                    this.showAppsQuickPick(rnApps, includeAllApps, includeSelectCurrent, includeCreateNew, prompt);
                 }
             }).catch((e) => {
                 VsCodeUtils.ShowErrorMessage(Strings.UnknownError);

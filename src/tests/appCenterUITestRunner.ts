@@ -10,7 +10,7 @@ import { CurrentApp, Profile } from "../helpers/interfaces";
 import { cpUtils } from "../helpers/utils/cpUtils";
 import { FSUtils } from "../helpers/utils/fsUtils";
 import { Utils } from "../helpers/utils/utils";
-import { CustomQuickPickItem, VsCodeUtils } from "../helpers/utils/vsCodeUtils";
+import { BaseQuickPickItem, VsCodeUtils } from "../helpers/utils/vsCodeUtils";
 import { DeviceConfigurationSort } from "./deviceConfigurationSort";
 const rimraf = FSUtils.rimraf;
 
@@ -21,6 +21,15 @@ export interface TestRunnerOptions {
     platformDir: ReactNativePlatformDirectory;
     appDirPath: string;
     profile: Profile;
+}
+
+enum TestDeviceType {
+    Device = 0,
+    DeviceSet = 1
+}
+
+class TestQuickPickItem extends BaseQuickPickItem {
+    public type: TestDeviceType;
 }
 
 export default abstract class AppCenterUITestRunner {
@@ -40,13 +49,20 @@ export default abstract class AppCenterUITestRunner {
             }
 
             p.report({ message: Strings.FetchingDevicesStatusBarMessage });
-            const options: CustomQuickPickItem[] = await this.getDevicesList(this.options.app);
-            const selectedDevice: CustomQuickPickItem = await vscode.window.showQuickPick(options, { placeHolder: Strings.SelectTestDeviceTitlePlaceholder });
+            const devices: TestQuickPickItem[] = await this.getDevicesList(this.options.app);
+            const deviceSets: TestQuickPickItem[] = await this.getDeviceSetsList(this.options.app);
+            devices.unshift(...deviceSets);
+            const selectedDevice: TestQuickPickItem = await vscode.window.showQuickPick(devices, { placeHolder: Strings.SelectTestDeviceTitlePlaceholder });
             if (!selectedDevice) {
                 return false;
             }
 
-            const shortDeviceId = await this.selectDevice(this.options.app, selectedDevice.target);
+            let shortDeviceId: string;
+            if (selectedDevice.type === TestDeviceType.Device) {
+                shortDeviceId = await this.selectDevice(this.options.app, selectedDevice.id);
+            } else {
+                shortDeviceId = `${this.options.app.ownerName}/${selectedDevice.label}`;
+            }
 
             p.report({ message: Strings.CleaningBuildStatusBarMessage });
             await rimraf(this.getAbsoluteBuildDirectoryPath());
@@ -82,14 +98,37 @@ export default abstract class AppCenterUITestRunner {
         });
     }
 
-    private async getDevicesList(app: CurrentApp): Promise<CustomQuickPickItem[]> {
+    private async getDevicesList(app: CurrentApp): Promise<TestQuickPickItem[]> {
         let configs: models.DeviceConfiguration[] = await this.options.client.test.getDeviceConfigurations(app.ownerName, app.appName);
         // Sort devices list like it was done on AppCenter Portal
         configs = configs.sort(DeviceConfigurationSort.compare);
-        return configs.map((config: DeviceConfiguration) => <CustomQuickPickItem>{
+        return configs.map((config: DeviceConfiguration) => <TestQuickPickItem>{
             label: `${config.name}`,
             description: `${config.osName}`,
-            target: config.id
+            id: config.id,
+            type: TestDeviceType.Device
+        });
+    }
+
+    private sortDeviceSets(a: models.DeviceSet, b: models.DeviceSet): number {
+        if (a.name > b.name) {
+            return 1;
+        }
+        if (a.name < b.name) {
+            return -1;
+        }
+        return 0;
+    }
+
+    private async getDeviceSetsList(app: CurrentApp): Promise<TestQuickPickItem[]> {
+        let configs: models.DeviceSet[] = await this.options.client.test.listDeviceSetsOfOwner(app.ownerName, app.appName);
+        // Sort devices list like it was done on AppCenter Portal
+        configs = configs.sort(this.sortDeviceSets);
+        return configs.map((config: models.DeviceSet) => <TestQuickPickItem>{
+            label: `${config.name}`,
+            description: Strings.DeviceSetsDescription(config.owner.type),
+            id: config.id,
+            type: TestDeviceType.DeviceSet
         });
     }
 
