@@ -13,7 +13,7 @@ export default class AppCenterPortal extends ReactNativeAppCommand {
         if (!await super.run()) {
             return;
         }
-        this.showAppsQuickPick(this.CachedApps, true);
+        this.showAppsQuickPick(this.CachedAllApps, true);
         this.refreshCachedAppsAndRepaintQuickPickIfNeeded(true);
     }
 
