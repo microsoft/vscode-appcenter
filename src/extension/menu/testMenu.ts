@@ -1,21 +1,18 @@
 import { CommandParams, MenuQuickPickItem } from "../../helpers/interfaces";
 import * as Test from "../commands/test";
-import { AppCenterOS, CommandNames } from "../resources/constants";
+import { CommandNames } from "../resources/constants";
 import { Menu, MenuItems } from "./menu";
 
 export class TestMenu extends Menu {
 
-    constructor(private appOS: string, params: CommandParams) {
+    constructor(params: CommandParams) {
         super(params);
     }
 
     protected getMenuItems(): MenuQuickPickItem[] {
         const menuItems: MenuQuickPickItem[] = [];
-        // For now running tests supported only for iOS platform
-        if (this.appOS.toLowerCase() === AppCenterOS.iOS.toLowerCase()) {
-            menuItems.push(MenuItems.RunUITests);
-            menuItems.push(MenuItems.RunUITestsAsync);
-        }
+        menuItems.push(MenuItems.RunUITests);
+        menuItems.push(MenuItems.RunUITestsAsync);
         menuItems.push(MenuItems.ViewTestResults);
         return menuItems;
     }

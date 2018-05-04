@@ -94,6 +94,7 @@ export class Strings {
     public static FetchingDevicesStatusBarMessage: string = "Fetching devices...";
     public static CleaningBuildStatusBarMessage: string = "Cleaning build directory...";
     public static PreparingBuildStatusBarMessage: string = "Preparing build for testing...";
+    public static MakingBundleStatusBarMessage: string = "Making a bundle...";
     public static UploadingAndRunningTestsStatusBarMessage: string = "Uploading and running tests on App Center portal...";
     public static CheckingAppCenterCli: string = "Checking for AppCenter CLI installation...";
 
