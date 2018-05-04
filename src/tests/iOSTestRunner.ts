@@ -5,7 +5,7 @@ import AppCenterUITestRunner from "./appCenterUITestRunner";
 export class IOSTestRunner extends AppCenterUITestRunner {
 
     protected getAssetsFolder(): string {
-        return `./ios/${this.options.app.appName}`;
+        return `./ios/${Utils.getAppName(this.options.appDirPath)}`;
     }
 
     protected getAdditionalArgs(): string[] {
