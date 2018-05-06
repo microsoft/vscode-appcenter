@@ -25,12 +25,12 @@ export class GeneralMenu extends Menu {
             currentApp = this.profile.currentApp;
         }
 
-        menuItems.push(MenuItems.AppCenterPortal);
-
         // For empty directory show only `Start New Idea`
         if (this.isEmptyDir()) {
             menuItems.push(MenuItems.StartAnIdea);
+            menuItems.push(MenuItems.AppCenterPortal);
         } else {
+            menuItems.push(MenuItems.AppCenterPortal);
             if (this.isRNproject() && currentApp) {
                 menuItems.push(MenuItems.TestTab);
                 menuItems.push(MenuItems.CodePushTab);
