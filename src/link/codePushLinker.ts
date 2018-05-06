@@ -18,7 +18,7 @@ export default class CodePushLinker {
             return null;
         }
         const deployments: Deployment[] = [];
-        VsCodeUI.showProgress(async progress => {
+        await VsCodeUI.showProgress(async progress => {
             progress.report({ message: Strings.CreatingCodePushDeploymentsStatusBarMessage });
             for (let index = 0; index < apps.length; index++) {
                 const app: LinkableApp = apps[index];

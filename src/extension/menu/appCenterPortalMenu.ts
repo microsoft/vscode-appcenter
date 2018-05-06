@@ -1,4 +1,3 @@
-import * as vscode from "vscode";
 import { AppCenterUrlBuilder } from "../../helpers/appCenterUrlBuilder";
 import { CommandParams, MenuQuickPickItem } from "../../helpers/interfaces";
 import { SettingsHelper } from "../../helpers/settingsHelper";
@@ -7,8 +6,8 @@ import * as CodePush from "../commands/codepush";
 import { SimulateCrashes } from "../commands/general";
 import * as Test from "../commands/test";
 import { AppCenterBeacons, AppCenterCrashesTabs, AppCenterDistributionTabs, CommandNames } from "../resources/constants";
-import { Strings } from "../resources/strings";
 import { Menu, MenuItems } from "./menu";
+import { VsCodeUI } from "../ui/vscodeUI";
 
 export class AppCenterPortalMenu extends Menu {
 
@@ -30,50 +29,46 @@ export class AppCenterPortalMenu extends Menu {
         return menuItems;
     }
 
-    protected handleMenuSelection(menuItem: MenuQuickPickItem): Promise<void> {
+    protected async handleMenuSelection(menuItem: MenuQuickPickItem): Promise<void> {
         switch (menuItem.command) {
             case (AppCenterBeacons.Build):
                 Utils.OpenUrl(AppCenterUrlBuilder.GetAppCenterLinkByBeacon(this.ownerName, this.appName, AppCenterBeacons.Build, this.isOrg));
                 break;
             case (AppCenterBeacons.Distribute):
-                vscode.window.showQuickPick(this.getAppCenterDistributeTabMenuItems(), { placeHolder: Strings.MenuTitlePlaceholder })
-                    .then((selected: MenuQuickPickItem) => {
-                        if (!selected) {
-                            return;
-                        }
-                        switch (selected.command) {
-                            case (AppCenterDistributionTabs.Groups):
-                                Utils.OpenUrl(AppCenterUrlBuilder.GetAppCenterDistributeTabLinkByTabName(this.ownerName, this.appName, AppCenterDistributionTabs.Groups, this.isOrg));
-                                break;
-                            case (AppCenterDistributionTabs.Stores):
-                                Utils.OpenUrl(AppCenterUrlBuilder.GetAppCenterDistributeTabLinkByTabName(this.ownerName, this.appName, AppCenterDistributionTabs.Stores, this.isOrg));
-                                break;
-                            case (AppCenterDistributionTabs.Releases):
-                                Utils.OpenUrl(AppCenterUrlBuilder.GetAppCenterDistributeTabLinkByTabName(this.ownerName, this.appName, AppCenterDistributionTabs.Releases, this.isOrg));
-                                break;
-                            case (CommandNames.CodePush.ShowMenu):
-                                new CodePush.ShowMenu(this._params).run();
-                            default:
-                                break;
-                        }
-                    });
+                const selected: MenuQuickPickItem = await VsCodeUI.showQuickPick(this.getAppCenterDistributeTabMenuItems());
+                if (!selected) {
+                    return;
+                }
+                switch (selected.command) {
+                    case (AppCenterDistributionTabs.Groups):
+                        Utils.OpenUrl(AppCenterUrlBuilder.GetAppCenterDistributeTabLinkByTabName(this.ownerName, this.appName, AppCenterDistributionTabs.Groups, this.isOrg));
+                        break;
+                    case (AppCenterDistributionTabs.Stores):
+                        Utils.OpenUrl(AppCenterUrlBuilder.GetAppCenterDistributeTabLinkByTabName(this.ownerName, this.appName, AppCenterDistributionTabs.Stores, this.isOrg));
+                        break;
+                    case (AppCenterDistributionTabs.Releases):
+                        Utils.OpenUrl(AppCenterUrlBuilder.GetAppCenterDistributeTabLinkByTabName(this.ownerName, this.appName, AppCenterDistributionTabs.Releases, this.isOrg));
+                        break;
+                    case (CommandNames.CodePush.ShowMenu):
+                        new CodePush.ShowMenu(this._params).run();
+                    default:
+                        break;
+                }
                 break;
             case (AppCenterBeacons.Crashes):
-                vscode.window.showQuickPick(this.getAppCenterCrashesTabMenuItems(), { placeHolder: Strings.MenuTitlePlaceholder })
-                    .then((selected: MenuQuickPickItem) => {
-                        if (!selected) {
-                            return;
-                        }
-                        switch (selected.command) {
-                            case (AppCenterBeacons.Crashes):
-                                Utils.OpenUrl(AppCenterUrlBuilder.GetAppCenterLinkByBeacon(this.ownerName, this.appName, AppCenterBeacons.Crashes, this.isOrg));
-                                break;
-                            case (AppCenterCrashesTabs.Simulate):
-                                new SimulateCrashes(this._params).run();
-                            default:
-                                break;
-                        }
-                    });
+                const selectedCrash: MenuQuickPickItem = await VsCodeUI.showQuickPick(this.getAppCenterCrashesTabMenuItems());
+                if (!selectedCrash) {
+                    return;
+                }
+                switch (selectedCrash.command) {
+                    case (AppCenterBeacons.Crashes):
+                        Utils.OpenUrl(AppCenterUrlBuilder.GetAppCenterLinkByBeacon(this.ownerName, this.appName, AppCenterBeacons.Crashes, this.isOrg));
+                        break;
+                    case (AppCenterCrashesTabs.Simulate):
+                        new SimulateCrashes(this._params).run();
+                    default:
+                        break;
+                }
                 break;
             case (AppCenterBeacons.Analytics):
                 Utils.OpenUrl(AppCenterUrlBuilder.GetAppCenterLinkByBeacon(this.ownerName, this.appName, AppCenterBeacons.Analytics, this.isOrg));

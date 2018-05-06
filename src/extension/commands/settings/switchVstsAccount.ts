@@ -1,4 +1,3 @@
-import * as vscode from 'vscode';
 import { Profile, ProfileQuickPickItem } from '../../../helpers/interfaces';
 import { AuthProvider } from '../../resources/constants';
 import { Strings } from '../../resources/strings';
@@ -28,14 +27,16 @@ export default class SwitchAccount extends Command {
             }
         });
 
-        return await vscode.window.showQuickPick(menuOptions, { placeHolder: Strings.SelectProfileTitlePlaceholder })
-            .then((selected: ProfileQuickPickItem) => {
-                if (!selected) {
-                    // User cancel selection
-                    return true;
-                }
-                return this.switchActiveProfile(selected.profile);
-            }, this.handleError);
+        try {
+            const selected: ProfileQuickPickItem = await VsCodeUI.showQuickPick(menuOptions, Strings.SelectProfileTitlePlaceholder);
+            if (!selected) {
+                // User cancel selection
+                return void 0;
+            }
+            return this.switchActiveProfile(selected.profile);
+        } catch (error) {
+            this.handleError(error);
+        }
     }
 
     private async switchActiveProfile(selectedProfile: Profile): Promise<boolean> {

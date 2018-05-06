@@ -1,6 +1,5 @@
 import * as os from "os";
 import * as qs from "qs";
-import * as vscode from "vscode";
 import { CommandParams, Profile } from "../../../helpers/interfaces";
 import { SettingsHelper } from "../../../helpers/settingsHelper";
 import { AuthProvider } from "../../resources/constants";
@@ -26,15 +25,14 @@ export default class Login extends Command {
             url: loginUrl
         });
 
-        return VsCodeUI.ShowInfoMessage(Strings.PleaseLoginViaBrowser, ...messageItems)
-            .then((selection: IButtonMessageItem | undefined) => {
-                if (selection) {
-                    return vscode.window.showInputBox({ prompt: Strings.PleaseProvideToken, ignoreFocusOut: true })
-                        .then(token => {
-                            this.loginWithToken(token);
-                        });
-                } else { return void 0; }
-            });
+        const selection: IButtonMessageItem | undefined = await VsCodeUI.ShowInfoMessage(Strings.PleaseLoginViaBrowser, ...messageItems);
+        if (selection) {
+            const token: string = await VsCodeUI.showInput(Strings.PleaseProvideToken);
+            this.loginWithToken(token);
+            return true;
+        } else {
+            return void 0;
+        }
     }
 
     private async loginWithToken(token: string | undefined): Promise<boolean> {

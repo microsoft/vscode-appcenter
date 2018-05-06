@@ -21,7 +21,7 @@ export default class SetCurrentApp extends ReactNativeAppCommand {
 
     protected async handleShowCurrentAppQuickPickSelection(selected: QuickPickAppItem, rnApps: models.AppResponse[]) {
         if (selected.target === CommandNames.CreateApp.CommandName) {
-            return this.showCreateAppOptions();
+            return await this.showCreateAppOptions();
         } else {
             const selectedApps: models.AppResponse[] = rnApps.filter(app => app.name === selected.target && app.owner.type === selected.description);
             if (!selectedApps || selectedApps.length !== 1) {

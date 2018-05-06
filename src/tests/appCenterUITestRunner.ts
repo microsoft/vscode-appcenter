@@ -1,5 +1,4 @@
 import * as path from "path";
-import * as vscode from "vscode";
 import { AppCenterClient, models } from "../api/appcenter";
 import { DeviceConfiguration } from "../api/appcenter/generated/models";
 import Auth from "../auth/auth";
@@ -42,7 +41,7 @@ export default abstract class AppCenterUITestRunner {
     }
 
     public async runUITests(async: boolean): Promise<boolean> {
-        return VsCodeUI.showProgress<boolean>(async progress => {
+        return await VsCodeUI.showProgress<boolean>(async progress => {
             progress.report({ message: Strings.CheckingAppCenterCli });
             if (!await Utils.packageInstalledGlobally("appcenter-cli")) {
                 VsCodeUI.ShowErrorMessage(Strings.packageIsNotInstalledGlobally("appcenter-cli"));
@@ -53,7 +52,7 @@ export default abstract class AppCenterUITestRunner {
             const devices: TestQuickPickItem[] = await this.getDevicesList(this.options.app);
             const deviceSets: TestQuickPickItem[] = await this.getDeviceSetsList(this.options.app);
             devices.unshift(...deviceSets);
-            const selectedDevice: TestQuickPickItem = await vscode.window.showQuickPick(devices, { placeHolder: Strings.SelectTestDeviceTitlePlaceholder(this.options.app.appName) });
+            const selectedDevice: TestQuickPickItem = await VsCodeUI.showQuickPick(devices, Strings.SelectTestDeviceTitlePlaceholder(this.options.app.appName));
             if (!selectedDevice) {
                 return false;
             }

@@ -1,4 +1,3 @@
-import * as vscode from "vscode";
 import { VSTSProvider } from "../../../api/vsts/vstsProvider";
 import Auth from "../../../auth/auth";
 import { VstsLoginInfo, VstsProfile } from "../../../helpers/interfaces";
@@ -20,19 +19,19 @@ export default class LoginToVsts extends Command {
         };
         let value;
 
-        value = await vscode.window.showInputBox({ prompt: Strings.SpecifyTenantTitlePlaceholder, ignoreFocusOut: true });
+        value = await VsCodeUI.showInput(Strings.SpecifyTenantTitlePlaceholder);
         if (!value) {
             return true;
         }
         loginInfo.tenantName = value;
 
-        value = await vscode.window.showInputBox({ prompt: Strings.SpecifyUserNameTitlePlaceholder, ignoreFocusOut: true });
+        value = await VsCodeUI.showInput(Strings.SpecifyUserNameTitlePlaceholder);
         if (!value) {
             return true;
         }
         loginInfo.userName = value;
 
-        value = await vscode.window.showInputBox({ prompt: Strings.SpecifyPATTitlePlaceholder, ignoreFocusOut: true });
+        value = await VsCodeUI.showInput(Strings.SpecifyPATTitlePlaceholder);
         if (!value) {
             return true;
         }

@@ -1,4 +1,3 @@
-import * as vscode from 'vscode';
 import { CommandParams, Profile, ProfileQuickPickItem } from '../../../helpers/interfaces';
 import { AuthProvider } from '../../resources/constants';
 import { Strings } from '../../resources/strings';
@@ -38,15 +37,16 @@ export default class Logout extends Command {
                 profile: profile
             });
         });
-
-        return await vscode.window.showQuickPick(menuOptions, { placeHolder: Strings.SelectProfileTitlePlaceholder })
-            .then((selected: ProfileQuickPickItem) => {
-                if (!selected) {
-                    // User cancel selection
-                    return void 0;
-                }
-                return this.logoutUser(selected.profile);
-            }, this.handleError);
+        try {
+            const selected: ProfileQuickPickItem = await VsCodeUI.showQuickPick(menuOptions, Strings.SelectProfileTitlePlaceholder);
+            if (!selected) {
+                // User cancel selection
+                return void 0;
+            }
+            return this.logoutUser(selected.profile);
+        } catch (error) {
+            this.handleError(error);
+        }
     }
 
     private async logoutUser(profile: Profile): Promise<boolean> {

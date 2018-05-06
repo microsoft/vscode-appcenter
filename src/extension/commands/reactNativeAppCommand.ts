@@ -1,5 +1,4 @@
 import { Md5 } from "ts-md5/dist/md5";
-import * as vscode from "vscode";
 import { models } from "../../api/appcenter";
 import { AppCenterProfile, CommandParams, CurrentApp, QuickPickAppItem } from '../../helpers/interfaces';
 import { Utils } from "../../helpers/utils/utils";
@@ -110,14 +109,12 @@ export class ReactNativeAppCommand extends Command {
             }
         }
         if (!this.userAlreadySelectedApp || force) {
-            vscode.window.showQuickPick(options, { placeHolder: prompt })
-                .then((selected: QuickPickAppItem) => {
-                    this.userAlreadySelectedApp = true;
-                    if (!selected) {
-                        return;
-                    }
-                    this.handleShowCurrentAppQuickPickSelection(selected, rnApps);
-                });
+            const selected: QuickPickAppItem = await VsCodeUI.showQuickPick(options, prompt);
+            this.userAlreadySelectedApp = true;
+            if (!selected) {
+                return;
+            }
+            this.handleShowCurrentAppQuickPickSelection(selected, rnApps);
         }
     }
 
@@ -176,31 +173,30 @@ export class ReactNativeAppCommand extends Command {
         return hashOfTheCachedObject === hashOfTheIncomingObject;
     }
 
-    protected showCreateAppOptions() {
-        const appCenterPortalTabOptions: vscode.QuickPickItem[] = Menu.getCreateAppOptions();
+    protected async showCreateAppOptions() {
+        const appCenterPortalTabOptions: QuickPickAppItem[] = Menu.getCreateAppOptions();
 
-        return vscode.window.showQuickPick(appCenterPortalTabOptions, { placeHolder: Strings.CreateAppPlaceholder })
-            .then(async (selected: QuickPickAppItem) => {
-                if (!selected) {
-                    this.logger.debug('User cancel selection of create app tab');
-                    return;
-                }
+        const selected: QuickPickAppItem = await VsCodeUI.showQuickPick(appCenterPortalTabOptions, Strings.CreateAppPlaceholder);
 
-                switch (selected.target) {
-                    case (CommandNames.CreateApp.Android):
-                        new General.CreateNewApp(this._params, CreateNewAppOption.Android).run();
-                        break;
-                    case (CommandNames.CreateApp.IOS):
-                        new General.CreateNewApp(this._params, CreateNewAppOption.IOS).run();
-                        break;
-                    case (CommandNames.CreateApp.Both):
-                        new General.CreateNewApp(this._params, CreateNewAppOption.Both).run();
-                        break;
-                    default:
-                        // Ideally shouldn't be there :)
-                        this.logger.error("Unknown create app option");
-                        break;
-                }
-            });
+        if (!selected) {
+            this.logger.debug('User cancel selection of create app tab');
+            return;
+        }
+
+        switch (selected.target) {
+            case (CommandNames.CreateApp.Android):
+                new General.CreateNewApp(this._params, CreateNewAppOption.Android).run();
+                break;
+            case (CommandNames.CreateApp.IOS):
+                new General.CreateNewApp(this._params, CreateNewAppOption.IOS).run();
+                break;
+            case (CommandNames.CreateApp.Both):
+                new General.CreateNewApp(this._params, CreateNewAppOption.Both).run();
+                break;
+            default:
+                // Ideally shouldn't be there :)
+                this.logger.error("Unknown create app option");
+                break;
+        }
     }
 }

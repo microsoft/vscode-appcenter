@@ -1,5 +1,4 @@
 import * as path from 'path';
-import * as vscode from 'vscode';
 import { VSTSGitRepository, VSTSProject } from '../../../api/vsts/types';
 import { VSTSProvider } from '../../../api/vsts/vstsProvider';
 import Auth from '../../../auth/auth';
@@ -293,14 +292,12 @@ export default class Start extends CreateAppCommand {
     private async getGitRemoteUrl(_rootPath: string): Promise<boolean> {
         const remoteUrl = await GitUtils.GitGetRemoteUrl(this.logger, _rootPath);
         if (!remoteUrl) {
-            return await vscode.window.showInputBox({ prompt: Strings.PleaseEnterNewRepositoryUrl, ignoreFocusOut: true })
-                .then(repositoryURL => {
-                    if (!repositoryURL || !Validators.ValidGitName(repositoryURL)) {
-                        return false;
-                    }
-                    this.repositoryURL = GitUrlParse(repositoryURL.trim()).toString("https");
-                    return true;
-                });
+            const repositoryURL: string = await VsCodeUI.showInput(Strings.PleaseEnterNewRepositoryUrl);
+            if (!repositoryURL || !Validators.ValidGitName(repositoryURL)) {
+                return false;
+            }
+            this.repositoryURL = GitUrlParse(repositoryURL.trim()).toString("https");
+            return true;
         } else {
             const repoName = GitUrlParse(remoteUrl.trim()).toString("https");
             if (!repoName) {
@@ -314,7 +311,7 @@ export default class Start extends CreateAppCommand {
     private async pullAppCenterSampleApp(_rootPath: string): Promise<boolean> {
         let created: boolean = false;
         this.logger.debug("Pull App Center sample app into current directory...");
-        VsCodeUI.showProgress(async progress => {
+        await VsCodeUI.showProgress(async progress => {
             progress.report({ message: Strings.CreateRNProjectStatusBarMessage });
             created = await GitUtils.GitPullFromRemoteUrl(Constants.AppCenterSampleGitRemoteName, Constants.AppCenterSampleGitRemoteDefaultBranchName, this.logger, _rootPath);
         });
@@ -343,7 +340,7 @@ export default class Start extends CreateAppCommand {
     private async pushToDefaultRemoteRepo(_rootPath: string): Promise<boolean> {
         let pushed: boolean = false;
         this.logger.debug(`Pushing changes to ${this.repositoryURL}...`);
-        VsCodeUI.showProgress(async progress => {
+        await VsCodeUI.showProgress(async progress => {
             progress.report({ message: Strings.PushToRemoteRepoStatusBarMessage });
             pushed = await GitUtils.GitPushToRemoteUrl(Constants.GitDefaultRemoteName, SettingsHelper.defaultBranchName(), this.logger, _rootPath);
         });
@@ -353,7 +350,7 @@ export default class Start extends CreateAppCommand {
     private async selectVstsProject(vstsProvider: VSTSProvider): Promise<VSTSProject | null> {
         let projectList: VSTSProject[] | null = [];
         let vstsProject: VSTSProject | null = null;
-        VsCodeUI.showProgress(async progress => {
+        await VsCodeUI.showProgress(async progress => {
             progress.report({ message: Strings.LoadingVSTSProjectsMessage });
             projectList = await vstsProvider.GetAllProjects();
         });
@@ -380,20 +377,17 @@ export default class Start extends CreateAppCommand {
                     target: `${project.id}`
                 };
             });
-            await vscode.window.showQuickPick(options, { placeHolder: Strings.ProvideVSTSProjectPromptMsg })
-                .then(async (selected: QuickPickAppItem) => {
-                    if (!selected) {
-                        this.logger.debug('User cancel selection of vsts project');
-                        return null;
-                    }
-                    if (projectList) {
-                        const selectedProj: VSTSProject[] = projectList.filter(proj => proj.id === selected.target);
-                        if (selectedProj && selectedProj.length > 0) {
-                            vstsProject = selectedProj[0];
-                        }
-                    }
-                    return null;
-                });
+            const selected: QuickPickAppItem = await VsCodeUI.showQuickPick(options, Strings.ProvideVSTSProjectPromptMsg);
+            if (!selected) {
+                this.logger.debug('User cancel selection of vsts project');
+                return null;
+            }
+            if (projectList) {
+                const selectedProj: VSTSProject[] = projectList.filter(proj => proj.id === selected.target);
+                if (selectedProj && selectedProj.length > 0) {
+                    vstsProject = selectedProj[0];
+                }
+            }
         }
 
         if (vstsProject) {

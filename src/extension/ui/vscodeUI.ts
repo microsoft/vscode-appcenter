@@ -95,6 +95,14 @@ export class VsCodeUI {
     public static async showProgress<R>(task: (progress: Progress<{ message?: string; }>) => Promise<R>, title?: string): Promise<R> {
         return await window.withProgress({ location: ProgressLocation.Window, title: title || Strings.VSCodeProgressLoadingTitle }, task);
     }
+
+    public static async showInput(prompt: string, value?: string): Promise<string> {
+        return await window.showInputBox({ prompt: prompt, ignoreFocusOut: true, value: value || "" });
+    }
+
+    public static async showQuickPick<T extends QuickPickItem>(items: T[], placeholder?: string): Promise<T> {
+        return await window.showQuickPick(items, { placeHolder: placeholder || Strings.MenuTitlePlaceholder, ignoreFocusOut: true });
+    }
 }
 
 export interface IButtonMessageItem {

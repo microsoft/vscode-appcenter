@@ -84,10 +84,6 @@ export class ExtensionManager implements Disposable {
         VsCodeUI.ShowWarningMessage(message);
     }
 
-    public DisplayInfoMessage(message: string): void {
-        VsCodeUI.ShowInfoMessage(message);
-    }
-
     public setupAppCenterStatusBar(profile: Profile | null): Promise<void> {
         if (profile && profile.userName) {
             return VsCodeUI.setStatusBar(this._appCenterStatusBarItem,
