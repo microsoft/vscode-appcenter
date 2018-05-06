@@ -1,9 +1,9 @@
 import * as vscode from 'vscode';
 import { CommandParams, CurrentApp } from '../../../helpers/interfaces';
-import { VsCodeUtils } from '../../../helpers/utils/vsCodeUtils';
 import { AppCenterOS } from '../../resources/constants';
 import { Strings } from '../../resources/strings';
 import { RNCPAppCommand } from './rncpAppCommand';
+import { VsCodeUI } from '../../ui/vscodeUI';
 
 export default class SetCurrentDeployment extends RNCPAppCommand {
     constructor(params: CommandParams) {
@@ -16,11 +16,11 @@ export default class SetCurrentDeployment extends RNCPAppCommand {
         }
         const currentApp: CurrentApp = await this.getCurrentApp(true);
         if (!currentApp) {
-            VsCodeUtils.ShowWarningMessage(Strings.NoCurrentAppSetMsg);
+            VsCodeUI.ShowWarningMessage(Strings.NoCurrentAppSetMsg);
             return;
         }
         if (!this.hasCodePushDeployments(currentApp)) {
-            VsCodeUtils.ShowWarningMessage(Strings.NoDeploymentsMsg);
+            VsCodeUI.ShowWarningMessage(Strings.NoDeploymentsMsg);
             return;
         }
         const deploymentOptions: string[] = currentApp.currentAppDeployments.codePushDeployments.map((deployment) => {
@@ -40,7 +40,7 @@ export default class SetCurrentDeployment extends RNCPAppCommand {
                         currentApp.isMandatory,
                         currentApp.appSecret
                     );
-                    VsCodeUtils.ShowInfoMessage(Strings.YourCurrentDeploymentMsg(deploymentName));
+                    VsCodeUI.ShowInfoMessage(Strings.YourCurrentDeploymentMsg(deploymentName));
                 }
             });
     }

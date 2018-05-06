@@ -1,8 +1,8 @@
 import { Utils } from "../../../helpers/utils/utils";
-import { VsCodeUtils } from "../../../helpers/utils/vsCodeUtils";
 import AppCenterLinker from "../../../link/appCenterLinker";
 import { Strings } from "../../resources/strings";
 import { LinkCommand } from "../linkCommand";
+import { VsCodeUI } from "../../ui/vscodeUI";
 
 export default class LinkAppCenter extends LinkCommand {
 
@@ -12,7 +12,7 @@ export default class LinkAppCenter extends LinkCommand {
         }
 
         if (!Utils.isReactNativeProject(this.logger, this.rootPath, false)) {
-            VsCodeUtils.ShowWarningMessage(Strings.NotReactProjectMsg);
+            VsCodeUI.ShowWarningMessage(Strings.NotReactProjectMsg);
             return;
         }
 
@@ -26,7 +26,7 @@ export default class LinkAppCenter extends LinkCommand {
         if (!Utils.isReactNativeAppCenterProject(this.logger, this.rootPath, false)) {
             const appCenterInstalled: boolean = await appCenterLinker.installAppcenter();
             if (!appCenterInstalled) {
-                VsCodeUtils.ShowErrorMessage(Strings.FailedToLinkAppCenter);
+                VsCodeUI.ShowErrorMessage(Strings.FailedToLinkAppCenter);
                 return void 0;
             }
         }

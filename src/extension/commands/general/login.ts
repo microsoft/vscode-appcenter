@@ -3,10 +3,10 @@ import * as qs from "qs";
 import * as vscode from "vscode";
 import { CommandParams, Profile } from "../../../helpers/interfaces";
 import { SettingsHelper } from "../../../helpers/settingsHelper";
-import { IButtonMessageItem, VsCodeUtils } from "../../../helpers/utils/vsCodeUtils";
 import { AuthProvider } from "../../resources/constants";
 import { Strings } from "../../resources/strings";
 import { Command } from "../command";
+import { IButtonMessageItem, VsCodeUI } from "../../ui/vscodeUI";
 
 export default class Login extends Command {
 
@@ -26,7 +26,7 @@ export default class Login extends Command {
             url: loginUrl
         });
 
-        return VsCodeUtils.ShowInfoMessage(Strings.PleaseLoginViaBrowser, ...messageItems)
+        return VsCodeUI.ShowInfoMessage(Strings.PleaseLoginViaBrowser, ...messageItems)
             .then((selection: IButtonMessageItem | undefined) => {
                 if (selection) {
                     return vscode.window.showInputBox({ prompt: Strings.PleaseProvideToken, ignoreFocusOut: true })
@@ -46,13 +46,13 @@ export default class Login extends Command {
         return this.appCenterAuth.doLogin({ token: token }).then((profile: Profile) => {
             if (!profile) {
                 this.logger.error("Failed to fetch user info from server");
-                VsCodeUtils.ShowWarningMessage(Strings.FailedToExecuteLoginMsg(AuthProvider.AppCenter));
+                VsCodeUI.ShowWarningMessage(Strings.FailedToExecuteLoginMsg(AuthProvider.AppCenter));
                 return false;
             }
-            VsCodeUtils.ShowInfoMessage(Strings.YouAreLoggedInMsg(AuthProvider.AppCenter, profile.displayName));
+            VsCodeUI.ShowInfoMessage(Strings.YouAreLoggedInMsg(AuthProvider.AppCenter, profile.displayName));
             return this.manager.setupAppCenterStatusBar(profile).then(() => true);
         }).catch((e: Error) => {
-            VsCodeUtils.ShowErrorMessage("Could not login into account.");
+            VsCodeUI.ShowErrorMessage("Could not login into account.");
             this.logger.error(e.message, e, true);
             return false;
         });

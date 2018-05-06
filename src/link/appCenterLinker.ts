@@ -1,11 +1,10 @@
-import * as vscode from 'vscode';
 import { ILogger } from '../extension/log/logHelper';
 import { AppCenterOS } from '../extension/resources/constants';
 import { Strings } from '../extension/resources/strings';
 import { CurrentApp } from '../helpers/interfaces';
 import { TerminalHelper } from '../helpers/terminalHelper';
 import { cpUtils } from '../helpers/utils/cpUtils';
-import { IButtonMessageItem, VsCodeUtils } from '../helpers/utils/vsCodeUtils';
+import { IButtonMessageItem, VsCodeUI } from '../extension/ui/vscodeUI';
 
 export default class AppCenterLinker {
 
@@ -13,7 +12,8 @@ export default class AppCenterLinker {
 
     public async installAppcenter(): Promise<boolean> {
         const installAppCenterCmd: string = "npm i appcenter appcenter-analytics appcenter-crashes --save";
-        return await vscode.window.withProgress({ location: vscode.ProgressLocation.Window, title: Strings.InstallAppCenterTitle }, async () => {
+        return await VsCodeUI.showProgress(async (progress) => {
+            progress.report({ message: Strings.InstallAppCenterTitle });
             try {
                 await cpUtils.executeCommand(this.logger, true, this.rootPath, installAppCenterCmd);
                 return true;
@@ -35,7 +35,7 @@ export default class AppCenterLinker {
             title: Strings.OkBtnLabel
         });
 
-        return await VsCodeUtils.ShowInfoMessage(Strings.AppCenterBeforeLinkMsg, ...messageItems)
+        return await VsCodeUI.ShowInfoMessage(Strings.AppCenterBeforeLinkMsg, ...messageItems)
             .then(async (selection: IButtonMessageItem | undefined) => {
                 if (selection) {
                     terminalHelper.run('react-native link');
@@ -43,7 +43,7 @@ export default class AppCenterLinker {
                     messageItems.push({
                         title: "Done"
                     });
-                    await VsCodeUtils.ShowInfoMessage(Strings.AppCenterSecretsHint(androidAppSecret, iosAppSecret), ...messageItems);
+                    await VsCodeUI.ShowInfoMessage(Strings.AppCenterSecretsHint(androidAppSecret, iosAppSecret), ...messageItems);
                     return true;
                 }
                 return false;

@@ -1,9 +1,9 @@
 
 import { CommandParams, CurrentApp } from "../../../helpers/interfaces";
-import { VsCodeUtils } from "../../../helpers/utils/vsCodeUtils";
 import { AppCenterOS } from "../../resources/constants";
 import { Strings } from "../../resources/strings";
 import { RNCPAppCommand } from "./rncpAppCommand";
+import { VsCodeUI } from "../../ui/vscodeUI";
 
 export default class SwitchMandatoryPropForRelease extends RNCPAppCommand {
     constructor(params: CommandParams) {
@@ -17,11 +17,11 @@ export default class SwitchMandatoryPropForRelease extends RNCPAppCommand {
 
         const app: CurrentApp = await this.getCurrentApp(true);
         if (!app) {
-            VsCodeUtils.ShowWarningMessage(Strings.NoCurrentAppSetMsg);
+            VsCodeUI.ShowWarningMessage(Strings.NoCurrentAppSetMsg);
             return;
         }
         if (!this.hasCodePushDeployments(app)) {
-            VsCodeUtils.ShowWarningMessage(Strings.NoDeploymentsMsg);
+            VsCodeUI.ShowWarningMessage(Strings.NoDeploymentsMsg);
             return;
         }
         const newMandatoryValue = !!!app.isMandatory;
@@ -37,7 +37,7 @@ export default class SwitchMandatoryPropForRelease extends RNCPAppCommand {
             newMandatoryValue,
             app.appSecret
         ).then(() => {
-            VsCodeUtils.ShowInfoMessage(`Changed release to ${newMandatoryValue ? "Mandatory" : "NOT Mandatory"}`);
+            VsCodeUI.ShowInfoMessage(`Changed release to ${newMandatoryValue ? "Mandatory" : "NOT Mandatory"}`);
         });
     }
 }

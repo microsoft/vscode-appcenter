@@ -2,10 +2,10 @@ import * as vscode from "vscode";
 import { VSTSProvider } from "../../../api/vsts/vstsProvider";
 import Auth from "../../../auth/auth";
 import { VstsLoginInfo, VstsProfile } from "../../../helpers/interfaces";
-import { VsCodeUtils } from "../../../helpers/utils/vsCodeUtils";
 import { AuthProvider } from "../../resources/constants";
 import { Strings } from "../../resources/strings";
 import { Command } from "../command";
+import { VsCodeUI } from "../../ui/vscodeUI";
 
 export default class LoginToVsts extends Command {
     public async runNoClient(): Promise<boolean | void> {
@@ -45,7 +45,7 @@ export default class LoginToVsts extends Command {
         return this.vstsAuth.doLogin(loginInfo).then(async (profile: VstsProfile) => {
             if (!profile) {
                 this.logger.error("Failed to fetch user info from server");
-                VsCodeUtils.ShowWarningMessage(Strings.FailedToExecuteLoginMsg(AuthProvider.Vsts));
+                VsCodeUI.ShowWarningMessage(Strings.FailedToExecuteLoginMsg(AuthProvider.Vsts));
                 return false;
             }
 
@@ -61,15 +61,15 @@ export default class LoginToVsts extends Command {
             }, this.logger);
             const isValid: boolean = await vsts.TestVstsConnection();
             if (!isValid) {
-                VsCodeUtils.ShowErrorMessage(Strings.VstsCredsNotValidMsg);
+                VsCodeUI.ShowErrorMessage(Strings.VstsCredsNotValidMsg);
                 this.vstsAuth.doLogout(profile.userId);
                 return false;
             } else {
-                VsCodeUtils.ShowInfoMessage(Strings.YouAreLoggedInMsg(AuthProvider.Vsts, profile.displayName));
+                VsCodeUI.ShowInfoMessage(Strings.YouAreLoggedInMsg(AuthProvider.Vsts, profile.displayName));
             }
             return true;
         }).catch((e: Error) => {
-            VsCodeUtils.ShowErrorMessage("Could not login into account");
+            VsCodeUI.ShowErrorMessage("Could not login into account");
             this.logger.error(e.message, e, true);
             return false;
         });

@@ -1,11 +1,10 @@
-import * as vscode from "vscode";
 import { models } from "../../../api/appcenter";
 import { CommandParams, CurrentApp, CurrentAppDeployments, Deployment, QuickPickAppItem } from "../../../helpers/interfaces";
 import { Utils } from "../../../helpers/utils/utils";
-import { VsCodeUtils } from "../../../helpers/utils/vsCodeUtils";
 import { AppCenterOS, CommandNames, Constants } from "../../resources/constants";
 import { Strings } from "../../resources/strings";
 import { ReactNativeAppCommand } from "../reactNativeAppCommand";
+import { VsCodeUI } from "../../ui/vscodeUI";
 
 export default class SetCurrentApp extends ReactNativeAppCommand {
     constructor(params: CommandParams) {
@@ -39,8 +38,8 @@ export default class SetCurrentApp extends ReactNativeAppCommand {
                 return;
             }
             try {
-                vscode.window.withProgress({ location: vscode.ProgressLocation.Window, title: "Get Deployments" }, p => {
-                    p.report({ message: Strings.FetchDeploymentsStatusBarMessage });
+                await VsCodeUI.showProgress(progress => {
+                    progress.report({ message: Strings.FetchDeploymentsStatusBarMessage });
                     return this.client.codePushDeployments.list(selectedApp.owner.name, selectedApp.name);
                 }).then((deployments: models.Deployment[]) => {
                     return deployments.sort((a, b): any => {
@@ -71,7 +70,7 @@ export default class SetCurrentApp extends ReactNativeAppCommand {
                 }).then((app: CurrentApp | null) => {
                     if (app) {
                         const message = Strings.YourCurrentAppAndDeploymentMsg(selected.target, app.currentAppDeployments.currentDeploymentName);
-                        VsCodeUtils.ShowInfoMessage(message);
+                        VsCodeUI.ShowInfoMessage(message);
                     } else {
                         this.logger.error("Failed to save current app");
                     }

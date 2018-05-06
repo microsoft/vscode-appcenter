@@ -3,10 +3,10 @@ import { models } from "../../api/appcenter";
 import { CommandParams, CurrentApp, MenuQuickPickItem, Profile, UserOrOrganizationItem } from "../../helpers/interfaces";
 import { FSUtils } from "../../helpers/utils/fsUtils";
 import { Utils } from "../../helpers/utils/utils";
-import { CustomQuickPickItem } from "../../helpers/utils/vsCodeUtils";
 import { ILogger } from "../log/logHelper";
 import { AppCenterBeacons, AppCenterCrashesTabs, AppCenterDistributionTabs, CommandNames } from "../resources/constants";
 import { Strings } from "../resources/strings";
+import { CustomQuickPickItem } from "../ui/vscodeUI";
 
 export abstract class Menu {
     protected rootPath: string;

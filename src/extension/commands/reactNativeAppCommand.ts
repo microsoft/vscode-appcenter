@@ -3,13 +3,13 @@ import * as vscode from "vscode";
 import { models } from "../../api/appcenter";
 import { AppCenterProfile, CommandParams, CurrentApp, QuickPickAppItem } from '../../helpers/interfaces';
 import { Utils } from "../../helpers/utils/utils";
-import { VsCodeUtils } from "../../helpers/utils/vsCodeUtils";
 import * as Menu from "../menu/menu";
 import { CommandNames, Constants } from "../resources/constants";
 import { Strings } from "../resources/strings";
 import { Command } from './command';
 import * as General from "./general";
 import { CreateNewAppOption } from "./general/createNewApp";
+import { VsCodeUI } from "../ui/vscodeUI";
 
 export class ReactNativeAppCommand extends Command {
     protected currentAppMenuTarget: string = "MenuCurrentApp";
@@ -36,7 +36,7 @@ export class ReactNativeAppCommand extends Command {
             return false;
         }
         if (this.checkForReact && !Utils.isReactNativeProject(this.logger, this.rootPath, true)) {
-            VsCodeUtils.ShowWarningMessage(Strings.NotReactProjectMsg);
+            VsCodeUI.ShowWarningMessage(Strings.NotReactProjectMsg);
             return false;
         }
         return true;
@@ -48,14 +48,14 @@ export class ReactNativeAppCommand extends Command {
         }
 
         if (this.checkForReact && !Utils.isReactNativeProject(this.logger, this.rootPath, true)) {
-            VsCodeUtils.ShowWarningMessage(Strings.NotReactProjectMsg);
+            VsCodeUI.ShowWarningMessage(Strings.NotReactProjectMsg);
             return false;
         }
         return true;
     }
 
     protected async getCurrentApp(refreshDeployments: boolean = false): Promise<CurrentApp | null> {
-        return vscode.window.withProgress({ location: vscode.ProgressLocation.Window, title: Strings.VSCodeProgressLoadingTitle }, () => {
+        return await VsCodeUI.showProgress(() => {
             return this.appCenterProfile.then(async (profile: AppCenterProfile | null) => {
                 if (profile && profile.currentApp) {
                     if (refreshDeployments) {
@@ -129,7 +129,9 @@ export class ReactNativeAppCommand extends Command {
     }
 
     protected refreshCachedAppsAndRepaintQuickPickIfNeeded(includeSelectCurrent: boolean = false, includeCreateNew: boolean = true, includeAllApps: boolean = true, prompt: string = Strings.ProvideCurrentAppPromptMsg) {
-        vscode.window.withProgress({ location: vscode.ProgressLocation.Window, title: Strings.GetAppsListMessage }, () => {
+        VsCodeUI.showProgress((progress) => {
+            progress.report({ message: Strings.GetAppsListMessage });
+
             return this.client.apps.list({
                 orderBy: "name"
             }).then((apps: models.AppResponse[]) => {
@@ -139,7 +141,7 @@ export class ReactNativeAppCommand extends Command {
                     this.showAppsQuickPick(rnApps, includeAllApps, includeSelectCurrent, includeCreateNew, prompt);
                 }
             }).catch((e) => {
-                VsCodeUtils.ShowErrorMessage(Strings.UnknownError);
+                VsCodeUI.ShowErrorMessage(Strings.UnknownError);
                 this.logger.error(e.message, e);
             });
         });

@@ -5,11 +5,11 @@ import { AppCenterUrlBuilder } from "../../helpers/appCenterUrlBuilder";
 import { CreatedAppFromAppCenter, Profile, QuickPickAppItem, UserOrOrganizationItem } from '../../helpers/interfaces';
 import { Utils } from "../../helpers/utils/utils";
 import { Validators } from "../../helpers/utils/validators";
-import { CustomQuickPickItem, IButtonMessageItem, VsCodeUtils } from "../../helpers/utils/vsCodeUtils";
 import * as Menu from "../menu/menu";
 import { Constants } from "../resources/constants";
 import { Strings } from "../resources/strings";
 import { Command } from './command';
+import { CustomQuickPickItem, VsCodeUI, IButtonMessageItem } from "../ui/vscodeUI";
 
 export class CreateAppCommand extends Command {
 
@@ -40,8 +40,8 @@ export class CreateAppCommand extends Command {
         };
         let items: CustomQuickPickItem[] = [];
         this.logger.debug("Getting user/organization items...");
-        await vscode.window.withProgress({ location: vscode.ProgressLocation.Window, title: Strings.VSCodeProgressLoadingTitle }, p => {
-            p.report({ message: Strings.LoadingStatusBarMessage });
+        await VsCodeUI.showProgress(progress => {
+            progress.report({ message: Strings.LoadingStatusBarMessage });
             return this.client.organizations.list().then((orgList: models.ListOKResponseItem[]) => {
                 const organizations: models.ListOKResponseItem[] = orgList;
                 return organizations.sort(sortOrganizations);
@@ -56,8 +56,8 @@ export class CreateAppCommand extends Command {
     protected async appAlreadyExistInAppCenter(ideaName: string): Promise<boolean> {
         let exist: boolean = false;
         this.logger.debug(`Checkig if idea name "${ideaName}" is not already used before...`);
-        await vscode.window.withProgress({ location: vscode.ProgressLocation.Window, title: Strings.VSCodeProgressLoadingTitle }, async p => {
-            p.report({ message: Strings.CheckIfAppsExistLoadingMessage });
+        await VsCodeUI.showProgress(async progress => {
+            progress.report({ message: Strings.CheckIfAppsExistLoadingMessage });
             let apps: models.AppResponse[];
             apps = await this.client.apps.list();
             exist = apps.some(item => {
@@ -71,7 +71,7 @@ export class CreateAppCommand extends Command {
         return vscode.window.showInputBox({ prompt: Strings.PleaseEnterIdeaName, ignoreFocusOut: true, value: appNameFromPackage })
             .then(async ideaName => {
                 if (ideaName.length === 0) {
-                    VsCodeUtils.ShowErrorMessage(Strings.IdeaNameIsNotValidMsg);
+                    VsCodeUI.ShowErrorMessage(Strings.IdeaNameIsNotValidMsg);
                     return null;
                 }
 
@@ -80,12 +80,12 @@ export class CreateAppCommand extends Command {
                 }
 
                 if (!Validators.ValidateProjectName(ideaName)) {
-                    VsCodeUtils.ShowErrorMessage(Strings.IdeaNameIsNotValidMsg);
+                    VsCodeUI.ShowErrorMessage(Strings.IdeaNameIsNotValidMsg);
                     return null;
                 }
 
                 if (await this.appAlreadyExistInAppCenter(ideaName)) {
-                    VsCodeUtils.ShowErrorMessage(Strings.FailedToCreateAppAlreadyExistInAppCenter);
+                    VsCodeUI.ShowErrorMessage(Strings.FailedToCreateAppAlreadyExistInAppCenter);
                     return null;
                 }
                 return ideaName;
@@ -99,7 +99,7 @@ export class CreateAppCommand extends Command {
                 if (selectedQuickPickItem) {
                     const userOrOrgItem: UserOrOrganizationItem | null = Menu.getSelectedUserOrOrgItem(selectedQuickPickItem, userOrOrgQuickPickItems);
                     if (!userOrOrgItem) {
-                        VsCodeUtils.ShowErrorMessage(Strings.FailedToGetSelectedUserOrOrganizationMsg);
+                        VsCodeUI.ShowErrorMessage(Strings.FailedToGetSelectedUserOrOrganizationMsg);
                         return null;
                     }
                     return userOrOrgItem;
@@ -123,7 +123,7 @@ export class CreateAppCommand extends Command {
 
     protected async pickApp(apps: CreatedAppFromAppCenter[]) {
         if (apps.length < 2) {
-            VsCodeUtils.ShowErrorMessage(Strings.FailedToCreateAppInAppCenter);
+            VsCodeUI.ShowErrorMessage(Strings.FailedToCreateAppInAppCenter);
             return;
         }
 
@@ -139,7 +139,7 @@ export class CreateAppCommand extends Command {
             url: AppCenterUrlBuilder.GetAppCenterAppLink(this.userOrOrg.name, apps[1].appName, this.userOrOrg.isOrganization)
         });
 
-        VsCodeUtils.ShowInfoMessage(Strings.AppCreatedMsg(apps[0].appName, false, apps[1].appName), ...messageItems);
+        VsCodeUI.ShowInfoMessage(Strings.AppCreatedMsg(apps[0].appName, false, apps[1].appName), ...messageItems);
 
         const options: QuickPickAppItem[] = [
             {
@@ -163,7 +163,7 @@ export class CreateAppCommand extends Command {
                         title: Strings.AppCreatedBtnLabel,
                         url: appUrl
                     });
-                    return VsCodeUtils.ShowInfoMessage(Strings.AppCreatedMsg(apps[+selected.target].appName), ...messageItems);
+                    return VsCodeUI.ShowInfoMessage(Strings.AppCreatedMsg(apps[+selected.target].appName), ...messageItems);
                 } else {
                     return false;
                 }

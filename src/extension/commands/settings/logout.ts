@@ -1,9 +1,9 @@
 import * as vscode from 'vscode';
 import { CommandParams, Profile, ProfileQuickPickItem } from '../../../helpers/interfaces';
-import { VsCodeUtils } from '../../../helpers/utils/vsCodeUtils';
 import { AuthProvider } from '../../resources/constants';
 import { Strings } from '../../resources/strings';
 import { Command } from '../command';
+import { VsCodeUI } from '../../ui/vscodeUI';
 
 export default class Logout extends Command {
 
@@ -52,7 +52,7 @@ export default class Logout extends Command {
     private async logoutUser(profile: Profile): Promise<boolean> {
         try {
             await this.appCenterAuth.doLogout(profile.userId);
-            VsCodeUtils.ShowInfoMessage(Strings.UserLoggedOutMsg(AuthProvider.AppCenter, profile.userName));
+            VsCodeUI.ShowInfoMessage(Strings.UserLoggedOutMsg(AuthProvider.AppCenter, profile.userName));
             await this.manager.setupAppCenterStatusBar(this.appCenterAuth.activeProfile);
             return true;
         } catch (e) {
@@ -62,7 +62,7 @@ export default class Logout extends Command {
     }
 
     private handleError(error: Error) {
-        VsCodeUtils.ShowErrorMessage("Error occured during the logout.");
+        VsCodeUI.ShowErrorMessage("Error occured during the logout.");
         this.logger.error(error.message, error, true);
     }
 }
