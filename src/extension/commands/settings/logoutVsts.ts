@@ -1,9 +1,8 @@
-import * as vscode from 'vscode';
 import { CommandParams, Profile, ProfileQuickPickItem } from '../../../helpers/interfaces';
-import { VsCodeUtils } from '../../../helpers/utils/vsCodeUtils';
 import { AuthProvider } from '../../resources/constants';
 import { Strings } from '../../resources/strings';
 import { Command } from '../command';
+import { VsCodeUI } from '../../ui/vscodeUI';
 
 export default class Logout extends Command {
 
@@ -39,20 +38,22 @@ export default class Logout extends Command {
             });
         });
 
-        return await vscode.window.showQuickPick(menuOptions, { placeHolder: Strings.SelectProfileTitlePlaceholder })
-            .then((selected: ProfileQuickPickItem) => {
-                if (!selected) {
-                    // User cancel selection
-                    return void 0;
-                }
-                return this.logoutUser(selected.profile);
-            }, this.handleError);
+        try {
+            const selected: ProfileQuickPickItem = await VsCodeUI.showQuickPick(menuOptions, Strings.SelectProfileTitlePlaceholder);
+            if (!selected) {
+                // User cancel selection
+                return void 0;
+            }
+            return this.logoutUser(selected.profile);
+        } catch (error) {
+            this.handleError(error);
+        }
     }
 
     private async logoutUser(profile: Profile): Promise<boolean> {
         try {
             await this.vstsAuth.doLogout(profile.userId);
-            VsCodeUtils.ShowInfoMessage(Strings.UserLoggedOutMsg(AuthProvider.Vsts, profile.userName));
+            VsCodeUI.ShowInfoMessage(Strings.UserLoggedOutMsg(AuthProvider.Vsts, profile.userName));
             return true;
         } catch (e) {
             this.handleError(e);
@@ -61,7 +62,7 @@ export default class Logout extends Command {
     }
 
     private handleError(error: Error) {
-        VsCodeUtils.ShowErrorMessage("Error occured during the logout.");
+        VsCodeUI.ShowErrorMessage("Error occured during the logout.");
         this.logger.error(error.message, error, true);
     }
 }

@@ -1,10 +1,9 @@
-import * as vscode from 'vscode';
 import { CrashGenerator } from '../../../crashes/crashGenerator';
 import { AppCenterUrlBuilder } from '../../../helpers/appCenterUrlBuilder';
 import { AppCenterProfile } from '../../../helpers/interfaces';
-import { IButtonMessageItem, VsCodeUtils } from '../../../helpers/utils/vsCodeUtils';
 import { Strings } from '../../resources/strings';
 import { Command } from '../command';
+import { VsCodeUI, IButtonMessageItem } from '../../ui/vscodeUI';
 export default class SimulateCrashes extends Command {
 
     public async run(): Promise<void> {
@@ -12,7 +11,8 @@ export default class SimulateCrashes extends Command {
             return;
         }
         try {
-            vscode.window.withProgress({ location: vscode.ProgressLocation.Window, title: Strings.SimulateCrashesMessage }, (progress) => {
+            await VsCodeUI.showProgress((progress) => {
+                progress.report({ message: Strings.SimulateCrashesMessage });
                 return this.appCenterProfile.then(async (profile: AppCenterProfile | null) => {
                     if (profile && profile.currentApp) {
                         const crashGenerator: CrashGenerator = new CrashGenerator(profile.currentApp, AppCenterUrlBuilder.getCrashesEndpoint(), this.logger, progress);
@@ -20,10 +20,10 @@ export default class SimulateCrashes extends Command {
                             await crashGenerator.generateCrashes();
                             return AppCenterUrlBuilder.GetPortalCrashesLink(profile.currentApp.ownerName, profile.currentApp.appName, profile.currentApp.type !== "user");
                         } catch {
-                            VsCodeUtils.ShowErrorMessage(Strings.GenerateCrashesError);
+                            VsCodeUI.ShowErrorMessage(Strings.GenerateCrashesError);
                         }
                     } else {
-                        VsCodeUtils.ShowWarningMessage(Strings.NoCurrentAppSetMsg);
+                        VsCodeUI.ShowWarningMessage(Strings.NoCurrentAppSetMsg);
                     }
                     return null;
                 });
@@ -34,11 +34,11 @@ export default class SimulateCrashes extends Command {
                         title: Strings.CrashesSimulatedHint,
                         url: link
                     });
-                    VsCodeUtils.ShowInfoMessage(Strings.CrashesSimulated, ...messageItems);
+                    VsCodeUI.ShowInfoMessage(Strings.CrashesSimulated, ...messageItems);
                 }
             });
         } catch (e) {
-            VsCodeUtils.ShowErrorMessage(Strings.GenerateCrashesError);
+            VsCodeUI.ShowErrorMessage(Strings.GenerateCrashesError);
             this.logger.error(e.message, e);
         }
     }

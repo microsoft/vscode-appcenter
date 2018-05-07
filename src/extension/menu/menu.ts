@@ -1,12 +1,11 @@
-import * as vscode from "vscode";
 import { models } from "../../api/appcenter";
 import { CommandParams, CurrentApp, MenuQuickPickItem, Profile, UserOrOrganizationItem } from "../../helpers/interfaces";
 import { FSUtils } from "../../helpers/utils/fsUtils";
 import { Utils } from "../../helpers/utils/utils";
-import { CustomQuickPickItem } from "../../helpers/utils/vsCodeUtils";
 import { ILogger } from "../log/logHelper";
 import { AppCenterBeacons, AppCenterCrashesTabs, AppCenterDistributionTabs, CommandNames } from "../resources/constants";
 import { Strings } from "../resources/strings";
+import { CustomQuickPickItem, VsCodeUI } from "../ui/vscodeUI";
 
 export abstract class Menu {
     protected rootPath: string;
@@ -29,17 +28,15 @@ export abstract class Menu {
         return Utils.isReactNativeCodePushProject(this.logger, this.rootPath, false);
     }
 
-    public show(): Thenable<void> {
+    public async show(): Promise<void> {
         const menuItems: MenuQuickPickItem[] = this.getMenuItems();
 
-        return vscode.window.showQuickPick(menuItems, { placeHolder: Strings.MenuTitlePlaceholder })
-            .then(async (selected: MenuQuickPickItem) => {
-                if (!selected) {
-                    return;
-                }
+        const selected: MenuQuickPickItem = await VsCodeUI.showQuickPick(menuItems, Strings.MenuTitlePlaceholder);
+        if (!selected) {
+            return;
+        }
 
-                return this.handleMenuSelection(selected);
-            });
+        return this.handleMenuSelection(selected);
     }
 
     protected abstract getMenuItems(): MenuQuickPickItem[];
@@ -253,19 +250,19 @@ export function getSelectedUserOrOrgItem(selected: CustomQuickPickItem, allItems
     }
 }
 
-export function getCreateAppOptions(): vscode.QuickPickItem[] {
-    const createAppOptions: vscode.QuickPickItem[] = [];
-    createAppOptions.push(<vscode.QuickPickItem>{
+export function getCreateAppOptions(): CustomQuickPickItem[] {
+    const createAppOptions: CustomQuickPickItem[] = [];
+    createAppOptions.push(<CustomQuickPickItem>{
         label: Strings.CreateNewAndroidAppMenuLabel,
         description: "",
         target: CommandNames.CreateApp.Android
     });
-    createAppOptions.push(<vscode.QuickPickItem>{
+    createAppOptions.push(<CustomQuickPickItem>{
         label: Strings.CreateNewIOSAppMenuLabel,
         description: "",
         target: CommandNames.CreateApp.IOS
     });
-    createAppOptions.push(<vscode.QuickPickItem>{
+    createAppOptions.push(<CustomQuickPickItem>{
         label: Strings.CreateNewAppsForBothMenuLabel,
         description: "",
         target: CommandNames.CreateApp.Both
