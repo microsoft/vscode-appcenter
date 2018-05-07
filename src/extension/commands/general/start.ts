@@ -19,6 +19,7 @@ import { VsCodeUI, IButtonMessageItem } from '../../ui/vscodeUI';
 import { Utils } from '../../../helpers/utils/utils';
 import { LogStrings } from '../../resources/logStrings';
 import { Messages } from '../../resources/messages';
+import { CreateNewAppOption } from './createNewApp';
 // tslint:disable-next-line:no-var-requires
 const GitUrlParse = require("git-url-parse");
 
@@ -46,9 +47,8 @@ export default class Start extends CreateAppCommand {
 
         let projectName: string | null = null;
         while (projectName == null) {
-            projectName = await this.getProjectName();
+            projectName = await this.getProjectName(CreateNewAppOption.Both);
         }
-
         if (projectName.length === 0) {
             return;
         }
