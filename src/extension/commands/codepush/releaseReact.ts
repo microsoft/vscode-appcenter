@@ -1,14 +1,14 @@
-import * as vscode from 'vscode';
 import Auth from '../../../auth/auth';
 import { codePushRelease } from '../../../codepush';
 import { fileUtils, reactNative, updateContents } from '../../../codepush/codepush-sdk/src';
 import { BundleConfig } from '../../../codepush/codepush-sdk/src/react-native/react-native-utils';
 import { AppCenterProfile, CommandParams, CurrentApp, ICodePushReleaseParams } from '../../../helpers/interfaces';
-import { VsCodeUtils } from '../../../helpers/utils/vsCodeUtils';
 import { LogLevel } from '../../log/logHelper';
 import { Constants } from '../../resources/constants';
-import { Strings } from '../../resources/strings';
 import { RNCPAppCommand } from './rncpAppCommand';
+import { VsCodeUI } from '../../ui/vscodeUI';
+import { LogStrings } from '../../resources/logStrings';
+import { Messages } from '../../resources/messages';
 
 export default class ReleaseReact extends RNCPAppCommand {
     constructor(params: CommandParams) {
@@ -24,24 +24,24 @@ export default class ReleaseReact extends RNCPAppCommand {
         return new Promise<void>((resolve) => {
             let updateContentsDirectory: string;
             let isMandatory: boolean;
-            vscode.window.withProgress({ location: vscode.ProgressLocation.Window, title: "Get Apps" }, p => {
+            VsCodeUI.showProgress(progress => {
                 return new Promise<CurrentApp>((appResolve, appReject) => {
-                    p.report({ message: Strings.GettingAppInfoMessage });
+                    progress.report({ message: Messages.GettingAppInfoProgressMessage });
                     this.getCurrentApp(true)
                         .then((currentApp: CurrentApp) => appResolve(currentApp))
                         .catch(err => appReject(err));
                 }).then(async (currentApp: CurrentApp) => {
-                    p.report({ message: Strings.DetectingAppVersionMessage });
+                    progress.report({ message: Messages.DetectingAppVersionProgressMessage });
                     if (!currentApp) {
-                        VsCodeUtils.ShowWarningMessage(Strings.NoCurrentAppSetMsg);
+                        VsCodeUI.ShowWarningMessage(Messages.NoCurrentAppSetWarning);
                         return void 0;
                     }
                     if (!this.hasCodePushDeployments(currentApp)) {
-                        VsCodeUtils.ShowWarningMessage(Strings.NoDeploymentsMsg);
+                        VsCodeUI.ShowWarningMessage(Messages.NoDeploymentsWarning);
                         return void 0;
                     }
                     if (!currentApp.os || !reactNative.isValidOS(currentApp.os)) {
-                        VsCodeUtils.ShowWarningMessage(Strings.UnsupportedOSMsg);
+                        VsCodeUI.ShowWarningMessage(Messages.UnsupportedOSWarning);
                         return void 0;
                     }
                     codePushRelaseParams.app = currentApp;
@@ -56,7 +56,7 @@ export default class ReleaseReact extends RNCPAppCommand {
                             case "ios": return reactNative.getiOSAppVersion(this.rootPath);
                             case "windows": return reactNative.getWindowsAppVersion(this.rootPath);
                             default: {
-                                VsCodeUtils.ShowInfoMessage(Strings.UnsupportedOSMsg);
+                                VsCodeUI.ShowWarningMessage(Messages.UnsupportedOSWarning);
                                 return void 0;
                             }
                         }
@@ -65,7 +65,7 @@ export default class ReleaseReact extends RNCPAppCommand {
                     if (!appVersion) {
                         return null;
                     }
-                    p.report({ message: Strings.RunningBundleCommandMessage });
+                    progress.report({ message: Messages.RunningBundleCommandProgressMessage });
                     codePushRelaseParams.appVersion = appVersion;
                     return reactNative.makeUpdateContents(<BundleConfig>{
                         os: codePushRelaseParams.app.os,
@@ -75,15 +75,15 @@ export default class ReleaseReact extends RNCPAppCommand {
                     if (!pathToUpdateContents) {
                         return null;
                     }
-                    p.report({ message: Strings.ArchivingUpdateContentsMessage });
+                    progress.report({ message: Messages.ArchivingUpdateContentsProgressMessage });
                     updateContentsDirectory = pathToUpdateContents;
-                    this.logger.log(`CodePush updated contents directory path: ${updateContentsDirectory}`, LogLevel.Debug);
+                    this.logger.log(LogStrings.CodePushUpdatedContentsDir(updateContentsDirectory), LogLevel.Debug);
                     return updateContents.zip(pathToUpdateContents, this.rootPath);
                 }).then((pathToZippedBundle: string) => {
                     if (!pathToZippedBundle) {
                         return null;
                     }
-                    p.report({ message: Strings.ReleasingUpdateContentsMessage });
+                    progress.report({ message: Messages.ReleasingUpdateContentsProgressMessage });
                     codePushRelaseParams.updatedContentZipPath = pathToZippedBundle;
                     codePushRelaseParams.isMandatory = isMandatory;
                     return new Promise<any>((publishResolve, publishReject) => {
@@ -100,17 +100,17 @@ export default class ReleaseReact extends RNCPAppCommand {
                         return;
                     }
                     if (response.succeeded && response.result) {
-                        VsCodeUtils.ShowInfoMessage(`Successfully released an update to the "${codePushRelaseParams.deploymentName}" deployment of the "${codePushRelaseParams.app.appName}" app`);
+                        VsCodeUI.ShowInfoMessage(Messages.ReleaseMadeMessage(codePushRelaseParams.deploymentName, codePushRelaseParams.app.appName));
                         resolve(response.result);
                     } else {
-                        VsCodeUtils.ShowErrorMessage(response.errorMessage);
+                        VsCodeUI.ShowErrorMessage(response.errorMessage);
                     }
                     fileUtils.rmDir(codePushRelaseParams.updatedContentZipPath);
                 }).catch((error: Error) => {
                     if (error && error.message) {
-                        VsCodeUtils.ShowErrorMessage(`An error occured on doing Code Push release. ${error.message}`);
+                        VsCodeUI.ShowErrorMessage(`${Messages.FailedToMakeCodePushRelease} ${error.message}`);
                     } else {
-                        VsCodeUtils.ShowErrorMessage("An error occured on doing Code Push release");
+                        VsCodeUI.ShowErrorMessage(Messages.FailedToMakeCodePushRelease);
                     }
 
                     fileUtils.rmDir(codePushRelaseParams.updatedContentZipPath);

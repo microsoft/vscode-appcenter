@@ -2,9 +2,10 @@ import AppCenterAppBuilder from "../../../createApp/appCenterAppBuilder";
 import { AppCenterUrlBuilder } from "../../../helpers/appCenterUrlBuilder";
 import { CommandParams, CreatedAppFromAppCenter } from "../../../helpers/interfaces";
 import { Utils } from "../../../helpers/utils/utils";
-import { IButtonMessageItem, VsCodeUtils } from "../../../helpers/utils/vsCodeUtils";
 import { Strings } from "../../resources/strings";
 import { CreateAppCommand } from "../createAppCommand";
+import { VsCodeUI, IButtonMessageItem } from "../../ui/vscodeUI";
+import { Messages } from "../../resources/messages";
 
 export enum CreateNewAppOption {
     Android,
@@ -24,7 +25,7 @@ export default class CreateNewApp extends CreateAppCommand {
         }
 
         if (!Utils.isReactNativeProject(this.logger, this.rootPath, false)) {
-            VsCodeUtils.ShowErrorMessage(Strings.NotReactProjectMsg);
+            VsCodeUI.ShowWarningMessage(Messages.NotReactProjectWarning);
             return;
         }
 
@@ -72,7 +73,7 @@ export default class CreateNewApp extends CreateAppCommand {
 
     private async appCreated(apps: CreatedAppFromAppCenter[]) {
         if (apps.length < 1) {
-            VsCodeUtils.ShowErrorMessage(Strings.FailedToCreateAppInAppCenter);
+            VsCodeUI.ShowErrorMessage(Messages.FailedToCreateAppInAppCenter);
             return;
         }
         await this.setCurrentApp(apps[0]);
@@ -82,6 +83,6 @@ export default class CreateNewApp extends CreateAppCommand {
             title: Strings.AppCreatedBtnLabel,
             url: appUrl
         });
-        VsCodeUtils.ShowInfoMessage(Strings.AppCreatedMsg(apps[0].appName, true), ...messageItems);
+        VsCodeUI.ShowInfoMessage(Messages.AppCreatedMessage(apps[0].appName, true), ...messageItems);
     }
 }

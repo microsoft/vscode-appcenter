@@ -1,4 +1,3 @@
-import * as vscode from 'vscode';
 import { VSTSGitRepository, VSTSProject } from '../../../api/vsts/types';
 import { VSTSProvider } from '../../../api/vsts/vstsProvider';
 import Auth from '../../../auth/auth';
@@ -11,13 +10,15 @@ import { cpUtils } from '../../../helpers/utils/cpUtils';
 import { FSUtils } from '../../../helpers/utils/fsUtils';
 import { GitUtils } from '../../../helpers/utils/gitUtils';
 import { Validators } from '../../../helpers/utils/validators';
-import { IButtonMessageItem, VsCodeUtils } from '../../../helpers/utils/vsCodeUtils';
 import CodePushLinker from '../../../link/codePushLinker';
 import { AppCenterOS, Constants } from '../../resources/constants';
 import { Strings } from '../../resources/strings';
 import { CreateAppCommand } from '../createAppCommand';
 import { LoginToVsts } from '../settings';
+import { VsCodeUI, IButtonMessageItem } from '../../ui/vscodeUI';
 import { Utils } from '../../../helpers/utils/utils';
+import { LogStrings } from '../../resources/logStrings';
+import { Messages } from '../../resources/messages';
 // tslint:disable-next-line:no-var-requires
 const GitUrlParse = require("git-url-parse");
 
@@ -30,16 +31,16 @@ export default class Start extends CreateAppCommand {
 
     public async run(): Promise<void> {
         super.run();
-        this.logger.info("Building a new App Center project...");
+        this.logger.info(LogStrings.BuildingProject);
 
         if (!FSUtils.IsEmptyDirectoryToStartNewIdea(this.rootPath)) {
-            VsCodeUtils.ShowErrorMessage(Strings.DirectoryIsNotEmptyForNewIdea);
-            this.logger.error(Strings.DirectoryIsNotEmptyForNewIdea);
+            VsCodeUI.ShowWarningMessage(Messages.DirectoryIsNotEmptyForNewIdeaWarning);
+            this.logger.error(Messages.DirectoryIsNotEmptyForNewIdeaWarning);
             return;
         }
 
         if (!await GitUtils.IsGitInstalled(this.rootPath)) {
-            VsCodeUtils.ShowErrorMessage(Strings.GitIsNotInstalledMsg);
+            VsCodeUI.ShowWarningMessage(Messages.GitIsNotInstalledWarning);
             return;
         }
 
@@ -71,7 +72,7 @@ export default class Start extends CreateAppCommand {
             }
             vstsProfile = this.vstsAuth.activeProfile;
             if (!vstsProfile || !loggedIn) {
-                this.logger.error("Failed to get VSTS profile for command");
+                this.logger.error(LogStrings.FailedToGetVSTSProfile);
                 return;
             }
 
@@ -89,36 +90,36 @@ export default class Start extends CreateAppCommand {
 
             const vstsProject: VSTSProject | null = await this.selectVstsProject(vsts);
             if (!vstsProject) {
-                this.logger.error("Failed to get VSTS Project");
+                this.logger.error(LogStrings.FailedToGetVSTSProject);
                 return;
             }
 
             const vstsGitRepo: VSTSGitRepository | null = await vsts.CreateGitRepository(vstsProject.id, ideaName);
             if (!vstsGitRepo) {
-                this.logger.error("Failed to create VSTS git repo");
-                VsCodeUtils.ShowErrorMessage(Strings.FailedToCreateVSTSGitrepository);
+                this.logger.error(LogStrings.FailedToCreateVSTSRepo);
+                VsCodeUI.ShowErrorMessage(Messages.FailedToCreateVSTSGitrepository);
                 return;
             }
 
             this.repositoryURL = vstsGitRepo.remoteUrl;
             await GitUtils.GitInit(this.logger, this.rootPath);
         } else if (!await this.getGitRemoteUrl(this.rootPath)) {
-            VsCodeUtils.ShowErrorMessage(Strings.FailedToProvideRepositoryNameMsg);
+            VsCodeUI.ShowErrorMessage(Messages.FailedToProvideRepositoryNameMsg);
             return;
         }
 
         if (!await this.ensureRemoteAdded(Constants.GitDefaultRemoteName, this.repositoryURL, this.rootPath)) {
-            VsCodeUtils.ShowErrorMessage(Strings.FailedToAddRemoteRepositoryMsg);
+            VsCodeUI.ShowErrorMessage(Messages.FailedToAddRemoteRepositoryMsg);
             return;
         }
 
         if (!await this.ensureRemoteAdded(Constants.AppCenterSampleGitRemoteName, SettingsHelper.getAppCenterDemoAppGitRepo(), this.rootPath)) {
-            VsCodeUtils.ShowErrorMessage(Strings.FailedToAddRemoteRepositoryMsg);
+            VsCodeUI.ShowErrorMessage(Messages.FailedToAddRemoteRepositoryMsg);
             return;
         }
 
         if (!await this.pullAppCenterSampleApp(this.rootPath)) {
-            VsCodeUtils.ShowErrorMessage(Strings.FailedToCreateRNProjectMsg);
+            VsCodeUI.ShowErrorMessage(Messages.FailedToCreateRNProjectMsg);
             return;
         }
 
@@ -129,40 +130,40 @@ export default class Start extends CreateAppCommand {
         this.userOrOrg = userOrOrgItem;
 
         const appCenterAppBuilder = new AppCenterAppBuilder(ideaName, userOrOrgItem, this.repositoryURL, this.client, this.logger);
-        this.logger.info("Creating your iOS and Android app in App Center...");
+        this.logger.info(LogStrings.CreatingAppsInAppCenter);
         await appCenterAppBuilder.createApps();
         const createdApps: CreatedAppFromAppCenter[] = appCenterAppBuilder.getCreatedApps();
 
         if (!this.appsCreated(createdApps)) {
-            this.logger.error("Failed to create apps in appcenter");
-            VsCodeUtils.ShowErrorMessage(Strings.FailedToCreateAppInAppCenter);
+            this.logger.error(LogStrings.FailedCreateAppsInAppCenter);
+            VsCodeUI.ShowErrorMessage(Messages.FailedToCreateAppInAppCenter);
             return;
         }
 
-        const appCenterConfig = Utils.createAppCenterConfigFrom("AppCenterSample", this.rootPath, this.logger);
+        const appCenterConfig = Utils.createAppCenterConfigFrom(Constants.AppCenterSampleAppName, this.rootPath, this.logger);
 
-        this.logger.info("Configuring App Center SDKs...");
+        this.logger.info(LogStrings.ConfiguringAppCenterSDK);
         if (!this.updateAppSecretKeys(createdApps, appCenterConfig)) {
-            this.logger.error("Failed to update app secret keys!");
+            this.logger.error(LogStrings.FailedToUpdateAppSecret);
         }
 
-        this.logger.info("Creating CodePush deployments...");
+        this.logger.info(LogStrings.CreatingCodePushDeployments);
 
         const appCenterAppCreator: AppCenterAppCreator = new AppCenterAppCreator(this.client, this.logger);
         const codePushLinker: CodePushLinker = new CodePushLinker(appCenterAppCreator, this.logger, this.rootPath);
         const codePushDeployments: Deployment[] | null = await codePushLinker.createCodePushDeployments(createdApps, <string>userOrOrgItem.name);
         if (codePushDeployments && codePushDeployments.length > 0) {
             if (!await this.updateCodePushDeploymentKeys(codePushDeployments, appCenterConfig)) {
-                this.logger.error("Failed to update code push deployment keys!");
+                this.logger.error(LogStrings.FailedToCreateDeploymentKeys);
             }
         } else {
-            VsCodeUtils.ShowErrorMessage(Strings.FailedToCreateDeployments);
+            VsCodeUI.ShowErrorMessage(Messages.FailedToCreateDeployments);
             return;
         }
 
         // We need to push changes before we configure/start build in AppCenter
         if (!await this.pushToDefaultRemoteRepo(this.rootPath)) {
-            VsCodeUtils.ShowErrorMessage(Strings.FailedToPushChangesToRemoteRepoMsg(this.repositoryURL));
+            VsCodeUI.ShowErrorMessage(Messages.FailedToPushChangesToRemoteRepoMsg(this.repositoryURL));
             return;
         }
 
@@ -171,7 +172,7 @@ export default class Start extends CreateAppCommand {
         this.runPodUpdate();
         const done = await appCenterAppBuilder.startProcess();
         if (!done) {
-            VsCodeUtils.ShowErrorMessage(Strings.FailedToCreateAppInAppCenter);
+            VsCodeUI.ShowErrorMessage(Messages.FailedToCreateAppInAppCenter);
         } else {
             const successMessage: string = `
 --------------------------------------------------------
@@ -188,19 +189,19 @@ export default class Start extends CreateAppCommand {
     private async runPodUpdate(): Promise<boolean> {
         try {
             const podUpdateCmd: string = "pod install";
-            this.logger.debug("Installing pods for ios...");
+            this.logger.debug(LogStrings.InstallingPods);
             await cpUtils.executeCommand(this.logger, true, `${this.rootPath}/ios`, podUpdateCmd);
-            this.logger.debug(Strings.PodsInstalledMessage);
+            this.logger.debug(LogStrings.PodsInstalledMessage);
             return true;
         } catch (error) {
-            this.logger.error("Failed to run pod update");
+            this.logger.error(LogStrings.FailedToInstallPods);
 
             const messageItems: IButtonMessageItem[] = [];
             messageItems.push({
                 title: Strings.PodInstallBtnLabel,
                 url: "https://cocoapods.org"
             });
-            VsCodeUtils.ShowInfoMessage(Strings.PodsNotInstalledMessage, ...messageItems);
+            VsCodeUI.ShowInfoMessage(Messages.PodsNotInstalledMessage, ...messageItems);
             return false;
         }
     }
@@ -208,12 +209,12 @@ export default class Start extends CreateAppCommand {
     private async runNPMInstall(): Promise<boolean> {
         try {
             const installNodeModulesCmd: string = "npm i";
-            this.logger.debug("Running npm install...");
+            this.logger.debug(LogStrings.RunningNpmI);
             await cpUtils.executeCommand(this.logger, true, this.rootPath, installNodeModulesCmd);
-            this.logger.debug(Strings.NodeModulesInstalledMessage);
+            this.logger.debug(LogStrings.NodeModulesInstalledMessage);
             return true;
         } catch (error) {
-            this.logger.error("Failed to run npm install");
+            this.logger.error(LogStrings.FailedNpmI);
             return false;
         }
     }
@@ -238,13 +239,13 @@ export default class Start extends CreateAppCommand {
         if (!apps || apps.length === 0) {
             return saved;
         }
-        this.logger.debug("Setting app secrets...");
+        this.logger.debug(LogStrings.SettingAppSecrets);
         apps.forEach((app: CreatedAppFromAppCenter) => {
             if (!app || !app.appSecret) {
                 return saved;
             }
 
-            this.logger.debug(`App name: ${app.appName}, secret: ${app.appSecret}`);
+            this.logger.debug(LogStrings.SecretsInfo(app.appName, app.appSecret));
 
             if (app.os.toLowerCase() === AppCenterOS.iOS.toLowerCase()) {
                 appCenterConfig.setConfigPlistValueByKey(Constants.IOSAppSecretKey, app.appSecret);
@@ -265,12 +266,12 @@ export default class Start extends CreateAppCommand {
         if (!deployments || deployments.length === 0) {
             return saved;
         }
-        this.logger.info("Setting CodePush deployment keys...");
+        this.logger.info(LogStrings.SettingDeploymentKeys);
         deployments.forEach(async (deployment: Deployment) => {
             if (!deployment || !deployment.os || !deployment.key) {
                 return saved;
             }
-            this.logger.debug(`Deployment name: ${deployment.name}, secret: ${deployment.key}, OS: ${deployment.os}`);
+            this.logger.debug(LogStrings.DeploymentInfo(deployment.name, deployment.key, deployment.os));
 
             if (deployment.os.toLowerCase() === AppCenterOS.iOS.toLowerCase()) {
                 appCenterConfig.setMainPlistValueByKey(Constants.IOSCodePushDeploymentKey, deployment.key);
@@ -289,14 +290,12 @@ export default class Start extends CreateAppCommand {
     private async getGitRemoteUrl(_rootPath: string): Promise<boolean> {
         const remoteUrl = await GitUtils.GitGetRemoteUrl(this.logger, _rootPath);
         if (!remoteUrl) {
-            return await vscode.window.showInputBox({ prompt: Strings.PleaseEnterNewRepositoryUrl, ignoreFocusOut: true })
-                .then(repositoryURL => {
-                    if (!repositoryURL || !Validators.ValidGitName(repositoryURL)) {
-                        return false;
-                    }
-                    this.repositoryURL = GitUrlParse(repositoryURL.trim()).toString("https");
-                    return true;
-                });
+            const repositoryURL: string = await VsCodeUI.showInput(Strings.PleaseEnterNewRepositoryUrlHint);
+            if (!repositoryURL || !Validators.ValidGitName(repositoryURL)) {
+                return false;
+            }
+            this.repositoryURL = GitUrlParse(repositoryURL.trim()).toString("https");
+            return true;
         } else {
             const repoName = GitUrlParse(remoteUrl.trim()).toString("https");
             if (!repoName) {
@@ -309,9 +308,9 @@ export default class Start extends CreateAppCommand {
 
     private async pullAppCenterSampleApp(_rootPath: string): Promise<boolean> {
         let created: boolean = false;
-        this.logger.debug("Pull App Center sample app into current directory...");
-        await vscode.window.withProgress({ location: vscode.ProgressLocation.Window, title: Strings.VSCodeProgressLoadingTitle }, async p => {
-            p.report({ message: Strings.CreateRNProjectStatusBarMessage });
+        this.logger.debug(LogStrings.PullingSample);
+        await VsCodeUI.showProgress(async progress => {
+            progress.report({ message: Messages.CreateRNProjectProgressMessage });
             created = await GitUtils.GitPullFromRemoteUrl(Constants.AppCenterSampleGitRemoteName, Constants.AppCenterSampleGitRemoteDefaultBranchName, this.logger, _rootPath);
         });
         return created;
@@ -338,9 +337,9 @@ export default class Start extends CreateAppCommand {
 
     private async pushToDefaultRemoteRepo(_rootPath: string): Promise<boolean> {
         let pushed: boolean = false;
-        this.logger.debug(`Pushing changes to ${this.repositoryURL}...`);
-        await vscode.window.withProgress({ location: vscode.ProgressLocation.Window, title: Strings.VSCodeProgressLoadingTitle }, async p => {
-            p.report({ message: Strings.PushToRemoteRepoStatusBarMessage });
+        this.logger.debug(LogStrings.PushingChangesTo(this.repositoryURL));
+        await VsCodeUI.showProgress(async progress => {
+            progress.report({ message: Messages.PushToRemoteRepoProgressMessage });
             pushed = await GitUtils.GitPushToRemoteUrl(Constants.GitDefaultRemoteName, SettingsHelper.defaultBranchName(), this.logger, _rootPath);
         });
         return pushed;
@@ -349,8 +348,8 @@ export default class Start extends CreateAppCommand {
     private async selectVstsProject(vstsProvider: VSTSProvider): Promise<VSTSProject | null> {
         let projectList: VSTSProject[] | null = [];
         let vstsProject: VSTSProject | null = null;
-        await vscode.window.withProgress({ location: vscode.ProgressLocation.Window, title: Strings.VSCodeProgressLoadingTitle }, async p => {
-            p.report({ message: Strings.LoadingVSTSProjectsMessage });
+        await VsCodeUI.showProgress(async progress => {
+            progress.report({ message: Messages.LoadingVSTSProjectsProgressMessage });
             projectList = await vstsProvider.GetAllProjects();
         });
         if (projectList) {
@@ -376,20 +375,17 @@ export default class Start extends CreateAppCommand {
                     target: `${project.id}`
                 };
             });
-            await vscode.window.showQuickPick(options, { placeHolder: Strings.ProvideVSTSProjectPromptMsg })
-                .then(async (selected: QuickPickAppItem) => {
-                    if (!selected) {
-                        this.logger.debug('User cancel selection of vsts project');
-                        return null;
-                    }
-                    if (projectList) {
-                        const selectedProj: VSTSProject[] = projectList.filter(proj => proj.id === selected.target);
-                        if (selectedProj && selectedProj.length > 0) {
-                            vstsProject = selectedProj[0];
-                        }
-                    }
-                    return null;
-                });
+            const selected: QuickPickAppItem = await VsCodeUI.showQuickPick(options, Strings.ProvideVSTSProjectPromptHint);
+            if (!selected) {
+                this.logger.debug('User cancel selection of vsts project');
+                return null;
+            }
+            if (projectList) {
+                const selectedProj: VSTSProject[] = projectList.filter(proj => proj.id === selected.target);
+                if (selectedProj && selectedProj.length > 0) {
+                    vstsProject = selectedProj[0];
+                }
+            }
         }
 
         if (vstsProject) {

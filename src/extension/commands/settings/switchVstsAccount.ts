@@ -1,9 +1,9 @@
-import * as vscode from 'vscode';
 import { Profile, ProfileQuickPickItem } from '../../../helpers/interfaces';
-import { VsCodeUtils } from '../../../helpers/utils/vsCodeUtils';
 import { AuthProvider } from '../../resources/constants';
 import { Strings } from '../../resources/strings';
 import { Command } from '../command';
+import { VsCodeUI } from '../../ui/vscodeUI';
+import { Messages } from '../../resources/messages';
 
 export default class SwitchAccount extends Command {
 
@@ -28,14 +28,16 @@ export default class SwitchAccount extends Command {
             }
         });
 
-        return await vscode.window.showQuickPick(menuOptions, { placeHolder: Strings.SelectProfileTitlePlaceholder })
-            .then((selected: ProfileQuickPickItem) => {
-                if (!selected) {
-                    // User cancel selection
-                    return true;
-                }
-                return this.switchActiveProfile(selected.profile);
-            }, this.handleError);
+        try {
+            const selected: ProfileQuickPickItem = await VsCodeUI.showQuickPick(menuOptions, Strings.SelectProfileTitleHint);
+            if (!selected) {
+                // User cancel selection
+                return void 0;
+            }
+            return this.switchActiveProfile(selected.profile);
+        } catch (error) {
+            this.handleError(error);
+        }
     }
 
     private async switchActiveProfile(selectedProfile: Profile): Promise<boolean> {
@@ -43,7 +45,7 @@ export default class SwitchAccount extends Command {
             selectedProfile.isActive = true;
             await this.vstsAuth.updateProfile(selectedProfile);
 
-            VsCodeUtils.ShowInfoMessage(Strings.UserSwitchedMsg(AuthProvider.Vsts, selectedProfile.userName));
+            VsCodeUI.ShowInfoMessage(Messages.UserSwitchedMessage(AuthProvider.Vsts, selectedProfile.userName));
         } catch (e) {
             this.handleError(e);
             return false;
@@ -52,7 +54,7 @@ export default class SwitchAccount extends Command {
     }
 
     private handleError(error: Error) {
-        VsCodeUtils.ShowErrorMessage("Error occured during the switching accounts.");
+        VsCodeUI.ShowErrorMessage(Messages.FailedToSwitchAccounts);
         this.logger.error(error.message, error, true);
     }
 }

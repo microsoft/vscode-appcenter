@@ -46,7 +46,7 @@ export class LinkCommand extends ReactNativeAppCommand {
             });
             const current: CurrentApp | null = await this.getCurrentApp();
             const showCurrentApp: boolean = current.os.toLowerCase() !== currentApp.os.toLowerCase();
-            this.showAppsQuickPick(cachedFilteredApps, false, showCurrentApp, false, Strings.ProvideSecondAppPromptMsg, true);
+            this.showAppsQuickPick(cachedFilteredApps, false, showCurrentApp, false, Strings.ProvideSecondAppHint, true);
         } else {
             this.linkApps();
         }
