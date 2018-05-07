@@ -10,6 +10,7 @@ import { Strings } from '../../extension/resources/strings';
 import { CurrentApp, CurrentAppDeployments } from '../interfaces';
 import { cpUtils, SpawnError } from './cpUtils';
 import { Validators } from './validators';
+import AppCenterConfig from '../../data/appCenterConfig';
 
 export class Utils {
     public static FormatMessage(message: string): string {
@@ -201,5 +202,13 @@ export class Utils {
             }
         }
         return resultSignalsThatPackageInstalled(result);
+    }
+
+    public static createAppCenterConfigFrom(appName: string, projectRootPath: string, logger: ILogger): AppCenterConfig {
+        const pathToAppCenterConfigPlist: string = path.join(projectRootPath, "ios", appName, "AppCenter-Config.plist");
+        const pathToMainPlist: string = path.join(projectRootPath, "ios", appName, "Info.plist");
+        const pathToAndroidConfig: string = path.join(projectRootPath, "android", "app", "src", "main", "assets", "appcenter-config.json");
+        const pathToAndroidStringResources: string = path.join(projectRootPath, "android", "app", "src", "main", "res", "values", "strings.xml");
+        return new AppCenterConfig(pathToAppCenterConfigPlist, pathToMainPlist, pathToAndroidConfig, pathToAndroidStringResources, logger);
     }
 }
