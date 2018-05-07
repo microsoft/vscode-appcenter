@@ -10,6 +10,7 @@ import * as Menu from "../menu/menu";
 import { Constants } from "../resources/constants";
 import { Strings } from "../resources/strings";
 import { Command } from './command';
+import { CreateNewAppOption } from "./general/createNewApp";
 
 export class CreateAppCommand extends Command {
 
@@ -61,13 +62,13 @@ export class CreateAppCommand extends Command {
             let apps: models.AppResponse[];
             apps = await this.client.apps.list();
             exist = apps.some(item => {
-                return (item.name === AppCenterAppBuilder.getiOSAppName(ideaName) || item.name === AppCenterAppBuilder.getAndroidAppName(ideaName));
+                return (item.name === ideaName);
             });
         });
         return exist;
     }
 
-    protected getIdeaName(appNameFromPackage: string = ""): Thenable<string | null> {
+    protected getIdeaName(option: CreateNewAppOption, appNameFromPackage: string = ""): Thenable<string | null> {
         return vscode.window.showInputBox({ prompt: Strings.PleaseEnterIdeaName, ignoreFocusOut: true, value: appNameFromPackage })
             .then(async ideaName => {
                 if (ideaName.length === 0) {
@@ -84,9 +85,17 @@ export class CreateAppCommand extends Command {
                     return null;
                 }
 
-                if (await this.appAlreadyExistInAppCenter(ideaName)) {
-                    VsCodeUtils.ShowErrorMessage(Strings.FailedToCreateAppAlreadyExistInAppCenter);
-                    return null;
+                if (option === CreateNewAppOption.Android || option === CreateNewAppOption.Both) {
+                    if (await this.appAlreadyExistInAppCenter(AppCenterAppBuilder.getAndroidAppName(ideaName))) {
+                        VsCodeUtils.ShowErrorMessage(Strings.FailedToCreateAppAlreadyExistInAppCenter);
+                        return null;
+                    }
+                }
+                if (option === CreateNewAppOption.IOS || option === CreateNewAppOption.Both) {
+                    if (await this.appAlreadyExistInAppCenter(AppCenterAppBuilder.getiOSAppName(ideaName))) {
+                        VsCodeUtils.ShowErrorMessage(Strings.FailedToCreateAppAlreadyExistInAppCenter);
+                        return null;
+                    }
                 }
                 return ideaName;
             });
