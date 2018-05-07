@@ -77,6 +77,10 @@ export default class AppCenterConfig {
         this.parsedInfoConfigPlist[key] = value;
     }
 
+    public deleteConfigPlistValueByKey(key: string) {
+        delete this.parsedInfoConfigPlist[key];
+    }
+
     public saveConfigPlist(): boolean {
         const plistContents = plist.build(this.parsedInfoConfigPlist);
         fs.writeFileSync(this.configPlistPath, plistContents);
@@ -105,6 +109,10 @@ export default class AppCenterConfig {
 
     public setAndroidAppCenterConfigValueByKey(key: string, value: string) {
         this.androidAppCenterConfig[key] = value;
+    }
+
+    public deleteAndroidAppCenterConfigValueByKey(key: string) {
+        delete this.androidAppCenterConfig[key];
     }
 
     public saveAndroidAppCenterConfig(): boolean {

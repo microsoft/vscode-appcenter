@@ -1,4 +1,3 @@
-import * as path from 'path';
 import * as vscode from 'vscode';
 import { VSTSGitRepository, VSTSProject } from '../../../api/vsts/types';
 import { VSTSProvider } from '../../../api/vsts/vstsProvider';
@@ -18,6 +17,7 @@ import { AppCenterOS, Constants } from '../../resources/constants';
 import { Strings } from '../../resources/strings';
 import { CreateAppCommand } from '../createAppCommand';
 import { LoginToVsts } from '../settings';
+import { Utils } from '../../../helpers/utils/utils';
 // tslint:disable-next-line:no-var-requires
 const GitUrlParse = require("git-url-parse");
 
@@ -139,11 +139,7 @@ export default class Start extends CreateAppCommand {
             return;
         }
 
-        const pathToAppCenterConfigPlist: string = path.join(this.rootPath, "ios", "AppCenterSample", "AppCenter-Config.plist");
-        const pathToMainPlist: string = path.join(this.rootPath, "ios", "AppCenterSample", "Info.plist");
-        const pathToAndroidConfig: string = path.join(this.rootPath, "android", "app", "src", "main", "assets", "appcenter-config.json");
-        const pathToAndroidStringResources: string = path.join(this.rootPath, "android", "app", "src", "main", "res", "values", "strings.xml");
-        const appCenterConfig = new AppCenterConfig(pathToAppCenterConfigPlist, pathToMainPlist, pathToAndroidConfig, pathToAndroidStringResources, this.logger);
+        const appCenterConfig = Utils.createAppCenterConfigFrom("AppCenterSample", this.rootPath, this.logger);
 
         this.logger.info("Configuring App Center SDKs...");
         if (!this.updateAppSecretKeys(createdApps, appCenterConfig)) {
