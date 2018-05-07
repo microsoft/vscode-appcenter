@@ -6,6 +6,8 @@ import { AuthProvider } from "../../resources/constants";
 import { Strings } from "../../resources/strings";
 import { Command } from "../command";
 import { IButtonMessageItem, VsCodeUI } from "../../ui/vscodeUI";
+import { Messages } from "../../resources/messages";
+import { LogStrings } from "../../resources/logStrings";
 
 export default class Login extends Command {
 
@@ -25,9 +27,9 @@ export default class Login extends Command {
             url: loginUrl
         });
 
-        const selection: IButtonMessageItem | undefined = await VsCodeUI.ShowInfoMessage(Strings.PleaseLoginViaBrowser, ...messageItems);
+        const selection: IButtonMessageItem | undefined = await VsCodeUI.ShowInfoMessage(Messages.PleaseLoginViaBrowserMessage, ...messageItems);
         if (selection) {
-            const token: string = await VsCodeUI.showInput(Strings.PleaseProvideToken);
+            const token: string = await VsCodeUI.showInput(Strings.PleaseProvideTokenHint);
             this.loginWithToken(token);
             return true;
         } else {
@@ -37,20 +39,20 @@ export default class Login extends Command {
 
     private async loginWithToken(token: string | undefined): Promise<boolean> {
         if (!token) {
-            this.logger.info("No token provided on login");
+            this.logger.info(LogStrings.NoTokenProvided);
             return true;
         }
 
         return this.appCenterAuth.doLogin({ token: token }).then((profile: Profile) => {
             if (!profile) {
-                this.logger.error("Failed to fetch user info from server");
-                VsCodeUI.ShowWarningMessage(Strings.FailedToExecuteLoginMsg(AuthProvider.AppCenter));
+                this.logger.error(LogStrings.FailedToGetUserFromServer);
+                VsCodeUI.ShowErrorMessage(Messages.FailedToExecuteLoginMsg(AuthProvider.AppCenter));
                 return false;
             }
-            VsCodeUI.ShowInfoMessage(Strings.YouAreLoggedInMsg(AuthProvider.AppCenter, profile.displayName));
+            VsCodeUI.ShowInfoMessage(Messages.YouAreLoggedInMessage(AuthProvider.AppCenter, profile.displayName));
             return this.manager.setupAppCenterStatusBar(profile).then(() => true);
         }).catch((e: Error) => {
-            VsCodeUI.ShowErrorMessage("Could not login into account.");
+            VsCodeUI.ShowErrorMessage(Messages.FailedToLogin);
             this.logger.error(e.message, e, true);
             return false;
         });

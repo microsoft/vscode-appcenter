@@ -1,8 +1,8 @@
 import { CommandParams, Profile } from "../../../helpers/interfaces";
 import { AuthProvider } from "../../resources/constants";
-import { Strings } from "../../resources/strings";
 import { Command } from "../command";
 import { VsCodeUI } from "../../ui/vscodeUI";
+import { Messages } from "../../resources/messages";
 
 export default class WhoAmI extends Command {
 
@@ -14,9 +14,9 @@ export default class WhoAmI extends Command {
         super.runNoClient();
         const profile: Profile | null = await this.appCenterProfile;
         if (profile) {
-            VsCodeUI.ShowInfoMessage(Strings.YouAreLoggedInMsg(AuthProvider.AppCenter, profile.displayName));
+            VsCodeUI.ShowInfoMessage(Messages.YouAreLoggedInMessage(AuthProvider.AppCenter, profile.displayName));
         } else {
-            VsCodeUI.ShowInfoMessage(Strings.UserIsNotLoggedInMsg);
+            VsCodeUI.ShowWarningMessage(Messages.UserIsNotLoggedInWarning);
         }
     }
 }

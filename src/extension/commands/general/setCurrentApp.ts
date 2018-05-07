@@ -2,9 +2,10 @@ import { models } from "../../../api/appcenter";
 import { CommandParams, CurrentApp, CurrentAppDeployments, Deployment, QuickPickAppItem } from "../../../helpers/interfaces";
 import { Utils } from "../../../helpers/utils/utils";
 import { AppCenterOS, CommandNames, Constants } from "../../resources/constants";
-import { Strings } from "../../resources/strings";
 import { ReactNativeAppCommand } from "../reactNativeAppCommand";
 import { VsCodeUI } from "../../ui/vscodeUI";
+import { LogStrings } from "../../resources/logStrings";
+import { Messages } from "../../resources/messages";
 
 export default class SetCurrentApp extends ReactNativeAppCommand {
     constructor(params: CommandParams) {
@@ -34,12 +35,12 @@ export default class SetCurrentApp extends ReactNativeAppCommand {
 
             const OS: AppCenterOS | undefined = Utils.toAppCenterOS(selectedApp.os);
             if (!OS) {
-                this.logger.error(`Couldn't recognize os ${selectedApp.os} returned from CodePush server.`);
+                this.logger.error(LogStrings.UnknownOSFromCodePush(selectedApp.os));
                 return;
             }
             try {
                 await VsCodeUI.showProgress(progress => {
-                    progress.report({ message: Strings.FetchDeploymentsStatusBarMessage });
+                    progress.report({ message: Messages.FetchDeploymentsProgressMessage });
                     return this.client.codePushDeployments.list(selectedApp.owner.name, selectedApp.name);
                 }).then((deployments: models.Deployment[]) => {
                     return deployments.sort((a, b): any => {
@@ -69,14 +70,14 @@ export default class SetCurrentApp extends ReactNativeAppCommand {
                     );
                 }).then((app: CurrentApp | null) => {
                     if (app) {
-                        const message = Strings.YourCurrentAppAndDeploymentMsg(selected.target, app.currentAppDeployments.currentDeploymentName);
+                        const message = Messages.YourCurrentAppAndDeploymentMessage(selected.target, app.currentAppDeployments.currentDeploymentName);
                         VsCodeUI.ShowInfoMessage(message);
                     } else {
-                        this.logger.error("Failed to save current app");
+                        this.logger.error(LogStrings.FailedToSaveCurrentApp);
                     }
                 });
             } catch (e) {
-                this.logger.error("Failed to save current app");
+                this.logger.error(LogStrings.FailedToSaveCurrentApp);
             }
         }
     }

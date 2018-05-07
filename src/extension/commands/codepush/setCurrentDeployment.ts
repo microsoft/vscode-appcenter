@@ -1,8 +1,9 @@
 import { CommandParams, CurrentApp } from '../../../helpers/interfaces';
 import { AppCenterOS } from '../../resources/constants';
-import { Strings } from '../../resources/strings';
 import { RNCPAppCommand } from './rncpAppCommand';
 import { VsCodeUI, CustomQuickPickItem } from '../../ui/vscodeUI';
+import { Messages } from '../../resources/messages';
+import { Strings } from '../../resources/strings';
 
 export default class SetCurrentDeployment extends RNCPAppCommand {
     constructor(params: CommandParams) {
@@ -15,11 +16,11 @@ export default class SetCurrentDeployment extends RNCPAppCommand {
         }
         const currentApp: CurrentApp = await this.getCurrentApp(true);
         if (!currentApp) {
-            VsCodeUI.ShowWarningMessage(Strings.NoCurrentAppSetMsg);
+            VsCodeUI.ShowWarningMessage(Messages.NoCurrentAppSetWarning);
             return;
         }
         if (!this.hasCodePushDeployments(currentApp)) {
-            VsCodeUI.ShowWarningMessage(Strings.NoDeploymentsMsg);
+            VsCodeUI.ShowWarningMessage(Messages.NoDeploymentsWarning);
             return;
         }
         const deploymentOptions: CustomQuickPickItem[] = currentApp.currentAppDeployments.codePushDeployments.map((deployment) => {
@@ -29,7 +30,7 @@ export default class SetCurrentDeployment extends RNCPAppCommand {
                 target: deployment.key
             };
         });
-        const deployment: CustomQuickPickItem = await VsCodeUI.showQuickPick(deploymentOptions, Strings.SelectCurrentDeploymentMsg);
+        const deployment: CustomQuickPickItem = await VsCodeUI.showQuickPick(deploymentOptions, Strings.SelectCurrentDeploymentHint);
         if (deployment) {
             this.saveCurrentApp(
                 currentApp.identifier,
@@ -42,7 +43,7 @@ export default class SetCurrentDeployment extends RNCPAppCommand {
                 currentApp.isMandatory,
                 currentApp.appSecret
             );
-            VsCodeUI.ShowInfoMessage(Strings.YourCurrentDeploymentMsg(deployment.label));
+            VsCodeUI.ShowInfoMessage(Messages.YourCurrentDeploymentMessage(deployment.label));
         }
 
     }

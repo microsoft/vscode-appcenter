@@ -1,8 +1,8 @@
 import { SettingsHelper } from "../../helpers/settingsHelper";
 import * as Settings from "../commands/settings";
-import { Strings } from "../resources/strings";
 import BaseCommandHandler from "./baseCommandHandler";
 import { VsCodeUI } from "../ui/vscodeUI";
+import { Messages } from "../resources/messages";
 
 export default class SettingsCommandHandler extends BaseCommandHandler {
     public async ShowMenu(): Promise<void> {
@@ -35,7 +35,7 @@ export default class SettingsCommandHandler extends BaseCommandHandler {
 
     public async ShowStatusBar(): Promise<void> {
         if (SettingsHelper.shouldStatusBarBeShown()) {
-            VsCodeUI.ShowInfoMessage(Strings.StatusBarAlreadyShown);
+            VsCodeUI.ShowInfoMessage(Messages.StatusBarAlreadyShownMessage);
             return;
         }
         await new Settings.ToggleStatusBar(this.getCommandParams()).runNoClient();
@@ -43,7 +43,7 @@ export default class SettingsCommandHandler extends BaseCommandHandler {
 
     public async HideStatusBar(): Promise<void> {
         if (!SettingsHelper.shouldStatusBarBeShown()) {
-            VsCodeUI.ShowInfoMessage(Strings.StatusBarAlreadyHidden);
+            VsCodeUI.ShowInfoMessage(Messages.StatusBarAlreadyHiddenMessage);
             return;
         }
         await new Settings.ToggleStatusBar(this.getCommandParams()).runNoClient();

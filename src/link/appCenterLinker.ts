@@ -5,6 +5,7 @@ import { CurrentApp } from '../helpers/interfaces';
 import { cpUtils } from '../helpers/utils/cpUtils';
 import { IButtonMessageItem, VsCodeUI } from '../extension/ui/vscodeUI';
 import { VsCodeTerminal } from '../extension/ui/VsCodeTerminal';
+import { Messages } from '../extension/resources/messages';
 
 export default class AppCenterLinker {
 
@@ -13,7 +14,7 @@ export default class AppCenterLinker {
     public async installAppcenter(): Promise<boolean> {
         const installAppCenterCmd: string = "npm i appcenter appcenter-analytics appcenter-crashes --save";
         return await VsCodeUI.showProgress(async (progress) => {
-            progress.report({ message: Strings.InstallAppCenterTitle });
+            progress.report({ message: Messages.InstallAppCenterProgressMessage });
             try {
                 await cpUtils.executeCommand(this.logger, true, this.rootPath, installAppCenterCmd);
                 return true;
@@ -35,14 +36,14 @@ export default class AppCenterLinker {
             title: Strings.OkBtnLabel
         });
 
-        const selection: IButtonMessageItem | undefined = await VsCodeUI.ShowInfoMessage(Strings.AppCenterBeforeLinkMsg, ...messageItems);
+        const selection: IButtonMessageItem | undefined = await VsCodeUI.ShowInfoMessage(Messages.AppCenterBeforeLinkMessage, ...messageItems);
         if (selection) {
             terminalHelper.run('react-native link');
             const messageItems: IButtonMessageItem[] = [];
             messageItems.push({
-                title: "Done"
+                title: Strings.LinkDoneBtnLabel
             });
-            VsCodeUI.ShowInfoMessage(Strings.AppCenterSecretsHint(androidAppSecret, iosAppSecret), ...messageItems);
+            VsCodeUI.ShowInfoMessage(Messages.AppCenterSecretsHintMessage(androidAppSecret, iosAppSecret), ...messageItems);
             return true;
         }
         return false;

@@ -9,6 +9,7 @@ import { ILogger } from './log/logHelper';
 import { AuthProvider, CommandNames } from './resources/constants';
 import { Strings } from './resources/strings';
 import { VsCodeUI } from './ui/vscodeUI';
+import { Messages } from './resources/messages';
 
 class CommandHandlersContainer {
     private _appCenterCommandHandler: CommandHandlers.AppCenter;
@@ -71,32 +72,19 @@ export class ExtensionManager implements Disposable {
         funcToTry(args);
     }
 
-    public DisplayErrorMessage(message?: string): boolean {
-        const msg: string = message ? message : "An error occured";
-        if (msg) {
-            VsCodeUI.ShowErrorMessage(msg);
-            return true;
-        }
-        return false;
-    }
-
-    public DisplayWarningMessage(message: string): void {
-        VsCodeUI.ShowWarningMessage(message);
-    }
-
     public setupAppCenterStatusBar(profile: Profile | null): Promise<void> {
         if (profile && profile.userName) {
             return VsCodeUI.setStatusBar(this._appCenterStatusBarItem,
                 profile.currentApp && profile.currentApp.appName && Utils.isReactNativeProject(this._logger, this.projectRootPath, false)
                 ? `App Center: ${Utils.FormatAppName(profile.currentApp.appName)}`
                 : `App Center: ${profile.userName}`,
-                Strings.YouAreLoggedInMsg(AuthProvider.AppCenter, profile.userName),
+                Messages.YouAreLoggedInMessage(AuthProvider.AppCenter, profile.userName),
                 `${CommandNames.ShowMenu}`
             );
         } else {
             VsCodeUI.setStatusBar(this._appCenterStatusBarItem,
-                `$(icon octicon-sign-in) ${Strings.LoginToAppCenterButton}`,
-                Strings.UserMustSignIn,
+                `$(icon octicon-sign-in) ${Strings.LoginToAppCenterStatusBarButton}`,
+                Strings.UserMustSignInStatusBarMessage,
                 `${CommandNames.Login}`
             );
         }

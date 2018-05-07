@@ -22,6 +22,7 @@ export class Constants {
     public static AndroidCodePushDeploymentKey: string = "reactNativeCodePush_androidDeploymentKey";
     public static AppCenterSampleGitRemoteName: string = "appcenter-sample-repo";
     public static AppCenterSampleGitRemoteDefaultBranchName: string = "master";
+    public static AppCenterSampleAppName = "AppCenterSample";
     public static GitDefaultRemoteName: string = 'origin';
     public static ProfileDir: string = ".vscode-appcenter";
     public static AppCenterProfileFileName: string = "VSCodeAppCenterProfile.json";
