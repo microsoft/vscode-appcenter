@@ -114,7 +114,7 @@ export class ReactNativeAppCommand extends Command {
             if (!selected) {
                 return;
             }
-            this.handleShowCurrentAppQuickPickSelection(selected, rnApps);
+            this.handleShowCurrentAppQuickPickSelection(selected, apps);
         }
     }
 
