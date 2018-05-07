@@ -39,43 +39,41 @@ export default class SetCurrentApp extends ReactNativeAppCommand {
                 return;
             }
             try {
-                await VsCodeUI.showProgress(progress => {
+                const deployments: models.Deployment[] = await VsCodeUI.showProgress(async progress => {
                     progress.report({ message: Messages.FetchDeploymentsProgressMessage });
-                    return this.client.codePushDeployments.list(selectedApp.owner.name, selectedApp.name);
-                }).then((deployments: models.Deployment[]) => {
-                    return deployments.sort((a, b): any => {
-                        return a.name < b.name; // sort alphabetically
-                    });
-                }).then((appDeployments: models.Deployment[]) => {
-                    let currentDeployments: CurrentAppDeployments | null = null;
-                    if (appDeployments.length > 0) {
-                        const deployments: Deployment[] = appDeployments.map((d) => {
-                            return {
-                                name: d.name
-                            };
-                        });
-                        currentDeployments = {
-                            codePushDeployments: deployments,
-                            currentDeploymentName: appDeployments[0].name // Select 1st one by default
-                        };
-                    }
-                    return this.saveCurrentApp(
-                        selectedAppName,
-                        OS,
-                        currentDeployments,
-                        Constants.AppCenterDefaultTargetBinaryVersion,
-                        type,
-                        Constants.AppCenterDefaultIsMandatoryParam,
-                        selectedAppSecret
-                    );
-                }).then((app: CurrentApp | null) => {
-                    if (app) {
-                        const message = Messages.YourCurrentAppAndDeploymentMessage(selected.target, app.currentAppDeployments.currentDeploymentName);
-                        VsCodeUI.ShowInfoMessage(message);
-                    } else {
-                        this.logger.error(LogStrings.FailedToSaveCurrentApp);
-                    }
+                    return await this.client.codePushDeployments.list(selectedApp.owner.name, selectedApp.name);
                 });
+                const appDeployments: models.Deployment[] = deployments.sort((a, b): any => {
+                    return a.name < b.name; // sort alphabetically
+                });
+
+                let currentDeployments: CurrentAppDeployments | null = null;
+                if (appDeployments.length > 0) {
+                    const deployments: Deployment[] = appDeployments.map((d) => {
+                        return {
+                            name: d.name
+                        };
+                    });
+                    currentDeployments = {
+                        codePushDeployments: deployments,
+                        currentDeploymentName: appDeployments[0].name // Select 1st one by default
+                    };
+                }
+                const app: CurrentApp | null = await this.saveCurrentApp(
+                    selectedAppName,
+                    OS,
+                    currentDeployments,
+                    Constants.AppCenterDefaultTargetBinaryVersion,
+                    type,
+                    Constants.AppCenterDefaultIsMandatoryParam,
+                    selectedAppSecret
+                );
+                if (app) {
+                    const message = Messages.YourCurrentAppAndDeploymentMessage(selected.target, app.currentAppDeployments.currentDeploymentName);
+                    VsCodeUI.ShowInfoMessage(message);
+                } else {
+                    this.logger.error(LogStrings.FailedToSaveCurrentApp);
+                }
             } catch (e) {
                 this.logger.error(LogStrings.FailedToSaveCurrentApp);
             }

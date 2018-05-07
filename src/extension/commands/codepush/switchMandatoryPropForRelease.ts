@@ -25,7 +25,7 @@ export default class SwitchMandatoryPropForRelease extends RNCPAppCommand {
             return;
         }
         const newMandatoryValue = !!!app.isMandatory;
-        return this.saveCurrentApp(
+        await this.saveCurrentApp(
             app.identifier,
             AppCenterOS[app.os],
             {
@@ -35,9 +35,7 @@ export default class SwitchMandatoryPropForRelease extends RNCPAppCommand {
             app.targetBinaryVersion,
             app.type,
             newMandatoryValue,
-            app.appSecret
-        ).then(() => {
-            VsCodeUI.ShowInfoMessage(Messages.ChangedMandatoryMessage(newMandatoryValue));
-        });
+            app.appSecret);
+        VsCodeUI.ShowInfoMessage(Messages.ChangedMandatoryMessage(newMandatoryValue));
     }
 }

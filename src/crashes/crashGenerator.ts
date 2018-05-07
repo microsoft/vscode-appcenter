@@ -44,14 +44,13 @@ export class CrashGenerator {
 
         const sessionLogContainer = { Logs: [session] };
         const crashLogContainer = { Logs: [crashLog] };
-
-        return this.sendCrashes(installId, sessionLogContainer).then(() => {
-            return this.sendCrashes(installId, crashLogContainer);
-        }).then(() => {
+        try {
+            await this.sendCrashes(installId, sessionLogContainer);
+            await this.sendCrashes(installId, crashLogContainer);
             return;
-        }).catch(() => {
-            throw new Error();
-        });
+        } catch (error) {
+            throw new Error(error);
+        }
     }
 
     private async sendCrashes(installId: string, body: object): Promise<void> {

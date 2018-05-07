@@ -41,16 +41,14 @@ export class CreateAppCommand extends Command {
         };
         let items: CustomQuickPickItem[] = [];
         this.logger.debug(LogStrings.GettingUserOrOrg);
-        await VsCodeUI.showProgress(progress => {
+        const orgList: models.ListOKResponseItem[] = await VsCodeUI.showProgress(async progress => {
             progress.report({ message: Messages.LoadingStatusBarProgressMessage });
-            return this.client.organizations.list().then((orgList: models.ListOKResponseItem[]) => {
-                const organizations: models.ListOKResponseItem[] = orgList;
-                return organizations.sort(sortOrganizations);
-            });
-        }).then(async (orgList: models.ListOKResponseItem[]) => {
-            const myself: Profile | null = await this.appCenterProfile;
-            items = Menu.getQuickPickItemsForOrgList(orgList, myself);
+            const orgList: models.ListOKResponseItem[] = await this.client.organizations.list();
+            const organizations: models.ListOKResponseItem[] = orgList;
+            return organizations.sort(sortOrganizations);
         });
+        const myself: Profile | null = await this.appCenterProfile;
+        items = Menu.getQuickPickItemsForOrgList(orgList, myself);
         return items;
     }
 

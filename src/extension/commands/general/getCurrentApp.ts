@@ -14,12 +14,11 @@ export default class GetCurrentApp extends ReactNativeAppCommand {
             return;
         }
 
-        return this.getCurrentApp().then((app: CurrentApp | null) => {
-            if (app) {
-                VsCodeUI.ShowInfoMessage(Messages.YourCurrentAppMessage(app.identifier));
-            } else {
-                VsCodeUI.ShowWarningMessage(Messages.NoCurrentAppSetWarning);
-            }
-        });
+        const app: CurrentApp | null = await this.getCurrentApp();
+        if (app) {
+            VsCodeUI.ShowInfoMessage(Messages.YourCurrentAppMessage(app.identifier));
+        } else {
+            VsCodeUI.ShowWarningMessage(Messages.NoCurrentAppSetWarning);
+        }
     }
 }
