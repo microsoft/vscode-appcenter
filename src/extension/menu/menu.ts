@@ -17,7 +17,7 @@ export abstract class Menu {
     }
 
     protected isEmptyDir(): boolean {
-        return FSUtils.IsEmptyDirectoryToStartNewIdea(this.rootPath);
+        return FSUtils.IsEmptyDirectoryToStartNewProject(this.rootPath);
     }
 
     protected isRNproject(): boolean {
@@ -50,9 +50,9 @@ export class MenuItems {
         command: CommandNames.Login
     };
 
-    public static StartAnIdea: MenuQuickPickItem = {
-        label: MenuStrings.StartAnIdeaMenuLabel,
-        description: MenuStrings.StartAnIdeaMenuDescription,
+    public static StartAProject: MenuQuickPickItem = {
+        label: MenuStrings.StartAProjectMenuLabel,
+        description: MenuStrings.StartAProjectMenuDescription,
         command: CommandNames.Start
     };
 

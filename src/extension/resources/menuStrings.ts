@@ -13,7 +13,7 @@ export class MenuStrings {
     public static DistributeStoresTabMenuLabel: string = "Stores";
     public static DistributeCodePushTabMenuLabel: string = "CodePush";
     public static DistributeReleasesTabMenuLabel: string = "Releases";
-    public static StartAnIdeaMenuLabel: string = "Start a new project";
+    public static StartAProjectMenuLabel: string = "Start a new project";
     public static LoginMenuLabel: string = "Login";
     public static GetCurrentAppMenuLabel: string = "Get current app info";
     public static CodePushMenuLabel: string = "CodePush";
@@ -72,7 +72,7 @@ export class MenuStrings {
     // #region Menu Descriptions
     public static AppCenterPortalMenuDescription: string = "Quick navigate your App Center apps";
     public static SelectCurrentAppMenuDescription: string = "Use Current App";
-    public static StartAnIdeaMenuDescription: string = "";
+    public static StartAProjectMenuDescription: string = "";
     public static OrganizationMenuDescription: string = "Organization";
     public static UserMenuDescription: string = "User";
     public static CurrentAppMenuDescription: string = "Click here to change current app";

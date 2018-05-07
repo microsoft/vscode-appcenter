@@ -66,10 +66,10 @@ export class CreateAppCommand extends Command {
         return exist;
     }
 
-    protected async getIdeaName(appNameFromPackage: string = ""): Promise<string | null> {
-        const projectName = await VsCodeUI.showInput(Strings.PleaseEnterIdeaNameHint, appNameFromPackage);
+    protected async getProjectName(appNameFromPackage: string = ""): Promise<string | null> {
+        const projectName = await VsCodeUI.showInput(Strings.PleaseEnterProjectNameHint, appNameFromPackage);
         if (projectName.length === 0) {
-            VsCodeUI.ShowWarningMessage(Messages.IdeaNameIsNotValidWarning);
+            VsCodeUI.ShowWarningMessage(Messages.ProjectNameIsNotValidWarning);
             return null;
         }
 
@@ -78,7 +78,7 @@ export class CreateAppCommand extends Command {
         }
 
         if (!Validators.ValidateProjectName(projectName)) {
-            VsCodeUI.ShowErrorMessage(Messages.IdeaNameIsNotValidWarning);
+            VsCodeUI.ShowErrorMessage(Messages.ProjectNameIsNotValidWarning);
             return null;
         }
 

@@ -31,16 +31,16 @@ export default class CreateNewApp extends CreateAppCommand {
 
         const appNameFromPackage = Utils.parseJsonFile(this.rootPath + "/package.json", "").name;
 
-        let ideaName: string | null = null;
+        let projectName: string | null = null;
 
-        // ideaName is null if user has entered invalid name. We will give him a chance to correct it instead of
+        // projectName is null if user has entered invalid name. We will give him a chance to correct it instead of
         // forcing to do the process again.
-        while (ideaName == null) {
-            ideaName = await this.getIdeaName(appNameFromPackage);
+        while (projectName == null) {
+            projectName = await this.getProjectName(appNameFromPackage);
         }
 
         // Length is 0 if user cancelled prompt.
-        if (ideaName.length === 0) {
+        if (projectName.length === 0) {
             return;
         }
 
@@ -49,7 +49,7 @@ export default class CreateNewApp extends CreateAppCommand {
             return;
         }
 
-        const appCenterAppBuilder = new AppCenterAppBuilder(ideaName, this.userOrOrg, "", this.client, this.logger);
+        const appCenterAppBuilder = new AppCenterAppBuilder(projectName, this.userOrOrg, "", this.client, this.logger);
         await appCenterAppBuilder.createApps(this._option);
         const createdApps: CreatedAppFromAppCenter[] = appCenterAppBuilder.getCreatedApps();
         if (!createdApps) {

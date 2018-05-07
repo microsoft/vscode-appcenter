@@ -20,7 +20,7 @@ export class FSUtils {
         return dirExistAndEmpty;
     }
 
-    public static IsEmptyDirectoryToStartNewIdea(dirName: string) {
+    public static IsEmptyDirectoryToStartNewProject(dirName: string) {
         let dirContent: string[] | null = null;
         dirContent = fs.readdirSync(dirName);
 

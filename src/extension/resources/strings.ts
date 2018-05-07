@@ -16,7 +16,7 @@ export class Strings {
     // #endregion Status bar
 
     // #region Hints
-    public static PleaseEnterIdeaNameHint: string = "Please enter a project name";
+    public static PleaseEnterProjectNameHint: string = "Please enter a project name";
     public static PleaseProvideTokenHint: string = "Please paste your App Center access token";
     public static PleaseEnterNewRepositoryUrlHint: string = "Please enter repository url";
     public static MenuTitleHint: string = "Please make an App Center selection";
