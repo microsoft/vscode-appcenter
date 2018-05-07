@@ -33,9 +33,9 @@ export default class Start extends CreateAppCommand {
         super.run();
         this.logger.info(LogStrings.BuildingProject);
 
-        if (!FSUtils.IsEmptyDirectoryToStartNewIdea(this.rootPath)) {
-            VsCodeUI.ShowWarningMessage(Messages.DirectoryIsNotEmptyForNewIdeaWarning);
-            this.logger.error(Messages.DirectoryIsNotEmptyForNewIdeaWarning);
+        if (!FSUtils.IsEmptyDirectoryToStartNewProject(this.rootPath)) {
+            VsCodeUI.ShowWarningMessage(Messages.DirectoryIsNotEmptyForNewProjectWarning);
+            this.logger.error(Messages.DirectoryIsNotEmptyForNewProjectWarning);
             return;
         }
 
@@ -44,12 +44,12 @@ export default class Start extends CreateAppCommand {
             return;
         }
 
-        let ideaName: string | null = null;
-        while (ideaName == null) {
-            ideaName = await this.getIdeaName();
+        let projectName: string | null = null;
+        while (projectName == null) {
+            projectName = await this.getProjectName();
         }
 
-        if (ideaName.length === 0) {
+        if (projectName.length === 0) {
             return;
         }
 
@@ -94,7 +94,7 @@ export default class Start extends CreateAppCommand {
                 return;
             }
 
-            const vstsGitRepo: VSTSGitRepository | null = await vsts.CreateGitRepository(vstsProject.id, ideaName);
+            const vstsGitRepo: VSTSGitRepository | null = await vsts.CreateGitRepository(vstsProject.id, projectName);
             if (!vstsGitRepo) {
                 this.logger.error(LogStrings.FailedToCreateVSTSRepo);
                 VsCodeUI.ShowErrorMessage(Messages.FailedToCreateVSTSGitrepository);
@@ -129,7 +129,7 @@ export default class Start extends CreateAppCommand {
         }
         this.userOrOrg = userOrOrgItem;
 
-        const appCenterAppBuilder = new AppCenterAppBuilder(ideaName, userOrOrgItem, this.repositoryURL, this.client, this.logger);
+        const appCenterAppBuilder = new AppCenterAppBuilder(projectName, userOrOrgItem, this.repositoryURL, this.client, this.logger);
         this.logger.info(LogStrings.CreatingAppsInAppCenter);
         await appCenterAppBuilder.createApps();
         const createdApps: CreatedAppFromAppCenter[] = appCenterAppBuilder.getCreatedApps();
@@ -177,8 +177,8 @@ export default class Start extends CreateAppCommand {
             const successMessage: string = `
 --------------------------------------------------------
     Apps Created:
-        ${AppCenterAppBuilder.getAndroidAppName(ideaName)}
-        ${AppCenterAppBuilder.getiOSAppName(ideaName)}
+        ${AppCenterAppBuilder.getAndroidAppName(projectName)}
+        ${AppCenterAppBuilder.getiOSAppName(projectName)}
 --------------------------------------------------------`;
             this.logger.info(successMessage);
 

@@ -25,9 +25,9 @@ export class GeneralMenu extends Menu {
             currentApp = this.profile.currentApp;
         }
 
-        // For empty directory show only `Start New Idea`
+        // For empty directory show only `Start New Project`
         if (this.isEmptyDir()) {
-            menuItems.push(MenuItems.StartAnIdea);
+            menuItems.push(MenuItems.StartAProject);
             menuItems.push(MenuItems.AppCenterPortal);
         } else {
             menuItems.push(MenuItems.AppCenterPortal);
