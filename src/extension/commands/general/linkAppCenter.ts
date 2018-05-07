@@ -1,10 +1,8 @@
-import * as path from "path";
 import { Utils } from "../../../helpers/utils/utils";
 import { VsCodeUtils } from "../../../helpers/utils/vsCodeUtils";
 import AppCenterLinker from "../../../link/appCenterLinker";
 import { Strings } from "../../resources/strings";
 import { LinkCommand } from "../linkCommand";
-import AppCenterConfig from "../../../data/appCenterConfig";
 import { Constants, AppCenterOS } from "../../resources/constants";
 
 export default class LinkAppCenter extends LinkCommand {
@@ -42,11 +40,7 @@ export default class LinkAppCenter extends LinkCommand {
     private removeAppSecretKeys() {
         const appName: string = Utils.getAppName(this.rootPath);
 
-        const pathToAppCenterConfigPlist: string = path.join(this.rootPath, "ios", appName, "AppCenter-Config.plist");
-        const pathToMainPlist: string = path.join(this.rootPath, "ios", appName, "Info.plist");
-        const pathToAndroidConfig: string = path.join(this.rootPath, "android", "app", "src", "main", "assets", "appcenter-config.json");
-        const pathToAndroidStringResources: string = path.join(this.rootPath, "android", "app", "src", "main", "res", "values", "strings.xml");
-        const appCenterConfig = new AppCenterConfig(pathToAppCenterConfigPlist, pathToMainPlist, pathToAndroidConfig, pathToAndroidStringResources, this.logger);
+        const appCenterConfig = Utils.createAppCenterConfigFrom(appName, this.rootPath, this.logger);
 
         const hasAndroidApps: boolean = this.pickedApps.some(app => {
             return app.os.toLowerCase() === AppCenterOS.Android.toLowerCase();
