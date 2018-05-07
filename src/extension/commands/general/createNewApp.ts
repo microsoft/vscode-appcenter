@@ -36,9 +36,8 @@ export default class CreateNewApp extends CreateAppCommand {
         // projectName is null if user has entered invalid name. We will give him a chance to correct it instead of
         // forcing to do the process again.
         while (projectName == null) {
-            projectName = await this.getProjectName(appNameFromPackage);
+            projectName = await this.getProjectName(this._option, appNameFromPackage);
         }
-
         // Length is 0 if user cancelled prompt.
         if (projectName.length === 0) {
             return;

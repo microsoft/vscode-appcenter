@@ -11,6 +11,7 @@ import { Command } from './command';
 import { CustomQuickPickItem, VsCodeUI, IButtonMessageItem } from "../ui/vscodeUI";
 import { LogStrings } from "../resources/logStrings";
 import { Messages } from "../resources/messages";
+import { CreateNewAppOption } from "./general/createNewApp";
 
 export class CreateAppCommand extends Command {
 
@@ -62,13 +63,13 @@ export class CreateAppCommand extends Command {
             let apps: models.AppResponse[];
             apps = await this.client.apps.list();
             exist = apps.some(item => {
-                return (item.name === AppCenterAppBuilder.getiOSAppName(projectName) || item.name === AppCenterAppBuilder.getAndroidAppName(projectName));
+                return (item.name === projectName);
             });
         });
         return exist;
     }
 
-    protected async getProjectName(appNameFromPackage: string = ""): Promise<string | null> {
+    protected async getProjectName(option: CreateNewAppOption, appNameFromPackage: string = ""): Promise<string | null> {
         const projectName = await VsCodeUI.showInput(Strings.PleaseEnterProjectNameHint, appNameFromPackage);
         if (projectName.length === 0) {
             VsCodeUI.ShowWarningMessage(Messages.ProjectNameIsNotValidWarning);
@@ -83,10 +84,17 @@ export class CreateAppCommand extends Command {
             VsCodeUI.ShowErrorMessage(Messages.ProjectNameIsNotValidWarning);
             return null;
         }
-
-        if (await this.appAlreadyExistInAppCenter(projectName)) {
-            VsCodeUI.ShowWarningMessage(Messages.AppAlreadyExistInAppCenterWarning);
-            return null;
+        if (option === CreateNewAppOption.Android || option === CreateNewAppOption.Both) {
+            if (await this.appAlreadyExistInAppCenter(AppCenterAppBuilder.getAndroidAppName(projectName))) {
+                VsCodeUI.ShowErrorMessage(Messages.AppAlreadyExistInAppCenterWarning);
+                return null;
+            }
+        }
+        if (option === CreateNewAppOption.IOS || option === CreateNewAppOption.Both) {
+            if (await this.appAlreadyExistInAppCenter(AppCenterAppBuilder.getiOSAppName(projectName))) {
+                VsCodeUI.ShowErrorMessage(Messages.AppAlreadyExistInAppCenterWarning);
+                return null;
+            }
         }
         return projectName;
     }
