@@ -14,7 +14,7 @@ import { Profile } from "../../helpers/interfaces";
 
 export interface AppCenterClientFactory {
   fromUserNameAndPassword(userName: string, password: string, endpoint: string): AppCenterClient;
-  fromToken(token: string | Promise<string> | {(): Promise<string>}, endpoint: string): AppCenterClient;
+  fromToken(token: string | Promise<string> | (() => Promise<string>), endpoint: string): AppCenterClient;
   fromProfile(user: Profile, endpoint: string): AppCenterClient | null;
 }
 
@@ -31,8 +31,8 @@ export function createAppCenterClient(): AppCenterClientFactory {
       return new AppCenterClient(new BasicAuthenticationCredentials(userName, password), endpoint, createClientOptions());
     },
 
-    fromToken(token: string | Promise<string> | {(): Promise<string>}, endpoint: string): AppCenterClient {
-      let tokenFunc: {(): Promise<string>};
+    fromToken(token: string | Promise<string> | (() => Promise<string>), endpoint: string): AppCenterClient {
+      let tokenFunc: () => Promise<string>;
 
       if (typeof token === "string") {
         tokenFunc = () => Promise.resolve(token as string);
