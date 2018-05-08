@@ -36,6 +36,7 @@ export default class FsProfileStorage<T extends Profile> implements ProfileStora
             this.profiles = JSON.parse(data);
         } catch (e) {
             this.logger.info(LogStrings.FailedToParseStorage(this.storageFilePath) + (e && e.message) || "");
+            FSUtils.removeFile(this.storageFilePath);
             return;
         }
 
@@ -43,10 +44,35 @@ export default class FsProfileStorage<T extends Profile> implements ProfileStora
         const activeProfiles: T[] = this.profiles.filter(profile => profile.isActive);
 
         if (activeProfiles.length > 1) {
-            throw new Error(LogStrings.MultipleActiveProfiles(this.storageFilePath));
+            this.logger.error(LogStrings.MultipleActiveProfiles(this.storageFilePath));
         } else if (activeProfiles.length === 1) {
             this.indexOfActiveProfile = this.profiles.indexOf(activeProfiles[0]);
         }
+    }
+
+    public async tryFixStorage(): Promise<boolean> {
+        if (this.profiles.length === 0) {
+            return false;
+        }
+        const activeProfiles: T[] = this.profiles.filter(profile => profile.isActive);
+
+        if (activeProfiles.length > 1) {
+            for (const activeProfile of activeProfiles) {
+                const indexInArray: number = this.profiles.indexOf(activeProfile);
+                this.profiles[indexInArray].isActive = false;
+            }
+            const indexInArray: number = this.profiles.indexOf(activeProfiles[0]);
+            this.profiles[indexInArray].isActive = true;
+            this.indexOfActiveProfile = indexInArray;
+            this.saveProfiles();
+        } else if (activeProfiles.length === 1) {
+            this.indexOfActiveProfile = this.profiles.indexOf(activeProfiles[0]);
+        } else {
+            this.profiles[0].isActive = true;
+            this.indexOfActiveProfile = 0;
+            this.saveProfiles();
+        }
+        return true;
     }
 
     private async saveProfiles(): Promise<void> {

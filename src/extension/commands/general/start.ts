@@ -57,7 +57,7 @@ export default class Start extends CreateAppCommand {
         // For empty git directory (either created with git clone or git init) we just need to be sure that remoteUrl is valid
         if (!await GitUtils.IsGitRepo(this.logger, this.rootPath)) {
 
-            let vstsProfile: VstsProfile | null = this.vstsAuth.activeProfile;
+            let vstsProfile: VstsProfile | null = await this.vstsAuth.activeProfile;
             let loggedIn: boolean | void;
             if (!vstsProfile) {
                 loggedIn = await new LoginToVsts(
@@ -70,7 +70,7 @@ export default class Start extends CreateAppCommand {
             } else {
                 loggedIn = true;
             }
-            vstsProfile = this.vstsAuth.activeProfile;
+            vstsProfile = await this.vstsAuth.activeProfile;
             if (!vstsProfile || !loggedIn) {
                 this.logger.error(LogStrings.FailedToGetVSTSProfile);
                 return;

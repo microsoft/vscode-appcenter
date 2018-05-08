@@ -43,6 +43,17 @@ export class FSUtils {
         });
     }
 
+    public static removeFile(fileName: string): Promise<void> {
+        return new Promise((resolve, reject) => {
+            fs.unlink(fileName, (err) => {
+                if (err) {
+                    reject(err);
+                }
+                resolve();
+            });
+        });
+    }
+
     public static writeFile(fileName: string, data: string): Promise<void> {
         return new Promise((resolve, reject) => {
             fs.writeFile(fileName, data, "utf8", (err) => {

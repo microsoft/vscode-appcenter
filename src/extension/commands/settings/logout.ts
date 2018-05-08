@@ -54,7 +54,7 @@ export default class Logout extends Command {
         try {
             await this.appCenterAuth.doLogout(profile.userId);
             VsCodeUI.ShowInfoMessage(Messages.UserLoggedOutMessage(AuthProvider.AppCenter, profile.userName));
-            await this.manager.setupAppCenterStatusBar(this.appCenterAuth.activeProfile);
+            await this.manager.setupAppCenterStatusBar(await this.appCenterAuth.activeProfile);
             return true;
         } catch (e) {
             this.handleError(e);

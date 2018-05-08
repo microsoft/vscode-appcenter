@@ -19,7 +19,7 @@ export async function activate(context: vscode.ExtensionContext) {
 
     await _extensionManager.Initialize(rootPath, outputChannelLogger, appCenterAuth, vstsAuth);
     await _extensionManager.checkCurrentApps(appCenterAuth);
-    _extensionManager.setupAppCenterStatusBar(appCenterAuth.activeProfile);
+    _extensionManager.setupAppCenterStatusBar(await appCenterAuth.activeProfile);
 
     // Register the ext manager for disposal
     context.subscriptions.push(_extensionManager);
