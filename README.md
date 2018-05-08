@@ -19,6 +19,14 @@ There are several possible scenarios this extension solves:
     * Login to App Center using the status bar icon.
 
         ![Login to App Center](images/appcenter-login.png)
+    * Login to Visual Studio Team Services using the status bar icon.
+
+        ![Settings](images/appcenter-settings.png)
+
+        ![Add VSTS account](images/appcenter-add-vsts-account.png)
+
+        If you don't already have a personal access token to access your VSTS account you can go [here](https://docs.microsoft.com/en-us/vsts/accounts/use-personal-access-tokens-to-authenticate?view=vsts) to learn how to create one.
+
     * After logging in, click the App Center status bar to show possible menu options and shoose `Start a new project`.
 
         ![AppCenter Menu](images/appcenter-start-new-idea.png)
@@ -129,7 +137,7 @@ Here is the list of common known issues you may experience while using the exten
 
 | Issue         | Description |
 | ------------- |-------------|
-| You received error '`failed to push to remote ... Device not configured`' when starting new idea and pushing to remote repo      | Install [Git Credential Manager](https://docs.microsoft.com/en-us/vsts/git/set-up-credential-managers?view=vsts#install-the-git-credential-manager) and try again |
+| You received error '`failed to push to remote ... Device not configured`' when starting new project and pushing to remote repo      | Install [Git Credential Manager](https://docs.microsoft.com/en-us/vsts/git/set-up-credential-managers?view=vsts#install-the-git-credential-manager) and try again |
 | You received error '`CocoaPods was not able to update the master repo`' when running '`pod repo update`' while linking App Center| Delete and recreate your specs for repo by running `pod repo remove master` and `pod setup` commands
                         
 

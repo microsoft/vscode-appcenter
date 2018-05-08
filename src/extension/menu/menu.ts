@@ -1,12 +1,11 @@
-import * as vscode from "vscode";
 import { models } from "../../api/appcenter";
 import { CommandParams, CurrentApp, MenuQuickPickItem, Profile, UserOrOrganizationItem } from "../../helpers/interfaces";
 import { FSUtils } from "../../helpers/utils/fsUtils";
 import { Utils } from "../../helpers/utils/utils";
-import { CustomQuickPickItem } from "../../helpers/utils/vsCodeUtils";
 import { ILogger } from "../log/logHelper";
 import { AppCenterBeacons, AppCenterCrashesTabs, AppCenterDistributionTabs, CommandNames } from "../resources/constants";
-import { Strings } from "../resources/strings";
+import { CustomQuickPickItem, VsCodeUI } from "../ui/vscodeUI";
+import { MenuStrings } from "../resources/menuStrings";
 
 export abstract class Menu {
     protected rootPath: string;
@@ -18,7 +17,7 @@ export abstract class Menu {
     }
 
     protected isEmptyDir(): boolean {
-        return FSUtils.IsEmptyDirectoryToStartNewIdea(this.rootPath);
+        return FSUtils.IsEmptyDirectoryToStartNewProject(this.rootPath);
     }
 
     protected isRNproject(): boolean {
@@ -29,17 +28,15 @@ export abstract class Menu {
         return Utils.isReactNativeCodePushProject(this.logger, this.rootPath, false);
     }
 
-    public show(): Thenable<void> {
+    public async show(): Promise<void> {
         const menuItems: MenuQuickPickItem[] = this.getMenuItems();
 
-        return vscode.window.showQuickPick(menuItems, { placeHolder: Strings.MenuTitlePlaceholder })
-            .then(async (selected: MenuQuickPickItem) => {
-                if (!selected) {
-                    return;
-                }
+        const selected: MenuQuickPickItem = await VsCodeUI.showQuickPick(menuItems);
+        if (!selected) {
+            return;
+        }
 
-                return this.handleMenuSelection(selected);
-            });
+        return this.handleMenuSelection(selected);
     }
 
     protected abstract getMenuItems(): MenuQuickPickItem[];
@@ -48,136 +45,136 @@ export abstract class Menu {
 
 export class MenuItems {
     public static Login: MenuQuickPickItem = {
-        label: Strings.LoginMenuLabel,
-        description: Strings.LoginMenuDescription,
+        label: MenuStrings.LoginMenuLabel,
+        description: MenuStrings.LoginMenuDescription,
         command: CommandNames.Login
     };
 
-    public static StartAnIdea: MenuQuickPickItem = {
-        label: Strings.StartAnIdeaMenuLabel,
-        description: Strings.StartAnIdeaMenuDescription,
+    public static StartAProject: MenuQuickPickItem = {
+        label: MenuStrings.StartAProjectMenuLabel,
+        description: MenuStrings.StartAProjectMenuDescription,
         command: CommandNames.Start
     };
 
     public static CodePushTab: MenuQuickPickItem = {
-        label: Strings.CodePushMenuLabelItem,
-        description: Strings.CodePushMenuLabelDescription,
+        label: MenuStrings.CodePushMenuLabel,
+        description: MenuStrings.CodePushMenuLabelDescription,
         command: AppCenterBeacons.CodePush
     };
 
     public static SimulateCrashes: MenuQuickPickItem = {
-        label: Strings.SimulateCrashesMenuLabel,
-        description: Strings.SimulateCrashesMenuDescription,
+        label: MenuStrings.SimulateCrashesMenuLabel,
+        description: MenuStrings.SimulateCrashesMenuDescription,
         command: AppCenterCrashesTabs.Simulate
     };
 
     public static AppCenterPortal: MenuQuickPickItem = {
-        label: Strings.AppCenterPortalMenuLabel,
-        description: Strings.AppCenterPortalMenuDescription,
+        label: MenuStrings.AppCenterPortalMenuLabel,
+        description: MenuStrings.AppCenterPortalMenuDescription,
         command: CommandNames.AppCenterPortal
     };
 
     public static SetCurrentApp(currentApp: CurrentApp): MenuQuickPickItem {
         return {
-            label: Strings.setCurrentAppMenuText(currentApp),
-            description: Strings.MenuCurrentAppDescription,
+            label: MenuStrings.setCurrentAppMenuLabel(currentApp),
+            description: MenuStrings.CurrentAppMenuDescription,
             command: CommandNames.SetCurrentApp
         };
     }
 
     public static InstallSDK: MenuQuickPickItem = {
-        label: Strings.InstallSDKMenuLabel,
-        description: Strings.InstallSDKMenuDescription,
+        label: MenuStrings.InstallSDKMenuLabel,
+        description: MenuStrings.InstallSDKMenuDescription,
         command: CommandNames.InstallSDK
     };
 
     public static Settings: MenuQuickPickItem = {
-        label: Strings.SettingsMenuLabel,
-        description: Strings.SettingsMenuDescription,
+        label: MenuStrings.SettingsMenuLabel,
+        description: MenuStrings.SettingsMenuDescription,
         command: CommandNames.Settings.ShowMenu
     };
 
     public static TestTab: MenuQuickPickItem = {
-        label: Strings.TestTabMenuItem,
-        description: Strings.OpenTabInBrowserMsg(Strings.TestTabMenuItem),
+        label: MenuStrings.TestTabMenuLabel,
+        description: MenuStrings.OpenTabInBrowserMenuDescription(MenuStrings.TestTabMenuLabel),
         command: AppCenterBeacons.Test
     };
 
     public static BuildTab: MenuQuickPickItem = {
-        label: Strings.BuildTabMenuItem,
-        description: Strings.OpenTabInBrowserMsg(Strings.BuildTabMenuItem),
+        label: MenuStrings.BuildTabMenuLabel,
+        description: MenuStrings.OpenTabInBrowserMenuDescription(MenuStrings.BuildTabMenuLabel),
         command: AppCenterBeacons.Build
     };
 
     public static DistributeTab: MenuQuickPickItem = {
-        label: Strings.DistributeTabMenuItem,
-        description: Strings.OpenTabInBrowserMsg(Strings.DistributeTabMenuItem),
+        label: MenuStrings.DistributeTabMenuLabel,
+        description: MenuStrings.OpenTabInBrowserMenuDescription(MenuStrings.DistributeTabMenuLabel),
         command: AppCenterBeacons.Distribute
     };
 
     public static CrashesTab: MenuQuickPickItem = {
-        label: Strings.CrashesTabMenuItem,
-        description: Strings.OpenTabInBrowserMsg(Strings.CrashesTabMenuItem),
+        label: MenuStrings.CrashesTabMenuLabel,
+        description: MenuStrings.OpenTabInBrowserMenuDescription(MenuStrings.CrashesTabMenuLabel),
         command: AppCenterBeacons.Crashes
     };
 
     public static AnalyticsTab: MenuQuickPickItem = {
-        label: Strings.AnalyticsTabMenuItem,
-        description: Strings.OpenTabInBrowserMsg(Strings.AnalyticsTabMenuItem),
+        label: MenuStrings.AnalyticsTabMenuLabel,
+        description: MenuStrings.OpenTabInBrowserMenuDescription(MenuStrings.AnalyticsTabMenuLabel),
         command: AppCenterBeacons.Analytics
     };
 
     public static DistributeGroupsTab: MenuQuickPickItem = {
-        label: Strings.DistributeGroupsTabMenuItem,
-        description: Strings.OpenTabInBrowserMsg(Strings.DistributeGroupsTabMenuItem),
+        label: MenuStrings.DistributeGroupsTabMenuLabel,
+        description: MenuStrings.OpenTabInBrowserMenuDescription(MenuStrings.DistributeGroupsTabMenuLabel),
         command: AppCenterDistributionTabs.Groups
     };
 
     public static DistributeStoresTab: MenuQuickPickItem = {
-        label: Strings.DistributeStoresTabMenuItem,
-        description: Strings.OpenTabInBrowserMsg(Strings.DistributeStoresTabMenuItem),
+        label: MenuStrings.DistributeStoresTabMenuLabel,
+        description: MenuStrings.OpenTabInBrowserMenuDescription(MenuStrings.DistributeStoresTabMenuLabel),
         command: AppCenterDistributionTabs.Stores
     };
 
     public static DistributeReleasesTab: MenuQuickPickItem = {
-        label: Strings.DistributeReleasesTabMenuItem,
-        description: Strings.OpenTabInBrowserMsg(Strings.DistributeReleasesTabMenuItem),
+        label: MenuStrings.DistributeReleasesTabMenuLabel,
+        description: MenuStrings.OpenTabInBrowserMenuDescription(MenuStrings.DistributeReleasesTabMenuLabel),
         command: AppCenterDistributionTabs.Releases
     };
 
     public static RunUITests: MenuQuickPickItem = {
-        label: Strings.RunUITestsMenuLabel,
+        label: MenuStrings.RunUITestsMenuLabel,
         description: "",
         command: CommandNames.Test.RunUITests
     };
 
     public static RunUITestsAsync: MenuQuickPickItem = {
-        label: Strings.RunUITestsAsyncMenuLabel,
+        label: MenuStrings.RunUITestsAsyncMenuLabel,
         description: "",
         command: CommandNames.Test.RunUITestsAsync
     };
 
     public static ViewTestResults: MenuQuickPickItem = {
-        label: Strings.ViewUITestResultOnPortalenuLabel,
+        label: MenuStrings.ViewUITestResultOnPortalMenuLabel,
         description: "",
         command: CommandNames.Test.ViewResults
     };
 
     public static LinkCodePush: MenuQuickPickItem = {
-        label: Strings.LinkCodePushMenuLabel,
-        description: Strings.LinkCodePushMenuDescription,
+        label: MenuStrings.LinkCodePushMenuLabel,
+        description: MenuStrings.LinkCodePushMenuDescription,
         command: CommandNames.CodePush.LinkCodePush
     };
 
     public static OpenCodePush: MenuQuickPickItem = {
-        label: Strings.DistributeCodePushTabMenuItem,
-        description: Strings.OpenTabInBrowserMsg(Strings.DistributeCodePushTabMenuItem),
+        label: MenuStrings.DistributeCodePushTabMenuLabel,
+        description: MenuStrings.OpenTabInBrowserMenuDescription(MenuStrings.DistributeCodePushTabMenuLabel),
         command: AppCenterDistributionTabs.CodePush
     };
 
     public static ReleaseReact(currentApp: CurrentApp): MenuQuickPickItem {
         return {
-            label: Strings.releaseReactMenuText(currentApp),
+            label: MenuStrings.releaseReactMenuLabel(currentApp),
             description: "",
             command: CommandNames.CodePush.ReleaseReact
         };
@@ -185,7 +182,7 @@ export class MenuItems {
 
     public static SetCurrentDeployment(currentApp: CurrentApp): MenuQuickPickItem {
         return {
-            label: Strings.setCurrentAppDeploymentText(currentApp),
+            label: MenuStrings.setCurrentAppDeploymentMenuLabel(currentApp),
             description: "",
             command: CommandNames.CodePush.SetCurrentDeployment
         };
@@ -193,7 +190,7 @@ export class MenuItems {
 
     public static SetTargetBinaryVersion(currentApp: CurrentApp): MenuQuickPickItem {
         return {
-            label: Strings.setCurrentAppTargetBinaryVersionText(currentApp),
+            label: MenuStrings.setCurrentAppTargetBinaryVersionMenuLabel(currentApp),
             description: "",
             command: CommandNames.CodePush.SetTargetBinaryVersion
         };
@@ -201,39 +198,39 @@ export class MenuItems {
 
     public static SwitchMandatory(currentApp: CurrentApp): MenuQuickPickItem {
         return {
-            label: Strings.setCurrentAppIsMandatoryText(currentApp),
+            label: MenuStrings.setCurrentAppIsMandatoryMenuLabel(currentApp),
             description: "",
             command: CommandNames.CodePush.SwitchMandatoryPropForRelease
         };
     }
 
     public static SwitchAccount: MenuQuickPickItem = {
-        label: Strings.SwitchAccountMenuLabel,
-        description: Strings.SwitchAccountMenuDescription,
+        label: MenuStrings.SwitchAccountMenuLabel,
+        description: MenuStrings.SwitchAccountMenuDescription,
         command: CommandNames.Settings.SwitchAccount
     };
 
     public static LoginToAnother: MenuQuickPickItem = {
-        label: Strings.LoginToAnotherAccountMenuLabel,
-        description: Strings.LoginToAnotherAccountMenuDescription,
+        label: MenuStrings.LoginToAnotherAccountMenuLabel,
+        description: MenuStrings.LoginToAnotherAccountMenuDescription,
         command: CommandNames.Settings.LoginToAnotherAccount
     };
 
     public static SwitchVstsAccount: MenuQuickPickItem = {
-        label: Strings.VstsSwitchAccountMenuLabel,
-        description: Strings.VstsSwitchAccountMenuDescription,
+        label: MenuStrings.VstsSwitchAccountMenuLabel,
+        description: MenuStrings.VstsSwitchAccountMenuDescription,
         command: CommandNames.Settings.SwitchAccountVsts
     };
 
     public static LoginToAnotherVsts: MenuQuickPickItem = {
-        label: Strings.VstsLoginToAnotherAccountMenuLabel,
-        description: Strings.VstsLoginToAnotherAccountMenuDescription,
+        label: MenuStrings.VstsLoginToAnotherAccountMenuLabel,
+        description: MenuStrings.VstsLoginToAnotherAccountMenuDescription,
         command: CommandNames.Settings.LoginVsts
     };
 
     public static HideStatusBar: MenuQuickPickItem = {
-        label: Strings.HideStatusBarMenuLabel,
-        description: Strings.HideStatusBarMenuDescription,
+        label: MenuStrings.HideStatusBarMenuLabel,
+        description: MenuStrings.HideStatusBarMenuDescription,
         command: CommandNames.Settings.HideStatusBar
     };
 }
@@ -245,7 +242,7 @@ export function getSelectedUserOrOrgItem(selected: CustomQuickPickItem, allItems
         userOrOrgItem = {
             name: selectedUserOrOrgs[0].target,
             displayName: selectedUserOrOrgs[0].label,
-            isOrganization: selectedUserOrOrgs[0].description !== Strings.UserMenuDescriptionLabel
+            isOrganization: selectedUserOrOrgs[0].description !== MenuStrings.UserMenuDescription
         };
         return userOrOrgItem;
     } else {
@@ -253,20 +250,20 @@ export function getSelectedUserOrOrgItem(selected: CustomQuickPickItem, allItems
     }
 }
 
-export function getCreateAppOptions(): vscode.QuickPickItem[] {
-    const createAppOptions: vscode.QuickPickItem[] = [];
-    createAppOptions.push(<vscode.QuickPickItem>{
-        label: Strings.CreateNewAndroidAppMenuLabel,
+export function getCreateAppOptions(): CustomQuickPickItem[] {
+    const createAppOptions: CustomQuickPickItem[] = [];
+    createAppOptions.push(<CustomQuickPickItem>{
+        label: MenuStrings.CreateNewAndroidAppMenuLabel,
         description: "",
         target: CommandNames.CreateApp.Android
     });
-    createAppOptions.push(<vscode.QuickPickItem>{
-        label: Strings.CreateNewIOSAppMenuLabel,
+    createAppOptions.push(<CustomQuickPickItem>{
+        label: MenuStrings.CreateNewIOSAppMenuLabel,
         description: "",
         target: CommandNames.CreateApp.IOS
     });
-    createAppOptions.push(<vscode.QuickPickItem>{
-        label: Strings.CreateNewAppsForBothMenuLabel,
+    createAppOptions.push(<CustomQuickPickItem>{
+        label: MenuStrings.CreateNewAppsForBothMenuLabel,
         description: "",
         target: CommandNames.CreateApp.Both
     });
@@ -287,7 +284,7 @@ export function getQuickPickItemsForOrgList(orgList: models.ListOKResponseItem[]
     const options: CustomQuickPickItem[] = orgList.map(item => {
         return {
             label: `${item.displayName} (${item.name})`,
-            description: Strings.OrganizationMenuDescriptionLabel,
+            description: MenuStrings.OrganizationMenuDescription,
             target: item.name
         };
     });
@@ -295,7 +292,7 @@ export function getQuickPickItemsForOrgList(orgList: models.ListOKResponseItem[]
         // Insert user at the very 1st position
         options.splice(0, 0, {
             label: `${myself.displayName}`,
-            description: Strings.UserMenuDescriptionLabel,
+            description: MenuStrings.UserMenuDescription,
             target: myself.userName
         });
     }

@@ -19,7 +19,7 @@ export default class AppCenterPortal extends ReactNativeAppCommand {
 
     protected async handleShowCurrentAppQuickPickSelection(selected: QuickPickAppItem, rnApps: models.AppResponse[]) {
         if (selected.target === CommandNames.CreateApp.CommandName) {
-            return this.showCreateAppOptions();
+            return await this.showCreateAppOptions();
         } else {
 
             let selectedApp: models.AppResponse;
@@ -49,7 +49,7 @@ export default class AppCenterPortal extends ReactNativeAppCommand {
                     appName = currentApp.appName;
                     ownerName = currentApp.ownerName;
                 } else {
-                    this.logger.error("Current app is undefiend");
+                    this.logger.error("Current app is undefined");
                     throw new Error("Current app is undefined");
                 }
             }

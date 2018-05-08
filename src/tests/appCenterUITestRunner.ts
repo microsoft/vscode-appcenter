@@ -1,5 +1,4 @@
 import * as path from "path";
-import * as vscode from "vscode";
 import { AppCenterClient, models } from "../api/appcenter";
 import { DeviceConfiguration } from "../api/appcenter/generated/models";
 import Auth from "../auth/auth";
@@ -11,8 +10,10 @@ import { CurrentApp, Profile } from "../helpers/interfaces";
 import { cpUtils } from "../helpers/utils/cpUtils";
 import { FSUtils } from "../helpers/utils/fsUtils";
 import { Utils } from "../helpers/utils/utils";
-import { BaseQuickPickItem, VsCodeUtils } from "../helpers/utils/vsCodeUtils";
 import { DeviceConfigurationSort } from "./deviceConfigurationSort";
+import { VsCodeUI, BaseQuickPickItem } from "../extension/ui/vscodeUI";
+import { Messages } from "../extension/resources/messages";
+import { MenuStrings } from "../extension/resources/menuStrings";
 const rimraf = FSUtils.rimraf;
 
 export interface TestRunnerOptions {
@@ -42,19 +43,18 @@ export default abstract class AppCenterUITestRunner {
     }
 
     public async runUITests(async: boolean): Promise<boolean> {
-
-        return vscode.window.withProgress({ location: vscode.ProgressLocation.Window, title: Strings.VSCodeProgressLoadingTitle }, async p => {
-            p.report({ message: Strings.CheckingAppCenterCli });
+        return await VsCodeUI.showProgress<boolean>(async progress => {
+            progress.report({ message: Messages.CheckingAppCenterCliProgressMessage });
             if (!await Utils.packageInstalledGlobally("appcenter-cli")) {
-                VsCodeUtils.ShowErrorMessage(Strings.packageIsNotInstalledGlobally("appcenter-cli"));
+                VsCodeUI.ShowWarningMessage(Messages.packageIsNotInstalledGloballyWarning("appcenter-cli"));
                 return false;
             }
 
-            p.report({ message: Strings.FetchingDevicesStatusBarMessage });
+            progress.report({ message: Messages.FetchingDevicesProgressMessage });
             const devices: TestQuickPickItem[] = await this.getDevicesList(this.options.app);
             const deviceSets: TestQuickPickItem[] = await this.getDeviceSetsList(this.options.app);
             devices.unshift(...deviceSets);
-            const selectedDevice: TestQuickPickItem = await vscode.window.showQuickPick(devices, { placeHolder: Strings.SelectTestDeviceTitlePlaceholder(this.options.app.appName) });
+            const selectedDevice: TestQuickPickItem = await VsCodeUI.showQuickPick(devices, Strings.SelectTestDeviceTitleHint(this.options.app.appName));
             if (!selectedDevice) {
                 return false;
             }
@@ -66,22 +66,22 @@ export default abstract class AppCenterUITestRunner {
                 shortDeviceId = `${this.options.app.ownerName}/${selectedDevice.slug}`;
             }
 
-            p.report({ message: Strings.CleaningBuildStatusBarMessage });
+            progress.report({ message: Messages.CleaningBuildProgressMessage });
             await rimraf(this.getAbsoluteBuildDirectoryPath());
 
             if (this.options.app.os.toLowerCase() === AppCenterOS.Android.toLowerCase()) {
-                p.report({ message: Strings.MakingBundleStatusBarMessage });
+                progress.report({ message: Messages.MakingBundleProgressMessage });
                 if (!await this.makeBundle()) {
                     return false;
                 }
             }
 
-            p.report({ message: Strings.PreparingBuildStatusBarMessage });
+            progress.report({ message: Messages.PreparingBuildProgressMessage });
             if (!await this.buildAppForTest()) {
                 return false;
             }
 
-            p.report({ message: Strings.UploadingAndRunningTestsStatusBarMessage });
+            progress.report({ message: Messages.UploadingAndRunningTestsProgressMessage });
             const args = [
                 "test",
                 "run",
@@ -142,7 +142,7 @@ export default abstract class AppCenterUITestRunner {
         configs = configs.sort(this.sortDeviceSets);
         return configs.map((config: models.DeviceSet) => <TestQuickPickItem>{
             label: `${config.name}`,
-            description: Strings.DeviceSetsDescription(config.owner.type),
+            description: MenuStrings.DeviceSetsDescription(config.owner.type),
             id: config.id,
             type: TestDeviceType.DeviceSet,
             slug: config.slug

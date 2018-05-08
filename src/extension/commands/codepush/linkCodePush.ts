@@ -1,10 +1,11 @@
 import AppCenterAppCreator from '../../../createApp/appCenterAppCreator';
 import { Deployment } from '../../../helpers/interfaces';
 import { Utils } from '../../../helpers/utils/utils';
-import { VsCodeUtils } from '../../../helpers/utils/vsCodeUtils';
 import CodePushLinker from '../../../link/codePushLinker';
 import { Strings } from '../../resources/strings';
 import { LinkCommand } from '../linkCommand';
+import { VsCodeUI } from '../../ui/vscodeUI';
+import { Messages } from '../../resources/messages';
 
 export default class LinkCodePush extends LinkCommand {
     public async run(): Promise<void> {
@@ -13,13 +14,13 @@ export default class LinkCodePush extends LinkCommand {
         }
 
         if (!Utils.isReactNativeProject(this.logger, this.rootPath, false)) {
-            VsCodeUtils.ShowWarningMessage(Strings.NotReactProjectMsg);
+            VsCodeUI.ShowWarningMessage(Messages.NotReactProjectWarning);
             return;
         }
         if (this.CachedAllApps) {
-            this.showAppsQuickPick(this.CachedAllApps, false, true, false, Strings.ProvideSecondAppPromptMsg);
+            this.showAppsQuickPick(this.CachedAllApps, false, true, false, Strings.ProvideSecondAppHint);
         } else {
-            this.refreshCachedAppsAndRepaintQuickPickIfNeeded(true, false, false, Strings.ProvideFirstAppPromptMsg);
+            this.refreshCachedAppsAndRepaintQuickPickIfNeeded(true, false, false, Strings.ProvideFirstAppHint);
         }
     }
 
@@ -30,7 +31,7 @@ export default class LinkCodePush extends LinkCommand {
         if (!Utils.isReactNativeCodePushProject(this.logger, this.rootPath, false)) {
             const codePushInstalled: boolean = await codePushLinker.installCodePush();
             if (!codePushInstalled) {
-                VsCodeUtils.ShowErrorMessage(Strings.FailedToLinkCodePush);
+                VsCodeUI.ShowErrorMessage(Messages.FailedToLinkCodePush);
                 return false;
             }
         }
@@ -40,16 +41,16 @@ export default class LinkCodePush extends LinkCommand {
         deployments = await codePushLinker.createCodePushDeployments(this.pickedApps, this.pickedApps[0].ownerName);
 
         if (deployments.length < 1) {
-            VsCodeUtils.ShowErrorMessage(Strings.FailedToLinkCodePush);
+            VsCodeUI.ShowErrorMessage(Messages.FailedToLinkCodePush);
             return false;
         }
 
         const linked = await codePushLinker.linkCodePush(deployments);
         if (!linked) {
-            VsCodeUtils.ShowErrorMessage(Strings.FailedToLinkCodePush);
+            VsCodeUI.ShowErrorMessage(Messages.FailedToLinkCodePush);
             return false;
         }
-        VsCodeUtils.ShowInfoMessage(Strings.CodePushLinkedMsg);
+        VsCodeUI.ShowInfoMessage(Messages.CodePushLinkedMessage);
         return true;
     }
 }

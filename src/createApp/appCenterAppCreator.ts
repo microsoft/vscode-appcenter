@@ -5,7 +5,9 @@ import { Strings } from "../extension/resources/strings";
 import { AppCenterUrlBuilder } from "../helpers/appCenterUrlBuilder";
 import { CreatedAppFromAppCenter } from "../helpers/interfaces";
 import { SettingsHelper } from "../helpers/settingsHelper";
-import { IButtonMessageItem, VsCodeUtils } from "../helpers/utils/vsCodeUtils";
+import { VsCodeUI, IButtonMessageItem } from "../extension/ui/vscodeUI";
+import { Messages } from "../extension/resources/messages";
+import { LogStrings } from "../extension/resources/logStrings";
 
 export default class AppCenterAppCreator {
     protected platform: AppCenterPlatform = AppCenterPlatform.ReactNative;
@@ -29,16 +31,16 @@ export default class AppCenterAppCreator {
         } catch (error) {
             const configureBuildLink: string = AppCenterUrlBuilder.GetPortalBuildConfigureLink(ownerName, appName, branchName, isOrg);
             if (error.statusCode === 400) {
-                this.logger.error(`An error occurred while configuring your ${appName}" app for build`);
+                this.logger.error(LogStrings.BuildConfigureError(appName));
             } else {
-                this.logger.error(`An unexpected error occurred while queueing a build for "${appName}"`);
+                this.logger.error(LogStrings.BuildQueueError(appName));
             }
             const messageItems: IButtonMessageItem[] = [];
             messageItems.push({
                 title: Strings.BuildManualConfigureBtnLabel,
                 url: configureBuildLink
             });
-            VsCodeUtils.ShowInfoMessage(Strings.BuildManualConfigureMessage(appName), ...messageItems);
+            VsCodeUI.ShowInfoMessage(Messages.BuildManualConfigureMessage(appName), ...messageItems);
             return false;
         }
         return true;
@@ -50,14 +52,14 @@ export default class AppCenterAppCreator {
             return true;
         } catch (err) {
             const connectRepoLink: string = AppCenterUrlBuilder.GetPortalConnectRepoLink(ownerName, appName, isOrg);
-            this.logger.error(`Could not connect your new repository "${repoUrl}" to your "${appName}" App Center project`);
+            this.logger.error(LogStrings.BuildConnectError(appName, repoUrl));
 
             const messageItems: IButtonMessageItem[] = [];
             messageItems.push({
                 title: Strings.RepoManualConnectBtnLabel,
                 url: connectRepoLink
             });
-            VsCodeUtils.ShowInfoMessage(Strings.RepoManualConnectMessage(appName), ...messageItems);
+            VsCodeUI.ShowInfoMessage(Messages.RepoManualConnectMessage(appName), ...messageItems);
             return false;
         }
     }
@@ -67,9 +69,9 @@ export default class AppCenterAppCreator {
             await this.client.distributionGroups.create(ownerName, appName, SettingsHelper.distribitionGroupTestersName());
         } catch (error) {
             if (error === 409) {
-                this.logger.error(`Distribution group "${SettingsHelper.distribitionGroupTestersName()}" in "${appName}" already exists`);
+                this.logger.error(LogStrings.DistributionGroupExists(SettingsHelper.distribitionGroupTestersName(), appName));
             } else {
-                this.logger.error(`An unexpected error occurred while creating a distribution group for "${appName}". ${error}`);
+                this.logger.error(`${LogStrings.ErrorCreatingDistributionGroup(appName)} ${error}`);
             }
             return false;
         }
@@ -92,9 +94,9 @@ export default class AppCenterAppCreator {
             };
         } catch (err) {
             if (err.statusCode === 409) {
-                this.logger.error(`The app named "${appName}" already exists`);
+                this.logger.error(LogStrings.AppNameExists(appName));
             } else {
-                this.logger.error(`An unexpected error occurred trying to create "${appName}" under "${orgName}". ${(err && err.message) || ""}`);
+                this.logger.error(`${LogStrings.FailedCreateAppUnder(appName, orgName)} ${(err && err.message) || ""}`);
             }
             return false;
         }
@@ -116,9 +118,9 @@ export default class AppCenterAppCreator {
             };
         } catch (err) {
             if (err.statusCode === 409) {
-                this.logger.error(`The app named "${appName}" already exists`);
+                this.logger.error(LogStrings.AppNameExists(appName));
             } else {
-                this.logger.error(`An unexpected error occurred trying to create "${appName}". ${(err && err.message) || ""}`);
+                this.logger.error(`${LogStrings.FailedCreateAppUnder(appName)} ${(err && err.message) || ""}`);
             }
             return false;
         }
@@ -130,15 +132,15 @@ export default class AppCenterAppCreator {
             return result;
         } catch (err) {
             if (err.statusCode === 409) {
-                this.logger.info(`A CodePush deployment with the name ${appName} already exists, fetching the keys...`);
+                this.logger.info(LogStrings.DeploymentExists(appName));
                 try {
                     const result: models.Deployment = await this.client.codePushDeployments.get(Constants.CodePushStagingDeploymentName, ownerName, appName);
                     return result;
                 } catch (err) {
-                    this.logger.error(`An unexpected error occurred trying to create CodePush deployments for ${appName}. ${err && err.message || ""}`);
+                    this.logger.error(`${LogStrings.ErrorCreatingDeploymentsFor(appName)} ${err && err.message || ""}`);
                 }
             } else {
-                this.logger.error(`An unexpected error occurred trying to create CodePush deployments for ${appName}. ${err && err.message || ""}`);
+                this.logger.error(`${LogStrings.ErrorCreatingDeploymentsFor(appName)} ${err && err.message || ""}`);
             }
             return null;
         }
