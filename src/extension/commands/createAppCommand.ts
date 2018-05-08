@@ -67,18 +67,11 @@ export class CreateAppCommand extends Command {
         return exist;
     }
 
-    protected async getProjectName(option: CreateNewAppOption, appNameFromPackage: string = ""): Promise<string | null> {
-        const projectName = await VsCodeUI.showInput(Strings.PleaseEnterProjectNameHint, appNameFromPackage);
-        if (projectName.length === 0) {
-            VsCodeUI.ShowWarningMessage(Messages.ProjectNameIsNotValidWarning);
-            return null;
-        }
+    protected async getProjectName(option: CreateNewAppOption, appNameFromPackage: string = "", isNewProject: boolean = true): Promise<string | null> {
+        let projectName = await VsCodeUI.showInput(Strings.PleaseEnterProjectNameHint, appNameFromPackage);
+        projectName = projectName.trim();
 
-        if (!projectName) {
-            return "";
-        }
-
-        if (!Validators.ValidateProjectName(projectName)) {
+        if ((isNewProject && !Validators.ValidateProjectName(projectName)) || !Validators.ValidateAppCenterAppName(projectName)) {
             VsCodeUI.ShowErrorMessage(Messages.ProjectNameIsNotValidWarning);
             return null;
         }
