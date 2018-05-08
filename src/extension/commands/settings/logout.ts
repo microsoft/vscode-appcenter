@@ -1,9 +1,9 @@
-import * as vscode from 'vscode';
 import { CommandParams, Profile, ProfileQuickPickItem } from '../../../helpers/interfaces';
-import { VsCodeUtils } from '../../../helpers/utils/vsCodeUtils';
 import { AuthProvider } from '../../resources/constants';
 import { Strings } from '../../resources/strings';
 import { Command } from '../command';
+import { VsCodeUI } from '../../ui/vscodeUI';
+import { Messages } from '../../resources/messages';
 
 export default class Logout extends Command {
 
@@ -38,21 +38,22 @@ export default class Logout extends Command {
                 profile: profile
             });
         });
-
-        return await vscode.window.showQuickPick(menuOptions, { placeHolder: Strings.SelectProfileTitlePlaceholder })
-            .then((selected: ProfileQuickPickItem) => {
-                if (!selected) {
-                    // User cancel selection
-                    return void 0;
-                }
-                return this.logoutUser(selected.profile);
-            }, this.handleError);
+        try {
+            const selected: ProfileQuickPickItem = await VsCodeUI.showQuickPick(menuOptions, Strings.SelectProfileTitleHint);
+            if (!selected) {
+                // User cancel selection
+                return void 0;
+            }
+            return this.logoutUser(selected.profile);
+        } catch (error) {
+            this.handleError(error);
+        }
     }
 
     private async logoutUser(profile: Profile): Promise<boolean> {
         try {
             await this.appCenterAuth.doLogout(profile.userId);
-            VsCodeUtils.ShowInfoMessage(Strings.UserLoggedOutMsg(AuthProvider.AppCenter, profile.userName));
+            VsCodeUI.ShowInfoMessage(Messages.UserLoggedOutMessage(AuthProvider.AppCenter, profile.userName));
             await this.manager.setupAppCenterStatusBar(this.appCenterAuth.activeProfile);
             return true;
         } catch (e) {
@@ -62,7 +63,7 @@ export default class Logout extends Command {
     }
 
     private handleError(error: Error) {
-        VsCodeUtils.ShowErrorMessage("Error occured during the logout.");
+        VsCodeUI.ShowErrorMessage(Messages.FailedToLogout);
         this.logger.error(error.message, error, true);
     }
 }

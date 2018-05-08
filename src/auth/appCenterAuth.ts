@@ -2,6 +2,7 @@ import { createAppCenterClient } from "../api/appcenter";
 import { AppCenterLoginInfo, AppCenterProfile, CurrentApp } from "../helpers/interfaces";
 import { SettingsHelper } from "../helpers/settingsHelper";
 import Auth from "./auth";
+import { LogStrings } from "../extension/resources/logStrings";
 
 class AppCenterProfileImpl implements AppCenterProfile {
     public userId: string;
@@ -29,7 +30,7 @@ export default class AppCenterAuth extends Auth<AppCenterProfile> {
         const client = createAppCenterClient().fromToken(credentials.token, SettingsHelper.getAppCenterAPIEndpoint());
         const userResponse = await client.users.get();
         if (!userResponse) {
-            throw new Error("Could get profile from appcenter.");
+            throw new Error(LogStrings.FailedToGetAppCenterProfile);
         }
         return new AppCenterProfileImpl(userResponse);
     }

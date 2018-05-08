@@ -1,7 +1,7 @@
 import { SettingsHelper } from '../../../helpers/settingsHelper';
-import { VsCodeUtils } from '../../../helpers/utils/vsCodeUtils';
-import { Strings } from '../../resources/strings';
 import { Command } from '../command';
+import { VsCodeUI } from '../../ui/vscodeUI';
+import { Messages } from '../../resources/messages';
 
 export default class ToggleStatusBar extends Command {
 
@@ -13,11 +13,11 @@ export default class ToggleStatusBar extends Command {
         if (SettingsHelper.shouldStatusBarBeShown()) {
             SettingsHelper.setHideStatusBar();
             this.manager.hideStatusBar();
-            VsCodeUtils.ShowInfoMessage(Strings.StatusBarHidden);
+            VsCodeUI.ShowInfoMessage(Messages.StatusBarHiddenMessage);
         } else {
             SettingsHelper.setShowStatusBar();
             this.manager.showStatusBar();
-            VsCodeUtils.ShowInfoMessage(Strings.StatusBarShown);
+            VsCodeUI.ShowInfoMessage(Messages.StatusBarShownMessage);
         }
     }
 }

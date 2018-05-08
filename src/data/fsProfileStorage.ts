@@ -1,6 +1,7 @@
 import { ILogger } from "../extension/log/logHelper";
 import { Profile, ProfileStorage } from "../helpers/interfaces";
 import { FSUtils } from "../helpers/utils/fsUtils";
+import { LogStrings } from "../extension/resources/logStrings";
 
 export default class FsProfileStorage<T extends Profile> implements ProfileStorage<T> {
     protected profiles: T[];
@@ -34,7 +35,7 @@ export default class FsProfileStorage<T extends Profile> implements ProfileStora
             const data: string = await FSUtils.readFile(this.storageFilePath);
             this.profiles = JSON.parse(data);
         } catch (e) {
-            this.logger.info(`Failed to parse JSON file for ${this.storageFilePath}. ` + (e && e.message) || "");
+            this.logger.info(LogStrings.FailedToParseStorage(this.storageFilePath) + (e && e.message) || "");
             return;
         }
 
@@ -42,7 +43,7 @@ export default class FsProfileStorage<T extends Profile> implements ProfileStora
         const activeProfiles: T[] = this.profiles.filter(profile => profile.isActive);
 
         if (activeProfiles.length > 1) {
-            throw new Error(`Malformed profile data. Shouldn\'t be more than one active profile. Try deleting ${this.storageFilePath} and log in again.`);
+            throw new Error(LogStrings.MultipleActiveProfiles(this.storageFilePath));
         } else if (activeProfiles.length === 1) {
             this.indexOfActiveProfile = this.profiles.indexOf(activeProfiles[0]);
         }
@@ -53,7 +54,7 @@ export default class FsProfileStorage<T extends Profile> implements ProfileStora
         try {
             await FSUtils.writeFile(this.storageFilePath, data);
         } catch (e) {
-            this.logger.info(`Failed to write profiles into ${this.storageFilePath}. ` + (e && e.message) || "");
+            this.logger.info(LogStrings.FailedToWriteProfiles(this.storageFilePath) + (e && e.message) || "");
             return;
         }
     }
@@ -102,7 +103,7 @@ export default class FsProfileStorage<T extends Profile> implements ProfileStora
         if (foundProfiles.length === 1) {
             return foundProfiles[0];
         } else if (foundProfiles.length > 1) {
-            throw new Error(`There are more than one profile saved with userId ${userId}. Try deleting ${this.storageFilePath} and log in again.`);
+            throw new Error(LogStrings.MultipleProfiles(userId, this.storageFilePath));
         }
         return null;
     }

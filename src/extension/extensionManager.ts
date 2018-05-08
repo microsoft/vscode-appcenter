@@ -3,12 +3,13 @@ import AppCenterAuth from '../auth/appCenterAuth';
 import VstsAuth from '../auth/vstsAuth';
 import { Profile } from '../helpers/interfaces';
 import { Utils } from '../helpers/utils/utils';
-import { VsCodeUtils } from '../helpers/utils/vsCodeUtils';
 import * as CommandHandlers from './commandHandlers';
 import { ConsoleLogger } from './log/consoleLogger';
 import { ILogger } from './log/logHelper';
 import { AuthProvider, CommandNames } from './resources/constants';
 import { Strings } from './resources/strings';
+import { VsCodeUI } from './ui/vscodeUI';
+import { Messages } from './resources/messages';
 
 class CommandHandlersContainer {
     private _appCenterCommandHandler: CommandHandlers.AppCenter;
@@ -71,36 +72,19 @@ export class ExtensionManager implements Disposable {
         funcToTry(args);
     }
 
-    public DisplayErrorMessage(message?: string): boolean {
-        const msg: string = message ? message : "An error occured";
-        if (msg) {
-            VsCodeUtils.ShowErrorMessage(msg);
-            return true;
-        }
-        return false;
-    }
-
-    public DisplayWarningMessage(message: string): void {
-        VsCodeUtils.ShowWarningMessage(message);
-    }
-
-    public DisplayInfoMessage(message: string): void {
-        VsCodeUtils.ShowInfoMessage(message);
-    }
-
     public setupAppCenterStatusBar(profile: Profile | null): Promise<void> {
         if (profile && profile.userName) {
-            return VsCodeUtils.setStatusBar(this._appCenterStatusBarItem,
+            return VsCodeUI.setStatusBar(this._appCenterStatusBarItem,
                 profile.currentApp && profile.currentApp.appName && Utils.isReactNativeProject(this._logger, this.projectRootPath, false)
                 ? `App Center: ${Utils.FormatAppName(profile.currentApp.appName)}`
                 : `App Center: ${profile.userName}`,
-                Strings.YouAreLoggedInMsg(AuthProvider.AppCenter, profile.userName),
+                Messages.YouAreLoggedInMessage(AuthProvider.AppCenter, profile.userName),
                 `${CommandNames.ShowMenu}`
             );
         } else {
-            VsCodeUtils.setStatusBar(this._appCenterStatusBarItem,
-                `$(icon octicon-sign-in) ${Strings.LoginToAppCenterButton}`,
-                Strings.UserMustSignIn,
+            VsCodeUI.setStatusBar(this._appCenterStatusBarItem,
+                `$(icon octicon-sign-in) ${Strings.LoginToAppCenterStatusBarButton}`,
+                Strings.UserMustSignInStatusBarMessage,
                 `${CommandNames.Login}`
             );
         }
@@ -123,7 +107,7 @@ export class ExtensionManager implements Disposable {
     }
 
     private async initializeExtension(): Promise<void> {
-        this._appCenterStatusBarItem = VsCodeUtils.getStatusBarItem();
+        this._appCenterStatusBarItem = VsCodeUI.getStatusBarItem();
     }
 
     private cleanup(): void {

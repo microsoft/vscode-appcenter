@@ -1,7 +1,7 @@
 import { CommandParams, CurrentApp } from "../../../helpers/interfaces";
-import { VsCodeUtils } from "../../../helpers/utils/vsCodeUtils";
-import { Strings } from "../../resources/strings";
 import { ReactNativeAppCommand } from "../reactNativeAppCommand";
+import { VsCodeUI } from "../../ui/vscodeUI";
+import { Messages } from "../../resources/messages";
 
 export default class GetCurrentApp extends ReactNativeAppCommand {
 
@@ -14,12 +14,11 @@ export default class GetCurrentApp extends ReactNativeAppCommand {
             return;
         }
 
-        return this.getCurrentApp().then((app: CurrentApp | null) => {
-            if (app) {
-                VsCodeUtils.ShowInfoMessage(Strings.YourCurrentAppMsg(app.identifier));
-            } else {
-                VsCodeUtils.ShowInfoMessage(Strings.NoCurrentAppSetMsg);
-            }
-        });
+        const app: CurrentApp | null = await this.getCurrentApp();
+        if (app) {
+            VsCodeUI.ShowInfoMessage(Messages.YourCurrentAppMessage(app.identifier));
+        } else {
+            VsCodeUI.ShowWarningMessage(Messages.NoCurrentAppSetWarning);
+        }
     }
 }

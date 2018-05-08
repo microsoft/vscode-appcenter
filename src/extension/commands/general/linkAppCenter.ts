@@ -1,9 +1,10 @@
 import { Utils } from "../../../helpers/utils/utils";
-import { VsCodeUtils } from "../../../helpers/utils/vsCodeUtils";
 import AppCenterLinker from "../../../link/appCenterLinker";
 import { Strings } from "../../resources/strings";
 import { LinkCommand } from "../linkCommand";
+import { VsCodeUI } from "../../ui/vscodeUI";
 import { Constants, AppCenterOS } from "../../resources/constants";
+import { Messages } from "../../resources/messages";
 
 export default class LinkAppCenter extends LinkCommand {
 
@@ -13,12 +14,12 @@ export default class LinkAppCenter extends LinkCommand {
         }
 
         if (!Utils.isReactNativeProject(this.logger, this.rootPath, false)) {
-            VsCodeUtils.ShowWarningMessage(Strings.NotReactProjectMsg);
+            VsCodeUI.ShowWarningMessage(Messages.NotReactProjectWarning);
             return;
         }
 
-        this.showAppsQuickPick(this.CachedAllApps, false, true, false, Strings.ProvideSecondAppPromptMsg);
-        this.refreshCachedAppsAndRepaintQuickPickIfNeeded(true, false, false, Strings.ProvideFirstAppPromptMsg);
+        this.showAppsQuickPick(this.CachedAllApps, false, true, false, Strings.ProvideSecondAppHint);
+        this.refreshCachedAppsAndRepaintQuickPickIfNeeded(true, false, false, Strings.ProvideFirstAppHint);
     }
 
     protected async linkApps(): Promise<boolean> {
@@ -27,7 +28,7 @@ export default class LinkAppCenter extends LinkCommand {
         if (!Utils.isReactNativeAppCenterProject(this.logger, this.rootPath, false)) {
             const appCenterInstalled: boolean = await appCenterLinker.installAppcenter();
             if (!appCenterInstalled) {
-                VsCodeUtils.ShowErrorMessage(Strings.FailedToLinkAppCenter);
+                VsCodeUI.ShowErrorMessage(Messages.FailedToLinkAppCenter);
                 return void 0;
             }
         }

@@ -1,12 +1,13 @@
 import * as os from "os";
 import * as qs from "qs";
-import * as vscode from "vscode";
 import { CommandParams, Profile } from "../../../helpers/interfaces";
 import { SettingsHelper } from "../../../helpers/settingsHelper";
-import { IButtonMessageItem, VsCodeUtils } from "../../../helpers/utils/vsCodeUtils";
 import { AuthProvider } from "../../resources/constants";
 import { Strings } from "../../resources/strings";
 import { Command } from "../command";
+import { IButtonMessageItem, VsCodeUI } from "../../ui/vscodeUI";
+import { Messages } from "../../resources/messages";
+import { LogStrings } from "../../resources/logStrings";
 
 export default class Login extends Command {
 
@@ -26,35 +27,35 @@ export default class Login extends Command {
             url: loginUrl
         });
 
-        return VsCodeUtils.ShowInfoMessage(Strings.PleaseLoginViaBrowser, ...messageItems)
-            .then((selection: IButtonMessageItem | undefined) => {
-                if (selection) {
-                    return vscode.window.showInputBox({ prompt: Strings.PleaseProvideToken, ignoreFocusOut: true })
-                        .then(token => {
-                            this.loginWithToken(token);
-                        });
-                } else { return void 0; }
-            });
+        const selection: IButtonMessageItem | undefined = await VsCodeUI.ShowInfoMessage(Messages.PleaseLoginViaBrowserMessage, ...messageItems);
+        if (selection) {
+            const token: string = await VsCodeUI.showInput(Strings.PleaseProvideTokenHint);
+            this.loginWithToken(token);
+            return true;
+        } else {
+            return void 0;
+        }
     }
 
     private async loginWithToken(token: string | undefined): Promise<boolean> {
         if (!token) {
-            this.logger.info("No token provided on login");
+            this.logger.info(LogStrings.NoTokenProvided);
             return true;
         }
-
-        return this.appCenterAuth.doLogin({ token: token }).then((profile: Profile) => {
+        try {
+            const profile: Profile = await this.appCenterAuth.doLogin({ token: token });
             if (!profile) {
-                this.logger.error("Failed to fetch user info from server");
-                VsCodeUtils.ShowWarningMessage(Strings.FailedToExecuteLoginMsg(AuthProvider.AppCenter));
+                this.logger.error(LogStrings.FailedToGetUserFromServer);
+                VsCodeUI.ShowErrorMessage(Messages.FailedToExecuteLoginMsg(AuthProvider.AppCenter));
                 return false;
             }
-            VsCodeUtils.ShowInfoMessage(Strings.YouAreLoggedInMsg(AuthProvider.AppCenter, profile.displayName));
-            return this.manager.setupAppCenterStatusBar(profile).then(() => true);
-        }).catch((e: Error) => {
-            VsCodeUtils.ShowErrorMessage("Could not login into account.");
+            VsCodeUI.ShowInfoMessage(Messages.YouAreLoggedInMessage(AuthProvider.AppCenter, profile.displayName));
+            await this.manager.setupAppCenterStatusBar(profile);
+            return true;
+        } catch (e) {
+            VsCodeUI.ShowErrorMessage(Messages.FailedToLogin);
             this.logger.error(e.message, e, true);
             return false;
-        });
+        }
     }
 }

@@ -1,11 +1,10 @@
-
-import * as vscode from 'vscode';
 import AppCenterAppCreator from '../createApp/appCenterAppCreator';
 import { ILogger } from '../extension/log/logHelper';
 import { AppCenterOS } from '../extension/resources/constants';
-import { Strings } from '../extension/resources/strings';
 import { Deployment, LinkableApp, ReactNativeLinkInputValue } from '../helpers/interfaces';
 import { cpUtils } from '../helpers/utils/cpUtils';
+import { VsCodeUI } from '../extension/ui/vscodeUI';
+import { Messages } from '../extension/resources/messages';
 
 export default class CodePushLinker {
 
@@ -19,8 +18,8 @@ export default class CodePushLinker {
             return null;
         }
         const deployments: Deployment[] = [];
-        await vscode.window.withProgress({ location: vscode.ProgressLocation.Window, title: Strings.VSCodeProgressLoadingTitle }, async p => {
-            p.report({ message: Strings.CreatingCodePushDeploymentsStatusBarMessage });
+        await VsCodeUI.showProgress(async progress => {
+            progress.report({ message: Messages.CreatingCodePushDeploymentsProgressMessage });
             for (let index = 0; index < apps.length; index++) {
                 const app: LinkableApp = apps[index];
                 const deployment: Deployment = await this.appCenterAppCreator.createCodePushDeployment(app.appName, ownerName);
@@ -37,7 +36,7 @@ export default class CodePushLinker {
     public async installCodePush(): Promise<boolean> {
         const installCodePushCmd: string = "npm i react-native-code-push --save";
         const installRNPMCmd: string = "npm i -g rnpm";
-        return await vscode.window.withProgress({ location: vscode.ProgressLocation.Window, title: Strings.InstallCodePushTitle }, async () => {
+        return await VsCodeUI.showProgress(async () => {
             try {
                 await cpUtils.executeCommand(this.logger, true, this.rootPath, installCodePushCmd);
                 const isLowerThan027: boolean = await this.isReactNativeLowerThan027(this.rootPath);
@@ -55,7 +54,7 @@ export default class CodePushLinker {
                 this.logger.error(`Failed to run ${installCodePushCmd}`);
                 return false;
             }
-        });
+        }, Messages.InstallCodePushProgressMessage);
     }
 
     private async isReactNativeLowerThan027(rootPath: string): Promise<boolean> {
@@ -73,7 +72,8 @@ export default class CodePushLinker {
             self.logger.error('Deployment keys are missing.');
             return Promise.resolve(false);
         }
-        return await vscode.window.withProgress({ location: vscode.ProgressLocation.Window, title: Strings.LinkCodePushTitle }, async () => {
+        return await VsCodeUI.showProgress(async (progress) => {
+            progress.report({ message: Messages.LinkCodePushProgressMessage });
             const inputValues: ReactNativeLinkInputValue[] = [
                 {
                     label: "deployment key for Android",

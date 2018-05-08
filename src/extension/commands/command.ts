@@ -4,11 +4,12 @@ import VstsAuth from "../../auth/vstsAuth";
 import { AppCenterProfile, CommandParams, CurrentApp, CurrentAppDeployments } from "../../helpers/interfaces";
 import { SettingsHelper } from "../../helpers/settingsHelper";
 import { Utils } from "../../helpers/utils/utils";
-import { VsCodeUtils } from "../../helpers/utils/vsCodeUtils";
 import { ExtensionManager } from "../extensionManager";
 import { ILogger } from "../log/logHelper";
 import { AppCenterOS } from "../resources/constants";
-import { Strings } from "../resources/strings";
+import { VsCodeUI } from "../ui/vscodeUI";
+import { Messages } from "../resources/messages";
+import { LogStrings } from "../resources/logStrings";
 
 export class Command {
 
@@ -45,7 +46,7 @@ export class Command {
         const rootPath: string | undefined = this.manager.projectRootPath;
         if (!rootPath) {
             this.logger.error('No project root folder found');
-            VsCodeUtils.ShowInfoMessage(Strings.NoProjectRootFolderFound);
+            VsCodeUI.ShowWarningMessage(Messages.NoProjectRootFolderFoundWarning);
             return Promise.resolve(false);
         }
 
@@ -55,21 +56,21 @@ export class Command {
     public async run(): Promise<boolean | void> {
         const rootPath: string | undefined = this.manager.projectRootPath;
         if (!rootPath) {
-            this.logger.error('No project root folder found');
-            VsCodeUtils.ShowInfoMessage(Strings.NoProjectRootFolderFound);
+            this.logger.error(LogStrings.RootNotFound);
+            VsCodeUI.ShowWarningMessage(Messages.NoProjectRootFolderFoundWarning);
             return Promise.resolve(false);
         }
 
         const profile: AppCenterProfile | null = await this.appCenterProfile;
         if (!profile) {
-            VsCodeUtils.ShowWarningMessage(Strings.UserIsNotLoggedInMsg);
+            VsCodeUI.ShowWarningMessage(Messages.UserIsNotLoggedInWarning);
             return Promise.resolve(false);
         } else {
             const clientOrNull: AppCenterClient | null = this.resolveAppCenterClient(profile);
             if (clientOrNull) {
                 this.client = clientOrNull;
             } else {
-                this.logger.error("Failed to get App Center client");
+                this.logger.error(LogStrings.FailedToGetClient);
                 return Promise.resolve(false);
             }
             return Promise.resolve(true);
@@ -81,14 +82,14 @@ export class Command {
             if (profile) {
                 return this.clientFactory.fromProfile(profile, SettingsHelper.getAppCenterAPIEndpoint());
             } else {
-                this.logger.error('No App Center user specified!');
+                this.logger.error(LogStrings.NoUserSpecified);
                 return null;
             }
         }
         return this.client;
     }
 
-    protected saveCurrentApp(
+    protected async saveCurrentApp(
         currentAppName: string,
         appOS: AppCenterOS,
         currentAppDeployments: CurrentAppDeployments | null,
@@ -98,24 +99,21 @@ export class Command {
         appSecret: string): Promise<CurrentApp | null> {
         const currentApp = Utils.toCurrentApp(currentAppName, appOS, currentAppDeployments, targetBinaryVersion, type, isMandatory, appSecret);
         if (!currentApp) {
-            VsCodeUtils.ShowWarningMessage(Strings.InvalidCurrentAppNameMsg);
-            return Promise.resolve(null);
+            VsCodeUI.ShowWarningMessage(Messages.InvalidCurrentAppNameWarning);
+            return null;
         }
 
-        return this.appCenterProfile.then((profile: AppCenterProfile | null) => {
-            if (profile) {
-                profile.currentApp = currentApp;
-                return this.appCenterAuth.updateProfile(profile).then(() => {
-                    return currentApp;
-                }).then((app) => {
-                    this.manager.setupAppCenterStatusBar(profile);
-                    return app;
-                });
-            } else {
-                // No profile - not logged in?
-                VsCodeUtils.ShowWarningMessage(Strings.UserIsNotLoggedInMsg);
-                return Promise.resolve(null);
-            }
-        });
+        const profile: AppCenterProfile | null = await this.appCenterProfile;
+        if (profile) {
+            profile.currentApp = currentApp;
+            await this.appCenterAuth.updateProfile(profile);
+            this.manager.setupAppCenterStatusBar(profile);
+            return currentApp;
+        } else {
+            // No profile - not logged in?
+            VsCodeUI.ShowWarningMessage(Messages.UserIsNotLoggedInWarning);
+            return null;
+        }
+
     }
 }

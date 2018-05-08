@@ -1,6 +1,7 @@
 import { tokenStore } from "../data/tokenStore";
 import { ILogger } from "../extension/log/logHelper";
 import { LoginInfo, Profile, ProfileStorage } from "../helpers/interfaces";
+import { LogStrings } from "../extension/resources/logStrings";
 
 export default abstract class Auth<T extends Profile> {
 
@@ -9,7 +10,7 @@ export default abstract class Auth<T extends Profile> {
         protected logger: ILogger) {
     }
 
-    protected abstract async getUserInfo(credentials: LoginInfo): Promise<Profile>;
+    protected abstract async getUserInfo(credentials: LoginInfo): Promise<T>;
 
     public get activeProfile(): T | null {
         return this.profileStorage.activeProfile;
@@ -19,16 +20,16 @@ export default abstract class Auth<T extends Profile> {
         await this.profileStorage.init();
     }
 
-    public async doLogin(loginInfo: LoginInfo): Promise<Profile | null> {
+    public async doLogin(loginInfo: LoginInfo): Promise<T | null> {
         const token: string = loginInfo.token;
         if (!token) {
             return null;
         }
 
         // Ask server for user info by token
-        const profile: Profile = await this.getUserInfo(loginInfo);
+        const profile: T = await this.getUserInfo(loginInfo);
         if (!profile) {
-            this.logger.error("Couldn't get user profile.");
+            this.logger.error(LogStrings.FailedToGetUserProfile);
             return null;
         }
 
@@ -71,7 +72,7 @@ export default abstract class Auth<T extends Profile> {
         await this.profileStorage.save(profile);
     }
 
-    public async getProfiles(): Promise<Profile[]> {
+    public async getProfiles(): Promise<T[]> {
         return await this.profileStorage.list();
     }
 
@@ -86,7 +87,7 @@ export default abstract class Auth<T extends Profile> {
             return emptyToken;
         }).catch((e: Error) => {
             // TODO Find a way to log it via logger
-            console.error("Failed to get token from profile", e);
+            console.error(LogStrings.FailedToGetToken, e);
             return emptyToken;
         });
     }

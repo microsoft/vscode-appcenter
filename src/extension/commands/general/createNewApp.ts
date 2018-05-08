@@ -1,13 +1,13 @@
-import * as vscode from "vscode";
 import AppCenterAppBuilder from "../../../createApp/appCenterAppBuilder";
 import { AppCenterUrlBuilder } from "../../../helpers/appCenterUrlBuilder";
 import { CommandParams, CreatedAppFromAppCenter, QuickPickAppItem } from "../../../helpers/interfaces";
 import { Utils } from "../../../helpers/utils/utils";
-import { IButtonMessageItem, VsCodeUtils } from "../../../helpers/utils/vsCodeUtils";
 import { Strings } from "../../resources/strings";
 import { CreateAppCommand } from "../createAppCommand";
 import { CommandNames } from "../../resources/constants";
 import * as Menu from "../../menu/menu";
+import { VsCodeUI, IButtonMessageItem } from "../../ui/vscodeUI";
+import { Messages } from "../../resources/messages";
 
 export enum CreateNewAppOption {
     Android,
@@ -32,22 +32,21 @@ export default class CreateNewApp extends CreateAppCommand {
         }
 
         if (!Utils.isReactNativeProject(this.logger, this.rootPath, false)) {
-            VsCodeUtils.ShowErrorMessage(Strings.NotReactProjectMsg);
+            VsCodeUI.ShowWarningMessage(Messages.NotReactProjectWarning);
             return;
         }
 
         const appNameFromPackage = Utils.parseJsonFile(this.rootPath + "/package.json", "").name;
 
-        let ideaName: string | null = null;
+        let projectName: string | null = null;
 
-        // ideaName is null if user has entered invalid name. We will give him a chance to correct it instead of
+        // projectName is null if user has entered invalid name. We will give him a chance to correct it instead of
         // forcing to do the process again.
-        while (ideaName == null) {
-            ideaName = await this.getIdeaName(option, appNameFromPackage);
+        while (projectName == null) {
+            projectName = await this.getProjectName(option, appNameFromPackage);
         }
-
         // Length is 0 if user cancelled prompt.
-        if (ideaName.length === 0) {
+        if (projectName.length === 0) {
             return;
         }
 
@@ -56,7 +55,7 @@ export default class CreateNewApp extends CreateAppCommand {
             return;
         }
 
-        const appCenterAppBuilder = new AppCenterAppBuilder(ideaName, this.userOrOrg, "", this.client, this.logger);
+        const appCenterAppBuilder = new AppCenterAppBuilder(projectName, this.userOrOrg, "", this.client, this.logger);
         await appCenterAppBuilder.createApps(option);
         const createdApps: CreatedAppFromAppCenter[] = appCenterAppBuilder.getCreatedApps();
         if (!createdApps) {
@@ -80,7 +79,7 @@ export default class CreateNewApp extends CreateAppCommand {
     protected async showCreateAppOptions(): Promise<CreateNewAppOption> {
         const appCenterPortalTabOptions: QuickPickAppItem[] = Menu.getCreateAppOptions();
 
-        const selected: QuickPickAppItem = await vscode.window.showQuickPick(appCenterPortalTabOptions, { placeHolder: Strings.CreateAppPlaceholder } );
+        const selected: QuickPickAppItem = await VsCodeUI.showQuickPick(appCenterPortalTabOptions, Strings.CreateAppHint);
 
         if (!selected) {
             this.logger.debug('User cancel selection of create app tab');
@@ -103,7 +102,7 @@ export default class CreateNewApp extends CreateAppCommand {
 
     private async appCreated(apps: CreatedAppFromAppCenter[]) {
         if (apps.length < 1) {
-            VsCodeUtils.ShowErrorMessage(Strings.FailedToCreateAppInAppCenter);
+            VsCodeUI.ShowErrorMessage(Messages.FailedToCreateAppInAppCenter);
             return;
         }
         await this.setCurrentApp(apps[0]);
@@ -113,6 +112,6 @@ export default class CreateNewApp extends CreateAppCommand {
             title: Strings.AppCreatedBtnLabel,
             url: appUrl
         });
-        VsCodeUtils.ShowInfoMessage(Strings.AppCreatedMsg(apps[0].appName, true), ...messageItems);
+        VsCodeUI.ShowInfoMessage(Messages.AppCreatedMessage(apps[0].appName, true), ...messageItems);
     }
 }
