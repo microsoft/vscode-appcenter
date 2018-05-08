@@ -8,8 +8,6 @@ import * as Menu from "../menu/menu";
 import { CommandNames, Constants } from "../resources/constants";
 import { Strings } from "../resources/strings";
 import { Command } from './command';
-import * as General from "./general";
-import { CreateNewAppOption } from "./general/createNewApp";
 
 export class ReactNativeAppCommand extends Command {
     protected currentAppMenuTarget: string = "MenuCurrentApp";
@@ -172,33 +170,5 @@ export class ReactNativeAppCommand extends Command {
         const hashOfTheCachedObject = Md5.hashStr(JSON.stringify(cachedItem));
         const hashOfTheIncomingObject = Md5.hashStr(JSON.stringify(item));
         return hashOfTheCachedObject === hashOfTheIncomingObject;
-    }
-
-    protected showCreateAppOptions() {
-        const appCenterPortalTabOptions: vscode.QuickPickItem[] = Menu.getCreateAppOptions();
-
-        return vscode.window.showQuickPick(appCenterPortalTabOptions, { placeHolder: Strings.CreateAppPlaceholder })
-            .then(async (selected: QuickPickAppItem) => {
-                if (!selected) {
-                    this.logger.debug('User cancel selection of create app tab');
-                    return;
-                }
-
-                switch (selected.target) {
-                    case (CommandNames.CreateApp.Android):
-                        new General.CreateNewApp(this._params, CreateNewAppOption.Android).run();
-                        break;
-                    case (CommandNames.CreateApp.IOS):
-                        new General.CreateNewApp(this._params, CreateNewAppOption.IOS).run();
-                        break;
-                    case (CommandNames.CreateApp.Both):
-                        new General.CreateNewApp(this._params, CreateNewAppOption.Both).run();
-                        break;
-                    default:
-                        // Ideally shouldn't be there :)
-                        this.logger.error("Unknown create app option");
-                        break;
-                }
-            });
     }
 }

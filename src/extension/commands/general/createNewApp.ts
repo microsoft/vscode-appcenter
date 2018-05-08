@@ -1,10 +1,13 @@
+import * as vscode from "vscode";
 import AppCenterAppBuilder from "../../../createApp/appCenterAppBuilder";
 import { AppCenterUrlBuilder } from "../../../helpers/appCenterUrlBuilder";
-import { CommandParams, CreatedAppFromAppCenter } from "../../../helpers/interfaces";
+import { CommandParams, CreatedAppFromAppCenter, QuickPickAppItem } from "../../../helpers/interfaces";
 import { Utils } from "../../../helpers/utils/utils";
 import { IButtonMessageItem, VsCodeUtils } from "../../../helpers/utils/vsCodeUtils";
 import { Strings } from "../../resources/strings";
 import { CreateAppCommand } from "../createAppCommand";
+import { CommandNames } from "../../resources/constants";
+import * as Menu from "../../menu/menu";
 
 export enum CreateNewAppOption {
     Android,
@@ -14,13 +17,18 @@ export enum CreateNewAppOption {
 
 export default class CreateNewApp extends CreateAppCommand {
 
-    constructor(params: CommandParams, private _option: CreateNewAppOption = CreateNewAppOption.Both) {
+    constructor(params: CommandParams) {
         super(params);
     }
 
     public async run(): Promise<boolean | void> {
         if (!await super.run()) {
             return false;
+        }
+
+        const option: CreateNewAppOption = await this.showCreateAppOptions();
+        if (option === null) {
+            return;
         }
 
         if (!Utils.isReactNativeProject(this.logger, this.rootPath, false)) {
@@ -35,7 +43,7 @@ export default class CreateNewApp extends CreateAppCommand {
         // ideaName is null if user has entered invalid name. We will give him a chance to correct it instead of
         // forcing to do the process again.
         while (ideaName == null) {
-            ideaName = await this.getIdeaName(this._option, appNameFromPackage);
+            ideaName = await this.getIdeaName(option, appNameFromPackage);
         }
 
         // Length is 0 if user cancelled prompt.
@@ -49,15 +57,15 @@ export default class CreateNewApp extends CreateAppCommand {
         }
 
         const appCenterAppBuilder = new AppCenterAppBuilder(ideaName, this.userOrOrg, "", this.client, this.logger);
-        await appCenterAppBuilder.createApps(this._option);
+        await appCenterAppBuilder.createApps(option);
         const createdApps: CreatedAppFromAppCenter[] = appCenterAppBuilder.getCreatedApps();
         if (!createdApps) {
             return;
         }
 
-        switch (this._option) {
-            case CreateNewAppOption.Android:
-            case CreateNewAppOption.IOS: {
+        switch (option) {
+            case CreateNewAppOption.IOS:
+            case CreateNewAppOption.Android: {
                 this.appCreated(createdApps);
                 return true;
             }
@@ -65,8 +73,31 @@ export default class CreateNewApp extends CreateAppCommand {
                 this.pickApp(createdApps);
                 return true;
             }
-
             default: return false;
+        }
+    }
+
+    protected async showCreateAppOptions(): Promise<CreateNewAppOption> {
+        const appCenterPortalTabOptions: QuickPickAppItem[] = Menu.getCreateAppOptions();
+
+        const selected: QuickPickAppItem = await vscode.window.showQuickPick(appCenterPortalTabOptions, { placeHolder: Strings.CreateAppPlaceholder } );
+
+        if (!selected) {
+            this.logger.debug('User cancel selection of create app tab');
+            return null;
+        }
+
+        switch (selected.target) {
+            case (CommandNames.CreateApp.IOS):
+                return CreateNewAppOption.IOS;
+            case (CommandNames.CreateApp.Android):
+                return CreateNewAppOption.Android;
+            case (CommandNames.CreateApp.Both):
+                return CreateNewAppOption.Both;
+            default:
+                // Ideally shouldn't be there :)
+                this.logger.error("Unknown create app option");
+                return null;
         }
     }
 

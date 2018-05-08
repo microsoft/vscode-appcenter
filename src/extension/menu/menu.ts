@@ -1,6 +1,6 @@
 import * as vscode from "vscode";
 import { models } from "../../api/appcenter";
-import { CommandParams, CurrentApp, MenuQuickPickItem, Profile, UserOrOrganizationItem } from "../../helpers/interfaces";
+import { CommandParams, CurrentApp, MenuQuickPickItem, Profile, UserOrOrganizationItem, QuickPickAppItem } from "../../helpers/interfaces";
 import { FSUtils } from "../../helpers/utils/fsUtils";
 import { Utils } from "../../helpers/utils/utils";
 import { CustomQuickPickItem } from "../../helpers/utils/vsCodeUtils";
@@ -253,19 +253,19 @@ export function getSelectedUserOrOrgItem(selected: CustomQuickPickItem, allItems
     }
 }
 
-export function getCreateAppOptions(): vscode.QuickPickItem[] {
-    const createAppOptions: vscode.QuickPickItem[] = [];
-    createAppOptions.push(<vscode.QuickPickItem>{
+export function getCreateAppOptions(): QuickPickAppItem[] {
+    const createAppOptions: QuickPickAppItem[] = [];
+    createAppOptions.push(<QuickPickAppItem>{
         label: Strings.CreateNewAndroidAppMenuLabel,
         description: "",
         target: CommandNames.CreateApp.Android
     });
-    createAppOptions.push(<vscode.QuickPickItem>{
+    createAppOptions.push(<QuickPickAppItem>{
         label: Strings.CreateNewIOSAppMenuLabel,
         description: "",
         target: CommandNames.CreateApp.IOS
     });
-    createAppOptions.push(<vscode.QuickPickItem>{
+    createAppOptions.push(<QuickPickAppItem>{
         label: Strings.CreateNewAppsForBothMenuLabel,
         description: "",
         target: CommandNames.CreateApp.Both
