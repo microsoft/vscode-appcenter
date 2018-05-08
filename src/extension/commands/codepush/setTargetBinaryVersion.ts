@@ -4,6 +4,7 @@ import { AppCenterOS, Constants } from '../../resources/constants';
 import { Strings } from '../../resources/strings';
 import { RNCPAppCommand } from './rncpAppCommand';
 import { VsCodeUI } from '../../ui/vscodeUI';
+import { Messages } from '../../resources/messages';
 
 export default class SetTargetBinaryVersion extends RNCPAppCommand {
     constructor(params: CommandParams) {
@@ -16,20 +17,20 @@ export default class SetTargetBinaryVersion extends RNCPAppCommand {
         }
         const app: CurrentApp = await this.getCurrentApp(true);
         if (!app) {
-            VsCodeUI.ShowWarningMessage(Strings.NoCurrentAppSetMsg);
+            VsCodeUI.ShowWarningMessage(Messages.NoCurrentAppSetWarning);
             return void 0;
         }
         if (!this.hasCodePushDeployments(app)) {
-            VsCodeUI.ShowWarningMessage(Strings.NoDeploymentsMsg);
+            VsCodeUI.ShowWarningMessage(Messages.NoDeploymentsWarning);
             return void 0;
         }
-        const appVersion: string = await VsCodeUI.showInput(Strings.PleaseProvideTargetBinaryVersion);
+        const appVersion: string = await VsCodeUI.showInput(Strings.PleaseProvideTargetBinaryVersionHint);
         if (!appVersion) {
             // if user press esc do nothing then
             return void 0;
         }
         if (appVersion !== Constants.AppCenterDefaultTargetBinaryVersion && !validRange(appVersion)) {
-            VsCodeUI.ShowWarningMessage(Strings.InvalidAppVersionParamMsg);
+            VsCodeUI.ShowWarningMessage(Messages.InvalidAppVersionParamWarning);
             return void 0;
         }
 
@@ -47,7 +48,7 @@ export default class SetTargetBinaryVersion extends RNCPAppCommand {
             if (!currentApp) {
                 return;
             }
-            VsCodeUI.ShowInfoMessage(Strings.ChangedTargetBinaryVersion(appVersion));
+            VsCodeUI.ShowInfoMessage(Messages.ChangedTargetBinaryVersionMessage(appVersion));
         });
     }
 }

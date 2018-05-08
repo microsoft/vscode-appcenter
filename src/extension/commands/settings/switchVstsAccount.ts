@@ -3,6 +3,7 @@ import { AuthProvider } from '../../resources/constants';
 import { Strings } from '../../resources/strings';
 import { Command } from '../command';
 import { VsCodeUI } from '../../ui/vscodeUI';
+import { Messages } from '../../resources/messages';
 
 export default class SwitchAccount extends Command {
 
@@ -28,7 +29,7 @@ export default class SwitchAccount extends Command {
         });
 
         try {
-            const selected: ProfileQuickPickItem = await VsCodeUI.showQuickPick(menuOptions, Strings.SelectProfileTitlePlaceholder);
+            const selected: ProfileQuickPickItem = await VsCodeUI.showQuickPick(menuOptions, Strings.SelectProfileTitleHint);
             if (!selected) {
                 // User cancel selection
                 return void 0;
@@ -44,7 +45,7 @@ export default class SwitchAccount extends Command {
             selectedProfile.isActive = true;
             await this.vstsAuth.updateProfile(selectedProfile);
 
-            VsCodeUI.ShowInfoMessage(Strings.UserSwitchedMsg(AuthProvider.Vsts, selectedProfile.userName));
+            VsCodeUI.ShowInfoMessage(Messages.UserSwitchedMessage(AuthProvider.Vsts, selectedProfile.userName));
         } catch (e) {
             this.handleError(e);
             return false;
@@ -53,7 +54,7 @@ export default class SwitchAccount extends Command {
     }
 
     private handleError(error: Error) {
-        VsCodeUI.ShowErrorMessage("Error occured during the switching accounts.");
+        VsCodeUI.ShowErrorMessage(Messages.FailedToSwitchAccounts);
         this.logger.error(error.message, error, true);
     }
 }

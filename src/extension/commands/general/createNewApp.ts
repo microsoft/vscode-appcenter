@@ -5,6 +5,7 @@ import { Utils } from "../../../helpers/utils/utils";
 import { Strings } from "../../resources/strings";
 import { CreateAppCommand } from "../createAppCommand";
 import { VsCodeUI, IButtonMessageItem } from "../../ui/vscodeUI";
+import { Messages } from "../../resources/messages";
 
 export enum CreateNewAppOption {
     Android,
@@ -24,22 +25,21 @@ export default class CreateNewApp extends CreateAppCommand {
         }
 
         if (!Utils.isReactNativeProject(this.logger, this.rootPath, false)) {
-            VsCodeUI.ShowErrorMessage(Strings.NotReactProjectMsg);
+            VsCodeUI.ShowWarningMessage(Messages.NotReactProjectWarning);
             return;
         }
 
         const appNameFromPackage = Utils.parseJsonFile(this.rootPath + "/package.json", "").name;
 
-        let ideaName: string | null = null;
+        let projectName: string | null = null;
 
-        // ideaName is null if user has entered invalid name. We will give him a chance to correct it instead of
+        // projectName is null if user has entered invalid name. We will give him a chance to correct it instead of
         // forcing to do the process again.
-        while (ideaName == null) {
-            ideaName = await this.getIdeaName(this._option, appNameFromPackage);
+        while (projectName == null) {
+            projectName = await this.getProjectName(this._option, appNameFromPackage);
         }
-
         // Length is 0 if user cancelled prompt.
-        if (ideaName.length === 0) {
+        if (projectName.length === 0) {
             return;
         }
 
@@ -48,7 +48,7 @@ export default class CreateNewApp extends CreateAppCommand {
             return;
         }
 
-        const appCenterAppBuilder = new AppCenterAppBuilder(ideaName, this.userOrOrg, "", this.client, this.logger);
+        const appCenterAppBuilder = new AppCenterAppBuilder(projectName, this.userOrOrg, "", this.client, this.logger);
         await appCenterAppBuilder.createApps(this._option);
         const createdApps: CreatedAppFromAppCenter[] = appCenterAppBuilder.getCreatedApps();
         if (!createdApps) {
@@ -72,7 +72,7 @@ export default class CreateNewApp extends CreateAppCommand {
 
     private async appCreated(apps: CreatedAppFromAppCenter[]) {
         if (apps.length < 1) {
-            VsCodeUI.ShowErrorMessage(Strings.FailedToCreateAppInAppCenter);
+            VsCodeUI.ShowErrorMessage(Messages.FailedToCreateAppInAppCenter);
             return;
         }
         await this.setCurrentApp(apps[0]);
@@ -82,6 +82,6 @@ export default class CreateNewApp extends CreateAppCommand {
             title: Strings.AppCreatedBtnLabel,
             url: appUrl
         });
-        VsCodeUI.ShowInfoMessage(Strings.AppCreatedMsg(apps[0].appName, true), ...messageItems);
+        VsCodeUI.ShowInfoMessage(Messages.AppCreatedMessage(apps[0].appName, true), ...messageItems);
     }
 }

@@ -6,11 +6,11 @@ import * as os from 'os';
 import * as path from 'path';
 import { ILogger } from '../../extension/log/logHelper';
 import { AppCenterOS, Constants } from '../../extension/resources/constants';
-import { Strings } from '../../extension/resources/strings';
 import { CurrentApp, CurrentAppDeployments } from '../interfaces';
 import { cpUtils, SpawnError } from './cpUtils';
 import { Validators } from './validators';
 import AppCenterConfig from '../../data/appCenterConfig';
+import { LogStrings } from '../../extension/resources/logStrings';
 
 export class Utils {
     public static FormatMessage(message: string): string {
@@ -107,15 +107,15 @@ export class Utils {
     }
 
     public static isReactNativeProject(logger: ILogger, projectRoot: string | undefined, showMessageOnError?: boolean) {
-        return Utils.projectHaveNpmPackage(logger, projectRoot, 'react-native', Strings.ReactNativeInstallHint, showMessageOnError);
+        return Utils.projectHaveNpmPackage(logger, projectRoot, 'react-native', LogStrings.ReactNativeInstallMessage, showMessageOnError);
     }
 
     public static isReactNativeCodePushProject(logger: ILogger, projectRoot: string | undefined, showMessageOnError?: boolean) {
-        return Utils.projectHaveNpmPackage(logger, projectRoot, 'react-native-code-push', Strings.CodePushInstallHint, showMessageOnError);
+        return Utils.projectHaveNpmPackage(logger, projectRoot, 'react-native-code-push', LogStrings.CodePushInstallMessage, showMessageOnError);
     }
 
     public static isReactNativeAppCenterProject(logger: ILogger, projectRoot: string | undefined, showMessageOnError?: boolean) {
-        return Utils.projectHaveNpmPackage(logger, projectRoot, 'appcenter', Strings.AppCenterInstallHint, showMessageOnError);
+        return Utils.projectHaveNpmPackage(logger, projectRoot, 'appcenter', LogStrings.AppCenterInstallMessage, showMessageOnError);
     }
 
     public static toAppCenterOS(codePushOs: string): AppCenterOS | undefined {

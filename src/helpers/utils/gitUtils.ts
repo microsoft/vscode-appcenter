@@ -1,6 +1,7 @@
 import { ILogger } from "../../extension/log/logHelper";
 import { Constants } from "../../extension/resources/constants";
 import { cpUtils } from "./cpUtils";
+import { LogStrings } from "../../extension/resources/logStrings";
 // tslint:disable-next-line:no-var-requires
 const git = require('simple-git/promise');
 
@@ -40,7 +41,7 @@ export class GitUtils {
             await git(workingDirectory).removeRemote(remoteName);
             return true;
         } catch (e) {
-            logger.error(`Failed to remove remote "${remoteName}": ${e.message}`);
+            logger.error(`${LogStrings.FailedToRemoveRemote(remoteName)}: ${e.message}`);
             return false;
         }
     }
@@ -51,7 +52,7 @@ export class GitUtils {
             await gitrepo.addRemote(remoteName, remoteUrl);
             return true;
         } catch (e) {
-            logger.error(`Failed to add remote "${remoteName}": ${e.message}`);
+            logger.error(`${LogStrings.FailedToAddRemote(remoteName)}: ${e.message}`);
             return false;
         }
     }
@@ -61,7 +62,7 @@ export class GitUtils {
             const remote: string[] = await git(workingDirectory).getRemotes();
             return remote;
         } catch (e) {
-            logger.error(`Failed to get remote name: ${e.message}`);
+            logger.error(`${LogStrings.FailedToGetRemote("name")}: ${e.message}`);
             return [];
         }
     }
@@ -71,7 +72,7 @@ export class GitUtils {
             const remote: string = await git(workingDirectory).listRemote(['--get-url']);
             return remote;
         } catch (e) {
-            logger.error(`Failed to get remote url: ${e.message}`);
+            logger.error(`${LogStrings.FailedToGetRemote("url")}: ${e.message}`);
             return "";
         }
     }
@@ -81,7 +82,7 @@ export class GitUtils {
             await git(workingDirectory).pull(remoteRepo, branch, {'--rebase': 'true', '--squash': null});
             return true;
         } catch (e) {
-            logger.error(`Failed to pull from remote repo "${remoteRepo}": ${e.message}`);
+            logger.error(`${LogStrings.FailedToPullRemote(remoteRepo)}: ${e.message}`);
             return false;
         }
     }
@@ -92,10 +93,10 @@ export class GitUtils {
             await gitrepo.add('./*');
             await gitrepo.commit(this.gitFirstCommitName);
             await gitrepo.push(remoteRepoName, branch);
-            logger.debug(`Successfully pushed changes to remote repository: "${remoteRepoName}" branchname: "${branch}"`);
+            logger.debug(LogStrings.SuccessfullyPushedTo(remoteRepoName, branch));
             return true;
         } catch (e) {
-            logger.error(`failed to push to remote "${remoteRepoName}": ${e.message}`);
+            logger.error(`${LogStrings.FailedToPushTo(remoteRepoName)}: ${e.message}`);
             return false;
         }
     }
@@ -108,7 +109,7 @@ export class GitUtils {
             await gitrepo.fetch();
             await gitrepo.checkout(['-t', 'origin/master']);
         } catch (e) {
-            logger.error(`Failed to clone into exiting repository: "${e.message}"`);
+            logger.error(`${LogStrings.FailedToClone}: "${e.message}"`);
             return false;
         }
         return true;
@@ -122,9 +123,9 @@ export class GitUtils {
             await gitrepo.removeRemote(Constants.GitDefaultRemoteName);
             await gitrepo.addRemote(Constants.GitDefaultRemoteName);
             await gitrepo.push(Constants.GitDefaultRemoteName, branch);
-            logger.debug(`Successfully pushed changes to remote repository: ${remoteRepo} branchname: ${branch}`);
+            logger.debug(LogStrings.SuccessfullyPushedTo(remoteRepo, branch));
         } catch (e) {
-            logger.error(`Failed to configure/push to remote repository: ${e.message}`);
+            logger.error(`${LogStrings.FailedToPushTo(remoteRepo)}: ${e.message}`);
             return false;
         }
         return true;

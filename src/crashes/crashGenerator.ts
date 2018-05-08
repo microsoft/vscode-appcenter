@@ -4,9 +4,10 @@ import { Progress } from 'vscode';
 import { HTTP_METHODS } from '../api/vsts/types';
 import { ConsoleLogger } from '../extension/log/consoleLogger';
 import { ILogger } from '../extension/log/logHelper';
-import { Strings } from '../extension/resources/strings';
 import { CurrentApp } from '../helpers/interfaces';
 import { CrashLogSchema } from './crashLogSchema';
+import { LogStrings } from '../extension/resources/logStrings';
+import { Messages } from '../extension/resources/messages';
 
 export class CrashGenerator {
     private _appSecret: string;
@@ -55,7 +56,7 @@ export class CrashGenerator {
 
     private async sendCrashes(installId: string, body: object): Promise<void> {
         try {
-            this._progress.report({ message: Strings.SimulateCrashesSendMessage });
+            this._progress.report({ message: Messages.SimulateCrashesSendProgressMessage });
             const url: string = `${this._baseUrl}?api-version=1.0`;
             const requestInfo = this.getRequestInfo(HTTP_METHODS.POST, body, installId);
 
@@ -67,7 +68,7 @@ export class CrashGenerator {
             }
             return response;
         } catch (e) {
-            this.logger.error("Failed to send crashes information. " + (e && e.message) || "");
+            this.logger.error(LogStrings.FailedToSendCrashes + (e && e.message) || "");
             throw new Error(e);
         }
     }

@@ -3,6 +3,7 @@ import { AuthProvider } from '../../resources/constants';
 import { Strings } from '../../resources/strings';
 import { Command } from '../command';
 import { VsCodeUI } from '../../ui/vscodeUI';
+import { Messages } from '../../resources/messages';
 
 export default class Logout extends Command {
 
@@ -39,7 +40,7 @@ export default class Logout extends Command {
         });
 
         try {
-            const selected: ProfileQuickPickItem = await VsCodeUI.showQuickPick(menuOptions, Strings.SelectProfileTitlePlaceholder);
+            const selected: ProfileQuickPickItem = await VsCodeUI.showQuickPick(menuOptions, Strings.SelectProfileTitleHint);
             if (!selected) {
                 // User cancel selection
                 return void 0;
@@ -53,7 +54,7 @@ export default class Logout extends Command {
     private async logoutUser(profile: Profile): Promise<boolean> {
         try {
             await this.vstsAuth.doLogout(profile.userId);
-            VsCodeUI.ShowInfoMessage(Strings.UserLoggedOutMsg(AuthProvider.Vsts, profile.userName));
+            VsCodeUI.ShowInfoMessage(Messages.UserLoggedOutMessage(AuthProvider.Vsts, profile.userName));
             return true;
         } catch (e) {
             this.handleError(e);
@@ -62,7 +63,7 @@ export default class Logout extends Command {
     }
 
     private handleError(error: Error) {
-        VsCodeUI.ShowErrorMessage("Error occured during the logout.");
+        VsCodeUI.ShowErrorMessage(Messages.FailedToLogout);
         this.logger.error(error.message, error, true);
     }
 }

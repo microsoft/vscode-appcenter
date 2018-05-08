@@ -10,6 +10,8 @@ import { Strings } from "../resources/strings";
 import { Command } from './command';
 import { CreateNewAppOption } from "./general/createNewApp";
 import { CustomQuickPickItem, VsCodeUI, IButtonMessageItem } from "../ui/vscodeUI";
+import { LogStrings } from "../resources/logStrings";
+import { Messages } from "../resources/messages";
 
 export class CreateAppCommand extends Command {
 
@@ -39,9 +41,9 @@ export class CreateAppCommand extends Command {
             }
         };
         let items: CustomQuickPickItem[] = [];
-        this.logger.debug("Getting user/organization items...");
+        this.logger.debug(LogStrings.GettingUserOrOrg);
         await VsCodeUI.showProgress(progress => {
-            progress.report({ message: Strings.LoadingStatusBarMessage });
+            progress.report({ message: Messages.LoadingStatusBarProgressMessage });
             return this.client.organizations.list().then((orgList: models.ListOKResponseItem[]) => {
                 const organizations: models.ListOKResponseItem[] = orgList;
                 return organizations.sort(sortOrganizations);
@@ -53,57 +55,63 @@ export class CreateAppCommand extends Command {
         return items;
     }
 
-    protected async appAlreadyExistInAppCenter(ideaName: string): Promise<boolean> {
+    protected async appAlreadyExistInAppCenter(projectName: string): Promise<boolean> {
         let exist: boolean = false;
-        this.logger.debug(`Checkig if idea name "${ideaName}" is not already used before...`);
+        this.logger.debug(LogStrings.CheckingProjectName(projectName));
         await VsCodeUI.showProgress(async progress => {
-            progress.report({ message: Strings.CheckIfAppsExistLoadingMessage });
+            progress.report({ message: Messages.CheckIfAppsExistProgressMessage });
             let apps: models.AppResponse[];
             apps = await this.client.apps.list();
             exist = apps.some(item => {
-                return (item.name === ideaName);
+                return (item.name === projectName);
             });
         });
         return exist;
     }
 
-    protected async getIdeaName(option: CreateNewAppOption, appNameFromPackage: string = ""): Promise<string | null> {
-        const ideaName = await VsCodeUI.showInput(Strings.PleaseEnterIdeaName, appNameFromPackage);
-        if (ideaName.length === 0) {
-            VsCodeUI.ShowErrorMessage(Strings.IdeaNameIsNotValidMsg);
+    protected async getProjectName(option: CreateNewAppOption, appNameFromPackage: string = ""): Promise<string | null> {
+        const projectName = await VsCodeUI.showInput(Strings.PleaseEnterProjectNameHint, appNameFromPackage);
+        if (projectName.length === 0) {
+            VsCodeUI.ShowWarningMessage(Messages.ProjectNameIsNotValidWarning);
             return null;
         }
 
-        if (!ideaName) {
+        if (!projectName) {
             return "";
         }
 
-        if (!Validators.ValidateProjectName(ideaName)) {
-            VsCodeUI.ShowErrorMessage(Strings.IdeaNameIsNotValidMsg);
+        if (!Validators.ValidateProjectName(projectName)) {
+            VsCodeUI.ShowErrorMessage(Messages.ProjectNameIsNotValidWarning);
             return null;
         }
         if (option === CreateNewAppOption.Android || option === CreateNewAppOption.Both) {
-            if (await this.appAlreadyExistInAppCenter(AppCenterAppBuilder.getAndroidAppName(ideaName))) {
-                VsCodeUI.ShowErrorMessage(Strings.FailedToCreateAppAlreadyExistInAppCenter);
+            if (await this.appAlreadyExistInAppCenter(AppCenterAppBuilder.getAndroidAppName(projectName))) {
+                VsCodeUI.ShowWarningMessage(Messages.AppAlreadyExistInAppCenterWarning);
                 return null;
             }
         }
         if (option === CreateNewAppOption.IOS || option === CreateNewAppOption.Both) {
-            if (await this.appAlreadyExistInAppCenter(AppCenterAppBuilder.getiOSAppName(ideaName))) {
-                VsCodeUI.ShowErrorMessage(Strings.FailedToCreateAppAlreadyExistInAppCenter);
+            if (await this.appAlreadyExistInAppCenter(AppCenterAppBuilder.getiOSAppName(projectName))) {
+                VsCodeUI.ShowWarningMessage(Messages.AppAlreadyExistInAppCenterWarning);
                 return null;
             }
         }
-        return ideaName;
+        if (option === CreateNewAppOption.IOS || option === CreateNewAppOption.Both) {
+            if (await this.appAlreadyExistInAppCenter(AppCenterAppBuilder.getiOSAppName(projectName))) {
+                VsCodeUI.ShowErrorMessage(Messages.AppAlreadyExistInAppCenterWarning);
+                return null;
+            }
+        }
+        return projectName;
     }
 
     protected async getOrg(): Promise<UserOrOrganizationItem | null> {
         const userOrOrgQuickPickItems: CustomQuickPickItem[] = await this.getUserOrOrganizationItems();
-        const selectedQuickPickItem: CustomQuickPickItem = await VsCodeUI.showQuickPick(userOrOrgQuickPickItems, Strings.PleaseSelectCurrentAppOrgMsg);
+        const selectedQuickPickItem: CustomQuickPickItem = await VsCodeUI.showQuickPick(userOrOrgQuickPickItems, Strings.PleaseSelectCurrentAppOrgHint);
         if (selectedQuickPickItem) {
             const userOrOrgItem: UserOrOrganizationItem | null = Menu.getSelectedUserOrOrgItem(selectedQuickPickItem, userOrOrgQuickPickItems);
             if (!userOrOrgItem) {
-                VsCodeUI.ShowErrorMessage(Strings.FailedToGetSelectedUserOrOrganizationMsg);
+                VsCodeUI.ShowErrorMessage(Messages.FailedToGetSelectedUserOrOrganizationMsg);
                 return null;
             }
             return userOrOrgItem;
@@ -126,7 +134,7 @@ export class CreateAppCommand extends Command {
 
     protected async pickApp(apps: CreatedAppFromAppCenter[]) {
         if (apps.length < 2) {
-            VsCodeUI.ShowErrorMessage(Strings.FailedToCreateAppInAppCenter);
+            VsCodeUI.ShowErrorMessage(Messages.FailedToCreateAppInAppCenter);
             return false;
         }
 
@@ -142,7 +150,7 @@ export class CreateAppCommand extends Command {
             url: AppCenterUrlBuilder.GetAppCenterAppLink(this.userOrOrg.name, apps[1].appName, this.userOrOrg.isOrganization)
         });
 
-        VsCodeUI.ShowInfoMessage(Strings.AppCreatedMsg(apps[0].appName, false, apps[1].appName), ...messageItems);
+        VsCodeUI.ShowInfoMessage(Messages.AppCreatedMessage(apps[0].appName, false, apps[1].appName), ...messageItems);
 
         const options: QuickPickAppItem[] = [
             {
@@ -156,7 +164,8 @@ export class CreateAppCommand extends Command {
                 target: `1`
             }
         ];
-        const selected: QuickPickAppItem = await VsCodeUI.showQuickPick(options, Strings.ChooseAppToBeSet);
+
+        const selected: QuickPickAppItem = await VsCodeUI.showQuickPick(options, Strings.ChooseAppToBeSetHint);
         if (selected) {
             await this.setCurrentApp(apps[+selected.target]);
             const messageItems: IButtonMessageItem[] = [];
@@ -165,7 +174,7 @@ export class CreateAppCommand extends Command {
                 title: Strings.AppCreatedBtnLabel,
                 url: appUrl
             });
-            return VsCodeUI.ShowInfoMessage(Strings.AppCreatedMsg(apps[+selected.target].appName), ...messageItems);
+            return VsCodeUI.ShowInfoMessage(Messages.AppCreatedMessage(apps[+selected.target].appName), ...messageItems);
         } else {
             return false;
         }
