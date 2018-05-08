@@ -18,6 +18,7 @@ import { Strings } from '../../resources/strings';
 import { CreateAppCommand } from '../createAppCommand';
 import { LoginToVsts } from '../settings';
 import { Utils } from '../../../helpers/utils/utils';
+import { CreateNewAppOption } from './createNewApp';
 // tslint:disable-next-line:no-var-requires
 const GitUrlParse = require("git-url-parse");
 
@@ -45,7 +46,7 @@ export default class Start extends CreateAppCommand {
 
         let ideaName: string | null = null;
         while (ideaName == null) {
-            ideaName = await this.getIdeaName();
+            ideaName = await this.getIdeaName(CreateNewAppOption.Both);
         }
 
         if (ideaName.length === 0) {
