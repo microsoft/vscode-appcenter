@@ -60,7 +60,6 @@ export class Command {
             VsCodeUI.ShowWarningMessage(Messages.NoProjectRootFolderFoundWarning);
             return Promise.resolve(false);
         }
-
         const profile: AppCenterProfile | null = await this.appCenterProfile;
         if (!profile) {
             VsCodeUI.ShowWarningMessage(Messages.UserIsNotLoggedInWarning);
