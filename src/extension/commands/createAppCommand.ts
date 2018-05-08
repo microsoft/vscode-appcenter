@@ -68,15 +68,8 @@ export class CreateAppCommand extends Command {
     }
 
     protected async getProjectName(option: CreateNewAppOption, appNameFromPackage: string = ""): Promise<string | null> {
-        const projectName = await VsCodeUI.showInput(Strings.PleaseEnterProjectNameHint, appNameFromPackage);
-        if (projectName.length === 0) {
-            VsCodeUI.ShowWarningMessage(Messages.ProjectNameIsNotValidWarning);
-            return null;
-        }
-
-        if (!projectName) {
-            return "";
-        }
+        let projectName = await VsCodeUI.showInput(Strings.PleaseEnterProjectNameHint, appNameFromPackage);
+        projectName = projectName.trim();
 
         if (!Validators.ValidateProjectName(projectName)) {
             VsCodeUI.ShowErrorMessage(Messages.ProjectNameIsNotValidWarning);
