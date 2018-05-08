@@ -19,6 +19,14 @@ There are several possible scenarios this extension solves:
     * Login to App Center using the status bar icon.
 
         ![Login to App Center](images/appcenter-login.png)
+    * Login to Visual Studio Team Services using the status bar icon.
+
+        ![Settings](images/appcenter-settings.png)
+
+        ![Add VSTS account](images/appcenter-add-vsts-account.png)
+
+        If you don't already have a personal access token to access your VSTS account you can go [here](https://docs.microsoft.com/en-us/vsts/accounts/use-personal-access-tokens-to-authenticate?view=vsts) to learn how to create one.
+
     * After logging in, click the App Center status bar to show possible menu options and shoose `Start a new project`.
 
         ![AppCenter Menu](images/appcenter-start-new-idea.png)
@@ -140,4 +148,4 @@ Before we can accept your pull request you will need to sign a **Contribution Li
 This project has adopted the [Microsoft Open Source Code of Conduct](https://opensource.microsoft.com/codeofconduct/). For more information see the [Code of Conduct FAQ](https://opensource.microsoft.com/codeofconduct/faq/) or contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additional questions or comments.
 
 ## License
-[MIT](LICENSE.md)
+[MIT](LICENSE)
