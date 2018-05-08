@@ -1,9 +1,9 @@
 import { WebResource } from "ms-rest";
 
 export class AppCenterClientCredentials {
-  private getToken: {(): Promise<string>};
+  private getToken: () => Promise<string>;
 
-  constructor(getToken: {(): Promise<string>}) {
+  constructor(getToken: () => Promise<string>) {
     this.getToken = getToken;
   }
 
