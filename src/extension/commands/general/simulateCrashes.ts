@@ -20,8 +20,9 @@ export default class SimulateCrashes extends Command {
                     try {
                         await crashGenerator.generateCrashes();
                         return AppCenterUrlBuilder.GetPortalCrashesLink(profile.currentApp.ownerName, profile.currentApp.appName, profile.currentApp.type !== "user");
-                    } catch {
+                    } catch (e) {
                         VsCodeUI.ShowErrorMessage(Messages.FailedToGenerateCrashes);
+                        this.logger.error(e.message, e);
                     }
                 } else {
                     VsCodeUI.ShowWarningMessage(Messages.NoCurrentAppSetWarning);
