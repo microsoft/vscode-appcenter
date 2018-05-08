@@ -34,7 +34,7 @@ export default class SetTargetBinaryVersion extends RNCPAppCommand {
             return void 0;
         }
 
-        return this.saveCurrentApp(
+        const currentApp: CurrentApp = await this.saveCurrentApp(
             app.identifier,
             AppCenterOS[app.os], {
                 currentDeploymentName: app.currentAppDeployments.currentDeploymentName,
@@ -43,12 +43,10 @@ export default class SetTargetBinaryVersion extends RNCPAppCommand {
             appVersion,
             app.type,
             app.isMandatory,
-            app.appSecret
-        ).then((currentApp) => {
-            if (!currentApp) {
-                return;
-            }
-            VsCodeUI.ShowInfoMessage(Messages.ChangedTargetBinaryVersionMessage(appVersion));
-        });
+            app.appSecret);
+        if (!currentApp) {
+            return;
+        }
+        VsCodeUI.ShowInfoMessage(Messages.ChangedTargetBinaryVersionMessage(appVersion));
     }
 }

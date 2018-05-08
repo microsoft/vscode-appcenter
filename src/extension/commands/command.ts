@@ -89,7 +89,7 @@ export class Command {
         return this.client;
     }
 
-    protected saveCurrentApp(
+    protected async saveCurrentApp(
         currentAppName: string,
         appOS: AppCenterOS,
         currentAppDeployments: CurrentAppDeployments | null,
@@ -100,23 +100,20 @@ export class Command {
         const currentApp = Utils.toCurrentApp(currentAppName, appOS, currentAppDeployments, targetBinaryVersion, type, isMandatory, appSecret);
         if (!currentApp) {
             VsCodeUI.ShowWarningMessage(Messages.InvalidCurrentAppNameWarning);
-            return Promise.resolve(null);
+            return null;
         }
 
-        return this.appCenterProfile.then((profile: AppCenterProfile | null) => {
-            if (profile) {
-                profile.currentApp = currentApp;
-                return this.appCenterAuth.updateProfile(profile).then(() => {
-                    return currentApp;
-                }).then((app) => {
-                    this.manager.setupAppCenterStatusBar(profile);
-                    return app;
-                });
-            } else {
-                // No profile - not logged in?
-                VsCodeUI.ShowWarningMessage(Messages.UserIsNotLoggedInWarning);
-                return Promise.resolve(null);
-            }
-        });
+        const profile: AppCenterProfile | null = await this.appCenterProfile;
+        if (profile) {
+            profile.currentApp = currentApp;
+            await this.appCenterAuth.updateProfile(profile);
+            this.manager.setupAppCenterStatusBar(profile);
+            return currentApp;
+        } else {
+            // No profile - not logged in?
+            VsCodeUI.ShowWarningMessage(Messages.UserIsNotLoggedInWarning);
+            return null;
+        }
+
     }
 }

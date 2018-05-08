@@ -8,10 +8,10 @@ import * as Menu from "../menu/menu";
 import { Constants } from "../resources/constants";
 import { Strings } from "../resources/strings";
 import { Command } from './command';
-import { CreateNewAppOption } from "./general/createNewApp";
 import { CustomQuickPickItem, VsCodeUI, IButtonMessageItem } from "../ui/vscodeUI";
 import { LogStrings } from "../resources/logStrings";
 import { Messages } from "../resources/messages";
+import { CreateNewAppOption } from "./general/createNewApp";
 
 export class CreateAppCommand extends Command {
 
@@ -42,16 +42,14 @@ export class CreateAppCommand extends Command {
         };
         let items: CustomQuickPickItem[] = [];
         this.logger.debug(LogStrings.GettingUserOrOrg);
-        await VsCodeUI.showProgress(progress => {
+        const orgList: models.ListOKResponseItem[] = await VsCodeUI.showProgress(async progress => {
             progress.report({ message: Messages.LoadingStatusBarProgressMessage });
-            return this.client.organizations.list().then((orgList: models.ListOKResponseItem[]) => {
-                const organizations: models.ListOKResponseItem[] = orgList;
-                return organizations.sort(sortOrganizations);
-            });
-        }).then(async (orgList: models.ListOKResponseItem[]) => {
-            const myself: Profile | null = await this.appCenterProfile;
-            items = Menu.getQuickPickItemsForOrgList(orgList, myself);
+            const orgList: models.ListOKResponseItem[] = await this.client.organizations.list();
+            const organizations: models.ListOKResponseItem[] = orgList;
+            return organizations.sort(sortOrganizations);
         });
+        const myself: Profile | null = await this.appCenterProfile;
+        items = Menu.getQuickPickItemsForOrgList(orgList, myself);
         return items;
     }
 
@@ -86,13 +84,7 @@ export class CreateAppCommand extends Command {
         }
         if (option === CreateNewAppOption.Android || option === CreateNewAppOption.Both) {
             if (await this.appAlreadyExistInAppCenter(AppCenterAppBuilder.getAndroidAppName(projectName))) {
-                VsCodeUI.ShowWarningMessage(Messages.AppAlreadyExistInAppCenterWarning);
-                return null;
-            }
-        }
-        if (option === CreateNewAppOption.IOS || option === CreateNewAppOption.Both) {
-            if (await this.appAlreadyExistInAppCenter(AppCenterAppBuilder.getiOSAppName(projectName))) {
-                VsCodeUI.ShowWarningMessage(Messages.AppAlreadyExistInAppCenterWarning);
+                VsCodeUI.ShowErrorMessage(Messages.AppAlreadyExistInAppCenterWarning);
                 return null;
             }
         }
@@ -164,7 +156,6 @@ export class CreateAppCommand extends Command {
                 target: `1`
             }
         ];
-
         const selected: QuickPickAppItem = await VsCodeUI.showQuickPick(options, Strings.ChooseAppToBeSetHint);
         if (selected) {
             await this.setCurrentApp(apps[+selected.target]);

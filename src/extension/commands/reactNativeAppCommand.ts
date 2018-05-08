@@ -129,21 +129,20 @@ export class ReactNativeAppCommand extends Command {
     }
 
     protected refreshCachedAppsAndRepaintQuickPickIfNeeded(includeSelectCurrent: boolean = false, includeCreateNew: boolean = true, includeAllApps: boolean = true, prompt: string = Strings.ProvideCurrentAppHint) {
-        VsCodeUI.showProgress((progress) => {
+        VsCodeUI.showProgress(async (progress) => {
             progress.report({ message: Messages.GetAppsListProgressMessage });
 
-            return this.client.apps.list({
+            const apps: models.AppResponse[] = await this.client.apps.list({
                 orderBy: "name"
-            }).then((apps: models.AppResponse[]) => {
-                const rnApps: models.AppResponse[] = includeAllApps ? apps : this.getRnApps(apps);
-                // we repaint menu only in case we have changed apps
-                if (this.cachedAppsItemsDiffer(rnApps, includeAllApps ? ReactNativeAppCommand.cachedAllApps : this.getRnApps(ReactNativeAppCommand.cachedAllApps))) {
-                    this.showAppsQuickPick(rnApps, includeAllApps, includeSelectCurrent, includeCreateNew, prompt);
-                }
-            }).catch((e) => {
-                VsCodeUI.ShowErrorMessage(Messages.UnknownError);
-                this.logger.error(e.message, e);
             });
+            const rnApps: models.AppResponse[] = includeAllApps ? apps : this.getRnApps(apps);
+            // we repaint menu only in case we have changed apps
+            if (this.cachedAppsItemsDiffer(rnApps, includeAllApps ? ReactNativeAppCommand.cachedAllApps : this.getRnApps(ReactNativeAppCommand.cachedAllApps))) {
+                this.showAppsQuickPick(rnApps, includeAllApps, includeSelectCurrent, includeCreateNew, prompt);
+            }
+        }).catch((e) => {
+            VsCodeUI.ShowErrorMessage(Messages.UnknownError);
+            this.logger.error(e.message, e);
         });
     }
 

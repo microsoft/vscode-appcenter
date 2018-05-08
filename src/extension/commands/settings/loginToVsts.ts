@@ -43,7 +43,8 @@ export default class LoginToVsts extends Command {
     }
 
     private async login(loginInfo: VstsLoginInfo): Promise<boolean> {
-        return this.vstsAuth.doLogin(loginInfo).then(async (profile: VstsProfile) => {
+        try {
+            const profile: VstsProfile = await this.vstsAuth.doLogin(loginInfo);
             if (!profile) {
                 this.logger.error(LogStrings.FailedToGetUserFromServer);
                 VsCodeUI.ShowErrorMessage(Messages.FailedToExecuteLoginMsg(AuthProvider.Vsts));
@@ -69,10 +70,10 @@ export default class LoginToVsts extends Command {
                 VsCodeUI.ShowInfoMessage(Messages.YouAreLoggedInMessage(AuthProvider.Vsts, profile.displayName));
             }
             return true;
-        }).catch((e: Error) => {
+        } catch (e) {
             VsCodeUI.ShowErrorMessage(Messages.FailedToLogin);
             this.logger.error(e.message, e, true);
             return false;
-        });
+        }
     }
 }

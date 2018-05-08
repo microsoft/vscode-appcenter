@@ -42,19 +42,20 @@ export default class Login extends Command {
             this.logger.info(LogStrings.NoTokenProvided);
             return true;
         }
-
-        return this.appCenterAuth.doLogin({ token: token }).then((profile: Profile) => {
+        try {
+            const profile: Profile = await this.appCenterAuth.doLogin({ token: token });
             if (!profile) {
                 this.logger.error(LogStrings.FailedToGetUserFromServer);
                 VsCodeUI.ShowErrorMessage(Messages.FailedToExecuteLoginMsg(AuthProvider.AppCenter));
                 return false;
             }
             VsCodeUI.ShowInfoMessage(Messages.YouAreLoggedInMessage(AuthProvider.AppCenter, profile.displayName));
-            return this.manager.setupAppCenterStatusBar(profile).then(() => true);
-        }).catch((e: Error) => {
+            await this.manager.setupAppCenterStatusBar(profile);
+            return true;
+        } catch (e) {
             VsCodeUI.ShowErrorMessage(Messages.FailedToLogin);
             this.logger.error(e.message, e, true);
             return false;
-        });
+        }
     }
 }
