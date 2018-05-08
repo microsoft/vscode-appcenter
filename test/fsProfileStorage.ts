@@ -13,7 +13,6 @@ describe('FsProfileStorage', function () {
   let sandbox: sinon.SinonSandbox;
   const fakeFilePath = "./file.json";
   const mockFilePath = "./mock/profilesMock.json";
-  const mockFilePathMalformed = "./mock/profilesMockMalformed.json";
   const mockFilePathMalformedDuplicateUserIds = "./mock/profilesMockMalformedUserIds.json";
 
   before(() => {
