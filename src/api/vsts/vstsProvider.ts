@@ -1,7 +1,8 @@
 import { ConsoleLogger } from "../../extension/log/consoleLogger";
 import { ILogger } from "../../extension/log/logHelper";
-import { Strings } from "../../extension/resources/strings";
 import { Config, HTTP_METHODS, VSTSGitRepository, VSTSProject } from "./types";
+import { Messages } from "../../extension/resources/messages";
+import { LogStrings } from "../../extension/resources/logStrings";
 // tslint:disable-next-line:no-var-requires
 const btoa = require('btoa');
 // tslint:disable-next-line:no-var-requires
@@ -34,12 +35,12 @@ export class VSTSProvider {
             const requestInfo = this.getRequestInfo(HTTP_METHODS.GET);
             const res = await fetch(url, requestInfo);
             if (res.status === 203) {
-                throw new Error(Strings.VstsCredsNotValidMsg);
+                throw new Error(Messages.VstsCredsNotValidWarning);
             }
             const response = await res.json();
             return <VSTSProject[]>response.value;
         } catch (e) {
-            this.logger.error(`Failed to get VSTS Project list. ${e && e.message || ""}`);
+            this.logger.error(`${LogStrings.FailedToGetVSTSProjectList}. ${e && e.message || ""}`);
             return null;
         }
     }
@@ -61,7 +62,7 @@ export class VSTSProvider {
             }
             return <VSTSGitRepository>response;
         } catch (e) {
-            this.logger.error("Failed to get VSTS Git repositories list. " + (e && e.message) || "");
+            this.logger.error(`${LogStrings.FailedToGetVSTSReposList} ${(e && e.message) || ""}`);
             return null;
         }
     }
@@ -74,7 +75,7 @@ export class VSTSProvider {
             const response = await res.json();
             return <VSTSGitRepository[]>response.value;
         } catch (e) {
-            this.logger.error("Failed to get VSTS Git repositories list");
+            this.logger.error(`${LogStrings.FailedToGetVSTSReposList} ${(e && e.message) || ""}`);
             return null;
         }
     }

@@ -1,10 +1,11 @@
+import { LogStrings } from "../extension/resources/logStrings";
+
 export class ConfigurationReader {
     public static readString(value: any): string {
         if (this.isString(value)) {
             return value;
         } else {
-            const errorMessage: string = `Configuration Reader: Failed to parse value ${value}`;
-            throw new Error(errorMessage);
+            throw new Error(LogStrings.ConfigurationFailedToParse(value));
         }
     }
 
@@ -14,8 +15,7 @@ export class ConfigurationReader {
         } else if (value === "true" || value === "false") {
             return value === "true";
         } else {
-            const errorMessage: string = `Configuration Reader: Failed to parse value ${value}`;
-            throw new Error(errorMessage);
+            throw new Error(LogStrings.ConfigurationFailedToParse(value));
         }
     }
 
@@ -23,8 +23,7 @@ export class ConfigurationReader {
         if (this.isArray(value)) {
             return value;
         } else {
-            const errorMessage: string = `Configuration Reader: Failed to parse value ${value}`;
-            throw new Error(errorMessage);
+            throw new Error(LogStrings.ConfigurationFailedToParse(value));
         }
     }
 
@@ -32,8 +31,7 @@ export class ConfigurationReader {
         if (this.isObject(value)) {
             return value;
         } else {
-            const errorMessage: string = `Configuration Reader: Failed to parse value ${value}`;
-            throw new Error(errorMessage);
+            throw new Error(LogStrings.ConfigurationFailedToParse(value));
         }
     }
 
@@ -44,8 +42,7 @@ export class ConfigurationReader {
         } else if (this.isString(value)) {
             return parseInt(value, 10);
         } else {
-            const errorMessage: string = `Configuration Reader: Failed to parse value ${value}`;
-            throw new Error(errorMessage);
+            throw new Error(LogStrings.ConfigurationFailedToParse(value));
         }
     }
 

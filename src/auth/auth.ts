@@ -1,6 +1,7 @@
 import { tokenStore } from "../data/tokenStore";
 import { ILogger } from "../extension/log/logHelper";
 import { LoginInfo, Profile, ProfileStorage } from "../helpers/interfaces";
+import { LogStrings } from "../extension/resources/logStrings";
 
 export default abstract class Auth<T extends Profile> {
 
@@ -28,7 +29,7 @@ export default abstract class Auth<T extends Profile> {
         // Ask server for user info by token
         const profile: Profile = await this.getUserInfo(loginInfo);
         if (!profile) {
-            this.logger.error("Couldn't get user profile.");
+            this.logger.error(LogStrings.FailedToGetUserProfile);
             return null;
         }
 
@@ -86,7 +87,7 @@ export default abstract class Auth<T extends Profile> {
             return emptyToken;
         }).catch((e: Error) => {
             // TODO Find a way to log it via logger
-            console.error("Failed to get token from profile", e);
+            console.error(LogStrings.FailedToGetToken, e);
             return emptyToken;
         });
     }

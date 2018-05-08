@@ -49,7 +49,7 @@ export default class AppCenterPortal extends ReactNativeAppCommand {
                     appName = currentApp.appName;
                     ownerName = currentApp.ownerName;
                 } else {
-                    this.logger.error("Current app is undefiend");
+                    this.logger.error("Current app is undefined");
                     throw new Error("Current app is undefined");
                 }
             }

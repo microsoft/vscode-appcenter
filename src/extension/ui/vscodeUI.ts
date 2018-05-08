@@ -3,6 +3,7 @@ import { Constants, MessageTypes } from "../../extension/resources/constants";
 import { SettingsHelper } from "../../helpers/settingsHelper";
 import { Utils } from "../../helpers/utils/utils";
 import { Strings } from "../resources/strings";
+import { Messages } from "../resources/messages";
 
 export class BaseQuickPickItem implements QuickPickItem {
     public label: string;
@@ -93,7 +94,7 @@ export class VsCodeUI {
     }
 
     public static async showProgress<R>(task: (progress: Progress<{ message?: string; }>) => Promise<R>, title?: string): Promise<R> {
-        return await window.withProgress({ location: ProgressLocation.Window, title: title || Strings.VSCodeProgressLoadingTitle }, task);
+        return await window.withProgress({ location: ProgressLocation.Window, title: title || Messages.VSCodeProgressLoadingTitle }, task);
     }
 
     public static async showInput(prompt: string, value?: string): Promise<string> {
@@ -101,7 +102,7 @@ export class VsCodeUI {
     }
 
     public static async showQuickPick<T extends QuickPickItem>(items: T[], placeholder?: string): Promise<T> {
-        return await window.showQuickPick(items, { placeHolder: placeholder || Strings.MenuTitlePlaceholder, ignoreFocusOut: true });
+        return await window.showQuickPick(items, { placeHolder: placeholder || Strings.MenuTitleHint, ignoreFocusOut: true });
     }
 }
 

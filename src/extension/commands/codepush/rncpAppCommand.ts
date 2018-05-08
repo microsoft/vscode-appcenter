@@ -1,8 +1,8 @@
 import { CurrentApp } from "../../../helpers/interfaces";
 import { Utils } from "../../../helpers/utils/utils";
-import { Strings } from "../../resources/strings";
 import { ReactNativeAppCommand } from "../reactNativeAppCommand";
 import { VsCodeUI } from "../../ui/vscodeUI";
+import { Messages } from "../../resources/messages";
 
 export class RNCPAppCommand extends ReactNativeAppCommand {
     protected checkForCodePush: boolean = true;
@@ -12,7 +12,7 @@ export class RNCPAppCommand extends ReactNativeAppCommand {
             return false;
         }
         if (this.checkForCodePush && !Utils.isReactNativeCodePushProject(this.logger, this.rootPath, true)) {
-            VsCodeUI.ShowWarningMessage(Strings.NotCodePushProjectMsg);
+            VsCodeUI.ShowWarningMessage(Messages.NotCodePushProjectWarning);
             return false;
         }
         return true;
@@ -23,7 +23,7 @@ export class RNCPAppCommand extends ReactNativeAppCommand {
             return false;
         }
         if (this.checkForCodePush && !Utils.isReactNativeCodePushProject(this.logger, this.rootPath, true)) {
-            VsCodeUI.ShowWarningMessage(Strings.NotCodePushProjectMsg);
+            VsCodeUI.ShowWarningMessage(Messages.NotCodePushProjectWarning);
             return false;
         }
         return true;
