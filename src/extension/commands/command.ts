@@ -4,11 +4,11 @@ import VstsAuth from "../../auth/vstsAuth";
 import { AppCenterProfile, CommandParams, CurrentApp, CurrentAppDeployments } from "../../helpers/interfaces";
 import { SettingsHelper } from "../../helpers/settingsHelper";
 import { Utils } from "../../helpers/utils/utils";
-import { VsCodeUtils } from "../../helpers/utils/vsCodeUtils";
 import { ExtensionManager } from "../extensionManager";
 import { ILogger } from "../log/logHelper";
 import { AppCenterOS } from "../resources/constants";
 import { Strings } from "../resources/strings";
+import { VsCodeUI } from "../ui/vscodeUI";
 
 export class Command {
 
@@ -45,7 +45,7 @@ export class Command {
         const rootPath: string | undefined = this.manager.projectRootPath;
         if (!rootPath) {
             this.logger.error('No project root folder found');
-            VsCodeUtils.ShowInfoMessage(Strings.NoProjectRootFolderFound);
+            VsCodeUI.ShowInfoMessage(Strings.NoProjectRootFolderFound);
             return Promise.resolve(false);
         }
 
@@ -56,13 +56,13 @@ export class Command {
         const rootPath: string | undefined = this.manager.projectRootPath;
         if (!rootPath) {
             this.logger.error('No project root folder found');
-            VsCodeUtils.ShowInfoMessage(Strings.NoProjectRootFolderFound);
+            VsCodeUI.ShowInfoMessage(Strings.NoProjectRootFolderFound);
             return Promise.resolve(false);
         }
 
         const profile: AppCenterProfile | null = await this.appCenterProfile;
         if (!profile) {
-            VsCodeUtils.ShowWarningMessage(Strings.UserIsNotLoggedInMsg);
+            VsCodeUI.ShowWarningMessage(Strings.UserIsNotLoggedInMsg);
             return Promise.resolve(false);
         } else {
             const clientOrNull: AppCenterClient | null = this.resolveAppCenterClient(profile);
@@ -98,7 +98,7 @@ export class Command {
         appSecret: string): Promise<CurrentApp | null> {
         const currentApp = Utils.toCurrentApp(currentAppName, appOS, currentAppDeployments, targetBinaryVersion, type, isMandatory, appSecret);
         if (!currentApp) {
-            VsCodeUtils.ShowWarningMessage(Strings.InvalidCurrentAppNameMsg);
+            VsCodeUI.ShowWarningMessage(Strings.InvalidCurrentAppNameMsg);
             return Promise.resolve(null);
         }
 
@@ -113,7 +113,7 @@ export class Command {
                 });
             } else {
                 // No profile - not logged in?
-                VsCodeUtils.ShowWarningMessage(Strings.UserIsNotLoggedInMsg);
+                VsCodeUI.ShowWarningMessage(Strings.UserIsNotLoggedInMsg);
                 return Promise.resolve(null);
             }
         });

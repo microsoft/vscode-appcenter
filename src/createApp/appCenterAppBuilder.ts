@@ -1,4 +1,3 @@
-import * as vscode from "vscode";
 import { AppCenterClient } from "../api/appcenter";
 import { CreateNewAppOption } from "../extension/commands/general/createNewApp";
 import { ILogger } from "../extension/log/logHelper";
@@ -7,7 +6,8 @@ import { Strings } from "../extension/resources/strings";
 import { CreatedAppFromAppCenter, UserOrOrganizationItem } from "../helpers/interfaces";
 import { SettingsHelper } from "../helpers/settingsHelper";
 import { Utils } from "../helpers/utils/utils";
-import { VsCodeUtils } from "../helpers/utils/vsCodeUtils";
+import { VsCodeUI } from "../extension/ui/vscodeUI";
+
 import AppCenterAppCreator, { AndroidAppCenterAppCreator, IOSAppCenterAppCreator, NullAppCenterAppCreator } from "./appCenterAppCreator";
 
 export default class AppCenterAppBuilder {
@@ -106,8 +106,8 @@ export default class AppCenterAppBuilder {
     public async createApps(option: CreateNewAppOption = CreateNewAppOption.Both): Promise<void> {
         let created: any;
         if (!this.appsCreated) {
-            await vscode.window.withProgress({ location: vscode.ProgressLocation.Window, title: Strings.VSCodeProgressLoadingTitle }, async p => {
-                p.report({ message: Strings.CreatingAppStatusBarMessage });
+            await VsCodeUI.showProgress(async progress => {
+                progress.report({ message: Strings.CreatingAppStatusBarMessage });
                 const promises: Promise<false | CreatedAppFromAppCenter>[] = [];
                 if (option === CreateNewAppOption.IOS || option === CreateNewAppOption.Both) {
                     if (this.isCreatedForOrganization()) {
@@ -133,7 +133,7 @@ export default class AppCenterAppBuilder {
                     }
                     return false;
                 })) {
-                    VsCodeUtils.ShowErrorMessage(Strings.FailedToCreateAppInAppCenter);
+                    VsCodeUI.ShowErrorMessage(Strings.FailedToCreateAppInAppCenter);
                 }
 
                 this.createdApps = created;
@@ -144,14 +144,14 @@ export default class AppCenterAppBuilder {
     }
 
     public async startProcess(): Promise<boolean> {
-        return await vscode.window.withProgress({ location: vscode.ProgressLocation.Window, title: Strings.VSCodeProgressLoadingTitle }, async p => {
+        return await VsCodeUI.showProgress(async progress => {
             // The was an issue for me and without Delay spinner was not shown when app was creating!
             await Utils.Delay(100);
 
             this.createApps();
 
             if (this._createBetaTestersDistributionGroup) {
-                p.report({ message: Strings.CreatingDistributionStatusBarMessage });
+                progress.report({ message: Strings.CreatingDistributionStatusBarMessage });
                 const createdBetaTestersGroup: boolean[] = await Promise.all(
                     [
                         this.iOSAppCreator.createBetaTestersDistributionGroup(AppCenterAppBuilder.getiOSAppName(this.ideaName), this.ownerName),
@@ -162,14 +162,14 @@ export default class AppCenterAppBuilder {
                 if (!createdBetaTestersGroup.every((val: boolean) => {
                     return val === true;
                 })) {
-                    VsCodeUtils.ShowErrorMessage(Strings.FailedToCreateDistributionGroup);
+                    VsCodeUI.ShowErrorMessage(Strings.FailedToCreateDistributionGroup);
                 } else {
                     this.logger.debug(`"${SettingsHelper.distribitionGroupTestersName()}" distribution group was created for your project "${this.ideaName}"`);
                 }
             }
 
             if (this._connectRepositoryToBuildService) {
-                p.report({ message: Strings.ConnectingRepoToBuildServiceStatusBarMessage });
+                progress.report({ message: Strings.ConnectingRepoToBuildServiceStatusBarMessage });
                 const conected: boolean[] = await Promise.all(
                     [
                         this.iOSAppCreator.connectRepositoryToBuildService(AppCenterAppBuilder.getiOSAppName(this.ideaName), this.ownerName, this.repoUrl, this.isCreatedForOrganization()),
@@ -179,11 +179,11 @@ export default class AppCenterAppBuilder {
                 if (!conected.every((val: boolean) => {
                     return val === true;
                 })) {
-                    VsCodeUtils.ShowErrorMessage(Strings.FailedToConnectRepoToBuildService);
+                    VsCodeUI.ShowErrorMessage(Strings.FailedToConnectRepoToBuildService);
                 } else {
                     this.logger.debug(`Project "${this.ideaName}" was connected to repositry "${this.repoUrl}"`);
                     if (this._withBranchConfigurationCreatedAndBuildKickOff) {
-                        p.report({ message: Strings.CreateBranchConfigAndKickOffBuildStatusBarMessage });
+                        progress.report({ message: Strings.CreateBranchConfigAndKickOffBuildStatusBarMessage });
                         const branchConfiguredAndBuildStarted: boolean[] = await Promise.all(
                             [
                                 this.iOSAppCreator.withBranchConfigurationCreatedAndBuildKickOff(AppCenterAppBuilder.getiOSAppName(this.ideaName), this.defaultBranchName, this.ownerName, this.isCreatedForOrganization()),
@@ -193,7 +193,7 @@ export default class AppCenterAppBuilder {
                         if (!branchConfiguredAndBuildStarted.every((val: boolean) => {
                             return val === true;
                         })) {
-                            VsCodeUtils.ShowErrorMessage(Strings.FailedToConfigureBranchAndStartNewBuild);
+                            VsCodeUI.ShowErrorMessage(Strings.FailedToConfigureBranchAndStartNewBuild);
                         }
                     }
                 }

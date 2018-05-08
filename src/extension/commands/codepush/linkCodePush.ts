@@ -1,10 +1,10 @@
 import AppCenterAppCreator from '../../../createApp/appCenterAppCreator';
 import { Deployment } from '../../../helpers/interfaces';
 import { Utils } from '../../../helpers/utils/utils';
-import { VsCodeUtils } from '../../../helpers/utils/vsCodeUtils';
 import CodePushLinker from '../../../link/codePushLinker';
 import { Strings } from '../../resources/strings';
 import { LinkCommand } from '../linkCommand';
+import { VsCodeUI } from '../../ui/vscodeUI';
 
 export default class LinkCodePush extends LinkCommand {
     public async run(): Promise<void> {
@@ -13,7 +13,7 @@ export default class LinkCodePush extends LinkCommand {
         }
 
         if (!Utils.isReactNativeProject(this.logger, this.rootPath, false)) {
-            VsCodeUtils.ShowWarningMessage(Strings.NotReactProjectMsg);
+            VsCodeUI.ShowWarningMessage(Strings.NotReactProjectMsg);
             return;
         }
         if (this.CachedAllApps) {
@@ -30,7 +30,7 @@ export default class LinkCodePush extends LinkCommand {
         if (!Utils.isReactNativeCodePushProject(this.logger, this.rootPath, false)) {
             const codePushInstalled: boolean = await codePushLinker.installCodePush();
             if (!codePushInstalled) {
-                VsCodeUtils.ShowErrorMessage(Strings.FailedToLinkCodePush);
+                VsCodeUI.ShowErrorMessage(Strings.FailedToLinkCodePush);
                 return false;
             }
         }
@@ -40,16 +40,16 @@ export default class LinkCodePush extends LinkCommand {
         deployments = await codePushLinker.createCodePushDeployments(this.pickedApps, this.pickedApps[0].ownerName);
 
         if (deployments.length < 1) {
-            VsCodeUtils.ShowErrorMessage(Strings.FailedToLinkCodePush);
+            VsCodeUI.ShowErrorMessage(Strings.FailedToLinkCodePush);
             return false;
         }
 
         const linked = await codePushLinker.linkCodePush(deployments);
         if (!linked) {
-            VsCodeUtils.ShowErrorMessage(Strings.FailedToLinkCodePush);
+            VsCodeUI.ShowErrorMessage(Strings.FailedToLinkCodePush);
             return false;
         }
-        VsCodeUtils.ShowInfoMessage(Strings.CodePushLinkedMsg);
+        VsCodeUI.ShowInfoMessage(Strings.CodePushLinkedMsg);
         return true;
     }
 }

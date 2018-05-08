@@ -1,6 +1,6 @@
 import * as vscode from "vscode";
 
-export class TerminalHelper {
+export class VsCodeTerminal {
     private terminal: vscode.Terminal;
 
     constructor() {
