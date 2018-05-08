@@ -158,6 +158,7 @@ export class CreateAppCommand extends Command {
                 target: `1`
             }
         ];
+        
         const selected: QuickPickAppItem = await VsCodeUI.showQuickPick(options, Strings.ChooseAppToBeSetHint);
         if (selected) {
             await this.setCurrentApp(apps[+selected.target]);
