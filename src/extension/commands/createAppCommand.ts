@@ -8,10 +8,10 @@ import * as Menu from "../menu/menu";
 import { Constants } from "../resources/constants";
 import { Strings } from "../resources/strings";
 import { Command } from './command';
+import { CreateNewAppOption } from "./general/createNewApp";
 import { CustomQuickPickItem, VsCodeUI, IButtonMessageItem } from "../ui/vscodeUI";
 import { LogStrings } from "../resources/logStrings";
 import { Messages } from "../resources/messages";
-import { CreateNewAppOption } from "./general/createNewApp";
 
 export class CreateAppCommand extends Command {
 
@@ -86,7 +86,13 @@ export class CreateAppCommand extends Command {
         }
         if (option === CreateNewAppOption.Android || option === CreateNewAppOption.Both) {
             if (await this.appAlreadyExistInAppCenter(AppCenterAppBuilder.getAndroidAppName(projectName))) {
-                VsCodeUI.ShowErrorMessage(Messages.AppAlreadyExistInAppCenterWarning);
+                VsCodeUI.ShowWarningMessage(Messages.AppAlreadyExistInAppCenterWarning);
+                return null;
+            }
+        }
+        if (option === CreateNewAppOption.IOS || option === CreateNewAppOption.Both) {
+            if (await this.appAlreadyExistInAppCenter(AppCenterAppBuilder.getiOSAppName(projectName))) {
+                VsCodeUI.ShowWarningMessage(Messages.AppAlreadyExistInAppCenterWarning);
                 return null;
             }
         }
