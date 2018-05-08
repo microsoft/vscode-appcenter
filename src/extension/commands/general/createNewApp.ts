@@ -43,7 +43,7 @@ export default class CreateNewApp extends CreateAppCommand {
         // projectName is null if user has entered invalid name. We will give him a chance to correct it instead of
         // forcing to do the process again.
         while (projectName == null) {
-            projectName = await this.getProjectName(option, appNameFromPackage);
+            projectName = await this.getProjectName(option, appNameFromPackage, false); // Just creating an AppCenter app here - no need to treat it like a new project.
         }
         // Length is 0 if user cancelled prompt.
         if (projectName.length === 0) {
