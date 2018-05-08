@@ -15,7 +15,6 @@ export class Command {
 
     protected clientFactory: AppCenterClientFactory;
     protected client: AppCenterClient;
-    protected noLoginRequired: boolean;
 
     protected appCenterAuth: AppCenterAuth;
     protected manager: ExtensionManager;
@@ -61,24 +60,19 @@ export class Command {
             VsCodeUI.ShowWarningMessage(Messages.NoProjectRootFolderFoundWarning);
             return Promise.resolve(false);
         }
-
-        if (this.noLoginRequired) {
-            return Promise.resolve(true);
+        const profile: AppCenterProfile | null = await this.appCenterProfile;
+        if (!profile) {
+            VsCodeUI.ShowWarningMessage(Messages.UserIsNotLoggedInWarning);
+            return Promise.resolve(false);
         } else {
-            const profile: AppCenterProfile | null = await this.appCenterProfile;
-            if (!profile) {
-                VsCodeUI.ShowWarningMessage(Messages.UserIsNotLoggedInWarning);
-                return Promise.resolve(false);
+            const clientOrNull: AppCenterClient | null = this.resolveAppCenterClient(profile);
+            if (clientOrNull) {
+                this.client = clientOrNull;
             } else {
-                const clientOrNull: AppCenterClient | null = this.resolveAppCenterClient(profile);
-                if (clientOrNull) {
-                    this.client = clientOrNull;
-                } else {
-                    this.logger.error(LogStrings.FailedToGetClient);
-                    return Promise.resolve(false);
-                }
-                return Promise.resolve(true);
+                this.logger.error(LogStrings.FailedToGetClient);
+                return Promise.resolve(false);
             }
+            return Promise.resolve(true);
         }
     }
 
