@@ -5,7 +5,7 @@ import { Strings } from "../extension/resources/strings";
 import { AppCenterUrlBuilder } from "../helpers/appCenterUrlBuilder";
 import { CreatedAppFromAppCenter } from "../helpers/interfaces";
 import { SettingsHelper } from "../helpers/settingsHelper";
-import { IButtonMessageItem, VsCodeUtils } from "../helpers/utils/vsCodeUtils";
+import { VsCodeUI, IButtonMessageItem } from "../extension/ui/vscodeUI";
 
 export default class AppCenterAppCreator {
     protected platform: AppCenterPlatform = AppCenterPlatform.ReactNative;
@@ -38,7 +38,7 @@ export default class AppCenterAppCreator {
                 title: Strings.BuildManualConfigureBtnLabel,
                 url: configureBuildLink
             });
-            VsCodeUtils.ShowInfoMessage(Strings.BuildManualConfigureMessage(appName), ...messageItems);
+            VsCodeUI.ShowInfoMessage(Strings.BuildManualConfigureMessage(appName), ...messageItems);
             return false;
         }
         return true;
@@ -57,7 +57,7 @@ export default class AppCenterAppCreator {
                 title: Strings.RepoManualConnectBtnLabel,
                 url: connectRepoLink
             });
-            VsCodeUtils.ShowInfoMessage(Strings.RepoManualConnectMessage(appName), ...messageItems);
+            VsCodeUI.ShowInfoMessage(Strings.RepoManualConnectMessage(appName), ...messageItems);
             return false;
         }
     }

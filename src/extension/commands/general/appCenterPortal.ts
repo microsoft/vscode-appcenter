@@ -19,7 +19,7 @@ export default class AppCenterPortal extends ReactNativeAppCommand {
 
     protected async handleShowCurrentAppQuickPickSelection(selected: QuickPickAppItem, rnApps: models.AppResponse[]) {
         if (selected.target === CommandNames.CreateApp.CommandName) {
-            return this.showCreateAppOptions();
+            return await this.showCreateAppOptions();
         } else {
 
             let selectedApp: models.AppResponse;
