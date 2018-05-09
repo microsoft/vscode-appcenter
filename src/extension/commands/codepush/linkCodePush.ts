@@ -1,5 +1,5 @@
 import AppCenterAppCreator from '../../../createApp/appCenterAppCreator';
-import { Deployment } from '../../../helpers/interfaces';
+import { Deployment, CommandParams } from '../../../helpers/interfaces';
 import { Utils } from '../../../helpers/utils/utils';
 import CodePushLinker from '../../../link/codePushLinker';
 import { Strings } from '../../resources/strings';
@@ -8,6 +8,11 @@ import { VsCodeUI } from '../../ui/vscodeUI';
 import { Messages } from '../../resources/messages';
 
 export default class LinkCodePush extends LinkCommand {
+
+    public constructor(params: CommandParams) {
+        super(params);
+    }
+
     public async run(): Promise<void> {
         if (!await super.run()) {
             return;

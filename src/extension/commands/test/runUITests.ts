@@ -9,7 +9,7 @@ export default class RunUITests extends ReactNativeAppCommand {
 
     private async: boolean = false;
 
-    constructor(params: CommandParams) {
+    constructor(params: CommandParams, private _app: CurrentApp = null) {
         super(params);
     }
 
@@ -21,17 +21,19 @@ export default class RunUITests extends ReactNativeAppCommand {
         if (!await super.run()) {
             return;
         }
-
-        const app: CurrentApp | null = await this.getCurrentApp();
-        if (!app) {
-            return false;
+        if (!this._app) {
+            const app: CurrentApp | null = await this.getCurrentApp();
+            if (!app) {
+                return false;
+            }
+            this._app = app;
         }
 
         let testRunner;
-        const isIOSplatform: boolean = app.os.toLowerCase() === AppCenterOS.iOS.toLowerCase();
+        const isIOSplatform: boolean = this._app.os.toLowerCase() === AppCenterOS.iOS.toLowerCase();
         const platformDir = isIOSplatform ? ReactNativePlatformDirectory.IOS : ReactNativePlatformDirectory.Android;
         const testRunnerOptions: TestRunnerOptions = {
-            app: app,
+            app: this._app,
             client: this.client,
             logger: this.logger,
             platformDir: platformDir,

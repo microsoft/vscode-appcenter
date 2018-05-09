@@ -1,9 +1,12 @@
 import { models } from "../../../api/appcenter";
 import * as General from "../general";
-import { CurrentApp, QuickPickAppItem } from "../../../helpers/interfaces";
+import { CurrentApp, QuickPickAppItem, CurrentAppDeployments, Deployment } from "../../../helpers/interfaces";
 import { AppCenterPortalMenu } from "../../menu/appCenterPortalMenu";
-import { AppCenterAppType, CommandNames } from "../../resources/constants";
+import { CommandNames, AppCenterOS, Constants } from "../../resources/constants";
 import { ReactNativeAppCommand } from "../reactNativeAppCommand";
+import { Utils } from "../../../helpers/utils/utils";
+import { VsCodeUI } from "../../ui/vscodeUI";
+import { Messages } from "../../resources/messages";
 
 export default class AppCenterPortal extends ReactNativeAppCommand {
 
@@ -35,28 +38,51 @@ export default class AppCenterPortal extends ReactNativeAppCommand {
                 }
                 selectedApp = selectedApps[0];
             }
-
-            let isOrg: boolean;
-            let appName: string;
-            let ownerName: string;
+            let currentAppToUse: CurrentApp;
 
             if (selectedApp) {
-                isOrg = selectedApp.owner.type.toLowerCase() === AppCenterAppType.Org.toLowerCase();
-                appName = selectedApp.name;
-                ownerName = selectedApp.owner.name;
+
+                const selectedApp: models.AppResponse = selectedApps[0];
+                const selectedAppName: string = `${selectedApp.owner.name}/${selectedApp.name}`;
+                const selectedAppSecret: string = selectedApp.appSecret;
+                const type: string = selectedApp.owner.type;
+
+                const OS: AppCenterOS | undefined = Utils.toAppCenterOS(selectedApp.os);
+
+                const deployments: models.Deployment[] = await VsCodeUI.showProgress(async progress => {
+                    progress.report({ message: Messages.FetchDeploymentsProgressMessage });
+                    return await this.client.codePushDeployments.list(selectedApp.owner.name, selectedApp.name);
+                });
+                const appDeployments: models.Deployment[] = deployments.sort((a, b): any => {
+                    return a.name < b.name; // sort alphabetically
+                });
+
+                let currentDeployments: CurrentAppDeployments | null = null;
+                if (appDeployments.length > 0) {
+                    const deployments: Deployment[] = appDeployments.map((d) => {
+                        return {
+                            name: d.name
+                        };
+                    });
+                    currentDeployments = {
+                        codePushDeployments: deployments,
+                        currentDeploymentName: appDeployments[0].name // Select 1st one by default
+                    };
+                }
+
+                currentAppToUse = Utils.toCurrentApp(selectedAppName, OS,
+                    currentDeployments, Constants.AppCenterDefaultTargetBinaryVersion, type, false, selectedAppSecret);
             } else {
                 const currentApp: CurrentApp | null = await this.getCurrentApp();
                 if (currentApp) {
-                    isOrg = currentApp.type.toLowerCase() === AppCenterAppType.Org.toLowerCase();
-                    appName = currentApp.appName;
-                    ownerName = currentApp.ownerName;
+                    currentAppToUse = currentApp;
                 } else {
                     this.logger.error("Current app is undefined");
                     throw new Error("Current app is undefined");
                 }
             }
 
-            return new AppCenterPortalMenu(isOrg, appName, ownerName, this._params).show();
+            return new AppCenterPortalMenu(currentAppToUse, this._params).show();
         }
     }
 }

@@ -7,7 +7,7 @@ import { Menu, MenuItems } from "./menu";
 
 export class CodePushMenu extends Menu {
 
-    constructor(private currentApp: CurrentApp, params: CommandParams) {
+    constructor(private currentApp: CurrentApp, params: CommandParams, private notCurrentApp: boolean = false) {
         super(params);
     }
 
@@ -25,9 +25,11 @@ export class CodePushMenu extends Menu {
 
             if (this.hasCodePushDeployments() && this.isCodePushProject()) {
                 menuItems.push(MenuItems.ReleaseReact(this.currentApp));
-                menuItems.push(MenuItems.SetCurrentDeployment(this.currentApp));
-                menuItems.push(MenuItems.SetTargetBinaryVersion(this.currentApp));
-                menuItems.push(MenuItems.SwitchMandatory(this.currentApp));
+                if (!this.notCurrentApp) {
+                    menuItems.push(MenuItems.SetCurrentDeployment(this.currentApp));
+                    menuItems.push(MenuItems.SetTargetBinaryVersion(this.currentApp));
+                    menuItems.push(MenuItems.SwitchMandatory(this.currentApp));
+                }
             }
         }
         return menuItems;
@@ -40,7 +42,7 @@ export class CodePushMenu extends Menu {
                 break;
 
             case (CommandNames.CodePush.ReleaseReact):
-                new CodePush.ReleaseReact(this._params).run();
+                new CodePush.ReleaseReact(this._params, this.currentApp).run();
                 break;
 
             case (CommandNames.CodePush.SetTargetBinaryVersion):

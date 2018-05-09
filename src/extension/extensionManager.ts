@@ -76,7 +76,7 @@ export class ExtensionManager implements Disposable {
 
     public async checkCurrentApps(appCenterAuth: AppCenterAuth) {
         const profile: AppCenterProfile = appCenterAuth.activeProfile;
-        if (profile.currentApp) {
+        if (profile && profile.currentApp) {
             await this.checkAppExists(profile, appCenterAuth);
         }
     }
