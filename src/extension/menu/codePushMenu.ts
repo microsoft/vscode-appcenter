@@ -54,7 +54,7 @@ export class CodePushMenu extends Menu {
                 break;
 
             case (CommandNames.CodePush.LinkCodePush):
-                new CodePush.LinkCodePush(this._params).run();
+                new CodePush.LinkCodePush(this._params, this.currentApp).run();
                 break;
 
             case (AppCenterDistributionTabs.CodePush):
