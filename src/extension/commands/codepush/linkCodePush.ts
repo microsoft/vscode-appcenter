@@ -9,10 +9,6 @@ import { Messages } from '../../resources/messages';
 
 export default class LinkCodePush extends LinkCommand {
 
-    public constructor(params: CommandParams) {
-        super(params);
-    }
-
     public async run(): Promise<void> {
         if (!await super.run()) {
             return;
