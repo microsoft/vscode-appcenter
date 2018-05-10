@@ -94,6 +94,11 @@ export class Messages {
         return `You are logged into ${provider} as '${name}'.`;
     }
 
+    public static YouAreLoggedInCurrentAppIsMessage(provider: AuthProvider, name: string, currentAppName: string): string {
+        return `You are logged into ${provider} as '${name}'.
+The current app is '${currentAppName}'.`;
+    }
+
     public static YourCurrentAppAndDeploymentMessage(appName: string, deploymentName: string): string {
         if (deploymentName) {
             return `${appName} (${deploymentName}) is now your current app and deployment.`;
