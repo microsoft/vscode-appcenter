@@ -7,6 +7,7 @@ export default class GetCurrentApp extends ReactNativeAppCommand {
 
     constructor(params: CommandParams) {
         super(params);
+        this.checkForReact = false;
     }
 
     public async runNoClient(): Promise<void> {
