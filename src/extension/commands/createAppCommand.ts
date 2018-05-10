@@ -77,13 +77,13 @@ export class CreateAppCommand extends Command {
         }
         if (option === CreateNewAppOption.Android || option === CreateNewAppOption.Both) {
             if (await this.appAlreadyExistInAppCenter(AppCenterAppBuilder.getAndroidAppName(projectName))) {
-                VsCodeUI.ShowErrorMessage(Messages.AppAlreadyExistInAppCenterWarning);
+                VsCodeUI.ShowErrorMessage(Messages.AppAlreadyExistInAppCenterWarning(AppCenterAppBuilder.getAndroidAppName(projectName)));
                 return null;
             }
         }
         if (option === CreateNewAppOption.IOS || option === CreateNewAppOption.Both) {
             if (await this.appAlreadyExistInAppCenter(AppCenterAppBuilder.getiOSAppName(projectName))) {
-                VsCodeUI.ShowErrorMessage(Messages.AppAlreadyExistInAppCenterWarning);
+                VsCodeUI.ShowErrorMessage(Messages.AppAlreadyExistInAppCenterWarning(AppCenterAppBuilder.getiOSAppName(projectName)));
                 return null;
             }
         }
