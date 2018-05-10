@@ -1,5 +1,5 @@
 import { models } from "../../api/appcenter";
-import { CommandParams, CurrentApp, MenuQuickPickItem, Profile, UserOrOrganizationItem } from "../../helpers/interfaces";
+import { CommandParams, CurrentApp, MenuQuickPickItem, Profile, UserOrOrganizationItem, QuickPickAppItem } from "../../helpers/interfaces";
 import { FSUtils } from "../../helpers/utils/fsUtils";
 import { Utils } from "../../helpers/utils/utils";
 import { ILogger } from "../log/logHelper";
@@ -250,19 +250,19 @@ export function getSelectedUserOrOrgItem(selected: CustomQuickPickItem, allItems
     }
 }
 
-export function getCreateAppOptions(): CustomQuickPickItem[] {
-    const createAppOptions: CustomQuickPickItem[] = [];
-    createAppOptions.push(<CustomQuickPickItem>{
+export function getCreateAppOptions(): QuickPickAppItem[] {
+    const createAppOptions: QuickPickAppItem[] = [];
+    createAppOptions.push(<QuickPickAppItem>{
         label: MenuStrings.CreateNewAndroidAppMenuLabel,
         description: "",
         target: CommandNames.CreateApp.Android
     });
-    createAppOptions.push(<CustomQuickPickItem>{
+    createAppOptions.push(<QuickPickAppItem>{
         label: MenuStrings.CreateNewIOSAppMenuLabel,
         description: "",
         target: CommandNames.CreateApp.IOS
     });
-    createAppOptions.push(<CustomQuickPickItem>{
+    createAppOptions.push(<QuickPickAppItem>{
         label: MenuStrings.CreateNewAppsForBothMenuLabel,
         description: "",
         target: CommandNames.CreateApp.Both

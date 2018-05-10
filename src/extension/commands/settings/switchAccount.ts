@@ -45,9 +45,9 @@ export default class SwitchAccount extends Command {
 
             selectedProfile.isActive = true;
             await this.appCenterAuth.updateProfile(selectedProfile);
-
+            await this.manager.checkCurrentApps(this.appCenterAuth);
             VsCodeUI.ShowInfoMessage(Messages.UserSwitchedMessage(AuthProvider.AppCenter, selectedProfile.userName));
-            await this.manager.setupAppCenterStatusBar(selectedProfile);
+            await this.manager.setupAppCenterStatusBar(this.appCenterAuth.activeProfile);
         } catch (e) {
             this.handleError(e);
             return false;

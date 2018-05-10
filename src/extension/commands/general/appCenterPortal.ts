@@ -1,4 +1,5 @@
 import { models } from "../../../api/appcenter";
+import * as General from "../general";
 import { CurrentApp, QuickPickAppItem } from "../../../helpers/interfaces";
 import { AppCenterPortalMenu } from "../../menu/appCenterPortalMenu";
 import { AppCenterAppType, CommandNames } from "../../resources/constants";
@@ -19,7 +20,8 @@ export default class AppCenterPortal extends ReactNativeAppCommand {
 
     protected async handleShowCurrentAppQuickPickSelection(selected: QuickPickAppItem, rnApps: models.AppResponse[]) {
         if (selected.target === CommandNames.CreateApp.CommandName) {
-            return await this.showCreateAppOptions();
+            await new General.CreateNewApp(this._params).run();
+            return;
         } else {
 
             let selectedApp: models.AppResponse;
