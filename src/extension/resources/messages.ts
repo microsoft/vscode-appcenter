@@ -134,16 +134,18 @@ The current app is '${currentAppName}'.`;
     public static NoDeploymentsWarning: string = "There are no deployments for current app.";
     public static InvalidCurrentAppNameWarning: string = "Sorry, the app name isn't valid.";
     public static UserIsNotLoggedInWarning: string = "You are not logged into App Center.";
-    public static InvalidAppVersionParamWarning: string = "Sorry, the provided app version isn't valid.";
+    public static InvalidAppVersionParamWarning: string = "Sorry, the provided app version isn't valid. It should be in a valid semver vesion format.";
     public static NotCodePushProjectWarning: string = "This command can only be executed from a React Native project with CodePush installed. Check out the Output window for more details.";
     public static GitIsNotInstalledWarning: string = "It looks like you don't have a local git client installed.";
-    public static ProjectNameIsNotValidWarning: string = "Sorry, the project name your entered is invalid.";
-    public static VstsCredsNotValidWarning: string = "Vsts credentials are not valid.";
+    public static ProjectNameIsNotValidWarning: string = "Sorry, the project name your entered is invalid. Make sure its starts with a letter and has no whitespaces in it.";
+    public static VstsCredsNotValidWarning: string = "VSTS credentials are not valid.";
     public static DirectoryIsNotEmptyForNewProjectWarning: string = "Sorry, you can only start a new project inside an empty folder.";
     public static NoProjectRootFolderFoundWarning: string = "Please open a project before using this command.";
-    public static AppAlreadyExistInAppCenterWarning: string = `An app with that name already exists in App Center. Please choose a new name.`;
+    public static AppAlreadyExistInAppCenterWarning(appName: string): string {
+        return `An app with the name ${appName} already exists in App Center. Please choose a new name.`;
+    }
 
-    public static packageIsNotInstalledGloballyWarning(packageName: string) {
+    public static PackageIsNotInstalledGloballyWarning(packageName: string) {
         return `You have not ${packageName} package installed globally. Please run "npm i -g ${packageName}" and try again.`;
     }
     // #endregion Warnings
@@ -156,11 +158,10 @@ The current app is '${currentAppName}'.`;
     public static FailedToCreateDeployments: string = `Failed to create deployments for the app. Check out the output window for more details.`;
     public static FailedToLinkCodePush: string = `Failed to link CodePush to the application. Check out the Output window for more details.`;
     public static FailedToLinkAppCenter: string = `Failed to link App Center to the application. Check out the Output window for more details.`;
-    public static FailedToConnectRepoToBuildService: string = "Sorry, we failed to connect the repository to the build service.";
-    public static FailedToConfigureBranchAndStartNewBuild: string = "Sorry, we failed to configure the branch for build.";
-    public static FailedToCreateDistributionGroup: string = "Sorry, we failed to create any distribution groups.";
-    public static FailedToCreateRNProjectMsg: string = "An unexpected error occurred while fetching the project template.";
-    public static FailedToRemoveRemoteRepositoryMsg: string = "Sorry, failed to remove remote repository.";
+    public static FailedToConnectRepoToBuildService: string = "Failed to connect the repository to the build service. Check out the Output window for more details.";
+    public static FailedToConfigureBranchAndStartNewBuild: string = "Failed to configure the branch for build. Check out the Output window for more details.";
+    public static FailedToCreateDistributionGroup: string = "Failed to create distribution groups. Check out the Output window for more details.";
+    public static FailedToCreateRNProjectMsg: string = "An unexpected error occurred while fetching the sample project.";
     public static FailedToAddRemoteRepositoryMsg: string = "Sorry, failed to add remote repository.";
     public static FailedToGetSelectedUserOrOrganizationMsg: string = "Sorry, failed to get selected account information.";
     public static FailedToProvideRepositoryNameMsg: string = "Sorry, the git url you provided doesn't appear to be valid.";
