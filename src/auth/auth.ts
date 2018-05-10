@@ -69,14 +69,14 @@ export default abstract class Auth<T extends Profile> {
 
     public async doLogout(userId: string): Promise<void> {
 
-        // Remove token from local store
+        // Remove token from the store
         // TODO: Probably we need to delete token from server also?
         try {
             await tokenStore.remove(userId);
         } catch (e) {
-            // If removing user fails, then maybe we have something stored in the file storage, need to clean up that too.
+            // If removing token fails, then maybe we have something stored in the file storage, need to clean that up, too.
             await fileTokenStore.remove(userId);
-        } 
+        }
         await this.profileStorage.delete(userId);
 
         // If there are no profiles left just exit
@@ -111,6 +111,7 @@ export default abstract class Auth<T extends Profile> {
             }
             throw new Error("Empty token!");
         } catch (err) {
+            // compatibility
             try {
                 const oldToken = await fileTokenStore.get(profile.userId);
                 if (oldToken) {
