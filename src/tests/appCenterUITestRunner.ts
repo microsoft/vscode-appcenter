@@ -46,7 +46,7 @@ export default abstract class AppCenterUITestRunner {
         return await VsCodeUI.showProgress<boolean>(async progress => {
             progress.report({ message: Messages.CheckingAppCenterCliProgressMessage });
             if (!await Utils.packageInstalledGlobally("appcenter-cli")) {
-                VsCodeUI.ShowWarningMessage(Messages.packageIsNotInstalledGloballyWarning("appcenter-cli"));
+                VsCodeUI.ShowWarningMessage(Messages.PackageIsNotInstalledGloballyWarning("appcenter-cli"));
                 return false;
             }
 
