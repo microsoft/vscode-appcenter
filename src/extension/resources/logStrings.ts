@@ -7,6 +7,7 @@ export class LogStrings {
     public static FailedToGetVSTSProjectList: string = "Failed to get VSTS Project list.";
     public static FailedToGetVSTSReposList: string = "Failed to get VSTS Git repositories list.";
     public static FailedToGetAppCenterProfile: string = "Could get profile from App Center.";
+    public static FailedToGetProfileFile: string = "No profile file found.";
     public static FailedToGetUserProfile: string = "Couldn't get user profile.";
     public static FailedToGetUserFromServer: string = "Failed to fetch user info from server";
     public static NoTokenProvided: string = "No token provided on login";

@@ -34,18 +34,13 @@ export class Command {
     }
 
     public get appCenterProfile(): Promise<AppCenterProfile | null> {
-        const profile = this.appCenterAuth.activeProfile;
-        if (!profile) {
-            this.logger.info(`No profile file found`);
-            return Promise.resolve(null);
-        }
-        return Promise.resolve(profile);
+        return this.appCenterAuth.activeProfile;
     }
 
     public runNoClient(): Promise<boolean | void> {
         const rootPath: string | undefined = this.manager.projectRootPath;
         if (!rootPath) {
-            this.logger.error('No project root folder found');
+            this.logger.error(LogStrings.RootNotFound);
             VsCodeUI.ShowWarningMessage(Messages.NoProjectRootFolderFoundWarning);
             return Promise.resolve(false);
         }

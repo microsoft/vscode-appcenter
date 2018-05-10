@@ -12,8 +12,23 @@ export default abstract class Auth<T extends Profile> {
 
     protected abstract async getUserInfo(credentials: LoginInfo): Promise<T>;
 
-    public get activeProfile(): T | null {
-        return this.profileStorage.activeProfile;
+    public get activeProfile(): Promise<T | null> {
+        const activeProfile: T = this.profileStorage.activeProfile;
+        if (!activeProfile) {
+            return this.tryFixProfileStorage();
+        } else {
+            return Promise.resolve(activeProfile);
+        }
+    }
+
+    private async tryFixProfileStorage(): Promise<T | null> {
+        const fixed: boolean = await this.profileStorage.tryFixStorage();
+        if (fixed) {
+            return this.profileStorage.activeProfile;
+        } else {
+            this.logger.info(LogStrings.FailedToGetProfileFile);
+            return null;
+        }
     }
 
     public async initialize(): Promise<void> {
