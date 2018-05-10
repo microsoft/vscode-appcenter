@@ -1,7 +1,7 @@
 import { Disposable, StatusBarItem } from 'vscode';
 import AppCenterAuth from '../auth/appCenterAuth';
 import VstsAuth from '../auth/vstsAuth';
-import { Profile } from '../helpers/interfaces';
+import { Profile, AppCenterProfile } from '../helpers/interfaces';
 import { Utils } from '../helpers/utils/utils';
 import * as CommandHandlers from './commandHandlers';
 import { ConsoleLogger } from './log/consoleLogger';
@@ -10,6 +10,8 @@ import { AuthProvider, CommandNames } from './resources/constants';
 import { Strings } from './resources/strings';
 import { VsCodeUI } from './ui/vscodeUI';
 import { Messages } from './resources/messages';
+import { AppCenterClient, createAppCenterClient } from '../api/appcenter';
+import { SettingsHelper } from '../helpers/settingsHelper';
 
 class CommandHandlersContainer {
     private _appCenterCommandHandler: CommandHandlers.AppCenter;
@@ -56,10 +58,10 @@ export class ExtensionManager implements Disposable {
     }
 
     public async Initialize(projectRootPath: string | undefined,
-            logger: ILogger = new ConsoleLogger(),
-            appCenterAuth: AppCenterAuth,
-            vstsAuth: VstsAuth
-        ): Promise<void> {
+        logger: ILogger = new ConsoleLogger(),
+        appCenterAuth: AppCenterAuth,
+        vstsAuth: VstsAuth
+    ): Promise<void> {
         this._logger = logger;
         this._projectRootPath = projectRootPath;
 
@@ -70,6 +72,25 @@ export class ExtensionManager implements Disposable {
     // tslint:disable-next-line:typedef
     public RunCommand(funcToTry: (args) => void, ...args: string[]): void {
         funcToTry(args);
+    }
+
+    public async checkCurrentApps(appCenterAuth: AppCenterAuth) {
+        const profile: AppCenterProfile = appCenterAuth.activeProfile;
+        if (profile.currentApp) {
+            await this.checkAppExists(profile, appCenterAuth);
+        }
+    }
+
+    private async checkAppExists(profile: AppCenterProfile, appCenterAuth: AppCenterAuth) {
+        const clientForProfile: AppCenterClient = createAppCenterClient().fromProfile(profile, SettingsHelper.getAppCenterAPIEndpoint());
+        try {
+            await clientForProfile.apps.get(profile.currentApp.ownerName, profile.currentApp.appName);
+        } catch (e) {
+            if (e.statusCode === 404) {
+                delete profile.currentApp;
+                await appCenterAuth.updateProfile(profile);
+            }
+        }
     }
 
     public setupAppCenterStatusBar(profile: Profile | null): Promise<void> {
