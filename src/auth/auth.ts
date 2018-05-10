@@ -71,7 +71,12 @@ export default abstract class Auth<T extends Profile> {
 
         // Remove token from local store
         // TODO: Probably we need to delete token from server also?
-        await tokenStore.remove(userId);
+        try {
+            await tokenStore.remove(userId);
+        } catch (e) {
+            // If removing user fails, then maybe we have something stored in the file storage, need to clean up that too.
+            await fileTokenStore.remove(userId);
+        } 
         await this.profileStorage.delete(userId);
 
         // If there are no profiles left just exit
@@ -109,6 +114,7 @@ export default abstract class Auth<T extends Profile> {
             try {
                 const oldToken = await fileTokenStore.get(profile.userId);
                 if (oldToken) {
+                    await fileTokenStore.remove(profile.userId);
                     await tokenStore.set(profile.userId, { token: oldToken.accessToken.token });
                     return oldToken.accessToken.token;
                 }
