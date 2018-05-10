@@ -5,7 +5,7 @@ import { RNCPAppCommand } from './rncpAppCommand';
 /* Internal command */
 export default class ShowMenu extends RNCPAppCommand {
 
-    constructor(params: CommandParams) {
+    constructor(params: CommandParams, private _app: CurrentApp = null) {
         super(params);
         this.checkForCodePush = false;
     }
@@ -15,11 +15,14 @@ export default class ShowMenu extends RNCPAppCommand {
             return false;
         }
 
-        const currentApp: CurrentApp | null = await this.getCurrentApp(true);
-        if (!currentApp) {
-            return false;
+        const notCurrentApp: boolean = !!this._app;
+        if (!this._app) {
+            const currentApp: CurrentApp | null = await this.getCurrentApp(true);
+            if (!currentApp) {
+                return false;
+            }
+            this._app = currentApp;
         }
-        return new CodePushMenu(currentApp, this._params).show();
+        return new CodePushMenu(this._app, this._params, notCurrentApp).show();
     }
-
 }
