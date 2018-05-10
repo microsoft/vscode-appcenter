@@ -11,7 +11,7 @@ import { LogStrings } from '../../resources/logStrings';
 import { Messages } from '../../resources/messages';
 
 export default class ReleaseReact extends RNCPAppCommand {
-    constructor(params: CommandParams) {
+    constructor(params: CommandParams, private _app: CurrentApp = null) {
         super(params);
     }
 
@@ -26,30 +26,33 @@ export default class ReleaseReact extends RNCPAppCommand {
         return await VsCodeUI.showProgress<void>(async progress => {
             try {
                 progress.report({ message: Messages.GettingAppInfoProgressMessage });
-                const currentApp: CurrentApp = await this.getCurrentApp(true);
+                if (!this._app) {
+                    const currentApp: CurrentApp = await this.getCurrentApp(true);
+                    if (!currentApp) {
+                        VsCodeUI.ShowWarningMessage(Messages.NoCurrentAppSetWarning);
+                        return void 0;
+                    }
+                    this._app = currentApp;
+                }
 
                 progress.report({ message: Messages.DetectingAppVersionProgressMessage });
-                if (!currentApp) {
-                    VsCodeUI.ShowWarningMessage(Messages.NoCurrentAppSetWarning);
-                    return void 0;
-                }
-                if (!this.hasCodePushDeployments(currentApp)) {
+                if (!this.hasCodePushDeployments(this._app)) {
                     VsCodeUI.ShowWarningMessage(Messages.NoDeploymentsWarning);
                     return void 0;
                 }
-                if (!currentApp.os || !reactNative.isValidOS(currentApp.os)) {
+                if (!this._app.os || !reactNative.isValidOS(this._app.os)) {
                     VsCodeUI.ShowWarningMessage(Messages.UnsupportedOSWarning);
                     return void 0;
                 }
-                codePushRelaseParams.app = currentApp;
-                codePushRelaseParams.deploymentName = currentApp.currentAppDeployments.currentDeploymentName;
-                currentApp.os = currentApp.os.toLowerCase();
-                isMandatory = !!currentApp.isMandatory;
+                codePushRelaseParams.app = this._app;
+                codePushRelaseParams.deploymentName = this._app.currentAppDeployments.currentDeploymentName;
+                this._app.os = this._app.os.toLowerCase();
+                isMandatory = !!this._app.isMandatory;
                 let appVersion: string;
-                if (currentApp.targetBinaryVersion !== Constants.AppCenterDefaultTargetBinaryVersion) {
-                    appVersion = currentApp.targetBinaryVersion;
+                if (this._app.targetBinaryVersion !== Constants.AppCenterDefaultTargetBinaryVersion) {
+                    appVersion = this._app.targetBinaryVersion;
                 } else {
-                    switch (currentApp.os) {
+                    switch (this._app.os) {
                         case "android": appVersion = await reactNative.getAndroidAppVersion(this.rootPath); break;
                         case "ios": appVersion = await reactNative.getiOSAppVersion(this.rootPath); break;
                         case "windows": appVersion = await reactNative.getWindowsAppVersion(this.rootPath); break;
