@@ -95,17 +95,17 @@
             },
             {
                 "command": "appcenter.settings.vsts.login",
-                "title": "Login to another Vsts account",
+                "title": "Login to another VSTS account",
                 "category": "App Center Settings"
             },
             {
                 "command": "appcenter.settings.vsts.switchAccount",
-                "title": "Switch Vsts Account",
+                "title": "Switch VSTS Account",
                 "category": "App Center Settings"
             },
             {
                 "command": "appcenter.settings.vsts.logout",
-                "title": "Logout from Vsts",
+                "title": "Logout from VSTS",
                 "category": "App Center Settings"
             },
             {

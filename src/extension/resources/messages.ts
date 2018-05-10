@@ -138,7 +138,7 @@ The current app is '${currentAppName}'.`;
     public static NotCodePushProjectWarning: string = "This command can only be executed from a React Native project with CodePush installed. Check out the Output window for more details.";
     public static GitIsNotInstalledWarning: string = "It looks like you don't have a local git client installed.";
     public static ProjectNameIsNotValidWarning: string = "Sorry, the project name your entered is invalid.";
-    public static VstsCredsNotValidWarning: string = "Vsts credentials are not valid.";
+    public static VstsCredsNotValidWarning: string = "VSTS credentials are not valid.";
     public static DirectoryIsNotEmptyForNewProjectWarning: string = "Sorry, you can only start a new project inside an empty folder.";
     public static NoProjectRootFolderFoundWarning: string = "Please open a project before using this command.";
     public static AppAlreadyExistInAppCenterWarning: string = `An app with that name already exists in App Center. Please choose a new name.`;
