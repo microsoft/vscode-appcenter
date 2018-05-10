@@ -1,4 +1,5 @@
 import { tokenStore } from "../data/tokenStore";
+import { fileTokenStore } from "../data/tokenStore";
 import { ILogger } from "../extension/log/logHelper";
 import { LoginInfo, Profile, ProfileStorage } from "../helpers/interfaces";
 import { LogStrings } from "../extension/resources/logStrings";
@@ -50,7 +51,11 @@ export default abstract class Auth<T extends Profile> {
 
         // Remove existent token for user from local store
         // TODO: Probably we need to delete token from server also?
-        await tokenStore.remove(profile.userId);
+        try {
+            await tokenStore.remove(profile.userId);
+        } catch (e) {
+            // It is ok if removing token failed.
+        }
 
         await tokenStore.set(profile.userId, { token: token });
 
@@ -91,19 +96,29 @@ export default abstract class Auth<T extends Profile> {
         return await this.profileStorage.list();
     }
 
-    public static accessTokenFor(profile: Profile): Promise<string> {
-        const getter = tokenStore.get(profile.userId);
+    public static async accessTokenFor(profile: Profile): Promise<string> {
         const emptyToken = "";
         // tslint:disable-next-line:no-any
-        return getter.then((entry: any) => {
+        try {
+            const entry = await tokenStore.get(profile.userId);
             if (entry) {
                 return entry.accessToken.token;
             }
-            return emptyToken;
-        }).catch((e: Error) => {
-            // TODO Find a way to log it via logger
-            console.error(LogStrings.FailedToGetToken, e);
-            return emptyToken;
-        });
+            throw new Error("Empty token!");
+        } catch (err) {
+            try {
+                const oldToken = await fileTokenStore.get(profile.userId);
+                if (oldToken) {
+                    await tokenStore.set(profile.userId, { token: oldToken.accessToken.token });
+                    return oldToken.accessToken.token;
+                }
+                return emptyToken;
+            } catch (e) {
+                // TODO Find a way to log it via logger
+                console.error(LogStrings.FailedToGetToken, err);
+                return emptyToken;
+            }
+
+        }
     }
 }

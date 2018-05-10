@@ -1,9 +1,12 @@
+import * as os from "os";
 import * as fs from "fs";
 import * as path from "path";
 import { Constants } from "../../extension/resources/constants";
 import { Utils } from "../../helpers/utils/utils";
 import { createFileTokenStore } from "./fileTokenStore";
 import { TokenStore } from "./tokenStore";
+import { createWinTokenStore } from "./win32/win-token-store";
+import { createOsxTokenStore } from "./osx/osx-token-store";
 
 export * from "./tokenStore";
 
@@ -25,5 +28,12 @@ const getTokenFilePath = (tokenFile: string) => {
   return tokenFilePath;
 };
 
-store = createFileTokenStore(getTokenFilePath(Constants.AppCenterTokenFileName));
+if (os.platform() === "win32") {
+  store = createWinTokenStore();
+} else if (os.platform() === "darwin") {
+  store = createOsxTokenStore();
+} else {
+  store = createFileTokenStore(getTokenFilePath(Constants.AppCenterTokenFileName));
+}
 export const tokenStore = store;
+export const fileTokenStore = createFileTokenStore(getTokenFilePath(Constants.AppCenterTokenFileName));
