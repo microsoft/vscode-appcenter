@@ -13,7 +13,6 @@ describe('FsProfileStorage', function () {
   let sandbox: sinon.SinonSandbox;
   const fakeFilePath = "./file.json";
   const mockFilePath = "./mock/profilesMock.json";
-  const mockFilePathMalformed = "./mock/profilesMockMalformed.json";
   const mockFilePathMalformedDuplicateUserIds = "./mock/profilesMockMalformedUserIds.json";
 
   before(() => {
@@ -55,19 +54,6 @@ describe('FsProfileStorage', function () {
       const expectedActiveProfile = profiles.filter(profile => profile.isActive)[0];
       const activeProfile = vstsProfileStorage.activeProfile;
       should.deepEqual(activeProfile, expectedActiveProfile);
-    });
-
-    it('should throw error if more than one active profile', async () => {
-      const absolutePath = path.resolve("test/" + mockFilePathMalformed);
-      vstsProfileStorage = new FsProfileStorage(absolutePath, new ConsoleLogger());
-      return new Promise(function (resolve, reject) {
-        vstsProfileStorage.init().catch(error => {
-          should.exist(error);
-          resolve();
-        }).then(() => {
-          reject("the function should throw");
-        });
-      });
     });
   });
 

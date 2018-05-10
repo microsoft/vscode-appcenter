@@ -75,8 +75,8 @@ export class ExtensionManager implements Disposable {
     }
 
     public async checkCurrentApps(appCenterAuth: AppCenterAuth) {
-        const profile: AppCenterProfile = appCenterAuth.activeProfile;
-        if (profile.currentApp) {
+        const profile: AppCenterProfile = await appCenterAuth.activeProfile;
+        if (profile && profile.currentApp) {
             await this.checkAppExists(profile, appCenterAuth);
         }
     }
@@ -95,11 +95,17 @@ export class ExtensionManager implements Disposable {
 
     public setupAppCenterStatusBar(profile: Profile | null): Promise<void> {
         if (profile && profile.userName) {
+            const currentAppName = profile.currentApp && profile.currentApp.appName && Utils.isReactNativeProject(this._logger, this.projectRootPath, false) ?
+                profile.currentApp.appName :
+                null;
+
+            const tooltip = currentAppName ?
+                Messages.YouAreLoggedInCurrentAppIsMessage(AuthProvider.AppCenter, profile.userName, currentAppName) :
+                Messages.YouAreLoggedInMessage(AuthProvider.AppCenter, profile.userName);
+
             return VsCodeUI.setStatusBar(this._appCenterStatusBarItem,
-                profile.currentApp && profile.currentApp.appName && Utils.isReactNativeProject(this._logger, this.projectRootPath, false)
-                    ? `App Center: ${Utils.FormatAppName(profile.currentApp.appName)}`
-                    : `App Center: ${profile.userName}`,
-                Messages.YouAreLoggedInMessage(AuthProvider.AppCenter, profile.userName),
+                currentAppName ? `App Center: ${Utils.FormatAppName(currentAppName)}` : `App Center: ${profile.userName}`,
+                tooltip,
                 `${CommandNames.ShowMenu}`
             );
         } else {

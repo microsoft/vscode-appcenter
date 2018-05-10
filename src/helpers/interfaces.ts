@@ -48,6 +48,7 @@ export interface ProfileStorage<T extends Profile> {
     get(userId: string): Promise<T | null>;
     list(): Promise<T[]>;
     init(): Promise<void>;
+    tryFixStorage(): Promise<boolean>;
 }
 
 export interface Profile {

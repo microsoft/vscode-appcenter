@@ -1,11 +1,15 @@
 import { CrashGenerator } from '../../../crashes/crashGenerator';
 import { AppCenterUrlBuilder } from '../../../helpers/appCenterUrlBuilder';
-import { AppCenterProfile } from '../../../helpers/interfaces';
+import { AppCenterProfile, CommandParams, CurrentApp } from '../../../helpers/interfaces';
 import { Strings } from '../../resources/strings';
 import { Command } from '../command';
 import { VsCodeUI, IButtonMessageItem } from '../../ui/vscodeUI';
 import { Messages } from '../../resources/messages';
 export default class SimulateCrashes extends Command {
+
+    public constructor(params: CommandParams, private _app: CurrentApp = null) {
+        super(params);
+    }
 
     public async run(): Promise<void> {
         if (!await super.run()) {
@@ -15,17 +19,22 @@ export default class SimulateCrashes extends Command {
             const link: string = await VsCodeUI.showProgress(async progress => {
                 progress.report({ message: Messages.SimulateCrashesProgressMessage });
                 const profile: AppCenterProfile | null = await this.appCenterProfile;
-                if (profile && profile.currentApp) {
-                    const crashGenerator: CrashGenerator = new CrashGenerator(profile.currentApp, AppCenterUrlBuilder.getCrashesEndpoint(), this.logger, progress);
-                    try {
-                        await crashGenerator.generateCrashes();
-                        return AppCenterUrlBuilder.GetPortalCrashesLink(profile.currentApp.ownerName, profile.currentApp.appName, profile.currentApp.type !== "user");
-                    } catch {
-                        VsCodeUI.ShowErrorMessage(Messages.FailedToGenerateCrashes);
+                if (!this._app) {
+                    if (profile && profile.currentApp) {
+                        this._app = profile.currentApp;
+                    } else {
+                        VsCodeUI.ShowWarningMessage(Messages.NoCurrentAppSetWarning);
                     }
-                } else {
-                    VsCodeUI.ShowWarningMessage(Messages.NoCurrentAppSetWarning);
                 }
+
+                const crashGenerator: CrashGenerator = new CrashGenerator(this._app, AppCenterUrlBuilder.getCrashesEndpoint(), this.logger, progress);
+                try {
+                    await crashGenerator.generateCrashes();
+                    return AppCenterUrlBuilder.GetPortalCrashesLink(this._app.ownerName, this._app.appName, this._app.type !== "user");
+                } catch {
+                    VsCodeUI.ShowErrorMessage(Messages.FailedToGenerateCrashes);
+                }
+
                 return null;
             });
             if (link) {
