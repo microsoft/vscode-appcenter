@@ -277,7 +277,8 @@
         "gulp-typescript": "^4.0.2",
         "tslint": "^5.9.1",
         "tslint-microsoft-contrib": "^5.0.3",
-        "typescript": "^2.8.3"
+        "typescript": "^2.8.3",
+        "vscode": "^1.1.17"
     },
     "dependencies": {
         "btoa": "^1.2.1",
@@ -311,7 +312,7 @@
         "temp": "^0.8.3",
         "test": "^0.6.0",
         "ts-md5": "^1.2.4",
-        "vscode": "^1.1.17",
-        "xml2js": "^0.4.19"
+        "xml2js": "^0.4.19",
+        "yazl": "^2.4.3"
     }
 }
