@@ -103,7 +103,7 @@ export class OsxTokenStore implements TokenStore {
     const args = [
       "add-generic-password",
       "-a", key,
-      "-D", "appcenter cli password",
+      "-D", "appcenter extension password",
       "-s", serviceName,
       "-w", value.token,
       "-U"
