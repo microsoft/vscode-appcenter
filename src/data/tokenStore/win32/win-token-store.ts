@@ -16,13 +16,12 @@ type Duplex = stream.Duplex;
 
 const credExePath = path.join(__dirname, "../../../../bin/windows/creds.exe");
 
-const targetNamePrefix = "AppCenterCli:target=";
-const oldTargetNamePrefix = "MobileCenterCli:target=";
+const targetNamePrefix = "AppCenterExtension:target=";
 
 class Prefixer {
   private prefix: string;
-  constructor(useOldName: boolean) {
-    this.prefix = useOldName ? oldTargetNamePrefix : targetNamePrefix;
+  constructor(_useOldName: boolean) {
+    this.prefix = targetNamePrefix;
   }
 
   public ensurePrefix(targetName: string): string {
