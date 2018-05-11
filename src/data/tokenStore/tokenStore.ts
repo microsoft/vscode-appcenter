@@ -21,6 +21,7 @@ export interface TokenEntry {
 }
 
 export interface TokenValueType {
+    id?: string;
     token: string;
 }
 
