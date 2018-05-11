@@ -13,8 +13,7 @@ import { TokenStore, TokenEntry, TokenKeyType, TokenValueType } from "../tokenSt
 import { createOsxSecurityParsingStream, OsxSecurityParsingStream } from "./osx-keychain-parser";
 
 const securityPath = "/usr/bin/security";
-const serviceName = "appcenter-cli";
-const oldServiceName = "mobile-center-cli";
+const serviceName = "appcenter-extension";
 
 export class OsxTokenStore implements TokenStore {
   public list(): rx.Observable<TokenEntry> {
@@ -52,11 +51,11 @@ export class OsxTokenStore implements TokenStore {
     });
   }
 
-  public get(key: TokenKeyType, useOldName: boolean = false): Promise<TokenEntry> {
+  public get(key: TokenKeyType, _useOldName: boolean = false): Promise<TokenEntry> {
     const args = [
       "find-generic-password",
       "-a", key,
-      "-s", useOldName ? oldServiceName : serviceName,
+      "-s", serviceName,
       "-g"
     ];
 
