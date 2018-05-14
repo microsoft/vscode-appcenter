@@ -58,8 +58,7 @@ export default class FsProfileStorage<T extends Profile> implements ProfileStora
 
         if (activeProfiles.length > 1) {
             for (const activeProfile of activeProfiles) {
-                const indexInArray: number = this.profiles.indexOf(activeProfile);
-                this.profiles[indexInArray].isActive = false;
+                activeProfile.isActive = false;
             }
             const indexInArray: number = this.profiles.indexOf(activeProfiles[0]);
             this.profiles[indexInArray].isActive = true;
