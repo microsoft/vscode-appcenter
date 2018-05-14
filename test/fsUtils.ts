@@ -1,7 +1,7 @@
 import mock = require('mock-fs');
 import { FSUtils } from '../src/helpers/utils/fsUtils';
 
-describe('Utils', function () {
+describe('FsUtils', function () {
     const pathToCreateEmptyFolder = "test/mock/empty-dir";
     const pathToNonEmptyDir = "test/mock/non-empty-dir";
     const dirWithIgnoredFilesPath = "test/mock/empty-dir-with-ignored-files";
