@@ -18,17 +18,17 @@ describe('Utils', function () {
 
     describe('#IsEmptyDirectoryToStartNewProject', () => {
 
-        it.only('should recognize an empty directory to start new project', async () => {
+        it('should recognize an empty directory to start new project', async () => {
             const isEmpty = FSUtils.IsEmptyDirectoryToStartNewProject(path.resolve(pathToCreateEmptyFolder));
             isEmpty.should.be.true();
         });
 
-        it.only('should recognize a non-empty directory', async () => {
+        it('should recognize a non-empty directory', async () => {
             const isEmpty = FSUtils.IsEmptyDirectoryToStartNewProject(path.resolve(pathToNonEmptyDir));
             isEmpty.should.be.false();
         });
 
-        it.only('should ignore .vscode and .git', async () => {
+        it('should ignore .vscode and .git', async () => {
             try {
                 fs.mkdirSync(path.resolve(dirWithIgnoredFilesPath, ".git"));
             } catch (e) { }
@@ -39,17 +39,17 @@ describe('Utils', function () {
 
     describe('#IsEmptyDirectory', () => {
 
-        it.only('should recognize an empty directory', async () => {
+        it('should recognize an empty directory', async () => {
             const isEmpty = FSUtils.IsEmptyDirectory(path.resolve(pathToCreateEmptyFolder));
             isEmpty.should.be.true();
         });
 
-        it.only('should recognize a non-empty directory', async () => {
+        it('should recognize a non-empty directory', async () => {
             const isEmpty = FSUtils.IsEmptyDirectory(path.resolve(pathToNonEmptyDir));
             isEmpty.should.be.false();
         });
 
-        it.only('should ignore .vscode', async () => {
+        it('should ignore .vscode', async () => {
             const isEmpty = FSUtils.IsEmptyDirectory(path.resolve(dirWithIgnoredVscodePath));
             isEmpty.should.be.true();
         });
@@ -59,12 +59,12 @@ describe('Utils', function () {
         const pathToExistingFile = "test/mock/file.json";
         const pathToNotExistingFile = "test/mock/file-1.json";
 
-        it.only('should return true if file exists', async () => {
+        it('should return true if file exists', async () => {
             const exists = await FSUtils.exists(path.resolve(pathToExistingFile));
             exists.should.be.true();
         });
 
-        it.only('should return false if file does not exist', async () => {
+        it('should return false if file does not exist', async () => {
             const exists = await FSUtils.exists(path.resolve(pathToNotExistingFile));
             exists.should.be.false();
         });
