@@ -39,7 +39,6 @@ export class VsCodeUI {
             statusBar.command = commandOnClick; // undefined clears the command
             statusBar.text = text;
             statusBar.tooltip = tooltip;
-            statusBar.color = Constants.AppCenterCodePushStatusBarColor;
             if (SettingsHelper.shouldStatusBarBeShown()) {
                 statusBar.show();
             }
