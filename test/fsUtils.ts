@@ -1,16 +1,14 @@
 import { FSUtils } from '../src/helpers/utils/fsUtils';
 
 describe('Utils', function () {
-    let path;
-    let fs;
+    const path = require("path");
+    const fs = require("fs");
     const pathToCreateEmptyFolder = "test/mock/empty-dir";
     const pathToNonEmptyDir = "test/mock/non-empty-dir";
     const dirWithIgnoredFilesPath = "test/mock/empty-dir-with-ignored-files";
     const dirWithIgnoredVscodePath = "test/mock/empty-dir-with-ignored-vscode";
 
     before(() => {
-        path = require("path");
-        fs = require("fs");
         try {
             fs.mkdirSync(path.resolve(pathToCreateEmptyFolder));
         } catch (e) { }
