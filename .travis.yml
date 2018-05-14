@@ -11,6 +11,4 @@ script:
 cache:
   directories:
     - "node_modules"
-env:
-  - CODE_TESTS_PATH=/Users/travis/build/Microsoft/vscode-appcenter/integrationTest
-  - CODE_TESTS_WORKSPACE=/Users/travis/build/Microsoft/vscode-appcenter/integrationTest/reactNativeApp
+env: CODE_TESTS_PATH=/Users/travis/build/Microsoft/vscode-appcenter/integrationTest CODE_TESTS_WORKSPACE=/Users/travis/build/Microsoft/vscode-appcenter/integrationTest/reactNativeApp
