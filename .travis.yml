@@ -7,6 +7,7 @@ install:
   - npm install -g vsce
 script:
   - vsce package
+  - npm run integrationTest
 cache:
   directories:
     - "node_modules"

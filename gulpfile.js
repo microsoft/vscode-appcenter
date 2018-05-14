@@ -11,15 +11,18 @@ var ts = require("gulp-typescript");
 
 var srcPath = "src";
 var testPath = "test";
+var integrationTestPath = "integrationTest";
 
 var sources = [
     srcPath,
     testPath,
+    integrationTestPath
 ].map(function (tsFolder) { return tsFolder + "/**/*.ts"; });
 
 var lintSources = [
     srcPath,
-    testPath
+    testPath,
+    integrationTestPath
 ].map(function (tsFolder) { return tsFolder + "/**/*.ts"; });
 lintSources = lintSources.concat([
     "!src/api/appcenter/generated/**"
@@ -42,13 +45,15 @@ gulp.task("clean", function () {
         "src/**/*.js.map",
         "test/**/*.js",
         "test/**/*.js.map",
+        "integrationTest/*.js",
+        "integrationTest/*.js.map",
         "out/",
         ".vscode-test/"
     ]
     return del(pathsToDelete, { force: true });
 });
 
-gulp.task("build", function () {
+gulp.task("build", function (callback) {
     var tsProject = ts.createProject("tsconfig.json");
     // var isProd = false; // TODO: determine
     // var preprocessorContext = isProd ? { PROD: true } : { DEBUG: true };
@@ -57,7 +62,10 @@ gulp.task("build", function () {
         .pipe(sourcemaps.init())
         .pipe(tsProject())
         .on("error", function (e) {
-            callback(e);
+            if (callback) {
+                callback(e);
+                callback = null;
+            }
         })
         .pipe(sourcemaps.write(".", {
             includeContent: false,
