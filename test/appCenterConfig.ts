@@ -1,0 +1,107 @@
+import should = require('should');
+import sinon = require('sinon');
+import { Utils } from '../src/helpers/utils/utils';
+import AppCenterConfig from '../src/data/appCenterConfig';
+import { ILogger } from '../src/extension/log/logHelper';
+import { ConsoleLogger } from '../src/extension/log/consoleLogger';
+
+describe('AppCenterConfig', function () {
+    let appCenterConfig: AppCenterConfig;
+    let path;
+    let jsxml;
+    let fs;
+    let sandbox;
+    const root = "./test/mock";
+    const appName: string = "appName";
+    let androidStringsPath: string;
+    let pathToAppCenterConfigPlist: string;
+    let pathToMainPlist: string;
+    let pathToAndroidConfig: string;
+
+    before(() => {
+        path = require("path");
+        jsxml = require("node-jsxml");
+        fs = require("fs");
+        androidStringsPath = path.join(root, "android", "app", "src", "main", "res", "values", "strings.xml");
+        pathToAppCenterConfigPlist = path.join(root, "ios", appName, "AppCenter-Config.plist");
+        pathToMainPlist = path.join(root, "ios", appName, "Info.plist");
+        pathToAndroidConfig = path.join(root, "android", "app", "src", "main", "assets", "appcenter-config.json");
+
+        // Cleanup the files.
+        fs.writeFileSync(pathToAppCenterConfigPlist, "");
+        fs.writeFileSync(pathToMainPlist, "");
+        fs.writeFileSync(pathToAndroidConfig, "");
+        fs.writeFileSync(androidStringsPath, fs.readFileSync(path.resolve(root, "exampleStringsXml.xml")));
+        sandbox = sinon.sandbox.create();
+        const loggerStub: ILogger = sandbox.stub(ConsoleLogger.prototype);
+        appCenterConfig = Utils.createAppCenterConfigFrom(appName, path.resolve(root), loggerStub);
+    });
+
+    describe('#setAndroidStringResourcesDeploymentKey', () => {
+
+        it('should set the deployment key', async () => {
+            const depKey = "key";
+            appCenterConfig.setAndroidStringResourcesDeploymentKey(depKey);
+            appCenterConfig.saveAndroidStringResources();
+            const data = fs.readFileSync(androidStringsPath, { encoding: "utf8" });
+            const xml = new jsxml.XML(data);
+            xml.child(0).getValue().should.equal(depKey);
+        });
+    });
+
+    describe('#configPlistValue', () => {
+
+        it('should set and get config plist value', async () => {
+            const key = "key";
+            const value = "value";
+            appCenterConfig.setConfigPlistValueByKey(key, value);
+            appCenterConfig.saveConfigPlist();
+            const newValue = appCenterConfig.getConfigPlistValueByKey(key);
+            newValue.should.equal(value);
+        });
+
+        it('should delete config plist value', async () => {
+            const key = "key";
+            const value = "value";
+            appCenterConfig.setConfigPlistValueByKey(key, value);
+            appCenterConfig.saveConfigPlist();
+            appCenterConfig.deleteConfigPlistValueByKey(key);
+            const newValue = appCenterConfig.getConfigPlistValueByKey(key);
+            should.equal(newValue, undefined);
+        });
+    });
+
+    describe('#androidconfigValue', () => {
+
+        it('should set and get android config value', async () => {
+            const key = "key";
+            const value = "value";
+            appCenterConfig.setAndroidAppCenterConfigValueByKey(key, value);
+            appCenterConfig.saveAndroidAppCenterConfig();
+            const newValue = appCenterConfig.getAndroidAppCenterConfigValueByKey(key);
+            newValue.should.equal(value);
+        });
+
+        it('should delete android config value', async () => {
+            const key = "key";
+            const value = "value";
+            appCenterConfig.setAndroidAppCenterConfigValueByKey(key, value);
+            appCenterConfig.saveAndroidAppCenterConfig();
+            appCenterConfig.deleteAndroidAppCenterConfigValueByKey(key);
+            const newValue = appCenterConfig.getAndroidAppCenterConfigValueByKey(key);
+            should.equal(newValue, undefined);
+        });
+    });
+
+    describe('#mainPlistValue', () => {
+
+        it('should set and get main plist value', async () => {
+            const key = "key";
+            const value = "value";
+            appCenterConfig.setMainPlistValueByKey(key, value);
+            appCenterConfig.saveMainPlist();
+            const newValue = appCenterConfig.getMainPlistValueByKey(key);
+            newValue.should.equal(value);
+        });
+    });
+});
