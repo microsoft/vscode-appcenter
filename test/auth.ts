@@ -1,14 +1,15 @@
 import sinon = require('sinon');
-
+import os = require('os');
 import { ConsoleLogger } from '../src/extension/log/consoleLogger';
 import { VstsProfile, VstsLoginInfo } from '../src/helpers/interfaces';
 import VstsAuth from '../src/auth/vstsAuth';
 import { ILogger } from '../src/extension/log/logHelper';
-import { TokenEntry } from '../src/data/tokenStore/tokenStore';
-import { WinTokenStore } from '../src/data/tokenStore/win32/win-token-store';
-import mock = require('mock-os');
+import { TokenEntry, TokenStore } from '../src/data/tokenStore/tokenStore';
 import FsProfileStorage from '../src/data/fsProfileStorage';
 import { Utils } from '../src/helpers/utils/utils';
+import { OsxTokenStore } from '../src/data/tokenStore/osx/osx-token-store';
+import { WinTokenStore } from '../src/data/tokenStore/win32/win-token-store';
+import { FileTokenStore } from '../src/data/tokenStore/fileTokenStore';
 
 describe('Auth', function () {
 
@@ -19,16 +20,15 @@ describe('Auth', function () {
     const mockTenant = "tenant";
     const mockUser = "user";
     const mockId = "id";
+    let stubPrototype: TokenStore;
 
     before(async () => {
         sandbox = sinon.sandbox.create();
         const loggerStub: ILogger = sandbox.stub(ConsoleLogger.prototype);
         vstsProfileStorage = new FsProfileStorage(Utils.getVstsProfileFileName(), loggerStub);
         vstsAuth = new VstsAuth(vstsProfileStorage, loggerStub);
+        stubPrototype = os.platform() === 'win32' ? WinTokenStore.prototype : os.platform() === 'darwin' ? OsxTokenStore.prototype : FileTokenStore.prototype;
         await vstsAuth.initialize();
-        mock({
-            platform: 'win32'
-        });
     });
 
     after(() => {
@@ -58,10 +58,10 @@ describe('Auth', function () {
             getUserInfoStub = sandbox.stub(vstsAuth, 'getUserInfo');
             getUserInfoStub.resolves(mockProfile);
 
-            setTokenStub = sandbox.stub(WinTokenStore.prototype, 'set');
+            setTokenStub = sandbox.stub(stubPrototype, 'set');
             setTokenStub.withArgs(getUserInfoStub.userId, { token: mockToken }).resolves();
 
-            removeTokenStub = sandbox.stub(WinTokenStore.prototype, 'remove');
+            removeTokenStub = sandbox.stub(stubPrototype, 'remove');
             removeTokenStub.withArgs(mockId).resolves();
 
             saveStub = sandbox.stub(vstsProfileStorage, "save");
@@ -109,7 +109,7 @@ describe('Auth', function () {
             listStub = sandbox.stub(vstsProfileStorage, "list");
             listStub.resolves(profiles);
             sandbox.stub(vstsProfileStorage, "activeProfile").get(() => { return null; });
-            removeTokenStub = sandbox.stub(WinTokenStore.prototype, 'remove');
+            removeTokenStub = sandbox.stub(stubPrototype, 'remove');
             removeTokenStub.withArgs(mockId).resolves();
         });
 
@@ -137,7 +137,7 @@ describe('Auth', function () {
         };
 
         before(() => {
-            getTokenStub = sandbox.stub(WinTokenStore.prototype, 'get');
+            getTokenStub = sandbox.stub(stubPrototype, 'get');
             getTokenStub.withArgs(mockId).resolves(<TokenEntry>{
                 key: mockId,
                 accessToken: {
