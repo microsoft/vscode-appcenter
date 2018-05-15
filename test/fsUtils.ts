@@ -30,17 +30,17 @@ describe('FsUtils', function () {
 
     describe('#IsEmptyDirectoryToStartNewProject', () => {
 
-        it('should recognize an empty directory to start new project', async () => {
+        it('should return true if directory is empty', async () => {
             const isEmpty = FSUtils.IsEmptyDirectoryToStartNewProject(pathToCreateEmptyFolder);
             isEmpty.should.be.true();
         });
 
-        it('should recognize a non-empty directory', async () => {
+        it('should return false if directory is not empty', async () => {
             const isEmpty = FSUtils.IsEmptyDirectoryToStartNewProject(pathToNonEmptyDir);
             isEmpty.should.be.false();
         });
 
-        it('should ignore .vscode and .git', async () => {
+        it('should return true if directory is empty but has .vscode and .git folders', async () => {
             const isEmpty = FSUtils.IsEmptyDirectoryToStartNewProject(dirWithIgnoredFilesPath);
             isEmpty.should.be.true();
         });
@@ -48,17 +48,17 @@ describe('FsUtils', function () {
 
     describe('#IsEmptyDirectory', () => {
 
-        it('should recognize an empty directory', async () => {
+        it('should return true if directory is empty', async () => {
             const isEmpty = FSUtils.IsEmptyDirectory(pathToCreateEmptyFolder);
             isEmpty.should.be.true();
         });
 
-        it('should recognize a non-empty directory', async () => {
+        it('should return false if directory is not empty', async () => {
             const isEmpty = FSUtils.IsEmptyDirectory(pathToNonEmptyDir);
             isEmpty.should.be.false();
         });
 
-        it('should ignore .vscode', async () => {
+        it('should return true if directory is empty but has .vscode folder', async () => {
             const isEmpty = FSUtils.IsEmptyDirectory(dirWithIgnoredVscodePath);
             isEmpty.should.be.true();
         });
