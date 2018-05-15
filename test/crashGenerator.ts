@@ -21,7 +21,7 @@ describe('CrashGenerator', function () {
         appSecret: "secret"
     };
 
-    before(async () => {
+    before(() => {
         sandbox = sinon.sandbox.create();
         const loggerStub: ILogger = sandbox.stub(ConsoleLogger.prototype);
         crashGenerator = new CrashGenerator(mockApp, "", loggerStub);
