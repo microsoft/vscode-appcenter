@@ -8,6 +8,8 @@ var libtslint = require("tslint");
 var runSequence = require("run-sequence");
 var sourcemaps = require("gulp-sourcemaps");
 var ts = require("gulp-typescript");
+var path = require('path');
+var cp = require('child_process');
 
 var srcPath = "src";
 var testPath = "test";
@@ -107,6 +109,37 @@ gulp.task("test", function (callback) {
                 callback = null;
             }
         });
+});
+
+gulp.task("integrationTest", function (callback) {
+    const executable = process.platform === 'win32' ? "code.cmd" : "code";
+    var args = [
+        '--extensionDevelopmentPath=' + process.cwd(),
+        '--extensionTestsPath=' + path.join(process.cwd(), 'integrationTest'),
+        path.join(process.cwd(), 'integrationTest', 'reactNativeApp'),
+    ];
+
+    console.log(`Current working directory: ${process.cwd()}`);
+    console.log(`Running extension tests: ${executable} ${args.join(' ')}`);
+
+    var cmd = cp.spawn(executable, args);
+
+    cmd.stdout.on('data', function (data) {
+        console.log(data.toString());
+    });
+
+    cmd.stderr.on('data', function (data) {
+        console.error(data.toString());
+    });
+
+    cmd.on('error', function (data) {
+        console.log('Failed to execute tests: ' + data.toString());
+    });
+
+    cmd.on('close', function (code) {
+        console.log('Tests exited with code: ' + code);
+        callback();
+    });
 });
 
 gulp.task("debug", function (callback) {
