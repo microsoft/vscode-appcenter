@@ -36,7 +36,7 @@ describe('FsProfileStorage', function () {
     after(() => {
       // Delete the file created during testing.
       const absolutePath = path.resolve("test/" + fakeFilePath);
-      fs.unlink(absolutePath);
+      fs.unlinkSync(absolutePath);
     });
 
     it('should create empty storage', async () => {
