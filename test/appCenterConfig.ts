@@ -37,6 +37,8 @@ describe('AppCenterConfig', function () {
         appCenterConfig = Utils.createAppCenterConfigFrom(appName, path.resolve(root), loggerStub);
     });
 
+    after(() => { sandbox.restore(); });
+
     describe('#setAndroidStringResourcesDeploymentKey', () => {
 
         it('should set the deployment key', async () => {
