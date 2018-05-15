@@ -15,7 +15,7 @@ describe('Utils', function () {
 
     describe('#Format', () => {
 
-        it('should format the message properly', async () => {
+        it('should remove the newlines from the message', async () => {
             const messageBeforeFormatting = `Test message!
 New line here.`;
             const messageAfterFormatting = "Test message! New line here.";
@@ -54,7 +54,7 @@ New line here.`;
             path = require("path");
         });
 
-        it('should read json file properly', async () => {
+        it('should read and convert json file properly', async () => {
             const file = Utils.parseJsonFile(path.resolve("test/" + jsonFilePath));
             file.should.not.be.null;
             file.property.should.equal("value");
@@ -81,7 +81,7 @@ New line here.`;
             path = require("path");
         });
 
-        it('should read app name', async () => {
+        it('should read app name from package.json', async () => {
             const file = Utils.getAppName(path.resolve(root));
             file.should.equal("app_name");
         });

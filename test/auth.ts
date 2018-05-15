@@ -71,7 +71,7 @@ describe('Auth', function () {
             sandbox.restore();
         });
 
-        it('should login', async () => {
+        it('should save profile and token for profile userId', async () => {
             const profile = await vstsAuth.doLogin(vstsLoginInfo);
             profile.should.deepEqual(mockProfile);
             removeTokenStub.withArgs(mockId).calledOnce.should.be.true();
@@ -117,7 +117,7 @@ describe('Auth', function () {
             sandbox.restore();
         });
 
-        it('should logout', async () => {
+        it('should remove profile and token for profile userId', async () => {
             await vstsAuth.doLogout(mockId);
             removeTokenStub.withArgs(mockId).calledOnce.should.be.true();
             deleteStub.withArgs(mockId).calledOnce.should.be.true();

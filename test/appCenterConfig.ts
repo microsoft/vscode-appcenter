@@ -46,7 +46,6 @@ describe('AppCenterConfig', function () {
     });
 
     describe('#setAndroidStringResourcesDeploymentKey', () => {
-
         it('should set the deployment key', async () => {
             const depKey = "key";
             appCenterConfig.setAndroidStringResourcesDeploymentKey(depKey);
@@ -58,7 +57,6 @@ describe('AppCenterConfig', function () {
     });
 
     describe('#configPlistValue', () => {
-
         it('should set and get config plist value', async () => {
             const key = "key";
             const value = "value";
@@ -80,7 +78,6 @@ describe('AppCenterConfig', function () {
     });
 
     describe('#androidconfigValue', () => {
-
         it('should set and get android config value', async () => {
             const key = "key";
             const value = "value";
@@ -102,7 +99,6 @@ describe('AppCenterConfig', function () {
     });
 
     describe('#mainPlistValue', () => {
-
         it('should set and get main plist value', async () => {
             const key = "key";
             const value = "value";
