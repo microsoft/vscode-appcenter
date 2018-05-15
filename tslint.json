@@ -39,8 +39,8 @@
         "jquery-deferred-must-complete": true,
         "label-position": true,
         "match-default-export-name": false,
-        "mocha-avoid-only": true,
-        "mocha-no-side-effect-code": true,
+        "mocha-avoid-only": false, //changed
+        "mocha-no-side-effect-code": false, //changed
         "no-any": false,
         "no-arg": true,
         "no-backbone-get-set-outside-model": false,
