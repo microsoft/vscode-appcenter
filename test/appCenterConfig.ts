@@ -43,6 +43,7 @@ describe('AppCenterConfig', function () {
 
     after(() => {
         sandbox.restore();
+        mock.restore();
     });
 
     describe('#setAndroidStringResourcesDeploymentKey', () => {
