@@ -117,7 +117,7 @@ describe('Auth', function () {
             sandbox.restore();
         });
 
-        it.only('should logout', async () => {
+        it('should logout', async () => {
             await vstsAuth.doLogout(mockId);
             removeTokenStub.withArgs(mockId).calledOnce.should.be.true();
             deleteStub.withArgs(mockId).calledOnce.should.be.true();
@@ -150,7 +150,7 @@ describe('Auth', function () {
             sandbox.restore();
         });
 
-        it.only('should get access token for user', async () => {
+        it('should get access token for user', async () => {
             const token = await VstsAuth.accessTokenFor(mockProfile);
             token.should.equal(mockToken);
         });
