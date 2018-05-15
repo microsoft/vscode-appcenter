@@ -3,6 +3,7 @@
 out/test/**
 out/**/*.map
 test/**
+integrationTest/**
 out/**
 src/**
 !src/**/*.js
