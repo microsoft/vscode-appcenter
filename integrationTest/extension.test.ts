@@ -7,7 +7,7 @@ describe("Extension Tests", function () {
     describe('#registerAppCenterCommands', function () {
 
         it('should register all commands', async function () {
-            const requiredCommands = [
+            const requiredCommands = new Set([
                 CommandNames.AppCenterPortal,
                 CommandNames.WhoAmI,
                 CommandNames.Login,
@@ -35,12 +35,17 @@ describe("Extension Tests", function () {
                 CommandNames.Test.RunUITests,
                 CommandNames.Test.RunUITestsAsync,
                 CommandNames.Test.ViewResults
-            ];
+            ]);
 
-            const registeredCommands = new Set(await vscode.commands.getCommands(true));
+            const registeredCommands = await vscode.commands.getCommands(true);
+            const appCenterCommands = new Set(registeredCommands.filter(c => c.startsWith(CommandNames.CommandPrefix)));
 
             for (const requiredCommand of requiredCommands) {
-                should.equal(registeredCommands.has(requiredCommand), true);
+                should.equal(appCenterCommands.has(requiredCommand), true, `Command not registered: ${requiredCommand}`);
+            }
+
+            for (const registeredCommand of appCenterCommands) {
+                should.equal(requiredCommands.has(registeredCommand), true, `Unexpected command registered: ${registeredCommand}`);
             }
         });
     });
