@@ -28,8 +28,8 @@ describe('AppCenterConfig', function () {
         pathToAndroidConfig = path.join(root, "android", "app", "src", "main", "assets", "appcenter-config.json");
 
         // Cleanup the files.
-        fs.writeFileSync(pathToAppCenterConfigPlist, "");
-        fs.writeFileSync(pathToMainPlist, "");
+        fs.writeFileSync(pathToAppCenterConfigPlist, '<?xml version="1.0" encoding="UTF-8"?>');
+        fs.writeFileSync(pathToMainPlist, '<?xml version="1.0" encoding="UTF-8"?>');
         fs.writeFileSync(pathToAndroidConfig, "");
         fs.writeFileSync(androidStringsPath, fs.readFileSync(path.resolve(root, "exampleStringsXml.xml")));
         sandbox = sinon.sandbox.create();
@@ -37,7 +37,13 @@ describe('AppCenterConfig', function () {
         appCenterConfig = Utils.createAppCenterConfigFrom(appName, path.resolve(root), loggerStub);
     });
 
-    after(() => { sandbox.restore(); });
+    after(() => {
+        sandbox.restore();
+        fs.writeFileSync(pathToAppCenterConfigPlist, '');
+        fs.writeFileSync(pathToMainPlist, '');
+        fs.writeFileSync(pathToAndroidConfig, "");
+        fs.writeFileSync(androidStringsPath, "");
+    });
 
     describe('#setAndroidStringResourcesDeploymentKey', () => {
 
