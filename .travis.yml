@@ -11,4 +11,6 @@ script:
 cache:
   directories:
     - "node_modules"
-env: CODE_TESTS_PATH=$TRAVIS_BUILD_DIR/integrationTest CODE_TESTS_WORKSPACE=$TRAVIS_BUILD_DIR/integrationTest/reactNativeApp
+env:
+  - CODE_TESTS_PATH=$TRAVIS_BUILD_DIR/integrationTest
+  - CODE_TESTS_WORKSPACE=$TRAVIS_BUILD_DIR/integrationTest/reactNativeApp
