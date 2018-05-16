@@ -18,11 +18,18 @@
             "type": "extensionHost",
             "request": "launch",
             "runtimeExecutable": "${execPath}",
-            "args": ["--extensionDevelopmentPath=${workspaceRoot}", "--extensionTestsPath=${workspaceRoot}/out/test" ],
+            "args": [
+                "${workspaceRoot}/integrationTest/reactNativeApp",
+                "--extensionDevelopmentPath=${workspaceRoot}",
+                "--extensionTestsPath=${workspaceRoot}/integrationTest"
+            ],
             "stopOnEntry": false,
             "sourceMaps": true,
-            "outFiles": [ "${workspaceRoot}/out/test/**/*.js" ],
-            "preLaunchTask": "build"
+            "outFiles": [
+                "${workspaceRoot}/src/**/*.js",
+                "${workspaceRoot}/integrationTest/**/*.js"
+            ],
+            "preLaunchTask": "debug"
         }
     ]
 }
