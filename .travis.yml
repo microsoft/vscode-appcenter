@@ -6,7 +6,7 @@ install:
   - npm install -g gulp-cli
   - npm install -g vsce
 script:
-  - vsce package
+  - npm run vscode:prepublish
   - npm run integrationTest
 cache:
   directories:
