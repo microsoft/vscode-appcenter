@@ -50,7 +50,7 @@
             },
             {
                 "command": "appcenter.start",
-                "title": "Start a new project",
+                "title": "Start a New Project",
                 "category": "App Center"
             },
             {
@@ -65,7 +65,7 @@
             },
             {
                 "command": "appcenter.createNewApp",
-                "title": "Create new app",
+                "title": "Create New App",
                 "category": "App Center"
             },
             {
@@ -80,22 +80,22 @@
             },
             {
                 "command": "appcenter.settings.loginToAnotherAccount",
-                "title": "Login to another App Center account",
+                "title": "Login to Another App Center Account",
                 "category": "App Center Settings"
             },
             {
                 "command": "appcenter.settings.switchAccount",
-                "title": "Switch App Center account",
+                "title": "Switch App Center Account",
                 "category": "App Center Settings"
             },
             {
                 "command": "appcenter.settings.logout",
-                "title": "Logout App Center",
+                "title": "Logout from App Center",
                 "category": "App Center Settings"
             },
             {
                 "command": "appcenter.settings.vsts.login",
-                "title": "Login to another VSTS account",
+                "title": "Login to Another VSTS Account",
                 "category": "App Center Settings"
             },
             {
@@ -110,12 +110,12 @@
             },
             {
                 "command": "appcenter.settings.showStatusBar",
-                "title": "Show status bar",
+                "title": "Show Status Bar",
                 "category": "App Center Settings"
             },
             {
                 "command": "appcenter.settings.hideStatusBar",
-                "title": "Hide status bar",
+                "title": "Hide Status Bar",
                 "category": "App Center Settings"
             },
             {
@@ -125,17 +125,17 @@
             },
             {
                 "command": "appcenter.codepush.releaseReact",
-                "title": "Release React",
+                "title": "Release React Native",
                 "category": "App Center Code Push"
             },
             {
                 "command": "appcenter.codepush.switchMandatoryPropForRelease",
-                "title": "Switch Code Push release mandatory property",
+                "title": "Switch Code Push Release Mandatory Property",
                 "category": "App Center Code Push"
             },
             {
                 "command": "appcenter.codepush.setTargetBinaryVersion",
-                "title": "Set Code Push release target binary verison",
+                "title": "Set Code Push Release Target Binary Verison",
                 "category": "App Center Code Push"
             },
             {
@@ -144,18 +144,23 @@
                 "category": "App Center Code Push"
             },
             {
+                "command": "appcenter.test.showMenu",
+                "title": "Show UI Tests Menu",
+                "category": "App Center Test"
+            },
+            {
                 "command": "appcenter.test.runUITests",
-                "title": "Run UI tests",
+                "title": "Run UI Tests",
                 "category": "App Center Test"
             },
             {
                 "command": "appcenter.test.runUITestsAsync",
-                "title": "Run UI tests asynchronously",
+                "title": "Run UI Tests Asynchronously",
                 "category": "App Center Test"
             },
             {
                 "command": "appcenter.test.viewResults",
-                "title": "View UI tests results",
+                "title": "View UI Tests Results",
                 "category": "App Center Test"
             }
         ],
