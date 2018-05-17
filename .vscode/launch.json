@@ -29,7 +29,7 @@
                 "${workspaceRoot}/src/**/*.js",
                 "${workspaceRoot}/integrationTest/**/*.js"
             ],
-            "preLaunchTask": "debug"
+            "preLaunchTask": "default"
         }
     ]
 }
