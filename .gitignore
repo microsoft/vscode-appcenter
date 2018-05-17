@@ -1,7 +1,7 @@
 out
 node_modules
 .vscode-test/
-.vsix
+*.vsix
 coverage/
 .idea
 out
@@ -11,4 +11,5 @@ src/**/nodeDebugLocation.json
 src/**/*.js
 !src/api/appcenter/generated/**/*.js
 test/**/*.js
+integrationTest/*.js
 **/*.js.map
