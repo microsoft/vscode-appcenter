@@ -97,7 +97,9 @@ export default abstract class AppCenterUITestRunner {
                 "--build-dir",
                 this.getRelativeBuildBinaryDirectoryPath(),
                 "--token",
-                await Auth.accessTokenFor(this.options.profile)
+                await Auth.accessTokenFor(this.options.profile),
+                "--telemetry-source",
+                "vscode"
             ];
 
             if (async) {

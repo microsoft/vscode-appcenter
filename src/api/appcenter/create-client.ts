@@ -11,6 +11,8 @@ import { ServiceCallback, ServiceError, WebResource } from "ms-rest";
 import Auth from "../../auth/auth";
 import { ErrorCodes } from "../../codepush/commandResult";
 import { Profile } from "../../helpers/interfaces";
+import { telemetryFilter } from "./telemetry-filter";
+import { SettingsHelper } from "../../helpers/settingsHelper";
 
 export interface AppCenterClientFactory {
   fromUserNameAndPassword(userName: string, password: string, endpoint: string): AppCenterClient;
@@ -19,12 +21,17 @@ export interface AppCenterClientFactory {
 }
 
 export function createAppCenterClient(): AppCenterClientFactory {
-  function createClientOptions(): any {
-    const filters = [userAgentFilter];
-    return {
-      filters: filters
-    };
-  }
+    function createClientOptions(): any {
+        const filters = [userAgentFilter];
+
+        if (SettingsHelper.isTelemetryEnabled()) {
+            filters.push(telemetryFilter());
+        }
+
+        return {
+            filters: filters
+        };
+    }
 
   return {
     fromUserNameAndPassword(userName: string, password: string, endpoint: string): AppCenterClient {
