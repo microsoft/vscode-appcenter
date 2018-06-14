@@ -260,6 +260,11 @@
                     "description": "Enable this if you want the status bar with app name/user name always be shown in the bottom left corner of the window",
                     "type": "boolean",
                     "default": true
+                },
+                "appcenter.telemetryEnabled": {
+                    "description": "Allow extension to collect usage data and send it to Microsoft",
+                    "type": "boolean",
+                    "default": true
                 }
             }
         }
