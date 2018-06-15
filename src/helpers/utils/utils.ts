@@ -192,7 +192,7 @@ export class Utils {
         const resultSignalsThatPackageInstalled = (result) => !/\(empty\)/.test(result);
         let result: string = "";
         try {
-            result = await cpUtils.executeCommand(undefined, true, undefined, "npm", [], true, ...["list", "--depth", "1", "-g", packageName]);
+            result = await cpUtils.executeCommand(undefined, true, undefined, "npm", [], true, {}, ...["list", "--depth", "1", "-g", packageName]);
         } catch (e) {
             if (e instanceof SpawnError) {
                 if (e.exitCode === 1 && e.result && !resultSignalsThatPackageInstalled(e.result)) {
