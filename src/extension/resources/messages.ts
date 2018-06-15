@@ -146,7 +146,7 @@ The current app is '${currentAppName}'.`;
     }
 
     public static PackageIsNotInstalledGloballyWarning(packageName: string) {
-        return `You have not ${packageName} package installed globally. Please run "npm i -g ${packageName}" and try again.`;
+        return `You have not installed package ${packageName} globally. Please run "npm i -g ${packageName}" and try again.`;
     }
     // #endregion Warnings
 
