@@ -9,7 +9,7 @@ export class SpawnError extends Error {
 }
 
 export namespace cpUtils {
-    export async function executeCommand(logger: ILogger | undefined, logErrorsOnly: boolean = false, workingDirectory: string | undefined, command: string, inputValues: ReactNativeLinkInputValue[] = [], exposeArgs: boolean = true, ...args: string[]): Promise<string> {
+    export async function executeCommand(logger: ILogger | undefined, logErrorsOnly: boolean = false, workingDirectory: string | undefined, command: string, inputValues: ReactNativeLinkInputValue[] = [], exposeArgs: boolean = true, environment: any = {}, ...args: string[]): Promise<string> {
         let cmdOutput: string = '';
         let cmdOutputIncludingStderr: string = '';
         workingDirectory = workingDirectory || os.tmpdir();
@@ -17,7 +17,8 @@ export namespace cpUtils {
         await new Promise((resolve: () => void, reject: (e: Error) => void): void => {
             const options: cp.SpawnOptions = {
                 cwd: workingDirectory,
-                shell: true
+                shell: true,
+                env: { ...process.env, ...environment }
             };
             const childProc: cp.ChildProcess = cp.spawn(command, args, options);
 
