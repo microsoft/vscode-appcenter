@@ -30,7 +30,7 @@ There are several possible scenarios this extension solves:
 
         If you don't already have a personal access token to access your VSTS account you can go [here](https://docs.microsoft.com/en-us/vsts/accounts/use-personal-access-tokens-to-authenticate?view=vsts) to learn how to create one.
 
-    * After logging in, click the App Center status bar to show possible menu options and shoose `Start a new project`.
+    * After logging in, click the App Center status bar to show possible menu options and choose `Start a new project`.
 
         ![AppCenter Menu](images/appcenter-start-new-idea.png)
     * You will be prompted to enter a new name for your project and select user or organization where you would like to create app in App Center.
