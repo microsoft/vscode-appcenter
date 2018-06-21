@@ -34,6 +34,9 @@ export class FSUtils {
     }
 
     public static copyFiles(sourcePath: string, destinationPath: string) {
+        if (!fs.existsSync(sourcePath) || !fs.existsSync(destinationPath)) {
+            return;
+        }
         const dirContent = fs.readdirSync(sourcePath);
         for (const dir of dirContent) {
             const fullDir = path.join(sourcePath, dir);
