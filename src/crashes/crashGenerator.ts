@@ -1,18 +1,16 @@
 import fetch = require('node-fetch');
 import uuid = require('uuid');
-import { Progress } from 'vscode';
 import { HTTP_METHODS } from '../api/vsts/types';
 import { ConsoleLogger } from '../extension/log/consoleLogger';
 import { ILogger } from '../extension/log/logHelper';
 import { CurrentApp } from '../helpers/interfaces';
 import { CrashLogSchema } from './crashLogSchema';
 import { LogStrings } from '../extension/resources/logStrings';
-import { Messages } from '../extension/resources/messages';
 
 export class CrashGenerator {
     private _appSecret: string;
 
-    constructor(currentApp: CurrentApp, private _baseUrl: string, private logger: ILogger = new ConsoleLogger(), private _progress: Progress<{ message?: string; }> = null) {
+    constructor(currentApp: CurrentApp, private _baseUrl: string, private logger: ILogger = new ConsoleLogger()) {
         this._appSecret = currentApp.appSecret;
     }
 
@@ -55,7 +53,6 @@ export class CrashGenerator {
 
     private async sendCrashes(installId: string, body: object): Promise<void> {
         try {
-            this._progress.report({ message: Messages.SimulateCrashesSendProgressMessage });
             const url: string = `${this._baseUrl}?api-version=1.0`;
             const requestInfo = this.getRequestInfo(HTTP_METHODS.POST, body, installId);
 

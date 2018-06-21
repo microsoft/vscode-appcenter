@@ -4,7 +4,7 @@ import { DeviceConfiguration } from "../api/appcenter/generated/models";
 import Auth from "../auth/auth";
 import { fileUtils } from "../codepush/codepush-sdk/src";
 import { ILogger } from "../extension/log/logHelper";
-import { AppCenterOS, ReactNativePlatformDirectory } from "../extension/resources/constants";
+import { AppCenterOS, ReactNativePlatformDirectory, Constants } from "../extension/resources/constants";
 import { Strings } from "../extension/resources/strings";
 import { CurrentApp, Profile } from "../helpers/interfaces";
 import { cpUtils } from "../helpers/utils/cpUtils";
@@ -109,7 +109,12 @@ export default abstract class AppCenterUITestRunner {
             if (additionalArgs.length) {
                 args.push(...additionalArgs);
             }
-            return this.spawnProcess("appcenter", args);
+
+            const environment = {
+                TELEMETRY_SOURCE: Constants.TelemetrySource
+            };
+
+            return this.spawnProcess("appcenter", args, undefined, environment);
         });
     }
 
@@ -154,9 +159,9 @@ export default abstract class AppCenterUITestRunner {
         return deviceSelection.shortId;
     }
 
-    protected async spawnProcess(command: string, args: string[], dir?: string): Promise<boolean> {
+    protected async spawnProcess(command: string, args: string[], dir?: string, environment?: any): Promise<boolean> {
         try {
-            await cpUtils.executeCommand(this.options.logger, false, dir || this.nativeAppDirectory, command, [], false, ...args);
+            await cpUtils.executeCommand(this.options.logger, false, dir || this.nativeAppDirectory, command, [], false, environment, ...args);
         } catch (e) {
             this.options.logger.error(e.message, e, true);
             return false;

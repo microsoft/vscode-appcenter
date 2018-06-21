@@ -169,4 +169,13 @@ export class SettingsHelper {
         }
         return false;
     }
+
+    public static isTelemetryEnabled(): boolean {
+        const workspaceConfiguration = vscode.workspace.getConfiguration();
+        if (workspaceConfiguration.has("appcenter.telemetryEnabled")) {
+            const telemetryEnabled: boolean = ConfigurationReader.readBoolean(workspaceConfiguration.get("appcenter.telemetryEnabled"));
+            return telemetryEnabled;
+        }
+        return true;
+    }
 }

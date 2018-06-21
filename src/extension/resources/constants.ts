@@ -28,6 +28,7 @@ export class Constants {
     public static VstsProfileFileName: string = "VSCodeVstsProfile.json";
     public static TokenDir: string = ".vscode-appcenter";
     public static AppCenterTokenFileName = "VSCodeAppCenterTokens.json";
+    public static TelemetrySource = "appcenter-vscode-extension";
 
     // IMPORTANT: this two items below should stay in sync in terms of xcode projectOrWorkspacePath/scheme values
     // We should decide how we should handle this (e.g. create manually within App Center site)

@@ -27,12 +27,15 @@ export default class SimulateCrashes extends Command {
                     }
                 }
 
-                const crashGenerator: CrashGenerator = new CrashGenerator(this._app, AppCenterUrlBuilder.getCrashesEndpoint(), this.logger, progress);
+                progress.report({ message: Messages.SimulateCrashesSendProgressMessage });
+
+                const crashGenerator: CrashGenerator = new CrashGenerator(this._app, AppCenterUrlBuilder.getCrashesEndpoint(), this.logger);
                 try {
                     await crashGenerator.generateCrashes();
                     return AppCenterUrlBuilder.GetPortalCrashesLink(this._app.ownerName, this._app.appName, this._app.type !== "user");
-                } catch {
+                } catch (e) {
                     VsCodeUI.ShowErrorMessage(Messages.FailedToGenerateCrashes);
+                    this.logger.error(e.message, e);
                 }
 
                 return null;
