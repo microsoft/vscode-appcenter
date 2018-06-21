@@ -1,4 +1,5 @@
 import Auth from '../../../auth/auth';
+import * as path from "path";
 import { codePushRelease } from '../../../codepush';
 import { fileUtils, reactNative, updateContents } from '../../../codepush/codepush-sdk/src';
 import { BundleConfig } from '../../../codepush/codepush-sdk/src/react-native/react-native-utils';
@@ -9,6 +10,8 @@ import { RNCPAppCommand } from './rncpAppCommand';
 import { VsCodeUI } from '../../ui/vscodeUI';
 import { LogStrings } from '../../resources/logStrings';
 import { Messages } from '../../resources/messages';
+import { SettingsHelper } from '../../../helpers/settingsHelper';
+import { FSUtils } from '../../../helpers/utils/fsUtils';
 
 export default class ReleaseReact extends RNCPAppCommand {
     constructor(params: CommandParams, private _app: CurrentApp = null) {
@@ -74,6 +77,15 @@ export default class ReleaseReact extends RNCPAppCommand {
                 if (!pathToUpdateContents) {
                     return void 0;
                 }
+
+                // If user has enabled a mixin update, this is the place where we would add mixin folder contents to a bundle.
+                let codePushReleaseMixinPath: string = SettingsHelper.codePushReleaseMixinPath();
+                if (codePushReleaseMixinPath) {
+                    progress.report({ message: Messages.MakingMixinProgressMessage(codePushReleaseMixinPath) });
+                    codePushReleaseMixinPath = path.join(this.rootPath, codePushReleaseMixinPath);
+                    FSUtils.copyFiles(codePushReleaseMixinPath, pathToUpdateContents);
+                }
+
                 progress.report({ message: Messages.ArchivingUpdateContentsProgressMessage });
                 updateContentsDirectory = pathToUpdateContents;
                 this.logger.log(LogStrings.CodePushUpdatedContentsDir(updateContentsDirectory), LogLevel.Debug);

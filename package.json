@@ -265,6 +265,11 @@
                     "description": "Allow extension to collect usage data and send it to Microsoft",
                     "type": "boolean",
                     "default": true
+                },
+                "appcenter.codePushMixinPath": {
+                    "description": "Path to a folder which contents will be added to every CodePush update next to a bundle file. Must be relative to the project root",
+                    "type": "string",
+                    "default": ""
                 }
             }
         }
