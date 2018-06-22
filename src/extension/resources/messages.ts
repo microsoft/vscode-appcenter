@@ -34,7 +34,7 @@ export class Messages {
     public static RunningBundleCommandProgressMessage: string = "Creating a new bundle...";
     public static ArchivingUpdateContentsProgressMessage: string = "Compressing new bundle...";
     public static MakingMixinProgressMessage(folder: string): string {
-        return `Adding contents of ${folder} next to a bundle...`;
+        return `Adding contents of ${folder} to bundle...`;
     }
 
     // #endregion Progress labels
