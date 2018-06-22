@@ -1,4 +1,5 @@
 import * as fs from "fs";
+import * as path from "path";
 import * as rimraf from "rimraf";
 
 export class FSUtils {
@@ -30,6 +31,24 @@ export class FSUtils {
         });
         const dirExistAndEmpty = filteredDir && filteredDir.length === 0;
         return dirExistAndEmpty;
+    }
+
+    public static copyFiles(sourcePath: string, destinationPath: string) {
+        if (!fs.existsSync(sourcePath) || !fs.existsSync(destinationPath)) {
+            return;
+        }
+        const dirContent = fs.readdirSync(sourcePath);
+        for (const dir of dirContent) {
+            const fullDir = path.join(sourcePath, dir);
+            if (!fs.lstatSync(fullDir).isDirectory()) {
+                const outputFilePath: string = path.join(destinationPath, dir);
+                fs.writeFileSync(outputFilePath, fs.readFileSync(fullDir));
+            } else {
+                const newDir = path.join(destinationPath, dir);
+                fs.mkdirSync(newDir);
+                this.copyFiles(fullDir, newDir);
+            }
+        }
     }
 
     public static readFile(fileName: string): Promise<string> {

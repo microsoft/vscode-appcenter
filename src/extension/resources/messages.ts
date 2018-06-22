@@ -33,6 +33,10 @@ export class Messages {
     public static DetectingAppVersionProgressMessage: string = "Locating app version...";
     public static RunningBundleCommandProgressMessage: string = "Creating a new bundle...";
     public static ArchivingUpdateContentsProgressMessage: string = "Compressing new bundle...";
+    public static MakingMixinProgressMessage(folder: string): string {
+        return `Adding contents of ${folder} to bundle...`;
+    }
+
     // #endregion Progress labels
 
     // #region Info messages

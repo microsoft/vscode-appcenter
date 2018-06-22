@@ -178,4 +178,16 @@ export class SettingsHelper {
         }
         return true;
     }
+
+    public static codePushReleaseMixinPath(): string {
+        const workspaceConfiguration = vscode.workspace.getConfiguration();
+        if (workspaceConfiguration.has("appcenter.codePushMixinPath")) {
+            const mixinPath: string = ConfigurationReader.readString(workspaceConfiguration.get("appcenter.codePushMixinPath"));
+            if (mixinPath.length === 0) {
+                return null;
+            }
+            return mixinPath;
+        }
+        return null;
+    }
 }
