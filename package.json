@@ -2,7 +2,7 @@
     "name": "vscode-appcenter",
     "displayName": "App Center",
     "description": "Visual Studio App Center tools and services.",
-    "version": "0.1.5",
+    "version": "0.1.6",
     "publisher": "vsmobile",
     "icon": "images/icon.png",
     "engines": {

@@ -1,3 +1,6 @@
+## 0.1.6
+* Fixed issue with commands on Windows platform
+
 ## 0.1.5
 * Added telemetry support
 * Minor bugfixes and improvements
