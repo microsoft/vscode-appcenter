@@ -1,5 +1,9 @@
+## 0.1.5
+* Added telemetry support
+* Minor bugfixes and improvements
+
 ## 0.1.4
-* Minor bugfixes and design fixes.
+* Minor bugfixes and design fixes
 
 ## 0.1.3
 * Switched to more secure storages for tokens
