@@ -122,27 +122,27 @@
                 "category": "App Center Settings"
             },
             {
-                "command": "appcenter.codepush.setCurrentDeployment",
+                "command": "appcenter.codePush.setCurrentDeployment",
                 "title": "Set Current Deployment",
                 "category": "App Center Code Push"
             },
             {
-                "command": "appcenter.codepush.releaseReact",
+                "command": "appcenter.codePush.releaseReact",
                 "title": "Release React Native",
                 "category": "App Center Code Push"
             },
             {
-                "command": "appcenter.codepush.switchMandatoryPropForRelease",
+                "command": "appcenter.codePush.switchMandatoryPropForRelease",
                 "title": "Switch Code Push Release Mandatory Property",
                 "category": "App Center Code Push"
             },
             {
-                "command": "appcenter.codepush.setTargetBinaryVersion",
+                "command": "appcenter.codePush.setTargetBinaryVersion",
                 "title": "Set Code Push Release Target Binary Verison",
                 "category": "App Center Code Push"
             },
             {
-                "command": "appcenter.codepush.linkCodePush",
+                "command": "appcenter.codePush.linkCodePush",
                 "title": "Link Code Push",
                 "category": "App Center Code Push"
             },
