@@ -20,7 +20,10 @@
         "Other"
     ],
     "keywords": [
-        "app-center"
+        "app-center",
+        "react-native",
+        "code",
+        "push"
     ],
     "activationEvents": [
         "*"
