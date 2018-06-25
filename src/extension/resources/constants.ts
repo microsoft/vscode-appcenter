@@ -105,11 +105,10 @@ export class CommandNames {
     };
 
     public static CodePush = class {
-        public static ShowMenu: string = CommandNames.CommandPrefix + "codepush.showMenu";
-        public static SetCurrentDeployment: string = CommandNames.CommandPrefix + "codepush.setCurrentDeployment";
-        public static ReleaseReact: string = CommandNames.CommandPrefix + "codepush.releaseReact";
-        public static SwitchMandatoryPropForRelease: string = CommandNames.CommandPrefix + "codepush.switchMandatoryPropForRelease";
-        public static SetTargetBinaryVersion: string = CommandNames.CommandPrefix + "codepush.setTargetBinaryVersion";
+        public static SetCurrentDeployment: string = CommandNames.CommandPrefix + "codePush.setCurrentDeployment";
+        public static ReleaseReact: string = CommandNames.CommandPrefix + "codePush.releaseReact";
+        public static SwitchMandatoryPropForRelease: string = CommandNames.CommandPrefix + "codePush.switchMandatoryPropForRelease";
+        public static SetTargetBinaryVersion: string = CommandNames.CommandPrefix + "codePush.setTargetBinaryVersion";
         public static LinkCodePush: string = `${CommandNames.CommandPrefix}codePush.linkCodePush`;
     };
 
