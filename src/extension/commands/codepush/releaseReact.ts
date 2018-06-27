@@ -70,11 +70,11 @@ export default class ReleaseReact extends RNCPAppCommand {
                 }
                 progress.report({ message: Messages.RunningBundleCommandProgressMessage });
                 codePushRelaseParams.appVersion = appVersion;
-                const pathToUpdateContents: string = await reactNative.makeUpdateContents(<BundleConfig>{
+                updateContentsDirectory = await reactNative.makeUpdateContents(<BundleConfig>{
                     os: codePushRelaseParams.app.os,
                     projectRootPath: this.rootPath
                 });
-                if (!pathToUpdateContents) {
+                if (!updateContentsDirectory) {
                     return void 0;
                 }
 
@@ -83,18 +83,16 @@ export default class ReleaseReact extends RNCPAppCommand {
                 if (codePushReleaseMixinPath) {
                     progress.report({ message: Messages.MakingMixinProgressMessage(codePushReleaseMixinPath) });
                     codePushReleaseMixinPath = path.join(this.rootPath, codePushReleaseMixinPath);
-                    FSUtils.copyFiles(codePushReleaseMixinPath, pathToUpdateContents);
+                    FSUtils.copyFiles(codePushReleaseMixinPath, updateContentsDirectory);
                 }
 
                 progress.report({ message: Messages.ArchivingUpdateContentsProgressMessage });
-                updateContentsDirectory = pathToUpdateContents;
                 this.logger.log(LogStrings.CodePushUpdatedContentsDir(updateContentsDirectory), LogLevel.Debug);
-                const pathToZippedBundle: string = await updateContents.zip(pathToUpdateContents, this.rootPath);
-                if (!pathToZippedBundle) {
+                codePushRelaseParams.updatedContentZipPath = await updateContents.zip(updateContentsDirectory, updateContentsDirectory);
+                if (!codePushRelaseParams.updatedContentZipPath) {
                     return void 0;
                 }
                 progress.report({ message: Messages.ReleasingUpdateContentsProgressMessage });
-                codePushRelaseParams.updatedContentZipPath = pathToZippedBundle;
                 codePushRelaseParams.isMandatory = isMandatory;
                 const profile: AppCenterProfile = await this.appCenterProfile;
                 const token: string = await Auth.accessTokenFor(profile);
@@ -109,15 +107,16 @@ export default class ReleaseReact extends RNCPAppCommand {
                 } else {
                     VsCodeUI.ShowErrorMessage(response.errorMessage);
                 }
-                fileUtils.rmDir(codePushRelaseParams.updatedContentZipPath);
             } catch (error) {
                 if (error && error.message) {
                     VsCodeUI.ShowErrorMessage(`${Messages.FailedToMakeCodePushRelease} ${error.message}`);
                 } else {
                     VsCodeUI.ShowErrorMessage(Messages.FailedToMakeCodePushRelease);
                 }
-
-                fileUtils.rmDir(codePushRelaseParams.updatedContentZipPath);
+            } finally {
+                if (updateContentsDirectory) {
+                    fileUtils.rmDir(updateContentsDirectory);
+                }
             }
         });
     }
