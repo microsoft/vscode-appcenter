@@ -66,7 +66,7 @@ export default class AppCenterPortal extends ReactNativeAppCommand {
                     });
                     currentDeployments = {
                         codePushDeployments: deployments,
-                        currentDeploymentName: appDeployments[0].name // Select 1st one by default
+                        currentDeploymentName: Utils.selectCurrentDeploymentName(deployments)
                     };
                 }
 

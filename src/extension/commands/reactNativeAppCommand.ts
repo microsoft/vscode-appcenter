@@ -64,7 +64,11 @@ export class ReactNativeAppCommand extends Command {
                             if (result) {
                                 profile.currentApp.currentAppDeployments.codePushDeployments = [];
                                 profile.currentApp.currentAppDeployments.codePushDeployments.push(...result);
-                                profile.currentApp.currentAppDeployments.currentDeploymentName = Constants.CodePushStagingDeploymentName;
+
+                                profile.currentApp.currentAppDeployments.currentDeploymentName = Utils.selectCurrentDeploymentName(
+                                    profile.currentApp.currentAppDeployments.codePushDeployments,
+                                    profile.currentApp.currentAppDeployments.currentDeploymentName
+                                );
                             }
                         } catch (err) { }
                     }
