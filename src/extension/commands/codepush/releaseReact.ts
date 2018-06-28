@@ -49,13 +49,12 @@ export default class ReleaseReact extends RNCPAppCommand {
                 }
                 codePushRelaseParams.app = this._app;
                 codePushRelaseParams.deploymentName = this._app.currentAppDeployments.currentDeploymentName;
-                this._app.os = this._app.os.toLowerCase();
                 isMandatory = !!this._app.isMandatory;
                 let appVersion: string;
                 if (this._app.targetBinaryVersion !== Constants.AppCenterDefaultTargetBinaryVersion) {
                     appVersion = this._app.targetBinaryVersion;
                 } else {
-                    switch (this._app.os) {
+                    switch (this._app.os.toLowerCase()) {
                         case "android": appVersion = await reactNative.getAndroidAppVersion(this.rootPath); break;
                         case "ios": appVersion = await reactNative.getiOSAppVersion(this.rootPath); break;
                         case "windows": appVersion = await reactNative.getWindowsAppVersion(this.rootPath); break;

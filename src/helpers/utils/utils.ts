@@ -6,7 +6,7 @@ import * as os from 'os';
 import * as path from 'path';
 import { ILogger } from '../../extension/log/logHelper';
 import { AppCenterOS, Constants } from '../../extension/resources/constants';
-import { CurrentApp, CurrentAppDeployments } from '../interfaces';
+import { CurrentApp, CurrentAppDeployments, Deployment } from '../interfaces';
 import { cpUtils, SpawnError } from './cpUtils';
 import { Validators } from './validators';
 import AppCenterConfig from '../../data/appCenterConfig';
@@ -210,5 +210,21 @@ export class Utils {
         const pathToAndroidConfig: string = path.join(projectRootPath, "android", "app", "src", "main", "assets", "appcenter-config.json");
         const pathToAndroidStringResources: string = path.join(projectRootPath, "android", "app", "src", "main", "res", "values", "strings.xml");
         return new AppCenterConfig(pathToAppCenterConfigPlist, pathToMainPlist, pathToAndroidConfig, pathToAndroidStringResources, logger);
+    }
+
+    public static selectCurrentDeploymentName(deployments: Deployment[], currentDeploymentName: string = null): string {
+        if (deployments.length === 0) {
+            return "";
+        }
+
+        if (currentDeploymentName && deployments.some(depl => depl.name === currentDeploymentName)) {
+            return currentDeploymentName; // keep current deployment
+        }
+
+        if (deployments.some(depl => depl.name === Constants.CodePushStagingDeploymentName)) {
+            return Constants.CodePushStagingDeploymentName;
+        }
+
+        return deployments[0].name;
     }
 }

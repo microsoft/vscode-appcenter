@@ -58,7 +58,7 @@ export default class SetCurrentApp extends ReactNativeAppCommand {
                     });
                     currentDeployments = {
                         codePushDeployments: deployments,
-                        currentDeploymentName: appDeployments[0].name // Select 1st one by default
+                        currentDeploymentName: Utils.selectCurrentDeploymentName(deployments)
                     };
                 }
                 const app: CurrentApp | null = await this.saveCurrentApp(
