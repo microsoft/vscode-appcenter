@@ -1,3 +1,6 @@
+## 0.1.7
+* Various minor bugfixes and improvements 
+
 ## 0.1.6
 * Fixed issue with commands on Windows platform
 
