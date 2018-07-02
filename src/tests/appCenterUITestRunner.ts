@@ -111,7 +111,7 @@ export default abstract class AppCenterUITestRunner {
             }
 
             const environment = {
-                TELEMETRY_SOURCE: Constants.TelemetrySource
+                APPCENTER_TELEMETRY_SOURCE: Constants.TelemetrySource
             };
 
             return this.spawnProcess("appcenter", args, undefined, environment);
