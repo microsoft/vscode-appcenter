@@ -227,7 +227,7 @@ export function runReactNativeBundleCommand(projectRootPath: string, bundleName:
     "--bundle-output", path.join(outputFolder, bundleName),
     "--dev", development,
     "--entry-file", entryFile,
-    "--platform", platform
+    "--platform", platform.toLowerCase()
   ]);
 
   if (sourcemapOutput) {
