@@ -1,4 +1,8 @@
 ## 0.1.7
+## 0.1.8
+* Fixed Code Push release react command 
+
+## 0.1.7
 * Various minor bugfixes and improvements 
 
 ## 0.1.6
