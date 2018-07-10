@@ -291,9 +291,9 @@ export function getDefaultBundleName(os: string): string {
     throw new Error(`Platform must be either "ios" or "android".`);
   }
 
-  return os === "ios"
+  return os.toLowerCase() === "ios"
     ? "main.jsbundle"
-    : `index.${os}.bundle`;
+    : `index.${os.toLowerCase()}.bundle`;
 }
 
 export function getDefautEntryFilePath(os: string, projectDir?: string): string {
@@ -305,13 +305,14 @@ export function getDefautEntryFilePath(os: string, projectDir?: string): string 
     projectDir = process.cwd();
   }
 
-  let entryFilePath: string = path.join(projectDir, `index.${os}.js`);
+  const entryFileName = `index.${os.toLowerCase()}.js`;
+  let entryFilePath: string = path.join(projectDir, entryFileName);
   if (fileUtils.fileDoesNotExistOrIsDirectory(entryFilePath)) {
     entryFilePath = path.join(projectDir, "index.js");
   }
 
   if (fileUtils.fileDoesNotExistOrIsDirectory(entryFilePath)) {
-    throw new Error(`Entry file "index.${os}.js" or "index.js" does not exist.`);
+    throw new Error(`Entry file "${entryFileName}" or "index.js" does not exist.`);
   }
 
   return entryFilePath;
