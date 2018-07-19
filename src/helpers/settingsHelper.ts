@@ -190,4 +190,13 @@ export class SettingsHelper {
         }
         return null;
     }
+
+    public static codePushRNBundelDevFlag(): boolean {
+        const workspaceConfiguration = vscode.workspace.getConfiguration();
+        if (workspaceConfiguration.has("appcenter.codePushRNBundleDevFlag")) {
+            const codePushRNBundelDevFlag: boolean = ConfigurationReader.readBoolean(workspaceConfiguration.get("appcenter.codePushRNBundleDevFlag"));
+            return codePushRNBundelDevFlag;
+        }
+        return true;
+    }
 }
