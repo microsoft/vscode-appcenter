@@ -16,6 +16,7 @@ const properties = require("properties");
 const childProcess = require("child_process");
 import * as fileUtils from "../utils/file-utils";
 import { isValidVersion } from "../utils/validation-utils";
+import { SettingsHelper } from "../../../../helpers/settingsHelper";
 
 export let spawn = childProcess.spawn;
 
@@ -359,6 +360,8 @@ export async function makeUpdateContents(bundleConfig: BundleConfig): Promise<st
 
   fileUtils.createEmptyTmpReleaseFolder(updateContentsPath);
   fileUtils.removeReactTmpDir();
+
+  bundleConfig.development = SettingsHelper.codePushRNBundelDevFlag();
   await runReactNativeBundleCommand(bundleConfig.projectRootPath, bundleConfig.bundleName, bundleConfig.development, bundleConfig.entryFilePath, updateContentsPath, bundleConfig.os, bundleConfig.sourcemapOutput);
 
   return updateContentsPath;
