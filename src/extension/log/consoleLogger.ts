@@ -1,8 +1,8 @@
 import {ILogger, LogHelper, LogLevel} from "./logHelper";
 
-export class ConsoleLogger implements ILogger {
+const AppCenterPrefix: string = "VSCode AppCenter";
 
-    public static AppInfoString: string = "VSCode AppCenter";
+export class ConsoleLogger implements ILogger {
 
     public log(message: string, level: LogLevel): void {
         if (LogHelper.LOG_LEVEL === LogLevel.None) {
@@ -41,6 +41,6 @@ export class ConsoleLogger implements ILogger {
     }
 
     protected static getFormattedMessage(message: string, level: LogLevel): string {
-        return `[${ConsoleLogger.AppInfoString} : ${LogLevel[level]}] ${message}\n`;
+        return `[${AppCenterPrefix} : ${LogLevel[level]}] ${message}\n`;
     }
 }
