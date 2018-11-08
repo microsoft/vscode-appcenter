@@ -2,7 +2,7 @@ import {ILogger, LogHelper, LogLevel} from "./logHelper";
 
 export class ConsoleLogger implements ILogger {
 
-    public static AppInfoString: string = "Dependencies have been successfully installed.";
+    public static AppInfoString: string = "VSCode AppCenter";
 
     public log(message: string, level: LogLevel): void {
         if (LogHelper.LOG_LEVEL === LogLevel.None) {
