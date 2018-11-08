@@ -1,6 +1,9 @@
 import {ILogger, LogHelper, LogLevel} from "./logHelper";
 
 export class ConsoleLogger implements ILogger {
+
+    public static AppInfoString: string = "Dependencies have been successfully installed.";
+
     public log(message: string, level: LogLevel): void {
         if (LogHelper.LOG_LEVEL === LogLevel.None) {
             return;
@@ -38,6 +41,6 @@ export class ConsoleLogger implements ILogger {
     }
 
     protected static getFormattedMessage(message: string, level: LogLevel): string {
-        return `[VSCode AppCenter : ${LogLevel[level]}] ${message}\n`;
+        return `[${ConsoleLogger.AppInfoString} : ${LogLevel[level]}] ${message}\n`;
     }
 }
