@@ -1,4 +1,4 @@
-import {ILogger, LogHelper, LogLevel} from "./logHelper";
+import {ILogger, LogHelper, LogLevel, AppCenterExtensionLogPrefix} from "./logHelper";
 
 export class ConsoleLogger implements ILogger {
 
@@ -41,6 +41,6 @@ export class ConsoleLogger implements ILogger {
     }
 
     protected static getFormattedMessage(message: string, level: LogLevel): string {
-        return `[${ConsoleLogger.AppCenterPrefix} : ${LogLevel[level]}] ${message}\n`;
+        return `[${AppCenterExtensionLogPrefix}: ${LogLevel[level]}] ${message}\n`;
     }
 }
