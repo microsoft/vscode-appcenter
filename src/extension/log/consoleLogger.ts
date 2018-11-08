@@ -1,9 +1,6 @@
 import {ILogger, LogHelper, LogLevel, AppCenterExtensionLogPrefix} from "./logHelper";
 
 export class ConsoleLogger implements ILogger {
-
-    private static readonly AppCenterPrefix: string = "VSCode AppCenter";
-
     public log(message: string, level: LogLevel): void {
         if (LogHelper.LOG_LEVEL === LogLevel.None) {
             return;
