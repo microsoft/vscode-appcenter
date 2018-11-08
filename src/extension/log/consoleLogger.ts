@@ -38,6 +38,6 @@ export class ConsoleLogger implements ILogger {
     }
 
     protected static getFormattedMessage(message: string, level: LogLevel): string {
-        return `[${LogLevel[level]}] ${message}\n`;
+        return `[VSCode AppCenter : ${LogLevel[level]}] ${message}\n`;
     }
 }
