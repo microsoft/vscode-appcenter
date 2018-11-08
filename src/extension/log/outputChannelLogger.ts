@@ -1,5 +1,5 @@
 import * as vscode from "vscode";
-import { ILogger, LogHelper, LogLevel } from "./logHelper";
+import { ILogger, LogHelper, LogLevel, AppCenterExtensionLogPrefix } from "./logHelper";
 
 const channels: { [channelName: string]: OutputChannelLogger } = {};
 
@@ -74,7 +74,7 @@ export class OutputChannelLogger implements ILogger {
     }
 
     protected static getFormattedMessage(message: string, level: LogLevel): string {
-        return `[${LogLevel[level]}] ${message}\n`;
+        return `[${AppCenterExtensionLogPrefix}: ${LogLevel[level]}] ${message}\n`;
     }
 
     public getOutputChannel(): vscode.OutputChannel {

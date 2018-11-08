@@ -22,6 +22,8 @@ export class LogHelper {
     }
 }
 
+export const AppCenterExtensionLogPrefix: string = "VSCode App Center";
+
 function getLogLevel() {
     try {
         const SettingsHelper = require("../settingsHelper").SettingsHelper;
