@@ -6,8 +6,9 @@
 import * as _ from "lodash";
 import * as rx from "rx-lite";
 import * as childProcess from "child_process";
-import * as es from "event-stream";
-import * as stream from "stream";
+import * as from from "from2";
+import * as split from "split2";
+import * as through from "through2";
 
 import { TokenStore, TokenEntry, TokenKeyType, TokenValueType } from "../tokenStore";
 import { createOsxSecurityParsingStream, OsxSecurityParsingStream } from "./osx-keychain-parser";
@@ -22,16 +23,14 @@ export class OsxTokenStore implements TokenStore {
       const securityProcess = childProcess.spawn(securityPath, ["dump-keychain"]);
 
       const securityStream = securityProcess.stdout
-        .pipe(es.split() as any as stream.Duplex)
-        .pipe(es.mapSync(function (line: string) {
-          return line.replace(/\\134/g, "\\");
-        }) as any as stream.Duplex)
+        .pipe(split())
+        .pipe(through(function (line: Buffer, _enc: any, done: Function) {
+          done(null, line.toString().replace(/\\134/g, "\\"));
+        }))
         .pipe(new OsxSecurityParsingStream());
 
       securityStream.on("data", (data: any) => {
-        //debug(`listing, got data ${inspect(data)}`);
         if (data.svce !== serviceName) {
-          //debug(`service does not match, skipping`);
           return;
         }
 
@@ -41,12 +40,10 @@ export class OsxTokenStore implements TokenStore {
           id: data.gena,
           token: null
         };
-        // debug(`Outputting ${inspect({ key, accessToken })}`);
-        observer.onNext({ key, accessToken });
+        observer.next({ key, accessToken });
       });
       securityStream.on("end", (err: Error) => {
-        // debug(`output from security program complete`);
-        if (err) { observer.onError(err); } else { observer.onCompleted(); }
+        if (err) { observer.error(err); } else { observer.complete(); }
       });
     });
   }
@@ -69,14 +66,10 @@ export class OsxTokenStore implements TokenStore {
         if (match) {
           const accessToken = match[1].replace(/\\134/g, "\\");
 
-          //debug(`stdout for security program = "${stdout}"`);
-          //debug(`parsing stdout`);
           // Parse the rest of the information from stdout to get user & token ID
-          const source = es.through();
-          const parsed = source
+          const parsed = from([stdout])
             .pipe(createOsxSecurityParsingStream());
           parsed.on("data", (data: any) => {
-            //debug(`got data on key lookup: ${inspect(data)}`);
             resolve({
               key: data.acct,
               accessToken: {
@@ -86,12 +79,8 @@ export class OsxTokenStore implements TokenStore {
             });
           });
           parsed.on("error", (err: Error) => {
-            //debug(`parsed string failed`);
             reject(err);
           });
-          // debug(`Pushing output into parsing stream`);
-          source.push(stdout);
-          source.push(null);
         } else {
           reject(new Error("Password in incorrect format"));
         }

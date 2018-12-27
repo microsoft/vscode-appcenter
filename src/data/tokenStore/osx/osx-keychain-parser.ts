@@ -2,7 +2,8 @@
 // Parser for the output of the security(1) command line.
 //
 
-import * as es from "event-stream";
+import * as Pumpify from "pumpify";
+import * as split from "split2";
 import * as stream from "stream";
 
 //
@@ -33,15 +34,13 @@ export class OsxSecurityParsingStream extends stream.Transform {
   private inAttributes: boolean;
 
   constructor() {
-    super({ objectMode: true });
+    super({objectMode: true});
     this.currentEntry = null;
     this.inAttributes = false;
   }
 
-  public _transform(chunk: any, _encoding: string, callback: { (err?: Error): void }): void {
+  public _transform(chunk: any, _encoding: string, callback: {(err?: Error): void}): void {
     const line = chunk.toString();
-
-    // debug(`Parsing line [${line}]`);
 
     const rootMatch = line.match(rootFieldRe);
     if (rootMatch) {
@@ -62,7 +61,7 @@ export class OsxSecurityParsingStream extends stream.Transform {
     callback();
   }
 
-  public _flush(callback: { (err?: Error): void }): void {
+  public _flush(callback: {(err?: Error): void}): void {
     this.emitCurrentEntry();
     callback();
   }
@@ -75,28 +74,23 @@ export class OsxSecurityParsingStream extends stream.Transform {
   }
 
   public processRootLine(key: string, value: string): void {
-    //debug(`matched root line`);
     if (this.inAttributes) {
-      //  debug(`was in attributes, emitting`);
       this.emitCurrentEntry();
       this.inAttributes = false;
     }
     if (key === "attributes") {
-      // debug(`now in attributes`);
       this.inAttributes = true;
     } else {
-      // debug(`adding root attribute ${key} with value ${value} to object`);
       this.currentEntry = this.currentEntry || {};
       this.currentEntry[key] = value;
     }
   }
 
-  public processAttributeLine(key: string, value: string): void {
-    //debug(`adding attribute ${key} with value ${value} to object`);
+  public processAttributeLine(key: string, value: string): void  {
     this.currentEntry[key] = value;
   }
 }
 
 export function createOsxSecurityParsingStream(): NodeJS.ReadWriteStream {
-  return es.pipeline(es.split(), new OsxSecurityParsingStream());
+  return new Pumpify.obj(split(), new OsxSecurityParsingStream());
 }
