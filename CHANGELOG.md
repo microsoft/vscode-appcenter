@@ -1,3 +1,6 @@
+## 0.1.11
+* Fixed several security issues
+
 ## 0.1.10
 * Fixed issue when CodePush Release (ReactNative) leaves development flag not defined
 
