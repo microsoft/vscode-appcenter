@@ -1,7 +1,7 @@
 CODE_TESTS_PATH=./integrationTest
 CODE_TESTS_WORKSPACE=./integrationTest/reactNativeApp
 
-cd /usr/local/Cellar/node@8/
+cd /usr/local/Cellar
 ls
 npm config delete prefix 
 npm config set prefix /usr/local/Cellar/node@8/8.11.3
