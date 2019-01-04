@@ -5,6 +5,8 @@ CODE_TESTS_WORKSPACE=./integrationTest/reactNativeApp
  npm install -g n
 
 sudo n 8.11.3
+cd /usr/local/Cellar
+ls
 npm install
 npm install -g gulp-cli
 npm install -g vsce
