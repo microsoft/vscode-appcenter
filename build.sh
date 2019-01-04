@@ -5,7 +5,7 @@ CODE_TESTS_WORKSPACE=./integrationTest/reactNativeApp
  npm install -g n
 
 sudo n 8.11.3
-cd /usr/local/Cellar
+cd /usr/local/
 ls
 npm install
 npm install -g gulp-cli
