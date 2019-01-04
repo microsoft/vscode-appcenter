@@ -5,14 +5,6 @@ npm install
 npm install -g gulp-cli
 npm install -g vsce
 npm run vscode:prepublish
- npm cache clean -f
 
- npm install -g n
-
-sudo n 8.11.3
-
-
-npm config delete prefix
- unset npm_config_prefix
-npm config set prefix /usr/local/n/versions/node/8.11.3
+nvm use v8.11.3
 npm run integrationTest
