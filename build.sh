@@ -5,7 +5,7 @@ CODE_TESTS_WORKSPACE=./integrationTest/reactNativeApp
  npm install -g n
 
 sudo n 8.11.3
-cd /usr/local/n
+cd /usr/local/n/versions
 ls
 
 npm install
