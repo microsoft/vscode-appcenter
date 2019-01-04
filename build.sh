@@ -1,8 +1,10 @@
 CODE_TESTS_PATH=./integrationTest
 CODE_TESTS_WORKSPACE=./integrationTest/reactNativeApp
 
-nvm -h
-nvm use v8.11.3
+cd /usr/local
+ls
+$ npm config delete prefix 
+$ npm config set prefix /usr/local/versions/node/v6.11.1
 npm install
 npm install -g gulp-cli
 npm install -g vsce
