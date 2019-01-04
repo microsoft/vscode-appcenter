@@ -7,5 +7,6 @@ npm install -g vsce
 npm run vscode:prepublish
 
 
-npm config delete prefix 
+npm config delete prefix
+ unset npm_config_prefix
 npm run integrationTest
