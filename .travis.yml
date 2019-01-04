@@ -1,17 +1,5 @@
-language: node_js
-os: osx
-node_js: "8"
-install:
-  - npm install
-  - npm install -g gulp-cli
-  - npm install -g vsce
-script:
-  - npm run vscode:prepublish
-  - npm run integrationTest
-cache:
-  directories:
-    - "node_modules"
-env:
-  global:
-    - CODE_TESTS_PATH=$TRAVIS_BUILD_DIR/integrationTest
-    - CODE_TESTS_WORKSPACE=$TRAVIS_BUILD_DIR/integrationTest/reactNativeApp
+steps:
+- task: ShellScript@2
+  displayName: 'Build'
+  inputs:
+    scriptPath: 'build.sh'
