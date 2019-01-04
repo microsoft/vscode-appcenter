@@ -6,4 +6,4 @@ npm install -g gulp-cli
 npm install -g vsce
 npm run vscode:prepublish
 rm -rf $NVM_DIR
-sudo npm run integrationTest
+sudo npm run integrationTest --logLevel verbose
