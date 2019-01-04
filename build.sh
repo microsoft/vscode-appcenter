@@ -1,6 +1,10 @@
 CODE_TESTS_PATH=./integrationTest
 CODE_TESTS_WORKSPACE=./integrationTest/reactNativeApp
-npm install npm@latest -g
+ npm cache clean -f
+
+ npm install -g n
+
+n stable
 cd /usr/local/Cellar
 ls
 npm config delete prefix 
