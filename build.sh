@@ -1,5 +1,5 @@
-CODE_TESTS_PATH=$(Build.Repository.LocalPath)/integrationTest
-CODE_TESTS_WORKSPACE=$(Build.Repository.LocalPath)/integrationTest/reactNativeApp
+CODE_TESTS_PATH=$SYSTEM_BUILDPATH/integrationTest
+CODE_TESTS_WORKSPACE=$SYSTEM_BUILDPATH/integrationTest/reactNativeApp
 echo $CODE_TESTS_WORKSPACE
 npm i npm@latest -g
 npm install
