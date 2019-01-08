@@ -1,6 +1,5 @@
 CODE_TESTS_PATH=$SYSTEM_BUILDPATH/integrationTest
 CODE_TESTS_WORKSPACE=$SYSTEM_BUILDPATH/integrationTest/reactNativeApp
-echo $CODE_TESTS_WORKSPACE
 npm i npm@latest -g
 npm install
 npm install -g gulp-cli
