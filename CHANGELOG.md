@@ -5,7 +5,7 @@
 * Fixed issue when CodePush Release (ReactNative) leaves development flag not defined
 
 ## 0.1.9
-* Minor bugfixes
+* Minor bugfixes 
 
 ## 0.1.8
 * Fixed Code Push release react command 
