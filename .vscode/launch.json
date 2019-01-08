@@ -19,15 +19,15 @@
             "request": "launch",
             "runtimeExecutable": "${execPath}",
             "args": [
-                "${workspaceRoot}/integrationTest/reactNativeApp",
+                "${workspaceRoot}/test/reactNativeApp",
                 "--extensionDevelopmentPath=${workspaceRoot}",
-                "--extensionTestsPath=${workspaceRoot}/integrationTest"
+                "--extensionTestsPath=${workspaceRoot}/test"
             ],
             "stopOnEntry": false,
             "sourceMaps": true,
             "outFiles": [
                 "${workspaceRoot}/src/**/*.js",
-                "${workspaceRoot}/integrationTest/**/*.js"
+                "${workspaceRoot}/test/**/*.js"
             ],
             "preLaunchTask": "default"
         }
