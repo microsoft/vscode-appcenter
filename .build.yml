@@ -5,7 +5,5 @@ steps:
     versionSpec: 8.x
 - task: ShellScript@2
   displayName: 'Build'
-  env:
-    SYSTEM_BUILDPATH: $(Build.Repository.LocalPath)
   inputs:
     scriptPath: 'build.sh'
