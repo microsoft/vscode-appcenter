@@ -11,7 +11,7 @@ _NOTE: Currently it supports only React-Native based apps._
 * If you haven't already, please also install:
     * [react-native-cli](https://www.npmjs.com/package/react-native-cli)
     * [appcenter-cli](https://www.npmjs.com/package/appcenter-cli)
-    * [git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)
+    * [git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git) 
 
 
 ## How it works
