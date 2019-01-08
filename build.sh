@@ -6,7 +6,6 @@ npm install -g gulp-cli
 npm install -g vsce
 npm run vscode:prepublish
 rm -rf $NVM_DIR
-npm cache clean -f 
-npm install -g n
-sudo n stable
+npm install -g node@latest
+node -v
 sudo npm run integrationTest --loglevel verbose
