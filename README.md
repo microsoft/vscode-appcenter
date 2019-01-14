@@ -1,5 +1,4 @@
 # VSCode App Center Tools
-[![Build Status](https://travis-ci.org/Microsoft/vscode-appcenter.svg?branch=master)](https://travis-ci.org/Microsoft/vscode-appcenter)
 
 This extension provides development support for App Center projects. 
 
